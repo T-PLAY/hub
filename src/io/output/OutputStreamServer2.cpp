@@ -1,7 +1,10 @@
 
 #include "OutputStreamServer2.hpp"
 
+#ifdef HUB_USE_TBB
 #include <execution>
+#endif
+
 #include <iostream>
 #include <typeinfo>
 
@@ -287,33 +290,36 @@ void output::OutputStreamServer2::write( const Data_t* data, Size_t size ) {
 
     std::list<io::InputOutputSocket*> socketToRemoves;
 
-#ifdef OS_MACOS
-    for ( auto& clientSocket : clientSockets ) {
-#else
+// #ifdef OS_MACOS
+    // for ( auto& clientSocket : clientSockets ) {
+// #else
 #    ifdef HUB_USE_TBB
     std::for_each(
         std::execution::par,
-#    else
-    std::for_each(
-        std::execution::seq,
-#    endif
+        // #    else
+        // std::for_each(
+        // std::execution::seq,
+        // #    endif
         clientSockets.begin(),
         clientSockets.end(),
         [&]( auto& clientSocket ) {
+#else
+    for ( auto& clientSocket : clientSockets ) {
 #endif
 
-        try {
-            clientSocket.write( data, size );
-        }
-        catch ( std::exception& ex ) {
-            std::cout << "[OutputStream] catch exception : " << ex.what() << std::endl;
-            socketToRemoves.push_back( &clientSocket );
-        }
+            try {
+                clientSocket.write( data, size );
+            }
+            catch ( std::exception& ex ) {
+                std::cout << "[OutputStream] catch exception : " << ex.what() << std::endl;
+                socketToRemoves.push_back( &clientSocket );
+            }
 
-#ifdef OS_MACOS
-    }
-#else
+// #ifdef OS_MACOS
+#ifdef HUB_USE_TBB
         } );
+#else
+            }
 #endif
 
     for ( auto* socketToRemove : socketToRemoves ) {

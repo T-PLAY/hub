@@ -6,7 +6,7 @@ find_package(Git)
 #set(VERSION_UPDATE_FROM_GIT 1)
 include(GetVersionFromGitTag)
 
-set(REQUIRED_LIBS "")
+set(REQUIRED_LIBS ${HUB_TBB_TARGET})
 
 message(STATUS "${HEADER_MSG} Version: ${${PROJECT_NAME}_VERSION}")
 
@@ -30,6 +30,66 @@ if(HUB_ENABLE_COVERAGE)
     append_coverage_compiler_flags()
     set(REQUIRED_LIBS ${REQUIRED_LIBS} gcov)
 endif()
+
+######################### OS specifics
+if(MINGW)
+    if(CLANG)
+        set (THREADS_PREFER_PTHREAD_FLAG ON)
+        find_package(Threads REQUIRED)
+        set(REQUIRED_LIBS ${REQUIRED_LIBS} Threads::Threads)
+
+    elseif(GNU)
+        message(FATAL_ERROR "GNU not supported")
+
+    elseif(GCC)
+        set(REQUIRED_LIBS ${REQUIRED_LIBS} ws2_32)
+        get_filename_component(Mingw_Path ${CMAKE_CXX_COMPILER} PATH)
+        message(STATUS "[hub] ${Mingw_Path}")
+        set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${Mingw_Path}/libgcc_s_seh-1.dll ${Mingw_Path}/libstdc++-6.dll
+            ${Mingw_Path}/libwinpthread-1.dll)
+
+        install(
+            PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
+            DESTINATION ${CMAKE_INSTALL_BINDIR}/${ARCHITECTURE}
+            COMPONENT System)
+    else()
+        message(FATAL_ERROR "unsupported compiler ${CMAKE_CXX_COMPILER_ID}")
+    endif()
+
+elseif(WIN32)
+    if(MSVC)
+
+    elseif(Clang)
+
+    else()
+        message(FATAL_ERROR "unsupported compiler ${CMAKE_CXX_COMPILER_ID}")
+    endif()
+
+elseif(APPLE)
+    #message(FATAL_ERROR "not supported")
+    #target_compile_options(${TARGET_NAME} PRIVATE "-g")
+
+elseif(UNIX)
+    set (THREADS_PREFER_PTHREAD_FLAG ON)
+    find_package(Threads REQUIRED)
+    set(REQUIRED_LIBS ${REQUIRED_LIBS} Threads::Threads)
+    # set_property(TARGET ${TARGET_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON) # gltfpack
+
+    if (Clang)
+    elseif (GCC)
+        message(FATAL_ERROR "not supported")
+    elseif(GNU)
+    else()
+        message(FATAL_ERROR "unknown linux system")
+    endif()
+
+else()
+    message(FATAL_ERROR "unknown system")
+endif()
+
+#        set(REQUIRED_LIBS ${REQUIRED_LIBS} external)
+# message(STATUS "required_libs: ${REQUIRED_LIBS}")
+message(STATUS "${HEADER_MSG} Dependencies: ${REQUIRED_LIBS}")
 
 #if(WIN32)
 #          add_definitions(-D_CRT_SECURE_NO_WARNINGS)
@@ -264,63 +324,10 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
             target_compile_definitions(${TARGET_NAME} PUBLIC -DCOVERAGE)
         endif()
 
-
-        if(MINGW)
-            if(CLANG)
-                set (THREADS_PREFER_PTHREAD_FLAG ON)
-                find_package(Threads REQUIRED)
-                set(REQUIRED_LIBS ${REQUIRED_LIBS} Threads::Threads)
-
-            elseif(GNU)
-                message(FATAL_ERROR "GNU not supported")
-
-            elseif(GCC)
-                set(REQUIRED_LIBS ${REQUIRED_LIBS} ws2_32)
-                get_filename_component(Mingw_Path ${CMAKE_CXX_COMPILER} PATH)
-                message(STATUS "[hub] ${Mingw_Path}")
-                set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${Mingw_Path}/libgcc_s_seh-1.dll ${Mingw_Path}/libstdc++-6.dll
-                    ${Mingw_Path}/libwinpthread-1.dll)
-
-                install(
-                    PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
-                    DESTINATION ${CMAKE_INSTALL_BINDIR}/${ARCHITECTURE}
-                    COMPONENT System)
-            else()
-                message(FATAL_ERROR "unsupported compiler ${CMAKE_CXX_COMPILER_ID}")
-            endif()
-
-        elseif(WIN32)
-            if(MSVC)
-
-            elseif(Clang)
-
-            else()
-                message(FATAL_ERROR "unsupported compiler ${CMAKE_CXX_COMPILER_ID}")
-            endif()
-
-        elseif(APPLE)
-            #message(FATAL_ERROR "not supported")
-            #target_compile_options(${TARGET_NAME} PRIVATE "-g")
-
-        elseif(UNIX)
-            set (THREADS_PREFER_PTHREAD_FLAG ON)
-            find_package(Threads REQUIRED)
-            set(REQUIRED_LIBS ${REQUIRED_LIBS} Threads::Threads)
+        if (UNIX)
             set_property(TARGET ${TARGET_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON) # gltfpack
-
-            if (Clang)
-            elseif (GCC)
-                message(FATAL_ERROR "not supported")
-            elseif(GNU)
-            else()
-                message(FATAL_ERROR "unknown linux system")
-            endif()
-
-        else()
-            message(FATAL_ERROR "unknown system")
         endif()
 
-        #        set(REQUIRED_LIBS ${REQUIRED_LIBS} external)
 
         #target_link_libraries(${TARGET_NAME} PUBLIC ${REQUIRED_LIBS})
         target_link_libraries(${TARGET_NAME} PRIVATE ${REQUIRED_LIBS})
@@ -394,7 +401,8 @@ if (HUB_BUILD_STATIC)
     endif() # (XCODE)
 
     target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DSRC_STATIC)
-    target_link_libraries(${PROJECT_NAME}_static PRIVATE external)
+        # target_link_libraries(${TARGET_NAME} PRIVATE ${REQUIRED_LIBS})
+    target_link_libraries(${PROJECT_NAME}_static PRIVATE external ${REQUIRED_LIBS})
     #    target_link_libraries(${PROJECT_NAME}_static PUBLIC external)
 
     #target_link_libraries(${PROJECT_NAME}_static PRIVATE ${REQUIRED_LIBS})
@@ -504,7 +512,8 @@ if (HUB_BUILD_SHARED)
     endif() # (XCODE)
 
     target_compile_definitions(${PROJECT_NAME}_shared PUBLIC -DSRC_EXPORTS)
-    target_link_libraries(${PROJECT_NAME}_shared PRIVATE external)
+        # target_link_libraries(${TARGET_NAME} PRIVATE ${REQUIRED_LIBS})
+    target_link_libraries(${PROJECT_NAME}_shared PRIVATE external ${REQUIRED_LIBS})
 
     #	target_compile_options(${PROJECT_NAME} PRIVATE "-fpic")
     #    target_link_libraries(${PROJECT_NAME} PRIVATE ${REQUIRED_LIBS})
