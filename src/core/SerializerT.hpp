@@ -12,7 +12,7 @@
 namespace hub {
 
 template <class Serializer>
-class SerializerT
+class SRC_API SerializerT
 {
   public:
     using Base = Serializer;

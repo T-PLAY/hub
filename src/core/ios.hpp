@@ -16,8 +16,11 @@ namespace hub {
 
 #if defined( HUB_DEBUG_INPUT ) || defined( HUB_DEBUG_OUTPUT )
 
-extern std::mutex s_mtxIoPrint; // shared mutex over threads
-// static std::mutex s_mtxIoPrint;
+//#ifdef  SRC_STATIC
+//extern std::mutex s_mtxIoPrint; // shared mutex over threads
+//#else
+static std::mutex s_mtxIoPrint;
+//#endif
 
 #    undef DEBUG_MSG
 #    define DEBUG_MSG( str )               \
@@ -29,7 +32,7 @@ extern std::mutex s_mtxIoPrint; // shared mutex over threads
 
 #endif
 
-class ios
+class SRC_API ios
 {
   public:
     virtual void close()        = 0;

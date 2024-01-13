@@ -53,7 +53,7 @@ namespace io {
 
 ///////////////////////////////////////////////////////////////
 
-class StreamBase
+class SRC_API StreamBase
 {
   public:
     //    static const std::string s_defaultIpv4;

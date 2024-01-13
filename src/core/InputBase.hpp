@@ -11,7 +11,7 @@
 #include "ios.hpp"
 
 namespace hub {
-class InputBase : public ios
+class SRC_API InputBase : public ios
 {
   public:
     virtual void read( Data_t* data, Size_t len ) = 0;

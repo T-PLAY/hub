@@ -33,6 +33,9 @@ namespace client {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//template class SRC_API ViewerStream<input::InputStreamServer2>;
+//    std::map<std::string, std::unique_ptr<ViewerStream<InputStream>>> m_streams;
+
 ///
 /// \brief The ViewerInterface class (event dispatcher)
 /// can be use by client application to be aware of the events comming from server
@@ -44,7 +47,7 @@ namespace client {
 /// Close the input stream when server or streamer are disconnected.
 ///
 template <class InputStream>
-class SRC_API ViewerInterface
+class  ViewerInterface
 {
   protected:
   public:

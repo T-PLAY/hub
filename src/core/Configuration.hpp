@@ -9,8 +9,14 @@
 namespace hub {
 
 // static constexpr int s_versionMajor = HUB_VERSION_MAJOR;
+
+#ifdef SRC_STATIC
 extern const int s_servicePort;
 extern const std::string s_serviceIpv4;
+#else
+static const int s_servicePort = 4042;
+static const std::string s_serviceIpv4 = "127.0.0.1";
+#endif
 
 }
 

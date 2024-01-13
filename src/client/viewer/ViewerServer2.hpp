@@ -16,15 +16,17 @@
 namespace hub {
 namespace client {
 
-class SRC_API ViewerServer2 : public hub::client::ViewerInterface<input::InputStreamServer2>
+//template class SRC_API hub::client::ViewerInterface<input::InputStreamServer2>;
+
+class ViewerServer2 : public hub::client::ViewerInterface<input::InputStreamServer2>
 {
   public:
-    explicit ViewerServer2( const std::string& name,
+    SRC_API explicit ViewerServer2( const std::string& name,
                             ViewerHandler&& viewerHandler,
                             const std::string& ipv4 = HUB_SERVICE_IPV4,
                             int port                = HUB_SERVICE_PORT );
 
-    ~ViewerServer2();
+    SRC_API ~ViewerServer2();
 
     void setIpv4( const std::string& ipv4 ) override;
 

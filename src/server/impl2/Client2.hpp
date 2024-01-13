@@ -18,7 +18,7 @@ class ServerImpl2;
 ///
 /// \brief The Client2 class
 ///
-class Client2
+class SRC_API Client2
 {
   private:
     Client2( ServerImpl2* server, int iClient );

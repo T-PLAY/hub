@@ -6,10 +6,12 @@
 
 #include <string>
 
+#include "Macros.hpp"
+
 namespace hub {
 namespace utils {
 
-std::string getHostname();
+std::string SRC_API getHostname();
 
 enum Key {
     // ASCII Characters
@@ -170,8 +172,8 @@ enum Key {
     Count
 };
 
-Key key_press();
-std::ostream& operator<<( std::ostream& os, Key key );
+Key SRC_API key_press();
+SRC_API std::ostream& operator<<( std::ostream& os, Key key );
 
 } // namespace utils
 } // namespace hub

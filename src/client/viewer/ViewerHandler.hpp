@@ -23,7 +23,7 @@
 namespace hub {
 namespace client {
 
-class ViewerHandler
+class SRC_API ViewerHandler
 {
   public:
     std::function<void( const char* ipv4, int port )> onServerNotFound;

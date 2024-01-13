@@ -25,7 +25,7 @@ class StreamViewerClient2;
 ///
 /// \brief The StreamerClient2 class
 ///
-class StreamerClient2 : public Client2
+class SRC_API StreamerClient2 : public Client2
 {
   public:
     ///

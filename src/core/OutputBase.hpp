@@ -14,7 +14,7 @@ namespace hub {
 // namespace io {
 // namespace output {
 
-class OutputBase : public ios
+class SRC_API OutputBase : public ios
 {
   public:
     virtual void write( const Data_t* data, Size_t len ) = 0;

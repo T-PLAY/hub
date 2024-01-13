@@ -18,6 +18,7 @@
 
 // #define HUB_DEBUG_INPUT_STREAM
 
+
 namespace hub {
 namespace input {
 

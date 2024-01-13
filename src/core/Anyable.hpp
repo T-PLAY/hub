@@ -28,11 +28,11 @@
 
 namespace hub {
 
-class Anyable
+class SRC_API Anyable
 {
 
   private:
-    class AnyHelper
+    class SRC_API AnyHelper
     {
         //  private:
       public:
@@ -174,7 +174,7 @@ class Anyable
     }
 
     // static std::map<size_t, AnyHelper> s_anyables;
-    static std::map<std::string, AnyHelper> s_anyables;
+    static inline std::map<std::string, AnyHelper> s_anyables = makeAnyHelperMap<void, int, double, std::string, const char*>();
 
     //    static std::vector<std::string> supportedTypes();
 
@@ -216,5 +216,11 @@ class Anyable
     //    friend class std::ostream;
 
 }; // class Anyable
+//#pragma export(Anyable::s_anyables)
+
+//std::map<std::string, Anyable::AnyHelper> SRC_API Anyable::s_anyables =
+    // todo c++17
+//    makeAnyHelperMap<void, int, double, std::string, const char*>();
+    // makeAnyHelperMap<void, int, double, std::string, const char*>();
 
 } // namespace hub

@@ -12,7 +12,7 @@
 namespace hub {
 namespace input {
 
-class InputFile : public Input, public io::File
+class SRC_API InputFile : public Input, public io::File
 {
   public:
     using Input::read;

@@ -42,7 +42,7 @@ namespace hub {
 namespace client {
 
 template <class InputStream>
-class ViewerStream
+class  ViewerStream
 {
   public:
     ViewerStream(
@@ -96,6 +96,8 @@ class ViewerStream
     const int m_iStreamer;
 
 }; // end class ViewerStream
+
+//extern template class SRC_API ViewerStream<input::InputStreamServer2>;
 
 /////////////////////////////////////// INLINE ////////////////////////////////////////////////////
 

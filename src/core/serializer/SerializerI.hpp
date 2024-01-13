@@ -16,7 +16,7 @@
 namespace hub {
 namespace serializer {
 
-class SerializerI
+class SRC_API SerializerI
 {
   public:
     using ByteView = std::vector<Data_t>;

@@ -77,9 +77,9 @@ extern "C"
     ///
     SRC_API bool viewer_isConnected( const client::Viewer* viewer );
 
-    int viewer_nStream(const client::Viewer* viewer);
+    SRC_API int viewer_nStream(const client::Viewer* viewer);
 
-    int viewer_nStreaming(const client::Viewer* viewer);
+    SRC_API int viewer_nStreaming(const client::Viewer* viewer);
 
 #ifdef __cplusplus
 } // end extern "C"

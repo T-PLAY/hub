@@ -18,7 +18,7 @@
 
 namespace hub {
 
-class Matrix
+class SRC_API Matrix
 {
   public:
     static struct {

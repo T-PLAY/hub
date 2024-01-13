@@ -15,7 +15,7 @@ namespace hub {
 // namespace impl2 {
 namespace client {
 
-class AskerServer2 : public hub::client::AskerInterface
+class SRC_API AskerServer2 : public hub::client::AskerInterface
 {
   public:
     AskerServer2( const std::string& ipv4 = HUB_SERVICE_IPV4,

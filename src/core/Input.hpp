@@ -13,7 +13,7 @@
 namespace hub {
 
 template <class SerializerT = Serializer>
-class InputT : public InputBase
+class SRC_API InputT : public InputBase
 {
   public:
     using InputBase::read;

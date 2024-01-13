@@ -21,7 +21,7 @@ class StreamerClient2;
 ///
 /// \brief The ViewerClient2 class
 ///
-class ViewerClient2 : public Client2
+class SRC_API ViewerClient2 : public Client2
 {
   private:
     ViewerClient2( ServerImpl2* server, int iClient, net::ClientSocket&& sock );

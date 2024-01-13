@@ -13,7 +13,7 @@
 namespace hub {
 namespace io {
 
-class StreamServer2 : public hub::io::StreamBase
+class SRC_API StreamServer2 : public hub::io::StreamBase
 {
   public:
     // using hub::io::StreamBase::getHeader;

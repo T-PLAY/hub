@@ -41,7 +41,7 @@ extern "C"
     // SRC_API sensor::OutputSensor*
     // createMat4OutputSensor( const char* sensorName, const char* ipv4, int port );
 
-    output::OutputStream* createOutputStream(
+    SRC_API output::OutputStream* createOutputStream(
         const io::Header * header,
         const char* streamName,
                                               int port,
@@ -56,7 +56,7 @@ extern "C"
     // SRC_API bool mat4OutputSensorSendAcq( sensor::OutputSensor* outputSensor, const float* input
     // );
 
-    void outputStream_write_int( output::OutputStream* outputStream, int value );
+    SRC_API void outputStream_write_int( output::OutputStream* outputStream, int value );
 
     ///
     /// \brief freeOutputSensor

@@ -36,7 +36,7 @@ namespace serializer {
 //     t.begin()->second;
 // };
 
-class SerializerZpp : public SerializerI
+class SRC_API SerializerZpp : public SerializerI
 {
   public:
     SerializerZpp( ByteView& byteView ) : SerializerI( byteView ) {

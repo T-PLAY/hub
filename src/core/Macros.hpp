@@ -222,6 +222,8 @@ namespace hub {
 #    define SRC_API
 #endif
 
+//#        define SRC_API __declspec( dllexport )
+
 // #define CPP_VERSION 20
 
 // #ifndef OS_WINDOWS

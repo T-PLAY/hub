@@ -19,7 +19,7 @@
 namespace hub {
 namespace io {
 
-class Header
+class SRC_API Header
 {
   public:
     using MagicNumber = std::array<char, 128>;

@@ -31,6 +31,9 @@ if(HUB_ENABLE_COVERAGE)
     set(REQUIRED_LIBS ${REQUIRED_LIBS} gcov)
 endif()
 
+option(HUB_BUILD_STATIC "Build static library" ON)
+option(HUB_BUILD_SHARED "Build shared library" ON)
+
 ######################### OS specifics
 if(MINGW)
     if(CLANG)
@@ -263,6 +266,13 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
             list(FILTER object_headers EXCLUDE REGEX ".*sensor/.*\\.hpp$")
         endif()
 
+#        if (${TARGET_NAME} STREQUAL "client")
+#            set(object_sources "client/Streamer.cpp")
+#            set(object_headers "client/Streamer.hpp")
+#            set(object_headers "client/viewer/ViewerStream.hpp" "client/viewer/ViewerInterface.hpp")
+#            set(object_headers "client/viewer/ViewerStream.hpp")
+#        endif()
+
 #        foreach (object_src ${object_headers})
 #            message(STATUS "src: ${object_src}")
 #        endforeach()
@@ -289,8 +299,11 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
         )
 
         #target_compile_definitions(${TARGET_NAME} PUBLIC -DINTERNAL_BUILD)
-        target_compile_definitions(${TARGET_NAME} PUBLIC -DSRC_STATIC) # -> SRC_API = void, future shared
-        #        target_compile_definitions(${TARGET_NAME} PUBLIC -DSRC_EXPORTS) # -> SRC_API = void, future shared
+        if (NOT HUB_BUILD_STATIC AND HUB_BUILD_SHARED)
+            target_compile_definitions(${TARGET_NAME} PUBLIC -DSRC_EXPORTS) # -> SRC_API = void, future shared
+        else()
+            target_compile_definitions(${TARGET_NAME} PUBLIC -DSRC_STATIC) # -> SRC_API = void, future shared
+        endif()
         #        target_compile_options(${TARGET_NAME} PRIVATE -fPIC)
 
         # if (PahoMqttCpp_FOUND)
@@ -351,7 +364,6 @@ endif()  # NOT XCODE
 
 ############################# STATIC LIBRARY ###############################
 
-option(HUB_BUILD_STATIC "Build static library" OFF)
 if (HUB_BUILD_STATIC)
 
     #    if(HUB_BUILD_STATIC_LIBRARY)
@@ -442,29 +454,28 @@ if (HUB_BUILD_STATIC)
                 COMPILE_PDB_NAME ${PROJECT_NAME} COMPILE_PDB_OUTPUT_DIR ${CMAKE_BINARY_DIR}
                 # DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
             )
-    endif()
+        endif()
 
-    if(NOT ${CMAKE_BUILD_TYPE} STREQUAL "Release")
-        install(
-            FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}${CMAKE_POSTFIX}.pdb
-            DESTINATION ${ARCHITECTURE}/lib
-            OPTIONAL)
-        install(
-            FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME}${CMAKE_POSTFIX}.pdb
-            DESTINATION ${ARCHITECTURE}/lib
-            OPTIONAL)
-    endif()
-endif() # (HUB_BUILD_STATIC)
+        if(NOT ${CMAKE_BUILD_TYPE} STREQUAL "Release")
+            install(
+                FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}${CMAKE_POSTFIX}.pdb
+                DESTINATION ${ARCHITECTURE}/lib
+                OPTIONAL)
+            install(
+                FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME}${CMAKE_POSTFIX}.pdb
+                DESTINATION ${ARCHITECTURE}/lib
+                OPTIONAL)
+        endif()
+    endif() # MSVC
 
-if (UNIX)
-    set_target_properties(${PROJECT_NAME}_static PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
-endif()
+    if (UNIX)
+        set_target_properties(${PROJECT_NAME}_static PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
+    endif()
 
 endif() # static library
 
 ############################# SHARED LIBRARY
 
-option(HUB_BUILD_SHARED "Build shared library" ON)
 if (HUB_BUILD_SHARED)
 
     if (XCODE)
@@ -561,7 +572,15 @@ if (HUB_BUILD_SHARED)
 endif() # (HUB_BUILD_SHARED)
 
 #add_library(hub ALIAS hub_static)
-add_library(hub ALIAS hub_shared)
+if (HUB_BUILD_SHARED OR HUB_BUILD_STATIC)
+    if (HUB_BUILD_SHARED AND HUB_BUILD_STATIC)
+        add_library(hub ALIAS hub_static)
+    elseif (HUB_BUILD_SHARED)
+        add_library(hub ALIAS hub_shared)
+    else()
+        add_library(hub ALIAS hub_static)
+    endif()
+endif()
 
 #else()
 #    add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})

@@ -27,7 +27,7 @@ static inline Clock getClock() {
         .count();
 }
 
-class Acquisition : public Matrix
+class SRC_API Acquisition : public Matrix
 {
   public:
     static struct {
@@ -91,7 +91,7 @@ class Acquisition : public Matrix
     mutable Matrix m_resolution;
 };
 
-Acquisition make_acquisition( const Matrix& resolution );
+SRC_API Acquisition make_acquisition( const Matrix& resolution );
 
 ///////////////////////////////////// TEMPLATE ////////////////////////////////
 

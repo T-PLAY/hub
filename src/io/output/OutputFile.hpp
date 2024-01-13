@@ -13,7 +13,7 @@
 namespace hub {
 namespace output {
 
-class OutputFile : public Output, public io::File
+class SRC_API OutputFile : public Output, public io::File
 {
   public:
     using Output::write;

@@ -13,9 +13,10 @@ project(bin LANGUAGES CXX)
 #     endif()
 # endif()
 
-if (NOT TARGET hub)
-    message(FATAL_ERROR "target hub not found")
-endif()
+#if (False)
+if (TARGET hub)
+#    message(FATAL_ERROR "target hub not found")
+#endif()
 
 # if (HUB_BUILD_SERVER)
 
@@ -40,7 +41,8 @@ endif()
         target_link_libraries(${TARGET_NAME} hub)
 
         if(WIN32)
-            if (HUB_BUILD_SHARED)
+            #if (HUB_BUILD_SHARED)
+            if (HUB_BUILD_SHARED AND NOT HUB_BUILD_STATIC)
                 add_custom_command(
                     TARGET ${TARGET_NAME}
                     POST_BUILD
@@ -75,3 +77,5 @@ endif()
 #     target_link_libraries(bin-streamer-${basename} hub)
 # endforeach()
 # endif()
+
+endif()

@@ -183,12 +183,15 @@ if (PahoMqttCpp_FOUND)
 endif()
 # target_compile_definitions(test-all PUBLIC -DHUB_TEST_ALL)
 
-#if(WIN32)
-#    add_custom_command(
-#        TARGET test-all
-#        POST_BUILD
-#        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:hub_shared> $<TARGET_FILE_DIR:test-all>)
-#endif()
+if(WIN32)
+#    if (HUB_BUILD_SHARED)
+    if (HUB_BUILD_SHARED AND NOT HUB_BUILD_STATIC)
+        add_custom_command(
+            TARGET hub-test-all
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:hub_shared> $<TARGET_FILE_DIR:hub-test-all>)
+    endif()
+endif()
 
 #add_definitions(-DHUB_TESTS_BIN_DIR=\"${CMAKE_CURRENT_BINARY_DIR}/\")
 

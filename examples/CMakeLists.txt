@@ -24,6 +24,7 @@ foreach(HUB_MODULE ${HUB_MODULES})
     list(APPEND example_srcs ${example_src})
 endforeach()
 
+#set(example_srcs)
 list(APPEND example_srcs ${CMAKE_CURRENT_SOURCE_DIR}/example-wip.cpp)
 
 string(REPLACE ".cpp" "" EXAMPLE_SRC_BASENAME "${example_srcs}")
@@ -93,11 +94,13 @@ foreach(name ${EXAMPLE_SRC_BASENAME})
 #        PRIVATE ${HUB_EXTERNAL_DIR})
 
     if(WIN32)
-        add_custom_command(
-            # TARGET ${PROJECT_NAME}
-            TARGET ${TARGET_NAME}
-            POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:hub_shared> $<TARGET_FILE_DIR:${TARGET_NAME}>)
+        if (HUB_BUILD_SHARED AND NOT HUB_BUILD_STATIC)
+            add_custom_command(
+                # TARGET ${PROJECT_NAME}
+                TARGET ${TARGET_NAME}
+                POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:hub_shared> $<TARGET_FILE_DIR:${TARGET_NAME}>)
+        endif()
     endif()
 endforeach()
 
