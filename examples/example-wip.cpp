@@ -4,9 +4,13 @@
 #include <core/Macros.hpp>
 #include <core/Traits.hpp>
 
-#include "serializer.h"
+//#include "zpp/serializer.h"
+#include "core/serializer/zpp/serializer.h"
+
+#include <Eigen/Core>
 
 int main() {
+    Eigen::Matrix4<int> mat;
     // std::cout << "void: " << TYPE_NAME(void) << std::endl;
     // std::cout << "void: " << hub::typeName((void)) << std::endl;
 

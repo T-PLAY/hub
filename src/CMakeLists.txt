@@ -210,6 +210,7 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
             GLOB_RECURSE
             object_headers
             ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_MODULE}/*.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_MODULE}/*.h
             #            ${CMAKE_CURRENT_SOURCE_DIR}/impl/server/${HUB_MODULE}/*.hpp
             #            ${HUB_EXTERNAL_DIR}/*.hpp
             #            ${HUB_EXTERNAL_DIR}/*.h
@@ -350,7 +351,7 @@ endif()  # NOT XCODE
 
 ############################# STATIC LIBRARY ###############################
 
-option(HUB_BUILD_STATIC "Build static library" ON)
+option(HUB_BUILD_STATIC "Build static library" OFF)
 if (HUB_BUILD_STATIC)
 
     #    if(HUB_BUILD_STATIC_LIBRARY)
@@ -559,7 +560,8 @@ if (HUB_BUILD_SHARED)
 
 endif() # (HUB_BUILD_SHARED)
 
-add_library(hub ALIAS hub_static)
+#add_library(hub ALIAS hub_static)
+add_library(hub ALIAS hub_shared)
 
 #else()
 #    add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
