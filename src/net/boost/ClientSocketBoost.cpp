@@ -1,5 +1,7 @@
 #include "ClientSocketBoost.hpp"
 
+#ifdef	HUB_USE_BOOST
+
 #include <cmath>
 #include <cstring>
 #include <regex>
@@ -400,3 +402,5 @@ void ClientSocketBoost::read( unsigned char* data, const size_t size ) {
 } // namespace boost
 } // namespace net
 } // namespace hub
+
+#endif

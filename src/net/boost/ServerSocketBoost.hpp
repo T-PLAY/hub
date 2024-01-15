@@ -1,8 +1,10 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/10/18
-	
+
 #pragma once
+
+#ifdef HUB_USE_BOOST
 
 #include "net/ServerSocketI.hpp"
 
@@ -88,3 +90,5 @@ class SRC_API ServerSocketBoost : public ServerSocketI
 } // namespace system
 } // namespace net
 } // namespace hub
+
+#endif

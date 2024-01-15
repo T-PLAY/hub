@@ -4,6 +4,8 @@
 	
 #pragma once
 
+#ifdef HUB_USE_BOOST
+
 #include <boost/asio.hpp>
 #include <boost/asio/ip/tcp.hpp>
 
@@ -154,3 +156,6 @@ class SRC_API ClientSocketBoost : public ClientSocketI
 } // namespace system
 } // namespace net
 } // namespace hub
+
+
+#endif

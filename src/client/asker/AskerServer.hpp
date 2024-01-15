@@ -4,6 +4,8 @@
 	
 #pragma once
 
+#ifdef HUB_USE_SERVER
+
 #include "AskerInterface.hpp"
 
 //#include "net/ClientSocket.hpp"
@@ -33,3 +35,5 @@ class AskerServer : public AskerInterface
 
 } // namespace client
 } // namespace hub
+
+#endif

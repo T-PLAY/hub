@@ -4,6 +4,8 @@
 	
 #pragma once
 
+#ifdef HUB_USE_SERVER
+
 #include <deque>
 #include <memory>
 #include <mutex>
@@ -102,3 +104,6 @@ class StreamerClient : public Client
 } // namespace impl
 } // namespace server
 } // namespace hub
+
+
+#endif

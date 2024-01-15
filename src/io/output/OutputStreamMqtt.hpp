@@ -4,8 +4,12 @@
 	
 #pragma once
 
+#ifdef HUB_USE_MQTT
+
 #include <mutex>
 #include <thread>
+
+
 
 #include <mqtt/client.h>
 
@@ -137,3 +141,5 @@ inline bool OutputStreamMqtt::isOpen() const {
 
 } // namespace output
 } // namespace hub
+
+#endif

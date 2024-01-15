@@ -1,5 +1,7 @@
 #include "AskerClient.hpp"
 
+#ifdef HUB_USE_SERVER
+
 #include "ServerImpl.hpp"
 
 namespace hub {
@@ -100,3 +102,5 @@ void AskerClient::end( io::StreamBase::ServerMessage message ) {
 } // namespace impl
 } // namespace server
 } // namespace hub
+
+#endif

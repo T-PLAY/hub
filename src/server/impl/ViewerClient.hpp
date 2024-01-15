@@ -4,6 +4,8 @@
 	
 #pragma once
 
+#ifdef HUB_USE_SERVER
+
 #include <mutex>
 #include <thread>
 
@@ -52,3 +54,6 @@ class ViewerClient : public Client
 } // namespace impl
 } // namespace server
 } // namespace hub
+
+
+#endif

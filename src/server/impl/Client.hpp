@@ -4,6 +4,8 @@
 	
 #pragma once
 
+#ifdef HUB_USE_SERVER
+
 #include <mutex>
 #include <string>
 
@@ -46,3 +48,6 @@ class Client
 } // namespace impl
 } // namespace server
 } // namespace hub
+
+
+#endif

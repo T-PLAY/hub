@@ -1,5 +1,6 @@
 #include "AskerServer.hpp"
 
+#ifdef HUB_USE_SERVER
 
 namespace hub {
 namespace client {
@@ -59,3 +60,5 @@ sensor::Acquisition AskerServer::getAcquisition( const std::string& streamName )
 
 } // namespace client
 } // namespace hub
+
+#endif

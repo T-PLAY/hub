@@ -4,6 +4,8 @@
 	
 #pragma once
 
+#ifdef HUB_USE_SERVER
+
 #include <deque>
 #include <functional>
 #include <iomanip>
@@ -129,3 +131,6 @@ class SRC_API ServerImpl
 } // namespace impl
 } // namespace server
 } // namespace hub
+
+
+#endif

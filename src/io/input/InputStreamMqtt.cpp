@@ -1,6 +1,8 @@
 
 #include "InputStreamMqtt.hpp"
 
+#ifdef HUB_USE_MQTT
+
 //#include "io/Memory.hpp"
 
 namespace hub {
@@ -196,3 +198,5 @@ void InputStreamMqtt::subscribe(const std::string &topic)
 
 } // namespace input
 } // namespace hub
+
+#endif

@@ -1,6 +1,9 @@
 #include "AskerMqtt.hpp"
 
+#ifdef HUB_USE_MQTT
+
 #include "core/Utils.hpp"
+
 
 // #include "io/Memory.hpp"
 
@@ -195,3 +198,5 @@ sensor::Acquisition AskerMqtt::getAcquisition( const std::string& streamName ) {
 
 } // namespace client
 } // namespace hub
+
+#endif

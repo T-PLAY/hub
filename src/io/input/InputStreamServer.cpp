@@ -1,5 +1,8 @@
 
 #include "InputStreamServer.hpp"
+
+#ifdef HUB_USE_SERVER
+
 #include "sensor/Acquisition.hpp"
 #include "sensor/SensorSpec.hpp"
 
@@ -108,3 +111,5 @@ void InputStreamServer::clear()
 
 } // namespace input
 } // namespace hub
+
+#endif

@@ -4,6 +4,8 @@
 	
 #pragma once
 
+#ifdef HUB_USE_MQTT
+
 #include "AskerInterface.hpp"
 
 #include <mqtt/client.h>
@@ -42,3 +44,5 @@ class AskerMqtt : public AskerInterface
 
 } // namespace client
 } // namespace hub
+
+#endif

@@ -4,6 +4,8 @@
 	
 #pragma once
 
+#ifdef HUB_USE_SERVER
+
 #include <mutex>
 #include <thread>
 
@@ -119,3 +121,5 @@ inline bool OutputStreamServer::isOpen() const {
 
 } // namespace output
 } // namespace hub
+
+#endif

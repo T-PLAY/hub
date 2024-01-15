@@ -1,5 +1,7 @@
 #include "ViewerMqtt.hpp"
 
+#ifdef HUB_USE_MQTT
+
 // #include <regex>
 // #include <sstream>
 #include <algorithm>
@@ -224,3 +226,5 @@ ViewerMqtt::~ViewerMqtt() {
 
 } // namespace client
 } // namespace hub
+
+#endif

@@ -4,6 +4,8 @@
 	
 #pragma once
 
+#ifdef HUB_USE_SERVER
+
 #include <string>
 
 #include "StreamBase.hpp"
@@ -39,3 +41,5 @@ class StreamServer : public StreamBase
 
 } // namespace io
 } // namespace hub
+
+#endif

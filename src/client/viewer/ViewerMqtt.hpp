@@ -4,6 +4,8 @@
 	
 #pragma once
 
+#ifdef HUB_USE_MQTT
+
 #include "ViewerInterface.hpp"
 #include "io/input/InputStreamMqtt.hpp"
 
@@ -56,3 +58,5 @@ class SRC_API ViewerMqtt : public ViewerInterface<input::InputStreamMqtt>
 
 } // namespace client
 } // namespace hub
+
+#endif

@@ -1,8 +1,9 @@
 
+#include "Client.hpp"
+#ifdef HUB_USE_SERVER
 #include <iomanip>
 #include <iostream>
 
-#include "Client.hpp"
 #include "ServerImpl.hpp"
 
 namespace hub {
@@ -52,3 +53,6 @@ void Client::setServer( ServerImpl* newServer ) {
 } // namespace impl
 } // namespace server
 } // namespace hub
+
+
+#endif

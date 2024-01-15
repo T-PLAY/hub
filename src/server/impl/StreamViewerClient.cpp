@@ -1,7 +1,9 @@
 
-#include <iomanip>
-
 #include "ServerImpl.hpp"
+
+#ifdef HUB_USE_SERVER
+
+#include <iomanip>
 #include "StreamViewerClient.hpp"
 
 namespace hub {
@@ -170,3 +172,6 @@ void StreamViewerClient::end( io::StreamBase::ServerMessage message ) {
 } // namespace impl
 } // namespace server
 } // namespace hub
+
+
+#endif

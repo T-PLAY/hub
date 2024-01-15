@@ -1,5 +1,7 @@
 #include "StreamServer.hpp"
 
+#ifdef HUB_USE_SERVER
+
 namespace hub {
 namespace io {
 
@@ -29,3 +31,5 @@ StreamServer::StreamServer( const char* name, const char* ipv4, int port ) :
 
 } // namespace io
 } // namespace hub
+
+#endif

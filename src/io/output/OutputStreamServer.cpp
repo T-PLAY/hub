@@ -1,6 +1,8 @@
 
 #include "OutputStreamServer.hpp"
 
+#ifdef HUB_USE_SERVER
+
 #include <iostream>
 #include <typeinfo>
 
@@ -110,3 +112,5 @@ OutputStreamServer::~OutputStreamServer() {
 
 } // namespace output
 } // namespace hub
+
+#endif

@@ -1,6 +1,8 @@
 
 #include "OutputStreamMqtt.hpp"
 
+#ifdef HUB_USE_MQTT
+
 #include <iostream>
 #include <typeinfo>
 
@@ -164,3 +166,5 @@ void OutputStreamMqtt::write( const sensor::SensorSpec& sensorSpec ) {
 
 } // namespace output
 } // namespace hub
+
+#endif

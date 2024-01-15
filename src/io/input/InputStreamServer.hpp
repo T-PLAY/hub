@@ -4,6 +4,8 @@
 	
 #pragma once
 
+#ifdef HUB_USE_SERVER
+
 #include <thread>
 
 //#include "Input.hpp"
@@ -161,3 +163,5 @@ inline bool InputStreamServer::isEnd() const {
 
 } // namespace input
 } // namespace hub
+
+#endif

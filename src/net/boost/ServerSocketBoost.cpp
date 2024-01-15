@@ -1,5 +1,7 @@
 #include "ServerSocketBoost.hpp"
 
+#ifdef HUB_USE_BOOST
+
 #include <cstring>
 
 // #include "NetUtilsSystem.hpp"
@@ -95,3 +97,5 @@ int ServerSocketBoost::getPort() const {
 } // namespace boost
 } // namespace net
 } // namespace hub
+
+#endif

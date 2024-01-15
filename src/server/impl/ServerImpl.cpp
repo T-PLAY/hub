@@ -1,5 +1,7 @@
 #include "ServerImpl.hpp"
 
+#ifdef HUB_USE_SERVER
+
 #include <cstring>
 #include <iostream>
 #include <memory>
@@ -502,3 +504,6 @@ void ServerImpl::setProperty( const std::string& streamName,
 } // namespace impl
 } // namespace server
 } // namespace hub
+
+
+#endif

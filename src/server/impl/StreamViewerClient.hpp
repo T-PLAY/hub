@@ -4,6 +4,8 @@
 	
 #pragma once
 
+#ifdef HUB_USE_SERVER
+
 #include <thread>
 
 #include "Client.hpp"
@@ -52,3 +54,6 @@ class StreamViewerClient : public Client
 } // namespace impl
 } // namespace server
 } // namespace hub
+
+
+#endif

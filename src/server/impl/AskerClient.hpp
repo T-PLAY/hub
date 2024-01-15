@@ -4,6 +4,8 @@
 	
 #pragma once
 
+#ifdef HUB_USE_SERVER
+
 #include <mutex>
 #include <thread>
 
@@ -40,3 +42,6 @@ class AskerClient : public Client
 } // namespace impl
 } // namespace server
 } // namespace hub
+
+
+#endif

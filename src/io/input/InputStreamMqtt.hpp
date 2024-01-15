@@ -4,6 +4,8 @@
 	
 #pragma once
 
+#ifdef HUB_USE_MQTT
+
 #include <thread>
 
 #include <mqtt/client.h>
@@ -152,3 +154,5 @@ inline bool InputStreamMqtt::isEnd() const {
 
 } // namespace input
 } // namespace hub
+
+#endif

@@ -4,6 +4,8 @@
 	
 #pragma once
 
+#ifdef HUB_USE_SERVER
+
 #include <functional>
 #include <mutex>
 #include <regex>
@@ -96,3 +98,5 @@ class SRC_API ViewerServer : public ViewerInterface<input::InputStreamServer>
 
 } // namespace client
 } // namespace hub
+
+#endif

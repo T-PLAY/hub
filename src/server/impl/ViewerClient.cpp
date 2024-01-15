@@ -1,5 +1,7 @@
 #include "ViewerClient.hpp"
 
+#ifdef HUB_USE_SERVER
+
 #include "ServerImpl.hpp"
 #include "StreamerClient.hpp"
 
@@ -133,3 +135,6 @@ void ViewerClient::notifyProperty( const std::string& streamName,
 } // namespace impl
 } // namespace server
 } // namespace hub
+
+
+#endif

@@ -1,8 +1,10 @@
 
+#include "ServerImpl.hpp"
+#ifdef HUB_USE_SERVER
+
 #include <cstring>
 #include <iomanip>
 
-#include "ServerImpl.hpp"
 #include "StreamerClient.hpp"
 
 namespace hub {
@@ -311,3 +313,6 @@ const std::set<sensor::Acquisition>& StreamerClient::getPackedAcqs() const {
 // #if ( __cplusplus >= 201703L )
 // #else
 // #endif
+
+
+#endif

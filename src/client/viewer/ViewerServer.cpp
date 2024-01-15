@@ -1,5 +1,7 @@
 #include "ViewerServer.hpp"
 
+#ifdef HUB_USE_SERVER
+
 #include <regex>
 #include <sstream>
 
@@ -414,3 +416,5 @@ void ViewerServer::setProperty( const std::string& streamName,
 
 } // namespace client
 } // namespace hub
+
+#endif
