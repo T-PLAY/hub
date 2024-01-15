@@ -290,10 +290,11 @@ void output::OutputStreamServer2::write( const Data_t* data, Size_t size ) {
 
     std::list<io::InputOutputSocket*> socketToRemoves;
 
-// #ifdef OS_MACOS
-    // for ( auto& clientSocket : clientSockets ) {
+#if defined( OS_MACOS ) || ! defined( HUB_USE_TBB )
+     for ( auto& clientSocket : clientSockets ) {
 // #else
-#    ifdef HUB_USE_TBB
+//#    ifdef HUB_USE_TBB
+#else
     std::for_each(
         std::execution::par,
         // #    else
@@ -303,8 +304,8 @@ void output::OutputStreamServer2::write( const Data_t* data, Size_t size ) {
         clientSockets.begin(),
         clientSockets.end(),
         [&]( auto& clientSocket ) {
-#else
-    for ( auto& clientSocket : clientSockets ) {
+//#else
+//    for ( auto& clientSocket : clientSockets ) {
 #endif
 
             try {
@@ -316,10 +317,10 @@ void output::OutputStreamServer2::write( const Data_t* data, Size_t size ) {
             }
 
 // #ifdef OS_MACOS
-#ifdef HUB_USE_TBB
-        } );
-#else
+#if defined(OS_MACOS) || ! defined(HUB_USE_TBB)
             }
+#else
+        } );
 #endif
 
     for ( auto* socketToRemove : socketToRemoves ) {
