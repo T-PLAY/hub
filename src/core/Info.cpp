@@ -23,7 +23,6 @@
 #include "OutputBase.hpp"
 #include "Serializer.hpp"
 #include "Traits.hpp"
-#include "Types.hpp"
 #include "Utils.hpp"
 #include "MatrixBase.hpp"
 #include "Matrix.hpp"

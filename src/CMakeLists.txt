@@ -154,6 +154,7 @@ file(
     ${HUB_EXTERNAL_DIR}/*.h
     #    ${HUB_EXTERNAL_DIR}/*.inl
 )
+
 if (NOT HUB_USE_ZPP_BITS)
     list(REMOVE_ITEM external_headers ${HUB_EXTERNAL_DIR}/zpp_bits.h)
 endif()
@@ -219,6 +220,12 @@ if (NOT XCODE) # unable to have object files as native build with Xcode
             #            ${HUB_EXTERNAL_DIR}/*.h
             #    ${HUB_EXTERNAL_DIR}/*.inl
         )
+#        list(FILTER object_headers EXCLUDE REGEX ".*Types\\.hpp$")
+#        list(FILTER object_headers EXCLUDE REGEX ".*Types\\.hpp$")
+        if (object_headers MATCHES "Types.hpp")
+        #if(".*Types\\.hpp$" IN_LIST ${object_headers})
+            message(FATAL_ERROR "Types.hpp shallow Radium Core/Types.hpp definitions")
+        endif()
 
 #        set (impl_sources)
 #        set (impl_headers)

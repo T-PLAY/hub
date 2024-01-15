@@ -7,7 +7,6 @@
 #include <chrono>
 
 #include "core/Matrix.hpp"
-#include "core/Types.hpp"
 #include "core/matrix/MatrixTs.hpp"
 
 #include "core/Format.hpp"
