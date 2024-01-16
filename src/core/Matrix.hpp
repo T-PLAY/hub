@@ -37,7 +37,7 @@ class SRC_API Matrix
     Matrix& operator|=( const Matrix& other );
     Matrix operator|( const Matrix& other ) const;
 
-    std::string toString() const;
+    std::string toString(bool pretty = false) const;
 
     template <class Type>
     bool hasType() const;
@@ -54,7 +54,7 @@ class SRC_API Matrix
     template <class Type>
     int nType();
 
-    Dims getDims( int i ) const;
+    Dims getDims( int i = 0 ) const;
 
     template <class Type, int i = 0>
     Dims getDims() const;
@@ -248,18 +248,25 @@ inline Matrix Matrix::operator|( const Matrix& other ) const {
     return matrix;
 }
 
-inline std::string Matrix::toString() const {
+inline std::string Matrix::toString(bool pretty) const {
     std::string str;
     for ( int i = 0; i < m_nodes.size(); ++i ) {
         const auto& node = m_nodes.at( i );
-        str += node.toString();
-        if ( i != m_nodes.size() - 1 ) str += "_";
+        str += node.toString(pretty);
+        if ( i != m_nodes.size() - 1 ) {
+            if (pretty)
+                str += " _ ";
+            else
+                str += "_";
+        }
     }
 
+    if (! pretty) {
     if ( m_vector.empty() ) { str += "(" + std::to_string( m_size ) + ")"; }
     else {
         str += " = ";
         str += hub::to_string( m_vector );
+    }
     }
     return str;
 }
@@ -367,10 +374,12 @@ Dims Matrix::getDims() const {
 
 template <class Type>
 Size_t Matrix::getOffset( int i ) const {
+    const auto typeName = TYPE_NAME( Type{} );
+
+    assert(hasType<Type>());
     Size_t offset = 0;
     int cptFound  = 0;
 
-    const auto typeName = TYPE_NAME( Type{} );
 
     for ( const auto& node : m_nodes ) {
         // if ( node.m_hashCode == typeHash ) {

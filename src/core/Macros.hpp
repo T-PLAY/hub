@@ -597,6 +597,9 @@ static std::string   typeName( int ) {
  static std::string typeName( const char* ) {
      return "cstr";
  }
+ static std::string typeName( long long ) {
+     return "long long";
+ }
 
 
 // static auto typeName(void) {

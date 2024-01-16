@@ -54,8 +54,16 @@ class SRC_API Acquisition : public Matrix
         }
         return m_resolution;
     }
-    Clock& start() { return get<Clock&>(); }
-    Clock& end() { return get<Clock&, 1>(); }
+    Clock& start() {
+        auto offset = getOffset<Clock>(0);
+        auto offset2 = getOffset<Clock>(1);
+        assert(getOffset<Clock>(0) == 0);
+        return get<Clock&>();
+    }
+    Clock& end() {
+        assert(getOffset<Clock>(1) == sizeof(Clock));
+        return get<Clock&, 1>();
+    }
     auto clocks() { return std::tuple<Clock&, Clock&> { start(), end() }; }
 
     Clock getStart() const { return *get<const Clock*>(); }

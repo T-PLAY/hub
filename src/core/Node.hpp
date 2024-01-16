@@ -1,7 +1,7 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/12/01
-	
+
 #pragma once
 
 #include <algorithm>
@@ -20,12 +20,11 @@ using Dims = std::vector<int>;
 class Node
 {
   public:
-
     Node() = default;
     // Node( HashType hash, Dims&& dims, std::string typeName, Size_t size );
     Node( Dims&& dims, std::string typeName, Size_t size );
 
-    std::string toString() const;
+    std::string toString( bool pretty ) const;
 
     Size_t size() const;
 
@@ -42,7 +41,6 @@ class Node
     static void serialize( Archive& archive, Self& self ) {
         archive( self.m_dims, self.m_typeName, self.m_size );
     }
-
 
     friend class Matrix;
 
@@ -67,22 +65,20 @@ static Node make_node() {
             size *= dim;
         }
     }
-    return Node(
-       std::move( Dims { N, Ns... } ), TYPE_NAME( Type() ), size );
+    return Node( std::move( Dims { N, Ns... } ), TYPE_NAME( Type() ), size );
 }
 
 template <class Type, class... Dims>
-    // requires( N > 0 && ( ( Ns > 1 ) && ... ) )
-static Node make_node(const Dims&... dims) {
+// requires( N > 0 && ( ( Ns > 1 ) && ... ) )
+static Node make_node( const Dims&... dims ) {
     auto size = sizeof( Type );
     // if constexpr ( sizeof...( Ns ) > 0 ) {
-        // for ( auto dim : { Ns... } ) {
-        for ( auto dim : { dims... } ) {
-            size *= dim;
-        }
+    // for ( auto dim : { Ns... } ) {
+    for ( auto dim : { dims... } ) {
+        size *= dim;
+    }
     // }
-    return Node(
-            hub::Dims { dims... }, TYPE_NAME( Type() ), size );
+    return Node( hub::Dims { dims... }, TYPE_NAME( Type() ), size );
 }
 
 /////////////////////////////////////// INLINE ////////////////////////////////////////////////////
@@ -91,16 +87,24 @@ inline Node::Node( Dims&& dims, std::string typeName, Size_t size ) :
     // m_hashCode { hash },
     m_dims { std::move( dims ) }, m_typeName { typeName }, m_size { size } {}
 
-inline std::string Node::toString() const {
+inline std::string Node::toString( bool pretty ) const {
     std::string str;
     str += m_typeName;
     str.erase( std::remove( str.begin(), str.end(), ' ' ), str.end() );
     if ( !( m_dims.size() == 1 && m_dims.at( 0 ) == 1 ) ) {
-        str += ":";
+        if ( pretty )
+            str += " : ";
+        else
+            str += ":";
         Size_t i = 0;
         for ( auto dim : m_dims ) {
             str += std::to_string( dim );
-            if ( i != m_dims.size() - 1 ) str += "x";
+            if ( i != m_dims.size() - 1 ) {
+                if ( pretty )
+                    str += " x ";
+                else
+                    str += "x";
+            }
             ++i;
         }
     }
@@ -114,8 +118,7 @@ inline Size_t Node::size() const {
 inline bool Node::operator==( const Node& other ) const {
     return
         // m_hashCode == other.m_hashCode &&
-           m_dims == other.m_dims && m_typeName == other.m_typeName &&
-           m_size == other.m_size;
+        m_dims == other.m_dims && m_typeName == other.m_typeName && m_size == other.m_size;
 }
 
 } // namespace hub
