@@ -24,7 +24,8 @@ class ViewerServer2 : public hub::client::ViewerInterface<input::InputStreamServ
     SRC_API explicit ViewerServer2( const std::string& name,
                             ViewerHandler&& viewerHandler,
                             const std::string& ipv4 = HUB_SERVICE_IPV4,
-                            int port                = HUB_SERVICE_PORT );
+                            int port                = HUB_SERVICE_PORT,
+bool autoConnect = true                                    );
 
     SRC_API ~ViewerServer2();
 
@@ -37,10 +38,15 @@ class ViewerServer2 : public hub::client::ViewerInterface<input::InputStreamServ
                       int property,
                       const Any& value ) override;
 
+    void setAutoConnect(bool autoConnect) override;
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
   private:
+    void threadRoutine();
+
     std::thread m_thread;
+    bool m_threadRunning = false;
     bool m_stopThread = false;
 
     hub::io::InputOutputSocket m_sock;

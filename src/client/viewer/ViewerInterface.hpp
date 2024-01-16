@@ -1,7 +1,7 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/11/30
-	
+
 #pragma once
 
 #include <functional>
@@ -33,8 +33,8 @@ namespace client {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//template class SRC_API ViewerStream<input::InputStreamServer2>;
-//    std::map<std::string, std::unique_ptr<ViewerStream<InputStream>>> m_streams;
+// template class SRC_API ViewerStream<input::InputStreamServer2>;
+//     std::map<std::string, std::unique_ptr<ViewerStream<InputStream>>> m_streams;
 
 ///
 /// \brief The ViewerInterface class (event dispatcher)
@@ -47,7 +47,7 @@ namespace client {
 /// Close the input stream when server or streamer are disconnected.
 ///
 template <class InputStream>
-class  ViewerInterface
+class ViewerInterface
 {
   protected:
   public:
@@ -72,7 +72,8 @@ class  ViewerInterface
     explicit ViewerInterface( const std::string& name,
                               ViewerHandler&& viewerHandler = ViewerHandler(),
                               const std::string& ipv4       = HUB_SERVICE_IPV4,
-                              int port                      = HUB_SERVICE_PORT );
+                              int port                      = HUB_SERVICE_PORT,
+                              bool autoConnect              = true );
 
     virtual ~ViewerInterface();
 
@@ -121,6 +122,8 @@ class  ViewerInterface
     //    ///
     //    void setAutoSync( bool newAutoSync );
 
+    virtual void setAutoConnect(bool autoConnect);
+
     ///
     /// \brief isConnected
     /// check server connection.
@@ -164,9 +167,11 @@ class  ViewerInterface
 
   private:
   protected:
-
     // void addStream( const std::string& streamName, const sensor::SensorSpec& sensorSpec );
-    void addStream(const std::string& streamName , const std::string & streamIpv4, int streamPort, io::Header &&header);
+    void addStream( const std::string& streamName,
+                    const std::string& streamIpv4,
+                    int streamPort,
+                    io::Header&& header );
     void delStream( const std::string& streamName );
 
     std::string m_name;
@@ -180,6 +185,7 @@ class  ViewerInterface
 
     // static int m_iStreamer;
     int m_nStreamer = 0;
+    bool m_autoConnect;
 
   private:
 };
@@ -193,12 +199,15 @@ template <class InputStream>
 ViewerInterface<InputStream>::ViewerInterface( const std::string& name,
                                                ViewerHandler&& viewerHandler,
                                                const std::string& ipv4,
-                                               int port ) :
+                                               int port,
+bool autoConnect                                               ) :
 
     m_name( utils::getHostname() + ":" + name ),
     m_viewerHandler( std::move( viewerHandler ) ),
     m_serverIpv4( ipv4 ),
-    m_serverPort( port ) {}
+    m_serverPort( port ),
+    m_autoConnect(autoConnect)
+{}
 
 template <class InputStream>
 ViewerInterface<InputStream>::~ViewerInterface() {
@@ -221,7 +230,10 @@ ViewerInterface<InputStream>::~ViewerInterface() {
 /////////////////////////////////////////////////////
 
 template <class InputStream>
-void ViewerInterface<InputStream>::addStream(const std::string& streamName, const std::string &streamIpv4, int streamPort, io::Header && header )
+void ViewerInterface<InputStream>::addStream( const std::string& streamName,
+                                              const std::string& streamIpv4,
+                                              int streamPort,
+                                              io::Header&& header )
 // const sensor::SensorSpec& sensorSpec ) {
 {
     assert( m_streams.find( streamName ) == m_streams.end() );
@@ -237,7 +249,7 @@ void ViewerInterface<InputStream>::addStream(const std::string& streamName, cons
                                                          streamIpv4,
                                                          streamPort,
                                                          streamName,
-                                                         std::move(header),
+                                                         std::move( header ),
                                                          // sensorSpec,
                                                          m_viewerHandler
                                                          // m_viewerHandler.onNewStream,
@@ -325,17 +337,15 @@ void ViewerInterface<InputStream>::printStatus() const {
     std::string str;
     for ( const auto& pair : m_streams ) {
         auto streamName = pair.first;
-        streamName = streamName.substr( std::max( 0, (int)streamName.size() - 12 ), 12 );
+        streamName      = streamName.substr( std::max( 0, (int)streamName.size() - 12 ), 12 );
 
-        const auto& stream     = pair.second;
+        const auto& stream = pair.second;
         if ( stream == nullptr ) { str += " (" + streamName + ",null)"; }
         else { str += " (" + streamName + "," + std::to_string( stream->isStreaming() ) + ")"; }
     }
-    DEBUG_MSG( "\033[7m[Viewer] status : server connected:" << m_serverConnected
-                                                            << ", nStreamer:" << m_streams.size()
-                                                             << str << "\033[0m" );
+    DEBUG_MSG( "\033[7m[Viewer] status : server connected:"
+               << m_serverConnected << ", nStreamer:" << m_streams.size() << str << "\033[0m" );
 }
-
 
 template <class InputStream>
 void ViewerInterface<InputStream>::setIpv4( const std::string& ipv4 ) {
@@ -363,6 +373,12 @@ template <class InputStream>
 const int& ViewerInterface<InputStream>::getPort() const {
     return m_serverPort;
     //    return m_sock.getPort();
+}
+
+template<class InputStream>
+void ViewerInterface<InputStream>::setAutoConnect(bool autoConnect)
+{
+    m_autoConnect = autoConnect;
 }
 
 // void ViewerInterface::setAutoSync( bool newAutoSync ) {
