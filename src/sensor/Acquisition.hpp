@@ -29,6 +29,8 @@ static inline Clock getClock() {
 class SRC_API Acquisition : public Matrix
 {
   public:
+    using Matrix::getData;
+
     static struct {
     } packable;
 

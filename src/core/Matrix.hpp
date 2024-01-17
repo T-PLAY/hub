@@ -1,7 +1,7 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/11/09
-	
+
 #pragma once
 
 #include <algorithm>
@@ -37,7 +37,7 @@ class SRC_API Matrix
     Matrix& operator|=( const Matrix& other );
     Matrix operator|( const Matrix& other ) const;
 
-    std::string toString(bool pretty = false) const;
+    std::string toString( bool pretty = false ) const;
 
     template <class Type>
     bool hasType() const;
@@ -59,9 +59,6 @@ class SRC_API Matrix
     template <class Type, int i = 0>
     Dims getDims() const;
 
-    template <class Type>
-    Size_t getOffset( int i ) const;
-
     template <class Type, int i = 0, class RawType = std::remove_pointer_t<Type>>
     REQUIRES(, std::is_pointer_v<Type>, Type )
     get();
@@ -81,9 +78,10 @@ class SRC_API Matrix
     template <int i = 0, class T, class... Ts>
     void fill_reduce( const T& t, const Ts&... ts ) {
         // std::cout << "fill_reduce " << i << std::endl;
-        Data_t* data = getData<i>();
-        T& tIn     = reinterpret_cast<T&>( *(T*)data );
-        tIn        = t;
+        // Data_t* data = getData<i>();
+        Data_t* data = getData(i);
+        T& tIn       = reinterpret_cast<T&>( *(T*)data );
+        tIn          = t;
 
         if constexpr ( sizeof...( ts ) > 0 ) { fill_reduce<i + 1>( ts... ); }
     }
@@ -102,47 +100,56 @@ class SRC_API Matrix
     Size_t size() const;
 
     // std::span getSpan() const;
-    const auto& getData() const { return m_vector; }
+    // const auto& getData() const { return m_vector; }
 
-    template <int i = 0>
-    Size_t getOffset() const {
-        assert( i < m_nodes.size() );
+    template <class Type>
+    Size_t getOffset( int i = 0 ) const;
 
-        Size_t offset = 0;
-        auto it       = m_nodes.begin();
-        int iNode     = 0;
-        while ( iNode < i ) {
-            assert( it != m_nodes.end() );
-            const auto& node = *it;
-            offset += node.m_size;
-            ++it;
-            ++iNode;
-        }
+    Size_t getOffset( int i = 0 ) const;
 
-        // std::cout << "getOffset : " << offset << std::endl;
+    // template <int i = 0>
+    // Size_t getOffset() const;
 
-        return offset;
-    }
-
-    template <int i = 0>
-    const Data_t* getData() const {
+    Data_t* getData( int i = 0 ) {
         assert( !m_vector.empty() );
         assert( m_vector.size() == m_size );
 
-        const auto offset = getOffset<i>();
+        const auto offset = getOffset( i );
         assert( 0 <= offset && offset < m_size );
         return m_vector.data() + offset;
     }
 
-    template <int i = 0>
-    Data_t* getData() {
+    const Data_t* getData( int i = 0 ) const {
+    //     return getData(i);
         assert( !m_vector.empty() );
         assert( m_vector.size() == m_size );
 
-        const auto offset = getOffset<i>();
+        const auto offset = getOffset( i );
         assert( 0 <= offset && offset < m_size );
         return m_vector.data() + offset;
     }
+
+    // template <int i = 0>
+    // const Data_t* getData() const {
+    //     assert( !m_vector.empty() );
+    //     assert( m_vector.size() == m_size );
+
+    //     // const auto offset = getOffset<i>();
+    //     const auto offset = getOffset(i);
+    //     assert( 0 <= offset && offset < m_size );
+    //     return m_vector.data() + offset;
+    // }
+
+    // template <int i = 0>
+    // Data_t* getData() {
+    //     assert( !m_vector.empty() );
+    //     assert( m_vector.size() == m_size );
+
+    //     // const auto offset = getOffset<i>();
+    //     const auto offset = getOffset(i);
+    //     assert( 0 <= offset && offset < m_size );
+    //     return m_vector.data() + offset;
+    // }
 
     bool operator==( const Matrix& other ) const;
 #if CPP_VERSION < 20
@@ -166,6 +173,8 @@ class SRC_API Matrix
 
     void clear();
     void init();
+
+    const std::vector<Node>& getNodes() const;
 
   protected:
   protected:
@@ -248,25 +257,25 @@ inline Matrix Matrix::operator|( const Matrix& other ) const {
     return matrix;
 }
 
-inline std::string Matrix::toString(bool pretty) const {
+inline std::string Matrix::toString( bool pretty ) const {
     std::string str;
     for ( int i = 0; i < m_nodes.size(); ++i ) {
         const auto& node = m_nodes.at( i );
-        str += node.toString(pretty);
+        str += node.toString( pretty );
         if ( i != m_nodes.size() - 1 ) {
-            if (pretty)
+            if ( pretty )
                 str += " _ ";
             else
                 str += "_";
         }
     }
 
-    if (! pretty) {
-    if ( m_vector.empty() ) { str += "(" + std::to_string( m_size ) + ")"; }
-    else {
-        str += " = ";
-        str += hub::to_string( m_vector );
-    }
+    if ( !pretty ) {
+        if ( m_vector.empty() ) { str += "(" + std::to_string( m_size ) + ")"; }
+        else {
+            str += " = ";
+            str += hub::to_string( m_vector );
+        }
     }
     return str;
 }
@@ -372,14 +381,29 @@ Dims Matrix::getDims() const {
     return {};
 }
 
+inline Size_t Matrix::getOffset( int i ) const {
+    assert( i < m_nodes.size() );
+
+    Size_t offset = 0;
+    auto it       = m_nodes.begin();
+    int iNode     = 0;
+    while ( iNode < i ) {
+        assert( it != m_nodes.end() );
+        const auto& node = *it;
+        offset += node.m_size;
+        ++it;
+        ++iNode;
+    }
+    return offset;
+}
+
 template <class Type>
 Size_t Matrix::getOffset( int i ) const {
-    const auto typeName = TYPE_NAME( Type{} );
+    const auto typeName = TYPE_NAME( Type {} );
 
-    assert(hasType<Type>());
+    assert( hasType<Type>() );
     Size_t offset = 0;
     int cptFound  = 0;
-
 
     for ( const auto& node : m_nodes ) {
         // if ( node.m_hashCode == typeHash ) {
@@ -392,6 +416,26 @@ Size_t Matrix::getOffset( int i ) const {
 
     return offset;
 }
+
+// inline template <int i>
+// Size_t Matrix::getOffset() const {
+//     assert( i < m_nodes.size() );
+
+//     Size_t offset = 0;
+//     auto it       = m_nodes.begin();
+//     int iNode     = 0;
+//     while ( iNode < i ) {
+//         assert( it != m_nodes.end() );
+//         const auto& node = *it;
+//         offset += node.m_size;
+//         ++it;
+//         ++iNode;
+//     }
+
+//     // std::cout << "getOffset : " << offset << std::endl;
+
+//     return offset;
+// }
 
 template <class Type, int i, class RawType>
 // requires( std::is_pointer_v<Type> )
@@ -445,6 +489,10 @@ inline void Matrix::clear() {
 inline void Matrix::init() {
     assert( m_size > 0 );
     m_vector.resize( m_size );
+}
+
+inline const std::vector<Node>& Matrix::getNodes() const {
+    return m_nodes;
 }
 
 } // namespace hub

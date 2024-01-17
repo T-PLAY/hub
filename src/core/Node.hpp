@@ -22,7 +22,7 @@ class Node
   public:
     Node() = default;
     // Node( HashType hash, Dims&& dims, std::string typeName, Size_t size );
-    Node( Dims&& dims, std::string typeName, Size_t size );
+    Node( Dims&& dims, std::string typeName, Size_t size, Id_t id );
 
     std::string toString( bool pretty ) const;
 
@@ -39,10 +39,14 @@ class Node
     // friend zpp::serializer::access;
     template <typename Archive, typename Self>
     static void serialize( Archive& archive, Self& self ) {
-        archive( self.m_dims, self.m_typeName, self.m_size );
+        archive( self.m_dims, self.m_typeName, self.m_size, self.m_id );
     }
 
     friend class Matrix;
+
+    const Dims& getDims() const;
+    const std::string& getTypeName() const;
+    size_t getId() const;
 
   private:
     // cannot be const due of serialize
@@ -50,6 +54,7 @@ class Node
     Dims m_dims;
     std::string m_typeName;
     Size_t m_size;
+    Id_t m_id;
 };
 
 /////////////////////////////////////// MAKER /////////////////////////////////////////////////////
@@ -65,7 +70,7 @@ static Node make_node() {
             size *= dim;
         }
     }
-    return Node( std::move( Dims { N, Ns... } ), TYPE_NAME( Type() ), size );
+    return Node( std::move( Dims { N, Ns... } ), TYPE_NAME( Type() ), size, TYPE_ID(Type) );
 }
 
 template <class Type, class... Dims>
@@ -78,14 +83,20 @@ static Node make_node( const Dims&... dims ) {
         size *= dim;
     }
     // }
-    return Node( hub::Dims { dims... }, TYPE_NAME( Type() ), size );
+    return Node( hub::Dims { dims... }, TYPE_NAME( Type() ), size, TYPE_ID(Type) );
 }
 
 /////////////////////////////////////// INLINE ////////////////////////////////////////////////////
 
-inline Node::Node( Dims&& dims, std::string typeName, Size_t size ) :
+inline Node::Node( Dims&& dims, std::string typeName, Size_t size, Id_t id ) :
     // m_hashCode { hash },
-    m_dims { std::move( dims ) }, m_typeName { typeName }, m_size { size } {}
+    m_dims { std::move( dims ) },
+    m_typeName { typeName },
+    m_size { size },
+    m_id { id }
+{
+
+}
 
 inline std::string Node::toString( bool pretty ) const {
     std::string str;
@@ -119,6 +130,19 @@ inline bool Node::operator==( const Node& other ) const {
     return
         // m_hashCode == other.m_hashCode &&
         m_dims == other.m_dims && m_typeName == other.m_typeName && m_size == other.m_size;
+}
+
+inline const Dims& Node::getDims() const {
+    return m_dims;
+}
+
+inline const std::string& Node::getTypeName() const {
+    return m_typeName;
+}
+
+inline size_t Node::getId() const
+{
+    return m_id;
 }
 
 } // namespace hub

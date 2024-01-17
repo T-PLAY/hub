@@ -8,13 +8,28 @@
 // #include <core/matrix/MatrixTs.hpp>
 // #include <core/Matrix.hpp>
 
+#include <core/Types.h>
+
+namespace Types {
+enum User : hub::Id_t {
+    RGB8 = hub::Types::Count,
+    XYZ32F,
+
+    User_Count
+};
+}
+
+
+
 struct RGB8 {
+    static constexpr auto id = Types::User::RGB8;
     unsigned char r;
     unsigned char g;
     unsigned char b;
 };
 
 struct XYZ32F {
+    static constexpr auto id = Types::User::XYZ32F;
     float x;
     float y;
     float z;

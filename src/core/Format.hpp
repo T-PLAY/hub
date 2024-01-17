@@ -44,18 +44,52 @@ namespace hub {
 //    bool interpolable;
 // };
 
+// enum class Format : Id_t {
+namespace Types {
+enum Format : Id_t {
+    MAT4 = Cpp_Count,
+    DENSITY,
+    DISTANCE,
+    RGB8,
+    RGBA8,
+    BGR8,
+    Y8,
+    Y16,
+    Z16,
+    POSITION,
+    ORIENTATION,
+    DOF6,
+    XYZ32F,
+
+    Format_Count
+};
+
+static constexpr auto Count = Format_Count;
+} // namespace Types
+
+// using Format = hub::Types;
+
 namespace format {
 
 /////////////////////////////////////// 1D ////////////////////////////////////////
 
 // Transform matrix 4x4 of float.
 struct Mat4 {
+    static constexpr auto id = Types::Format::MAT4;
     static struct {
     } packable;
     float data[16];
     //    static constexpr auto nByte() {return  16;};
     static constexpr auto name() { return "Mat4"; };
-    Mat4( float value = 0.0f ) { std::fill( data, data + 16, value ); }
+    // Mat4( float value = 0.0f ) { std::fill( data, data + 16, value ); }
+
+   // clang-format off
+    constexpr Mat4(float value = 0.0f)
+     : data{ value, value, value, value,
+             value, value, value, value,
+             value, value, value, value,
+             value, value, value, value } { }
+    // clang-format on
 
     Mat4( const float* array ) { memcpy( data, array, 64 ); }
 
@@ -97,6 +131,7 @@ static_assert( sizeof( Mat4 ) == 64 );
 
 // 32-bit density values. For MRI, CT scan and US representations.
 struct Density {
+    static constexpr auto id = Types::Format::DENSITY;
     uint32_t value;
     static constexpr auto name() { return "Density"; };
 };
@@ -104,6 +139,7 @@ static_assert( sizeof( Density ) == 4 );
 
 // 32-bit float-point depth distance value.
 struct Distance {
+    static constexpr auto id = Types::Format::DISTANCE;
     float value;
     static constexpr auto name() { return "Distance"; };
 };
@@ -113,6 +149,7 @@ static_assert( sizeof( Distance ) == 4 );
 
 // 8-bit red, green and blue channels.
 struct RGB8 {
+    static constexpr auto id = Types::Format::RGB8;
     unsigned char r;
     unsigned char g;
     unsigned char b;
@@ -121,8 +158,20 @@ struct RGB8 {
 };
 static_assert( sizeof( RGB8 ) == 3 );
 
+struct RGBA8 {
+    static constexpr auto id = Types::Format::RGBA8;
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
+    unsigned char a;
+    static constexpr auto name() { return "RGBA8"; };
+    //    static constexpr auto interpolable() { return false; };
+};
+static_assert( sizeof( RGBA8 ) == 4 );
+
 // 8-bit blue, green and red channels.
 struct BGR8 {
+    static constexpr auto id = Types::Format::BGR8;
     unsigned char b;
     unsigned char g;
     unsigned char r;
@@ -138,6 +187,7 @@ static_assert( sizeof( BGR8 ) == 3 );
 
 // 8-bit per-pixel
 struct Y8 {
+    static constexpr auto id = Types::Format::Y8;
     unsigned char y;
     // auto toString() const {
     //     std::string str;
@@ -150,12 +200,14 @@ static_assert( sizeof( Y8 ) == 1 );
 
 // 16-bit per-pixel grayscale image.
 struct Y16 {
+    static constexpr auto id = Types::Format::Y16;
     uint16_t y;
     static constexpr auto name() { return "Y16"; };
 };
 
 // 16-bit linear depth values. The depth is meters is equal to depth scale pixel value.
 struct Z16 {
+    static constexpr auto id = Types::Format::Z16;
     uint16_t depth; // meters
     static constexpr auto name() { return "Z16"; };
 };
@@ -165,6 +217,7 @@ static_assert( sizeof( Z16 ) == 2 );
 
 struct Position // Cartesian
 {
+    static constexpr auto id = Types::Format::POSITION;
     float x;
     float y;
     float z;
@@ -173,6 +226,7 @@ struct Position // Cartesian
 
 struct Orientation // Euler
 {
+    static constexpr auto id = Types::Format::ORIENTATION;
     float rx;
     float ry;
     float rz;
@@ -182,6 +236,7 @@ struct Orientation // Euler
 // Pose data packed as floats array, containing translation vector (x, y, z), rotation quaternion
 // (w0, w1, w2, w3 || w, x, y, z).
 struct Dof6 {
+    static constexpr auto id = Types::Format::DOF6;
     // translation
     float x = 0.0;
     float y = 0.0;
@@ -219,6 +274,7 @@ static_assert( sizeof( Dof6 ) == 28 );
 //     operator const float*() const { return &x; }
 // };
 struct XYZ32F {
+    static constexpr auto id = Types::Format::XYZ32F;
     float x;
     float y;
     float z;

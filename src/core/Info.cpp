@@ -26,6 +26,7 @@
 #include "Utils.hpp"
 #include "MatrixBase.hpp"
 #include "Matrix.hpp"
+#include "Types.h"
 
 // matrix
 #include "matrix/MatrixXD.hpp"

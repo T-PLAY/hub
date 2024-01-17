@@ -73,7 +73,7 @@ TEST_CASE( "Viewer" ) {
             // 16) << std::endl;
 
             // assert(acq.getOffset<const hub::format::BGR8&>(0) == 0);
-            assert( acq.getOffset<const hub::format::BGR8&>( 0 ) == 16 );
+            assert( acq.getOffset<hub::format::BGR8>( 0 ) == 16 );
             const auto& bgr8 = acq.get<const hub::format::BGR8&>();
             // const auto* bgr8  = acq.get<const hub::format::BGR8*>();
             // std::cout << "[test-client-Viewer] bgr8 ref : " << (uintptr_t)bgr8 << std::endl;

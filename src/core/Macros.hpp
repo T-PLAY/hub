@@ -502,6 +502,8 @@ static_assert( !isContainer<const char*> );
 
 // #else
 
+////////////////////////////////////////////////////////// TYPE_NAME ///////////////////////////////////////
+
 template <typename T>
 using has_name_t = decltype( T::name() );
 
@@ -577,7 +579,7 @@ static std::string typeName( const std::string& ) {
     return "string";
 }
 static std::string   typeName( int ) {
- return "int";
+     return "int";
 }
  static std::string typeName( double) {
      return "double";
@@ -782,11 +784,63 @@ static std::string typeName() {
 // #define TYPE_NAME( Type ) hub::type_name<Type>()
 #define TYPE_NAME( _Type_ ) hub::typeName( _Type_ )
 
+/////////////////////////////////////////// TYPE_ID ////////////////////////////////////////////////
+
+using Id_t = int;
+
+template <typename T>
+using has_id_t = decltype( T::id );
+
+template <typename T, typename = std::void_t<>>
+struct has_id : std::false_type {};
+
+template <typename T>
+struct has_id<T, std::void_t<has_id_t<T>>> : std::true_type {};
+
+template <typename T>
+static constexpr bool has_id_v = has_id<T>::value;
+
+namespace Types {
+enum Cpp : Id_t {
+    INT = 0,
+    BOOL,
+    Cpp_Count
+};
+}
+static_assert(Types::Cpp_Count == 2);
+
+template <class T>
+static constexpr typename std::enable_if_t<has_id_v<T>, Id_t>
+typeId( const T& t ) {
+    // return (Id_t)T::id;
+    return T::id;
+}
+
+template <class T>
+static constexpr typename std::enable_if_t<! has_id_v<T>, Id_t>
+typeId( const T& t ) {
+    // return (Id_t)T::id;
+    return typeid(T).hash_code();
+}
+
 // template <class T>
-// auto typeId( const T& t ) -> std::size_t {
-//     return std::hash<std::string>()( typeName( t ) );
+// // auto typeId( const T& t ) -> std::size_t {
+// constexpr auto typeId(const T & t) -> Id_t {
+//     // return typeid(T).hash_code();
+//     // return 0;
+//     return std::hash<std::string>()( typeName( T() ) );
 // }
-// #define TYPE_ID( _Type_ ) hub::typeId( _Type_ )
+
+constexpr auto typeId(int) -> Id_t {
+    return Types::Cpp::INT;
+}
+
+constexpr auto typeId(bool) -> Id_t {
+    return Types::Cpp::BOOL;
+}
+
+// #define TYPE_ID( _Type_ ) hub::typeId<_Type_>()
+#define TYPE_ID( _Type_ ) hub::typeId(_Type_())
 
 #if CPP_VERSION >= 20
 // #    define REQUIRES( _Type_, _COND_ )
