@@ -47,11 +47,11 @@ int main() {
     // constexpr auto index = std::type_index(b);
     // constexpr auto typeId = TYPE_ID(int);
 
-    switch ( node.getId() ) {
+    switch ( node.getTypeId() ) {
         // case TYPE_ID(int):
         // break;
     default:
-        std::cout << "id: " << node.getId() << std::endl;
+        std::cout << "id: " << node.getTypeId() << std::endl;
     }
 
     // hub::client::ViewerHandler viewerHandler;

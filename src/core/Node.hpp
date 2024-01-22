@@ -22,7 +22,9 @@ class Node
   public:
     Node() = default;
     // Node( HashType hash, Dims&& dims, std::string typeName, Size_t size );
-    Node( Dims&& dims, std::string typeName, Size_t size, Id_t id );
+    Node( Dims&& dims, std::string typeName, Size_t size, TypeId_t id
+          // , Data_t * data
+          );
 
     std::string toString( bool pretty ) const;
 
@@ -46,7 +48,9 @@ class Node
 
     const Dims& getDims() const;
     const std::string& getTypeName() const;
-    size_t getId() const;
+    Size_t getSize() const;
+    TypeId_t getTypeId() const;
+    // const Data_t *getData() const;
 
   private:
     // cannot be const due of serialize
@@ -54,7 +58,8 @@ class Node
     Dims m_dims;
     std::string m_typeName;
     Size_t m_size;
-    Id_t m_id;
+    TypeId_t m_id;
+    // Data_t * m_data = nullptr;
 };
 
 /////////////////////////////////////// MAKER /////////////////////////////////////////////////////
@@ -63,19 +68,25 @@ template <class Type, Size_t N = 1, Size_t... Ns>
 #if CPLUSPLUSVERSION >= 20
     requires( N > 0 && ( ( Ns > 1 ) && ... ) )
 #endif
-static Node make_node() {
+static Node make_node(
+    // Data_t * data
+    ) {
     auto size = sizeof( Type ) * N;
     if constexpr ( sizeof...( Ns ) > 0 ) {
         for ( auto dim : { Ns... } ) {
             size *= dim;
         }
     }
-    return Node( std::move( Dims { N, Ns... } ), TYPE_NAME( Type() ), size, TYPE_ID(Type) );
+    return Node( std::move( Dims { N, Ns... } ), TYPE_NAME( Type() ), size, TYPE_ID(Type)
+                 // , data
+                 );
 }
 
 template <class Type, class... Dims>
 // requires( N > 0 && ( ( Ns > 1 ) && ... ) )
-static Node make_node( const Dims&... dims ) {
+static Node make_node(
+    // Data_t * data,
+                       const Dims&... dims ) {
     auto size = sizeof( Type );
     // if constexpr ( sizeof...( Ns ) > 0 ) {
     // for ( auto dim : { Ns... } ) {
@@ -83,17 +94,22 @@ static Node make_node( const Dims&... dims ) {
         size *= dim;
     }
     // }
-    return Node( hub::Dims { dims... }, TYPE_NAME( Type() ), size, TYPE_ID(Type) );
+    return Node( hub::Dims { dims... }, TYPE_NAME( Type() ), size, TYPE_ID(Type)
+                 // , data
+                 );
 }
 
 /////////////////////////////////////// INLINE ////////////////////////////////////////////////////
 
-inline Node::Node( Dims&& dims, std::string typeName, Size_t size, Id_t id ) :
+inline Node::Node( Dims&& dims, std::string typeName, Size_t size, TypeId_t id
+                   // , Data_t * data
+                   ) :
     // m_hashCode { hash },
     m_dims { std::move( dims ) },
     m_typeName { typeName },
     m_size { size },
     m_id { id }
+    // m_data { data}
 {
 
 }
@@ -140,9 +156,20 @@ inline const std::string& Node::getTypeName() const {
     return m_typeName;
 }
 
-inline size_t Node::getId() const
+inline TypeId_t Node::getTypeId() const
 {
     return m_id;
 }
+
+inline Size_t Node::getSize() const
+{
+    return m_size;
+}
+
+// inline const Data_t *Node::getData() const
+// {
+//     assert(m_data != nullptr);
+//     return m_data;
+// }
 
 } // namespace hub

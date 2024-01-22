@@ -44,9 +44,9 @@ namespace hub {
 //    bool interpolable;
 // };
 
-// enum class Format : Id_t {
+// enum class Format : TypeId_t {
 namespace Types {
-enum Format : Id_t {
+enum Format : TypeId_t {
     MAT4 = Cpp_Count,
     DENSITY,
     DISTANCE,

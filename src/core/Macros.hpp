@@ -786,7 +786,7 @@ static std::string typeName() {
 
 /////////////////////////////////////////// TYPE_ID ////////////////////////////////////////////////
 
-using Id_t = int;
+using TypeId_t = int;
 
 template <typename T>
 using has_id_t = decltype( T::id );
@@ -801,7 +801,7 @@ template <typename T>
 static constexpr bool has_id_v = has_id<T>::value;
 
 namespace Types {
-enum Cpp : Id_t {
+enum Cpp : TypeId_t {
     INT = 0,
     BOOL,
     Cpp_Count
@@ -810,32 +810,32 @@ enum Cpp : Id_t {
 static_assert(Types::Cpp_Count == 2);
 
 template <class T>
-static constexpr typename std::enable_if_t<has_id_v<T>, Id_t>
+static constexpr typename std::enable_if_t<has_id_v<T>, TypeId_t>
 typeId( const T& t ) {
-    // return (Id_t)T::id;
+    // return (TypeId_t)T::id;
     return T::id;
 }
 
 template <class T>
-static constexpr typename std::enable_if_t<! has_id_v<T>, Id_t>
+static constexpr typename std::enable_if_t<! has_id_v<T>, TypeId_t>
 typeId( const T& t ) {
-    // return (Id_t)T::id;
+    // return (TypeId_t)T::id;
     return typeid(T).hash_code();
 }
 
 // template <class T>
 // // auto typeId( const T& t ) -> std::size_t {
-// constexpr auto typeId(const T & t) -> Id_t {
+// constexpr auto typeId(const T & t) -> TypeId_t {
 //     // return typeid(T).hash_code();
 //     // return 0;
 //     return std::hash<std::string>()( typeName( T() ) );
 // }
 
-constexpr auto typeId(int) -> Id_t {
+constexpr auto typeId(int) -> TypeId_t {
     return Types::Cpp::INT;
 }
 
-constexpr auto typeId(bool) -> Id_t {
+constexpr auto typeId(bool) -> TypeId_t {
     return Types::Cpp::BOOL;
 }
 
