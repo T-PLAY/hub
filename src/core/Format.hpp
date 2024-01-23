@@ -23,6 +23,7 @@
 #include <cstring>
 
 #include "Macros.hpp"
+#include "Traits.hpp"
 
 namespace hub {
 // namespace sensor {
@@ -60,6 +61,8 @@ enum Format : TypeId_t {
     ORIENTATION,
     DOF6,
     XYZ32F,
+    VEC3,
+    VEC4,
 
     Format_Count
 };
@@ -128,6 +131,54 @@ struct Mat4 {
     //    static constexpr auto interpolable() { return false; };
 };
 static_assert( sizeof( Mat4 ) == 64 );
+
+struct Vec3 {
+    float x;
+    float y;
+    float z;
+    constexpr Vec3(float value = 0.0f)
+        : x{value}, y{value}, z{value}  {};
+    constexpr Vec3(float x_, float y_, float z_)
+        : x{x_}, y{y_}, z{z_} {};
+    auto toString() const {
+        return hub::to_string(x, y, z);
+    }
+#if CPP_VERSION <= 17
+    template <typename Archive, typename Self>
+    static void serialize( Archive& archive, Self& self ) {
+        archive( self.x, self.y, self.z );
+    }
+#endif
+    static constexpr auto id = Types::Format::VEC3;
+    static constexpr auto name() { return "Vec3"; };
+    bool operator==( const Vec3& other ) const { return x == other.x && y == other.y && z == other.z; }
+};
+static_assert(sizeof(Vec3) == 12);
+
+struct Vec4 {
+    float x;
+    float y;
+    float z;
+    float w;
+    constexpr Vec4(float value = 0.0f)
+        : x{value}, y{value}, z{value}, w{value} {};
+    constexpr Vec4(float x_, float y_, float z_, float w_)
+        : x{x_}, y{y_}, z{z_}, w{w_} {};
+    auto toString() const {
+        return hub::to_string(x, y, z, w);
+    }
+#if CPP_VERSION <= 17
+    template <typename Archive, typename Self>
+    static void serialize( Archive& archive, Self& self ) {
+        archive( self.x, self.y, self.z, self.w );
+    }
+#endif
+    static constexpr auto id = Types::Format::VEC4;
+    static constexpr auto name() { return "Vec4"; };
+    bool operator==( const Vec4& other ) const { return x == other.x && y == other.y && z == other.z && w == other.w; }
+};
+static_assert(sizeof(Vec4) == 16);
+
 
 // 32-bit density values. For MRI, CT scan and US representations.
 struct Density {

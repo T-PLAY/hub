@@ -197,16 +197,24 @@ to_string( const Container& container ) {
 
     constexpr auto nFirstData = 20;
     constexpr auto nLastData  = 8;
-    for ( size_t i = 0; i < container.size(); ++i ) {
+    auto it = container.begin();
+    size_t i = 0;
+    while (it != container.end()) {
+    // for ( size_t i = 0; i < container.size(); ++i ) {
         if ( nFirstData < i && i < container.size() - nLastData ) {
             if ( i == container.size() - nLastData - 1 ) { str += "... "; }
+            ++it;
+            ++i;
             continue;
         }
-        const auto& el = container.at( i );
+        // const auto& el = container.at( i );
+        const auto & el = *it;
 
         str += to_string( el );
 
         if ( i != container.size() - 1 ) str += " ";
+        ++it;
+        ++i;
     }
     str += "](" + PRETTY_BYTES( container.size() * sizeof( T ) ) + ")";
     return str;
@@ -231,6 +239,20 @@ static auto to_string( const std::map<T, U>& map ) {
         ++i;
     }
     str += "]";
+    return str;
+}
+
+template <class T>
+static auto to_string( const std::set<T>& set ) {
+    std::string str;
+    str += "(";
+    size_t i = 0;
+    for ( const auto& el : set ) {
+        str += to_string( el );
+        if ( i != set.size() - 1 ) str += "; ";
+        ++i;
+    }
+    str += ")";
     return str;
 }
 
@@ -455,6 +477,12 @@ typename std::enable_if_t<hub::toStringable_v<T>, std::ostream&> operator<<( std
 template <class T>
 std::ostream& operator<<( std::ostream& os, const std::vector<T>& vector ) {
     os << hub::to_string( vector );
+    return os;
+}
+
+template <class T>
+std::ostream& operator<<( std::ostream& os, const std::set<T>& set ) {
+    os << hub::to_string( set );
     return os;
 }
 

@@ -6,6 +6,8 @@
 // #include <catch2/catch_test_macros.hpp>
 // #include <iostream>
 
+#include <set>
+
 #include <core/Any.hpp>
 #include <core/io/Archive.hpp>
 #include <core/Format.hpp>
@@ -210,6 +212,14 @@ TEST_CASE( "Any test" ) {
     static_assert(! hub::Serializer::Writable_v<hub::format::Mat4>);
     static_assert(! hub::Serializer::Readable_v<hub::format::Mat4>);
     checkAny<hub::format::Mat4>(hub::format::Mat4(1.0), hub::format::Mat4(2.0));
+    checkAny<std::set<std::string>>({"hello", "gauthier"}, {"hello"});
+    checkAny<hub::format::Vec3>(hub::format::Vec3{0.0, 0.0, 0.0}, hub::format::Vec3(1.0f));
+    checkAny<hub::format::Vec4>(hub::format::Vec4(1.0), hub::format::Vec4(2.0f));
+
+    // hub::Anyable::registerTypes<std::set<std::string>>();
+    // std::set<std::string> set {"ab", "cd"};
+    // std::cout << "set: " << set << std::endl;
+    // any2 = set;
 
 // #ifndef HUB_NON_BUILD_SENSOR
     //     {

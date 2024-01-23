@@ -19,6 +19,7 @@
 // #include "core/Output.hpp"
 #include "Serializer.hpp"
 // #include "core/serializer/SerializerI.hpp"
+#include "Format.hpp"
 
 #if CPP_VERSION <= 14
 #    include "traits/std_any.hpp"
@@ -174,7 +175,7 @@ class SRC_API Anyable
     }
 
     // static std::map<size_t, AnyHelper> s_anyables;
-    static inline std::map<std::string, AnyHelper> s_anyables = makeAnyHelperMap<void, int, double, std::string, const char*>();
+    static inline std::map<std::string, AnyHelper> s_anyables = makeAnyHelperMap<void, int, double, bool, std::string, const char*, format::Mat4, format::Vec4, format::Vec3>();
 
     //    static std::vector<std::string> supportedTypes();
 

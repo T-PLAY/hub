@@ -11,7 +11,7 @@
 #include <core/Types.h>
 
 namespace Types {
-enum User : hub::Id_t {
+enum User : hub::TypeId_t {
     RGB8 = hub::Types::Count,
     XYZ32F,
 

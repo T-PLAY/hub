@@ -5,6 +5,7 @@
 #include "test_common.hpp"
 #include <iomanip>
 #include <sstream>
+#include <set>
 
 #include <core/Macros.hpp>
 // #include <core/Vector.hpp>
@@ -82,7 +83,8 @@ void checkType( const std::string& typeName, const T& t ) {
     std::cout << std::setw( 30 ) << std::left;
     std::cout << TYPE_NAME( t ) << " -> ";
     std::cout << std::setw( 50 ) << std::left;
-    std::cout << hub::to_string( t ) << std::endl;
+    // std::cout << hub::to_string( t ) << std::endl;
+    std::cout << t << std::endl;
     // std::cout << hub::to_string( t ) << " (" << TYPE_ID( t ) << ")" << std::endl;
     CHECK( TYPE_NAME( t ) == typeName );
     // std::cout << "typeId(" << typeName << "): " << TYPE_ID( t ) << std::endl;
@@ -143,6 +145,7 @@ TEST_CASE( "Macros test" ) {
     checkType<std::tuple<int>>( "tuple<int>", 5 );
     checkType<std::tuple<int, double, bool, float, char, std::string>>(
         "tuple<int, double, bool, float, char, string>", { 5, 2.0, true, 3.0f, 'a', "hello" } );
+    checkType<std::set<std::string>>( "set<string>", {"abc", "def"} );
     std::cout << std::endl;
 
     // User Types

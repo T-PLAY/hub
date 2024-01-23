@@ -12,6 +12,7 @@
 #include <tuple>
 #include <type_traits>
 #include <vector>
+#include <set>
 
 #include "Configuration.hpp"
 
@@ -613,6 +614,11 @@ static std::string typeName( const std::vector<T>& ) {
     // return "vector<" + typeName<T>() + ">";
     // return "vector<" + typeName( std::declval<T>() ) + ">";
     return "vector<" + typeName( T() ) + ">";
+}
+
+template <class T>
+static std::string typeName( const std::set<T>& ) {
+    return "set<" + typeName( T() ) + ">";
 }
 
 template <class First, class Second>
