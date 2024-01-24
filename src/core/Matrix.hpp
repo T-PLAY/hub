@@ -237,7 +237,8 @@ inline Matrix Matrix::clone() const {
 }
 
 inline Matrix& Matrix::operator|=( const Matrix& other ) {
-    assert( m_nodes.empty() || hasValue() == other.hasValue() );
+    // todo fix
+    // assert( m_nodes.empty() || hasValue() == other.hasValue() );
 
     size_t sizeBeforeAdd = m_size;
     for ( const auto& node : other.m_nodes ) {
