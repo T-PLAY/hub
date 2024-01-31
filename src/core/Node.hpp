@@ -71,7 +71,8 @@ template <class Type, Size_t N = 1, Size_t... Ns>
 static Node make_node(
     // Data_t * data
     ) {
-    auto size = sizeof( Type ) * N;
+    // auto size = sizeof( Type ) * N;
+    auto size = hub::sizeOf<Type>() * N;
     if constexpr ( sizeof...( Ns ) > 0 ) {
         for ( auto dim : { Ns... } ) {
             size *= dim;
@@ -87,7 +88,8 @@ template <class Type, class... Dims>
 static Node make_node(
     // Data_t * data,
                        const Dims&... dims ) {
-    auto size = sizeof( Type );
+    // auto size = sizeof( Type );
+    auto size = hub::sizeOf<Type>();
     // if constexpr ( sizeof...( Ns ) > 0 ) {
     // for ( auto dim : { Ns... } ) {
     for ( auto dim : { dims... } ) {

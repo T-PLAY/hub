@@ -201,6 +201,9 @@ static_assert( sizeof( Distance ) == 4 );
 // 8-bit red, green and blue channels.
 struct RGB8 {
     static constexpr auto id = Types::Format::RGB8;
+    RGB8() = default;
+    template <class T>
+    constexpr RGB8(T _r, T _g, T _b) : r{(unsigned char)_r}, g{(unsigned char)_g}, b{(unsigned char)_b} {};
     unsigned char r;
     unsigned char g;
     unsigned char b;

@@ -59,6 +59,12 @@ class SRC_API Matrix
     template <class Type, int i = 0>
     Dims getDims() const;
 
+    template <class Type, int i = 0>
+    Size_t getSize() const;
+
+    template <class Type, int i = 0>
+    Size_t getCapacity() const;
+
     template <class Type, int i = 0, class RawType = std::remove_pointer_t<Type>>
     REQUIRES(, std::is_pointer_v<Type>, Type )
     get();
@@ -79,7 +85,7 @@ class SRC_API Matrix
     void fill_reduce( const T& t, const Ts&... ts ) {
         // std::cout << "fill_reduce " << i << std::endl;
         // Data_t* data = getData<i>();
-        Data_t* data = getData(i);
+        Data_t* data = getData( i );
         T& tIn       = reinterpret_cast<T&>( *(T*)data );
         tIn          = t;
 
@@ -120,7 +126,7 @@ class SRC_API Matrix
     }
 
     const Data_t* getData( int i = 0 ) const {
-    //     return getData(i);
+        //     return getData(i);
         assert( !m_vector.empty() );
         assert( m_vector.size() == m_size );
 
@@ -281,10 +287,6 @@ inline std::string Matrix::toString( bool pretty ) const {
     return str;
 }
 
-inline Dims Matrix::getDims( int i ) const {
-    return m_nodes.at( i ).m_dims;
-}
-
 inline Size_t Matrix::nType() const {
     return m_nodes.size();
 }
@@ -336,9 +338,11 @@ inline bool Matrix::hasValue() const {
 
 template <class Type>
 bool Matrix::hasType() const {
-    const auto typeName = TYPE_NAME( Type() );
+    // const auto typeName = TYPE_NAME( Type() );
+    const auto typeId = TYPE_ID( Type );
     for ( const auto& node : m_nodes ) {
-        if ( node.m_typeName == typeName ) { return true; }
+        // if ( node.m_typeName == typeName ) { return true; }
+        if ( node.m_id == typeId ) { return true; }
     }
     return false;
 }
@@ -358,23 +362,66 @@ REQUIRES(, sizeof...( Types ) > 1, bool ) Matrix::hasSomeType() const {
 template <class Type>
 int Matrix::nType() {
     assert( hasType<Type>() );
-    int ret             = 0;
-    const auto typeName = TYPE_NAME( Type() );
+    int ret = 0;
+    // const auto typeName = TYPE_NAME( Type() );
+    const auto typeId = TYPE_ID( Type );
     for ( const auto& node : m_nodes ) {
         // if ( node.m_hashCode == typeHash ) { ++ret; }
-        if ( node.m_typeName == typeName ) { ++ret; }
+        // if ( node.m_typeName == typeName ) { ++ret; }
+        if ( node.m_id == typeId ) { ++ret; }
     }
     return ret;
 }
 
+inline Dims Matrix::getDims( int i ) const {
+    return m_nodes.at( i ).m_dims;
+}
+
 template <class Type, int i>
 Dims Matrix::getDims() const {
-    int nFound          = 0;
-    const auto typeName = TYPE_NAME( Type() );
+    int nFound = 0;
+    // const auto typeName = TYPE_NAME( Type() );
+    const auto typeId = TYPE_ID( Type );
     for ( const auto& node : m_nodes ) {
         // if ( node.m_hashCode == typeHash ) {
-        if ( node.m_typeName == typeName ) {
+        // if ( node.m_typeName == typeName ) {
+        if ( node.m_id == typeId ) {
             if ( i == nFound ) { return node.m_dims; }
+            ++nFound;
+        }
+    }
+    assert( false );
+    return {};
+}
+
+template <class Type, int i>
+Size_t Matrix::getSize() const {
+    int nFound        = 0;
+    const auto typeId = TYPE_ID( Type );
+    for ( const auto& node : m_nodes ) {
+        if ( node.m_id == typeId ) {
+            if ( i == nFound ) { return node.m_size; }
+            ++nFound;
+        }
+    }
+    assert( false );
+    return {};
+}
+
+template <class Type, int i>
+Size_t Matrix::getCapacity() const {
+    int nFound        = 0;
+    const auto typeId = TYPE_ID( Type );
+    for ( const auto& node : m_nodes ) {
+        if ( node.m_id == typeId ) {
+            if ( i == nFound ) {
+                // return std::accumulate(node.m_dims.begin(), node.m_dims.end(), 0);
+                Size_t capacity = 1;
+                for ( auto dim : node.m_dims ) {
+                    capacity *= dim;
+                }
+                return capacity;
+            }
             ++nFound;
         }
     }
@@ -400,7 +447,8 @@ inline Size_t Matrix::getOffset( int i ) const {
 
 template <class Type>
 Size_t Matrix::getOffset( int i ) const {
-    const auto typeName = TYPE_NAME( Type {} );
+    // const auto typeName = TYPE_NAME( Type {} );
+    const auto typeId = TYPE_ID( Type );
 
     assert( hasType<Type>() );
     Size_t offset = 0;
@@ -408,7 +456,8 @@ Size_t Matrix::getOffset( int i ) const {
 
     for ( const auto& node : m_nodes ) {
         // if ( node.m_hashCode == typeHash ) {
-        if ( node.m_typeName == typeName ) {
+        // if ( node.m_typeName == typeName ) {
+        if ( node.m_id == typeId ) {
             if ( cptFound == i ) { return offset; }
             ++cptFound;
         }
