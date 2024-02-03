@@ -2,10 +2,6 @@
 
 #include <filesystem>
 
-// #ifdef HUB_TEST_ALL
-// #include <impl/server2/Server.hpp>
-// #endif
-
 TEST_CASE( "Test start" ) {
 
 #if CPP_VERSION >= 17
@@ -19,11 +15,6 @@ TEST_CASE( "Test start" ) {
         std::filesystem::remove( durationTestsFilename );
     }
 #endif
-
-    // #ifdef HUB_TEST_ALL
-    // hub::Server server;
-    // server.asyncRun();
-    // #endif
 
     START_REPORT();
 }

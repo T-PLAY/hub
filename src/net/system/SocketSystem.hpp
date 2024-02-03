@@ -1,7 +1,7 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/10/18
-	
+
 #pragma once
 
 #include <exception>
@@ -12,8 +12,6 @@
 
 #include "NetUtilsSystem.hpp"
 #include "core/Macros.hpp"
-
-// #define HUB_DEBUG_SOCKET
 
 namespace hub {
 namespace net {
@@ -71,17 +69,16 @@ class SRC_API SocketSystem
     SocketSystem( const SocketSystem& socket ) = delete;
     SocketSystem( SocketSystem&& socket );
     SocketSystem& operator=( const SocketSystem& socket ) = delete;
-    SocketSystem&& operator=( SocketSystem&& socket )     = delete;
+    SocketSystem&& operator=( SocketSystem&& socket ) = delete;
 
   protected:
     ///
     /// \brief m_fdSock
     ///
     utils::socket_fd m_fdSock = utils::invalidSocket();
-    // utils::socket_fd m_fdSockInited = utils::invalidSocket();
 
     bool m_serverSide = false;
-    bool m_moved = false;
+    bool m_moved      = false;
 };
 
 } // namespace system

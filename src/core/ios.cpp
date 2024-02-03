@@ -6,10 +6,7 @@
 
 namespace hub {
 
- #if defined( HUB_DEBUG_INPUT ) || defined( HUB_DEBUG_OUTPUT )
-//#ifdef  SRC_STATIC
-//std::mutex s_mtxIoPrint;
-//#endif
- #endif
+#if defined( HUB_DEBUG_INPUT ) || defined( HUB_DEBUG_OUTPUT )
+#endif
 
 } // namespace hub

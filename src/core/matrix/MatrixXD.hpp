@@ -1,7 +1,7 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/11/09
-	
+
 #pragma once
 
 #include <type_traits>
@@ -18,9 +18,9 @@ namespace _ {
 
 template <class Type, Size_t... Ns>
 #if CPP_VERSION >= 20
-    requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
+requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
 #endif
-class MatrixXDBase
+    class MatrixXDBase
 {
     static_assert( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) );
 
@@ -36,9 +36,9 @@ class MatrixXDBase
     static constexpr auto nDim() { return sizeof...( Ns ); };
     template <Size_t i>
 #if CPP_VERSION >= 20
-        requires( 0 <= i && i < nDim() )
+    requires( 0 <= i && i < nDim() )
 #endif
-    static constexpr auto getDim() {
+        static constexpr auto getDim() {
         static_assert( 0 <= i && i < nDim() );
         auto j = 0;
         for ( auto dim : { Ns... } ) {
@@ -54,13 +54,9 @@ class MatrixXDBase
         return std::is_same<Type, Type_>();
     }
 
-    // #if CPP_VERSION >= 20
-    // requires( sizeof...( Types ) > 1 )
-    // #endif
-    // REQUIRES( (sizeof...( Types ) > 1), bool )
     template <class... Types>
-    // requires( sizeof...( Types ) > 1 )
-    REQUIRES(static constexpr, sizeof...( Types ) > 1, bool ) hasType() {
+    REQUIRES( static constexpr, sizeof...( Types ) > 1, bool )
+    hasType() {
         return ( hasType<Types>() && ... );
     }
 
@@ -71,18 +67,16 @@ class MatrixXDBase
 
     template <Size_t ith>
 #if CPP_VERSION >= 20
-        requires( ith == 0 )
+    requires( ith == 0 )
 #endif
-    using getType = Type;
+        using getType = Type;
 
   public:
     template <class... Args>
     constexpr MatrixXDBase( Args&&... args ) : m_buffer { std::forward<Type&&>( args )... } {}
 
-    // static constexpr std::string name() {
     static CONSTEXPR20 auto name() {
         std::string str;
-        // str += TYPE_NAME( Type );
         str += TYPE_NAME( Type() );
 
         if ( !( nDim() == 1 && getDim<0>() == 1 ) ) {
@@ -102,7 +96,6 @@ class MatrixXDBase
     template <int i = 0>
     const Type& get() {
         static_assert( 0 <= i && i < Capacity );
-        // return reinterpret_cast<const Type&>( *( m_buffer.data() + i ) );
         return reinterpret_cast<const Type&>( *( m_buffer.data() + i * sizeof( Type ) ) );
     }
 
@@ -116,7 +109,6 @@ class MatrixXDBase
         Matrix matrix;
         serialize( matrix );
         matrix.setData( m_buffer.data(), m_buffer.size() );
-        // matrix.setData( m_buffer.data(), Size );
         return matrix;
     }
 
@@ -126,17 +118,15 @@ class MatrixXDBase
     // Buffer<Type, Capacity> m_buffer;
     Buffer<Data_t, Size> m_buffer;
 };
-//static_assert( sizeof( MatrixXDBase<int, 2, 3, 4, 5, 6> ) ==
-//               sizeof( int ) * 2 * 3 * 4 * 5 * 6 + 8 );
 static_assert( isMatrix<MatrixXDBase<int, 2>> );
 
 } // namespace _
 
 template <class Type, Size_t... Ns>
 #if CPP_VERSION >= 20
-    requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
+requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
 #endif
-class MatrixXD : public _::MatrixXDBase<Type, Ns...>
+    class MatrixXD : public _::MatrixXDBase<Type, Ns...>
 {
     static_assert( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) );
 
@@ -155,9 +145,9 @@ class MatrixXD : public _::MatrixXDBase<Type, Ns...>
 
 template <class Type, Size_t N>
 #if CPP_VERSION >= 20
-    requires( N > 1 )
+requires( N > 1 )
 #endif
-class MatrixXD<Type, N> : public _::MatrixXDBase<Type, N>
+    class MatrixXD<Type, N> : public _::MatrixXDBase<Type, N>
 {
     static_assert( N > 1 );
 

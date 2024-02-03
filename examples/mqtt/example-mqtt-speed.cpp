@@ -3,9 +3,6 @@
 #include <sensor/OutputSensor.hpp>
 
 #include <server/Server.hpp>
-// #include <net/ServerSocket.hpp>
-
-//#include <filesystem>
 
 #include <mqtt/client.h>
 
@@ -25,7 +22,7 @@ int main() {
     for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
         hub::sensor::Acquisition acq( iAcq, iAcq );
         acq << hub::Measure( reinterpret_cast<unsigned const char*>( data ),
-                                   dataSize,
+                             dataSize,
                              { { width, height }, hub::sensor::Format::BGR8 } );
         acqs.at( iAcq ) = std::move( acq );
     }
@@ -38,7 +35,6 @@ int main() {
     double megaBytesPerSeconds3;
 
     {
-        // measure direct tcp stream duration
         std::cout << "[test][ClientSocket] start streaming" << std::endl;
         const auto& start = std::chrono::high_resolution_clock::now();
         {
@@ -87,20 +83,14 @@ int main() {
         inputClient.subscribe( "sensor" );
         inputClient.start_consuming();
 
-        //            hub::net::ClientSocket clientSocket( ipv4, port );
-        //            auto clientServerSocket = serverSocket.waitNewClient();
         mqtt::client outputClient( ip, "producer", mqtt::create_options( MQTTVERSION_5 ) );
         outputClient.connect();
         const mqtt::message_ptr outputMsgPtr = mqtt::make_message( "sensor", "" );
 
         mqtt::const_message_ptr inputMsgPtr;
         const auto& start = std::chrono::high_resolution_clock::now();
-        //            hub::net::ServerSocket serverSocket( port );
 
-        //            const int packetSize    = 2'000'000; // 2Go network memory buffer
-        //            const int nPart         = dataSize / packetSize;
         for ( int iAcq = 0; iAcq < nAcqs; ++iAcq ) {
-            //                int uploadSize = 0;
 
             outputMsgPtr->set_payload( data, dataSize );
             outputClient.publish( outputMsgPtr );
@@ -111,18 +101,6 @@ int main() {
             const auto* data3    = payload.data();
             const auto data3Size = payload.size();
 
-            //                for ( int i = 0; i < nPart - 1; ++i ) {
-            //                    clientSocket.write( data + uploadSize, packetSize );
-            //                    clientServerSocket.read( data2 + uploadSize, packetSize );
-
-            //                    uploadSize += packetSize;
-            //                }
-
-            //                clientSocket.write( data + uploadSize, dataSize - uploadSize );
-            //                clientServerSocket.read( data2 + uploadSize, dataSize - uploadSize
-            //                );
-
-            //                assert( !memcmp( data, data2, dataSize ) );
             assert( dataSize == data3Size );
             assert( !memcmp( data, data3, dataSize ) );
         }
@@ -160,17 +138,14 @@ int main() {
                 << "[test][InputOutputSensor] ############################### outputStream start"
                 << std::endl;
             hub::sensor::OutputSensor outputSensor(
-                hub::sensor::SensorSpec( "sensorName", { { { width, height }, hub::sensor::Format::BGR8 } } ),
-                hub::output::OutputStream(
-                "streamName",
-//                hub::net::ClientSocket( ipv4, port2 ) );
-                    ipv4, port2) );
+                hub::sensor::SensorSpec( "sensorName",
+                                         { { { width, height }, hub::sensor::Format::BGR8 } } ),
+                hub::output::OutputStream( "streamName", ipv4, port2 ) );
 
             std::cout
                 << "[test][InputOutputSensor] ############################### inputStream start"
                 << std::endl;
             hub::sensor::InputSensor inputSensor(
-//                hub::input::InputStream( "streamName", hub::net::ClientSocket( ipv4, port2 ) ) );
                 hub::input::InputStream( "streamName", ipv4, port2 ) );
 
             const auto& inputSensorSpec = inputSensor.getSpec();

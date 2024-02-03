@@ -1,10 +1,5 @@
 
 
-// #include <stdio.h>
-// #include <cstdio>
-// #include <stdlib.h>
-// #include <stdio.h>
-// #include <iostream>
 #include <thread>
 
 #include <client/Asker.hpp>

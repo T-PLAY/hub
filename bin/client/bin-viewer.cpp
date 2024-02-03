@@ -13,7 +13,6 @@ int main( int argc, char* argv[] ) {
 
     std::vector<std::string> args( argv + 1, argv + argc );
 
-    // int port = hub::io::Stream::s_defaultPort;
     int port = HUB_SERVICE_PORT;
 
     auto it = args.begin();
@@ -24,7 +23,9 @@ int main( int argc, char* argv[] ) {
             std::cout << argv[0] << " usage: [--port <int>] [--exitWhenServerLost]" << std::endl;
             return 0;
         }
-        else if ( arg == "--exitWhenServerLost" ) { exitWhenServerLost = true; }
+        else if ( arg == "--exitWhenServerLost" ) {
+            exitWhenServerLost = true;
+        }
         else if ( arg == "--port" ) {
             assert( it + 1 != args.end() );
             const auto& nextArg = *( it + 1 );
@@ -44,7 +45,6 @@ int main( int argc, char* argv[] ) {
     hub::client::ViewerHandler viewerHandler;
     viewerHandler.onServerNotFound = [&]( const std::string& ipv4, int port ) {
         std::cout << HEADER_MSG "onServerNotFound : " << ipv4 << " " << port << std::endl;
-        // if ( exitWhenServerLost ) { exit = true; }
     };
     viewerHandler.onServerConnected = []( const std::string& ipv4, int port ) {
         std::cout << HEADER_MSG "onServerConnected : " << ipv4 << " " << port << std::endl;
@@ -53,8 +53,6 @@ int main( int argc, char* argv[] ) {
         std::cout << HEADER_MSG "onServerDisconnected : " << ipv4 << " " << port << std::endl;
         if ( exitWhenServerLost ) { exit = true; }
     };
-    // auto onNewStream = [=]( const std::string& streamName, const hub::sensor::SensorSpec&
-    // sensorSpec ) {
     viewerHandler.onNewStream = [=]( const std::string& streamName,
                                      const hub::io::Header& header ) {
         std::cout << HEADER_MSG "onNewStream : " << streamName << ", " << header << std::endl;
@@ -78,15 +76,7 @@ int main( int argc, char* argv[] ) {
                   << "ma\033[0m" << std::flush;
     };
 #endif
-    // viewerHandler.onNewAcquisition = []( const std::string& streamName,
-    //                                      const hub::sensor::Acquisition& acq ) {
-    //     //        std::cout << HEADER_MSG "onNewAcquisition : " << acq << std::endl;
-    //     //        std::cout << "+";
-    //     std::cout << COLOR "+\033[0m";
-    // };
     viewerHandler.onDelStream = []( const std::string& streamName ) {
-        // const hub::io::Header & header ) {
-        // std::cout << HEADER_MSG "onDelStream : " << streamName << ", " << header << std::endl;
         std::cout << HEADER_MSG "onDelStream : " << streamName << std::endl;
     };
     viewerHandler.onSetProperty = []( const std::string& streamName,
@@ -110,20 +100,13 @@ int main( int argc, char* argv[] ) {
         }
     }
     else {
-        // std::cout << "Ctrl+C or Escape to exit" << std::endl;
-        // while ( getchar() != 27 ) { // ESC to quit
-        // viewer.printStatus();
-        // }
-        const auto helperMsg = std::string(argv[0]) + " info: [.|Esc] -> exit, [F5|' '] -> print stats, h -> print this helper message";
+        const auto helperMsg =
+            std::string( argv[0] ) +
+            " info: [.|Esc] -> exit, [F5|' '] -> print stats, h -> print this helper message";
         std::cout << helperMsg << std::endl;
-        // while(true) {
-        // }
-        // while ( server.running() && getchar() != 27 ) { // ESC to quit
         bool exit = false;
         while ( !exit ) {                             // ESC to quit
             const auto key = hub::utils::key_press(); // blocks until a key is pressed
-            // std::cout << "Input is: " << std::to_string( key ) << ", \"" << (char)key << "\""
-            // std::cout << "Input is: " << key << std::endl;
             switch ( key ) {
             case hub::utils::Key::F5:
             case hub::utils::Key::Space:
@@ -139,8 +122,6 @@ int main( int argc, char* argv[] ) {
             default:
                 std::cout << "unrecognized key : " << key << std::endl;
             }
-
-            // server.printStatus();
         }
         std::cout << "exiting" << std::endl;
     }

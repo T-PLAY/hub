@@ -1,7 +1,7 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/12/13
-	
+
 #pragma once
 
 #include "core/Macros.hpp"
@@ -34,11 +34,7 @@ extern "C"
     /// \return
     ///
     SRC_API sensor::InputSensor*
-    createInputSensor( const char* streamName,
-                       // const char* ipv4 = input::InputStream::s_defaultIpv4.c_str(),
-                       // int port = input::InputStream::s_defaultPort);
-                       const char* ipv4 = "127.0.0.1",
-                       int port         = 4042 );
+    createInputSensor( const char* streamName, const char* ipv4 = "127.0.0.1", int port = 4042 );
 
     ///
     /// \brief freeInputSensor

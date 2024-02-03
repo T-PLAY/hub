@@ -3,8 +3,8 @@
 
 #ifdef HUB_USE_SERVER
 
-#include <iomanip>
-#include "StreamViewerClient.hpp"
+#    include "StreamViewerClient.hpp"
+#    include <iomanip>
 
 namespace hub {
 namespace server {
@@ -13,7 +13,6 @@ namespace impl {
 class OutputStreamClient : public Output
 {
   public:
-    //    explicit OutputStreamClient( net::ClientSocket&& clientSocket ) :
     explicit OutputStreamClient( io::InputOutputSocket&& clientSocket ) :
         m_clientSocket( std::move( clientSocket ) ) {}
 
@@ -29,7 +28,6 @@ class OutputStreamClient : public Output
     void setRetain( bool retained ) override;
 
   private:
-    //    net::ClientSocket m_clientSocket;
     io::InputOutputSocket m_clientSocket;
     bool m_moved = false;
 
@@ -42,9 +40,9 @@ OutputStreamClient::OutputStreamClient( OutputStreamClient&& outputStream ) :
 }
 
 OutputStreamClient::~OutputStreamClient() {
-#ifdef DEBUG
+#    ifdef DEBUG
     if ( !m_moved ) { assert( !isOpen() ); }
-#endif
+#    endif
 }
 
 void OutputStreamClient::write( const sensor::Acquisition& acq ) {
@@ -70,56 +68,30 @@ void OutputStreamClient::setRetain( bool retained ) {}
 
 ///////////////////////////////////////////////// StreamViewerClient /////////////////////
 
-StreamViewerClient::StreamViewerClient(
-    ServerImpl* server,
-    int iClient,
-    //                                        net::ClientSocket&& sock,
-    io::InputOutputSocket&& sock,
-    std::string streamName ) :
+StreamViewerClient::StreamViewerClient( ServerImpl* server,
+                                        int iClient,
+                                        io::InputOutputSocket&& sock,
+                                        std::string streamName ) :
     Client( server, iClient ), m_streamName( std::move( streamName ) ) {
 
-    //        try {
-    //            const InputSensor* inputSensor;
-    //            int iTry = 0;
-    //            while ( !m_ending &&
-    //                    ( inputSensor = m_server->getInputSensor( m_streamName ) ) == nullptr &&
-    //                    iTry < 10 ) {
-    //                std::cout << headerMsg() << "waiting for inited inputSensor" << std::endl;
-    //                std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-    //                ++iTry;
-    //            }
-    //            assert(iTry < 10);
-
-    //            if ( m_ending ) {
-    //                sock.write( io::StreamBase::ServerMessage::STREAM_VIEWER_CLOSED );
-    //                sock.close();
-    //                throw net::Socket::exception( "input stream closed" );
-    //                //                std::thread( [this]() { delete this; } ).detach();
-    //                //                return;
-    //            }
-    //            assert( inputSensor != nullptr );
     const auto& inputSensor = m_server->getInputSensor( m_streamName );
-    //            const auto& sensorSpec = m_server->getSensorSpec( m_streamName );
-    const auto& sensorSpec = inputSensor->getSpec();
-    m_outputSensor         = std::make_unique<sensor::OutputSensor>(
+    const auto& sensorSpec  = inputSensor->getSpec();
+    m_outputSensor          = std::make_unique<sensor::OutputSensor>(
         sensorSpec, OutputStreamClient( std::move( sock ) ) );
 
     m_server->addStreamViewer( this );
 
-    //    m_thread = new std::thread( [this, sock = std::move( sock )]() mutable {
     m_thread = new std::thread( [this]() {
         try {
             OutputStreamClient& outputStream =
                 dynamic_cast<OutputStreamClient&>( m_outputSensor->getOutput() );
 
             io::StreamBase::ClientMessage message;
-            // wait for client connection closed
             outputStream.m_clientSocket.read( message );
             assert( message == io::StreamBase::ClientMessage::STREAM_VIEWER_CLIENT_CLOSED );
 
             std::cout << headerMsg() << "input stream closed by client " << std::endl;
         }
-        //        catch ( net::Socket::exception& ex ) {
         catch ( net::system::SocketSystem::exception& ex ) {
 
             std::cout << headerMsg() << "catch exception : " << ex.what() << std::endl;
@@ -136,12 +108,10 @@ StreamViewerClient::~StreamViewerClient() {
     std::cout << headerMsg() << "delete start" << std::endl;
 
     assert( m_thread != nullptr );
-    //    if ( m_thread != nullptr ) {
     assert( m_thread->joinable() );
     m_thread->join();
 
     m_server->delStreamViewer( this );
-    //    }
     std::cout << headerMsg() << "delete ended" << std::endl;
 }
 
@@ -151,7 +121,6 @@ std::string StreamViewerClient::headerMsg() const {
 
 void StreamViewerClient::update( const sensor::Acquisition& acq ) {
     assert( m_outputSensor != nullptr );
-    //    if ( m_outputSensor != nullptr )
     *m_outputSensor << acq;
 }
 
@@ -159,19 +128,13 @@ void StreamViewerClient::end( io::StreamBase::ServerMessage message ) {
 
     m_ending = true;
 
-    //    if ( m_outputSensor != nullptr ) {
-    //    if ( m_outputSensor != nullptr ) {
     assert( m_outputSensor != nullptr );
     auto& output = m_outputSensor->getOutput();
-    //    assert( output.isOpen() );
     if ( output.isOpen() ) output.write( message );
-    //    }
-    //    }
 }
 
 } // namespace impl
 } // namespace server
 } // namespace hub
-
 
 #endif

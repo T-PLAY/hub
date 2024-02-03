@@ -13,23 +13,20 @@ int main() {
     /// Comments I would like to be documented in as well
 
     {
-        // clang-format off
-        // startConstruction
-hub::input::InputFile outputFile(
-    std::fstream( "file.txt", std::ios::binary | std::ios::out | std::ios::trunc ) );
-hub::input::InputFile inputFile( std::fstream( "file.txt", std::ios::binary | std::ios::in ) );
-        // endConstruction
-        // clang-format on
+        hub::input::InputFile outputFile(
+            std::fstream( "file.txt", std::ios::binary | std::ios::out | std::ios::trunc ) );
+        hub::input::InputFile inputFile(
+            std::fstream( "file.txt", std::ios::binary | std::ios::in ) );
     }
 
-    // do not execute this code, this is an example of how to use hub library
     {
 
         hub::MetaData metaData;
         hub::format format = hub::format::BGR8;
         hub::NDim nDim     = { 1 };
         hub::Resolutions resolutions { { nDim, format } };
-        hub::sensor::SensorSpec sensorSpec { "sensorName", { { nDim, hub::format::BGR8 } }, metaData };
+        hub::sensor::SensorSpec sensorSpec {
+            "sensorName", { { nDim, hub::format::BGR8 } }, metaData };
         hub::sensor::SensorSpec sensorSpec2 {
             "sensorName", { { { 1 }, hub::format::BGR8 }, { { 1, 2, 3 }, format } }, metaData };
         hub::sensor::SensorSpec sensorSpec3 { "sensorName", {}, metaData };
@@ -41,7 +38,8 @@ hub::input::InputFile inputFile( std::fstream( "file.txt", std::ios::binary | st
             hub::sensor::OutputSensor outputSensor3(
                 hub::sensor::SensorSpec { "sensorName", { { { 1 }, hub::format::BGR8 } } },
                 hub::input::InputFile( std::fstream( "file.txt", std::ios::out ) ) );
-            hub::sensor::SensorSpec sensorSpec( "sensorName", { { { 1 }, hub::format::BGR8 } }, metaData );
+            hub::sensor::SensorSpec sensorSpec(
+                "sensorName", { { { 1 }, hub::format::BGR8 } }, metaData );
             hub::sensor::OutputSensor outputSensor(
                 sensorSpec, hub::input::InputFile( std::fstream( "file.txt", std::ios::out ) ) );
 
@@ -70,15 +68,18 @@ hub::input::InputFile inputFile( std::fstream( "file.txt", std::ios::binary | st
         }
 
         {
-            hub::sensor::SensorSpec sensorSpec( "sensorName", { { { 1 }, hub::format::BGR8 } }, metaData );
-            hub::sensor::OutputSensor outputSensor( sensorSpec, "streamName", hub::net::ClientSocket() );
+            hub::sensor::SensorSpec sensorSpec(
+                "sensorName", { { { 1 }, hub::format::BGR8 } }, metaData );
+            hub::sensor::OutputSensor outputSensor(
+                sensorSpec, "streamName", hub::net::ClientSocket() );
             hub::sensor::InputSensor inputSensor(
                 hub::input::InputStream( "streamName", hub::net::ClientSocket() ) );
         }
     }
 
     {
-        hub::sensor::InputSensor inputSensor( hub::input::InputFile( std::fstream( "file.txt", std::ios::in ) ) );
+        hub::sensor::InputSensor inputSensor(
+            hub::input::InputFile( std::fstream( "file.txt", std::ios::in ) ) );
         hub::sensor::Acquisition acq;
         inputSensor >> acq;
 

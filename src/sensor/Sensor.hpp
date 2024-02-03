@@ -1,15 +1,11 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/09/28
-	
+
 #pragma once
 
-#include "SensorSpec.hpp"
 #include "Acquisition.hpp"
-
-// #include "Resolution.hpp"
-// #include "Format.hpp"
-//#include "core/Input.hpp"
+#include "SensorSpec.hpp"
 
 namespace hub {
 namespace sensor {
@@ -29,29 +25,18 @@ class SRC_API Sensor
     /// [in] user defined sensor spec
     ///
     Sensor() = default;
-    explicit Sensor( const SensorSpec& sensorSpec ) : m_spec{sensorSpec} {
-
-    }
+    explicit Sensor( const SensorSpec& sensorSpec ) : m_spec { sensorSpec } {}
     Sensor( const Sensor& sensor ) = delete;
     Sensor& operator=( const Sensor& sensor ) = delete;
 
-//    Sensor(Input & input) :
-//    ~Sensor();
-
-    Acquisition acqMsg() const {
-//        return Acquisition{m_spec.getResolution()};
-        return make_acquisition(m_spec.getResolution());
-//        return dynamic_cast<const Acquisition&>(m_spec.getResolution());
-    }
+    Acquisition acqMsg() const { return make_acquisition( m_spec.getResolution() ); }
 
   public:
     ///
     /// \brief getSpec
     /// \return
     ///
-    const SensorSpec& getSpec() const {
-        return m_spec;
-    }
+    const SensorSpec& getSpec() const { return m_spec; }
 
   protected:
     ///
@@ -62,10 +47,6 @@ class SRC_API Sensor
 
 /////////////////////////////////////////////////// INLINE
 ///////////////////////////////////////////////////////////////////////////
-
-//inline const SensorSpec& Sensor::getSpec() const {
-//    return m_spec;
-//}
 
 } // namespace sensor
 } // namespace hub

@@ -1,7 +1,7 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/11/27
-	
+
 #pragma once
 
 #include <deque>
@@ -11,7 +11,6 @@
 #include <memory>
 
 #include "Client2.hpp"
-// #include "StreamViewerClient2.hpp"
 #include "StreamerClient2.hpp"
 #include "ViewerClient2.hpp"
 
@@ -66,32 +65,18 @@ class SRC_API ServerImpl2
     void addStreamViewer( StreamerClient2* streamer );
     void delStreamViewer( StreamerClient2* streamer );
 
-    //    void addStreamViewer( server::StreamViewerClient* streamViewer );
     void addViewer( ViewerClient2* viewer );
 
     void delStreamer( StreamerClient2* streamer );
-    //    void delStreamViewer( server::StreamViewerClient* streamViewer );
     void delViewer( ViewerClient2* viewer );
 
-    //    std::list<std::pair<std::string, sensor::SensorSpec>> listStreams() const;
-    //    sensor::Acquisition getAcquisition( const std::string& streamName ) const;
-
     void removeClient( Client2* client );
-    //    const std::map<std::string, server::StreamerClient2*>& getStreamers() const;
-
-    //    void setProperty( const std::string& streamName,
-    //                      const std::string& objectName,
-    //                      int property,
-    //                      const Any& value );
 
   private:
     std::thread* m_thread = nullptr;
 
     std::map<std::string, StreamerClient2*> m_streamName2streamer;
     mutable std::mutex m_mtxStreamName2streamer;
-
-    //    std::map<std::string, std::list<server::StreamViewerClient*>> m_streamName2streamViewers;
-    //    std::mutex m_mtxSreamName2streamViewers;
 
     std::list<ViewerClient2*> m_viewers;
     std::mutex m_mtxViewers;
@@ -102,7 +87,6 @@ class SRC_API ServerImpl2
 
     int m_iClient       = 0;
     int m_nActiveClient = 0;
-    //    int m_maxClients = 1'000'000;
 
     bool m_killed  = false;
     bool m_running = false;
@@ -113,7 +97,6 @@ class SRC_API ServerImpl2
     friend class StreamerClient2;
     friend class StreamViewerClient2;
     friend class ViewerClient2;
-    //    friend class server::AskerClient;
 };
 
 } // namespace server

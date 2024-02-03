@@ -1,7 +1,7 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/11/30
-	
+
 #pragma once
 
 #include <functional>
@@ -16,16 +16,14 @@
 namespace hub {
 namespace client {
 
-//template class SRC_API hub::client::ViewerInterface<input::InputStreamServer2>;
-
 class ViewerServer2 : public hub::client::ViewerInterface<input::InputStreamServer2>
 {
   public:
     SRC_API explicit ViewerServer2( const std::string& name,
-                            ViewerHandler&& viewerHandler,
-                            const std::string& ipv4 = HUB_SERVICE_IPV4,
-                            int port                = HUB_SERVICE_PORT,
-bool autoConnect = true                                    );
+                                    ViewerHandler&& viewerHandler,
+                                    const std::string& ipv4 = HUB_SERVICE_IPV4,
+                                    int port                = HUB_SERVICE_PORT,
+                                    bool autoConnect        = true );
 
     SRC_API ~ViewerServer2();
 
@@ -38,7 +36,7 @@ bool autoConnect = true                                    );
                       int property,
                       const Any& value ) override;
 
-    void setAutoConnect(bool autoConnect) override;
+    void setAutoConnect( bool autoConnect ) override;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -47,11 +45,9 @@ bool autoConnect = true                                    );
 
     std::thread m_thread;
     bool m_threadRunning = false;
-    bool m_stopThread = false;
+    bool m_stopThread    = false;
 
     hub::io::InputOutputSocket m_sock;
-    //    std::map<std::string, std::shared_ptr<viewer::Stream>> m_streams;
-    //    friend class viewer::Stream;
 
   private:
 };

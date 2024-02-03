@@ -1,12 +1,10 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/12/07
-	
+
 #pragma once
 
 #include "core/Macros.hpp"
-
-// #include "core/Any.hpp"
 
 namespace hub {
 

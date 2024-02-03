@@ -1,18 +1,15 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/03/13
-	
+
 #pragma once
 
-//#include <fstream>
-//#include <memory>
 #include <exception>
 
-#include <string>
 #include <stdexcept>
+#include <string>
 
 #include "core/Macros.hpp"
-//#include "InputOutput.hpp"
 #include "io/Header.hpp"
 
 namespace hub {
@@ -23,12 +20,10 @@ namespace io {
 /// is an encloser of a std file stream allowing to record or play acquisition streams in offline.
 /// This class can be use to play recorded stream as a real sensor stream.
 ///
-//class SRC_API File : public InputOutput
 class SRC_API File
 {
-    //  public:
   public:
-    const Header &getHeader() const;
+    const Header& getHeader() const;
 
   protected:
     ///
@@ -38,20 +33,13 @@ class SRC_API File
     /// \param file
     /// is a movable fstream you want to use as a sensor communication bus.
     ///
-//    explicit File( std::fstream&& file );
-//    explicit File( std::basic_ios<char>&& file );
-    explicit File( const std::string & filePath );
+    explicit File( const std::string& filePath );
 
-    explicit File( const char * filePath);
-
-//    File( const File& ) = delete;
+    explicit File( const char* filePath );
 
     ///
     /// \param fileIO
     ///
-//    File( File&& file ) = default;
-
-//    ~File();
 
   protected:
     ///
@@ -75,8 +63,6 @@ class SRC_API File
     ///
     /// \brief m_file
     ///
-//    std::unique_ptr<std::fstream> m_file;
-//    std::unique_ptr<std::basic_ios<char>> m_file;
     io::Header m_header;
     const std::string m_filePath;
 };

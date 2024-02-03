@@ -5,30 +5,11 @@ project(hub)
 include(cmake/Functions.cmake)
 set_property(GLOBAL PROPERTY CUSTOM_TARGETS_FOUNDED "")
 
-
-#set(CMAKE_CXX_STANDARD 11)
-# set(CMAKE_CXX_STANDARD 14) # std::decay
 set(CMAKE_CXX_STANDARD 17) # std::any, AppleClang std::void_t<>, if constexpr
-# set(CMAKE_CXX_STANDARD 20) # std::any, zpp_bits
-#set(CMAKE_CXX_STANDARD 23) # std::any
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY False)
-#if(WIN32)
-#    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX /W4")
-#else()
-##    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wall -Wextra")
-##    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
-#    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-#endif()
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++2a")
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-#if(WIN32)
-# add_definitions(-DCPLUSPLUS_VERSION=${CMAKE_CXX_STANDARD})
-# add_definitions(-DCPP_VERSION=${CMAKE_CXX_STANDARD})
-#endif()
 
-set (HEADER_MSG "${Yellow}[hub]${ColourReset}")
+set(HEADER_MSG "${Yellow}[hub]${ColourReset}")
 message(STATUS "${HEADER_MSG} CXX compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 message(STATUS "${HEADER_MSG} Processor: ${CMAKE_SYSTEM_PROCESSOR}")
 message(STATUS "${HEADER_MSG} CMake generator: ${CMAKE_GENERATOR}")
@@ -52,9 +33,8 @@ if(CMAKE_GENERATOR_PLATFORM)
     endif()
 elseif(CMAKE_OSX_ARCHITECTURES)
     message(STATUS "${HEADER_MSG} CMake osx architectures: ${CMAKE_OSX_ARCHITECTURES}")
-        set(ARCHITECTURE ${CMAKE_OSX_ARCHITECTURES})
+    set(ARCHITECTURE ${CMAKE_OSX_ARCHITECTURES})
 else()
-   # message(STATUS "${HEADER_MSG} Detecting architecture manually")
     if("${CMAKE_SIZEOF_VOID_P}" STREQUAL "4")
         set(ARCHITECTURE "x86")
     else()
@@ -80,18 +60,16 @@ foreach(
     set(${SYSTEM_INFO} ${tmp})
 endforeach()
 
-if (WIN32)
-        set(USERNAME $ENV{USERNAME})
+if(WIN32)
+    set(USERNAME $ENV{USERNAME})
 else()
-        set(USERNAME $ENV{USER})
+    set(USERNAME $ENV{USER})
 endif()
 
 # Looking for supported compiler
 set(SUPPORTED_COMPILERS "Clang" "GNU" "LLVM" "MSVC" "AppleClang")
 set(Clang_MINIMAL_VERSION 11.0.0)
-#set(Clang_MINIMAL_VERSION 7.0.1)
 set(GNU_MINIMAL_VERSION 8.1.0)
-#set(GNU_MINIMAL_VERSION 4.9.4)
 set(LLVM_MINIMAL_VERSION 0)
 set(MSVC_MINIMAL_VERSION 19)
 set(AppleClang_MINIMAL_VERSION 12)
@@ -115,15 +93,13 @@ foreach(SUPPORTED_COMPILER ${SUPPORTED_COMPILERS})
     endif()
 endforeach()
 
-if (LLVM)
+if(LLVM)
     message(FATAL_ERROR "not supported")
 endif()
-
 
 if(NOT COMPILER_FOUND)
     message(FATAL_ERROR "no supported compiler founded")
 endif()
-
 
 # Set default value of CMake variables
 if(NOT CMAKE_BUILD_TYPE)
@@ -143,7 +119,6 @@ elseif(${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
     set(CMAKE_POSTFIX ${CMAKE_RELWITHDEBINFO_POSTFIX})
 endif()
 
-# if(NOT DEFINED CMAKE_INSTALL_PREFIX OR UNIX)
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
     set(CMAKE_INSTALL_PREFIX
         "${CMAKE_SOURCE_DIR}/install/${ARCHITECTURE}-${CMAKE_BUILD_TYPE}"
@@ -154,22 +129,12 @@ set(HUB_PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 add_definitions(-DHUB_PROJECT_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\")
 
 find_package(Boost QUIET) # tcp socket communication
-if (Boost_FOUND)
+if(Boost_FOUND)
     add_definitions(-DHUB_USE_BOOST)
-#    target_compile_definitions(${TARGET_NAME} PUBLIC -DHUB_USE_BOOST)
 endif()
 
-# todo move to tests
-# find_package(OpenCV QUIET)
-# if (OpenCV_FOUND)
-#     add_definitions(-DHUB_USE_OPENCV)
-#     link_libraries(${OpenCV_LIBS})
-# endif()
-
-# todo move to tests
 find_package(Eigen3 QUIET)
-if (Eigen3_FOUND)
-#    message(FATAL_ERROR "ouou")
+if(Eigen3_FOUND)
     add_definitions(-DHUB_USE_EIGEN3)
     link_libraries(Eigen3::Eigen)
     include_directories(${EIGEN3_INCLUDE_DIR})
@@ -177,8 +142,8 @@ endif()
 
 find_package(TBB QUIET)
 set(HUB_TBB_TARGET)
-if (TBB_FOUND)
-    if (TARGET tbb)
+if(TBB_FOUND)
+    if(TARGET tbb)
         set(HUB_TBB_TARGET tbb)
     elseif(TARGET TBB::tbb)
         set(HUB_TBB_TARGET TBB::tbb)
@@ -189,81 +154,35 @@ if (TBB_FOUND)
 endif()
 
 find_package(PahoMqttCpp QUIET)
-if (PahoMqttCpp_FOUND)
+if(PahoMqttCpp_FOUND)
     add_definitions(-DHUB_USE_MQTT)
     link_libraries(PahoMqttCpp::paho-mqttpp3)
 endif()
 
-# if (HUB_SERVICE_PORT)
-#     add_definitions(-DHUB_SERVICE_PORT=${HUB_SERVICE_PORT})
-# endif()
-
-# option(HUB_BUILD_SERVER "Build implement server" OFF)
-# if (HUB_BUILD_SERVER)
-#     add_definitions(-DHUB_BUILD_SERVER)
-#     # target_compile_definitions(${TARGET_NAME} PUBLIC -DHUB_BUILD_SERVER)
-#     # if (HUB_SERVICE_PORT)
-#         # target_compile_definitions(${TARGET_NAME} PUBLIC -DHUB_SERVER_PORT=${HUB_SERVICE_PORT})
-#     # endif()
-# endif()
-
-
-#find_package(OpenEXR QUIET) # tcp socket communication
-#if (OpenEXR_FOUND)
-##    message(FATAL_ERROR "error")
-##    add_definitions(-DHUB_USE_OIMAGEIO)
-#    link_libraries(OpenEXR)
-##    link_libraries(${OpenImageIO_LIBRARIES})
-#endif()
-
-#find_package(OpenImageIO QUIET) # tcp socket communication
-#if (OpenImageIO_FOUND)
-###    message(FATAL_ERROR "error")
-##    add_definitions(-DHUB_USE_OIMAGEIO)
-#    link_libraries(OpenImageIO)
-#    link_libraries(${OpenImageIO_LIBRARIES})
-#    include_directories(${OpenImageIO_INCLUDE_DIRS})
-##    link_libraries(Threads::Threads)
-#endif()
-
 set(HUB_USE_ZPP_BITS 0) # serializer
-if (CMAKE_CXX_STANDARD GREATER_EQUAL 20)
-#    option(HUB_USE_ZPP_BITS "Use zpp_bits.h for input/output serialization" ON)
+if(CMAKE_CXX_STANDARD GREATER_EQUAL 20)
     set(HUB_USE_ZPP_BITS 1)
     add_definitions(-DHUB_USE_ZPP_BITS)
 endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 
-
-# set(HUB_MODULES "core")
-# set(HUB_MODULES "core" "net")
-# set(HUB_MODULES "core" "data")
-# set(HUB_MODULES "core" "net" "data")
-# set(HUB_MODULES "core" "net" "data" "io")
-# set(HUB_MODULES "core" "net" "data" "io" "sensor")
-# set(HUB_MODULES "core" "net" "data" "io" "server")
-# set(HUB_MODULES "core" "net" "data" "io" "sensor" "server")
-# set(HUB_MODULES "core" "net" "data" "io" "sensor" "server" "client")
-# set(HUB_MODULES "core" "net" "data" "io" "sensor" "server" "client" "native")
-
-# set(HUB_MODULES "core")
-# set(HUB_MODULES "core" "net")
-# set(HUB_MODULES "core" "net" "io")
-# set(HUB_MODULES "core" "net" "io" "server")
-# set(HUB_MODULES "core" "net" "io" "server" "client")
-# set(HUB_MODULES "core" "net" "io" "server" "client" "native")
-# set(HUB_MODULES "core" "net" "io" "server" "client" "native" "sensor")
+# cmake-format: off
+# # set(HUB_MODULES "core")
+# # set(HUB_MODULES "core" "net")
+# # set(HUB_MODULES "core" "net" "io")
+# # set(HUB_MODULES "core" "net" "io" "server")
+# # set(HUB_MODULES "core" "net" "io" "server" "client")
+# # set(HUB_MODULES "core" "net" "io" "server" "client" "native")
+# # set(HUB_MODULES "core" "net" "io" "server" "client" "native" "sensor")
 set(HUB_MODULES "core" "net" "io" "server" "client" "native" "sensor" "data")
-
-
-
 set(ALL_HUB_MODULES "core" "net" "data" "io" "sensor" "server" "client" "native")
+# cmake-format: on
+
 foreach(MODULE ${ALL_HUB_MODULES})
     string(TOUPPER ${MODULE} UPPER_MODULE)
-    if (${MODULE} IN_LIST HUB_MODULES)
+    if(${MODULE} IN_LIST HUB_MODULES)
         set(HUB_BUILD_${UPPER_MODULE} 1)
-        # message(STATUS "active module: ${MODULE}")
     else()
         message(STATUS "${HEADER_MSG} ${Red}module ${MODULE}${ColourReset} disabled")
         add_definitions(-DHUB_NON_BUILD_${UPPER_MODULE})
@@ -271,39 +190,14 @@ foreach(MODULE ${ALL_HUB_MODULES})
     endif()
 endforeach()
 
-
-#set(HUB_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
-#set(HUB_SOURCE_DIR ".")
-#set(HUB_MODULES "client") # io sensor
-#set(HUB_MODULES "data") # sensor
-#set(HUB_MODULES "io") # core
-#set(HUB_MODULES "native")
-#set(HUB_MODULES "sensor")
-#set(HUB_MODULES "server")
-#set(HUB_MODULES "utils") # core
-#set(HUB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
-#set(HUB_INCLUDE_DIR "net")
-#set(HUB_INCLUDE_DIR ".")
-#set(HUB_INCLUDE_DIR ${HUB_SOURCE_DIR})
-# foreach(MODULE ${HUB_MODULES})
-#     string(REPLACE "/" "_" MODULE "${MODULE}")
-#     string(TOUPPER ${MODULE} UPPER_SOURCE_DIR)
-#     set(HUB_BUILD_${UPPER_SOURCE_DIR} 1)
-#     # add_definitions(-DHUB_BUILD_${UPPER_SOURCE_DIR})
-
-# endforeach()
-
 set(HUB_EXTERNAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external")
 set(HUB_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 set(HUB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
-# set(HUB_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
 if(${CMAKE_GENERATOR} MATCHES "Visual Studio.*")
     set(HUB_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
 else()
     set(HUB_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
 endif()
-# set(HUB_EXTERNAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external")
-
 
 add_subdirectory(src)
 
@@ -317,7 +211,6 @@ if(HUB_ENABLE_TESTS)
     add_subdirectory(tests)
 endif()
 
-#option(HUB_ENABLE_EXAMPLES "Enable examples" OFF)
 option(HUB_ENABLE_EXAMPLES "Enable examples" OFF)
 if(HUB_ENABLE_EXAMPLES)
     add_subdirectory(examples)
@@ -329,8 +222,8 @@ if(NOT WIN32)
     add_custom_target(
         hub-cppCheck
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-        COMMAND cppcheck --enable=all --error-exitcode=1 src tests -I src -I tests --inline-suppr --suppress=toomanyconfigs
-                --suppress=missingIncludeSystem
+        COMMAND cppcheck --enable=all --error-exitcode=1 src tests -I src -I tests --inline-suppr
+                --suppress=toomanyconfigs --suppress=missingIncludeSystem
         COMMENT "Running cppCheck")
     custom_target_added(cppCheck)
 endif()
@@ -342,15 +235,6 @@ add_custom_target(
     COMMENT "Format sources")
 custom_target_added(format)
 
-# add_custom_target(hub-all-targets)
-# custom_target_added(hub-all-targets)
-# foreach(target "hub-tests" "hub-coverage" "hub-cppCheck" "hub-doc-doxygen" "hub-doc-sphinx")
-#     if(TARGET ${target})
-#         add_dependencies(all-targets ${target})
-#     endif()
-# endforeach()
-
-
 option(HUB_ENABLE_WRAPPER "Enable wrapper" OFF)
 if(HUB_ENABLE_WRAPPER)
     add_subdirectory(wrapper)
@@ -359,5 +243,4 @@ endif()
 message(STATUS "${HEADER_MSG} Modules: (${HUB_MODULES})")
 
 get_property(TMP GLOBAL PROPERTY CUSTOM_TARGETS_FOUNDED)
-#message(STATUS "${HEADER_MSG} Custom targets: cppCheck format doc-doxygen doc-sphinx coverage coverage-lcov coverage-all tests")
 message(STATUS "${HEADER_MSG} Custom targets:${TMP}")

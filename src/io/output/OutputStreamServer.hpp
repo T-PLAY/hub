@@ -1,23 +1,18 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/08/17
-	
+
 #pragma once
 
 #ifdef HUB_USE_SERVER
 
-#include <mutex>
-#include <thread>
+#    include <mutex>
+#    include <thread>
 
-//#include "Output.hpp"
-//#include "OutputStreamInterface.hpp"
-//#include "net/ClientSocket.hpp"
-#include "core/Output.hpp"
-//#include "../StreamServer.hpp"
-// #include "impl/server/io/StreamServer.hpp"
-#include "io/StreamServer.hpp"
-#include "sensor/Acquisition.hpp"
-#include "sensor/SensorSpec.hpp"
+#    include "core/Output.hpp"
+#    include "io/StreamServer.hpp"
+#    include "sensor/Acquisition.hpp"
+#    include "sensor/SensorSpec.hpp"
 
 namespace hub {
 namespace output {
@@ -26,7 +21,6 @@ namespace output {
 /// \brief The OutputStreamServer class
 /// Describes an output communication to the server.
 ///
-//class SRC_API OutputStreamServer : public Output
 class SRC_API OutputStreamServer : public Output, public io::StreamServer
 {
   public:
@@ -45,10 +39,9 @@ class SRC_API OutputStreamServer : public Output, public io::StreamServer
     /// when the server is not found or by loosing connection to the server.
     /// Also occur when stream you want to link is already started in the server.
     ///
-//    explicit OutputStreamServer( const std::string& streamName,
-//                           net::ClientSocket&& clientSocket = net::ClientSocket() );
     explicit OutputStreamServer( const std::string& streamName,
-                                 const std::string & ipv4 = s_defaultIpv4, int port = s_defaultPort);
+                                 const std::string& ipv4 = s_defaultIpv4,
+                                 int port                = s_defaultPort );
     ///
     /// \brief OutputStreamServer
     /// \param outputStream
@@ -60,23 +53,19 @@ class SRC_API OutputStreamServer : public Output, public io::StreamServer
     void write( const sensor::Acquisition& acq );
     void write( const sensor::SensorSpec& sensorSpec );
 
-    // #ifdef WIN32 // msvc warning C4250
   protected:
     void write( const Data_t* data, Size_t len ) override;
     void close() override;
     bool isOpen() const override;
 
-    // #endif
-
   private:
-//    std::unique_ptr<net::ClientSocket> m_clientSocket;
     std::unique_ptr<io::InputOutputSocket> m_clientSocket;
 
     std::unique_ptr<std::thread> m_thread;
     bool m_moved = false;
 
-    std::unique_ptr<bool> m_serverClosed   = std::make_unique<bool>(false);
-    std::unique_ptr<bool> m_streamerClosed = std::make_unique<bool>(false);
+    std::unique_ptr<bool> m_serverClosed   = std::make_unique<bool>( false );
+    std::unique_ptr<bool> m_streamerClosed = std::make_unique<bool>( false );
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,9 +75,7 @@ inline void OutputStreamServer::write( const sensor::Acquisition& acq ) {
     Output::write( acq );
 }
 
-inline void OutputStreamServer::write(const sensor::SensorSpec &sensorSpec)
-{
-//    Output::write( io::StreamBase::ClientMessage::STREAMER_CLIENT_INIT_SENSOR );
+inline void OutputStreamServer::write( const sensor::SensorSpec& sensorSpec ) {
     Output::write( sensorSpec );
 }
 
@@ -99,16 +86,17 @@ inline void OutputStreamServer::write( const Data_t* data, Size_t len ) {
 inline void OutputStreamServer::close() {
     std::cout << "[OutputStreamServer] close() started" << std::endl;
     assert( m_clientSocket->isOpen() );
-    if ( ! *m_serverClosed && ! *m_streamerClosed ) {
+    if ( !*m_serverClosed && !*m_streamerClosed ) {
         m_clientSocket->write( io::StreamBase::ClientMessage::STREAMER_CLIENT_CLOSED );
     }
     int iTry = 0;
-    while ( ! *m_serverClosed && ! *m_streamerClosed && iTry < 10 ) {
-        std::cout << "[OutputStreamServer] close() waiting for server/streamer closing" << std::endl;
+    while ( !*m_serverClosed && !*m_streamerClosed && iTry < 10 ) {
+        std::cout << "[OutputStreamServer] close() waiting for server/streamer closing"
+                  << std::endl;
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
         ++iTry;
     }
-    assert(iTry < 10);
+    assert( iTry < 10 );
 
     std::cout << "[OutputStreamServer] closing connection ended" << std::endl;
     m_clientSocket->close();

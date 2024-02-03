@@ -1,17 +1,15 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/08/22
-	
+
 #pragma once
 
 #include <string>
 
-// #include "io/StreamInterface.hpp"
 #include "StreamBase.hpp"
 
 namespace hub {
 namespace io {
-
 
 class StreamMqtt : public StreamBase
 {
@@ -24,9 +22,6 @@ class StreamMqtt : public StreamBase
     static const std::string s_topicEvents;
 
     static constexpr int s_bufferAcqSize = 100;
-
-    //    static const std::string s_defaultIpv4;
-    //    static constexpr int s_defaultPort     = 1883;
 
   protected:
     StreamMqtt( const std::string& name, const std::string& ipv4, int port );

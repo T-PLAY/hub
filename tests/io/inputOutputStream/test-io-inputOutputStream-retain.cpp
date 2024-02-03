@@ -1,7 +1,3 @@
-// #include <catch2/catch_test_macros.hpp>
-// #define HUB_DEBUG_INPUT
-// #define HUB_DEBUG_OUTPUT
-// #define HUB_DEBUG_SOCKET
 
 #include "io/test_io_common.hpp"
 #include "test_common.hpp"
@@ -17,12 +13,12 @@ TEST_CASE( "InputOutputStream retain test" ) {
     INIT_SERVER
 
     {
-        const hub::io::Header header{sizeof(int)};
+        const hub::io::Header header { sizeof( int ) };
         hub::output::OutputStream outputStream( header, FILE_NAME, SERVER_PORT );
 
         {
             hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
-            assert(inputStream.isOpen());
+            assert( inputStream.isOpen() );
 
             int a = 5;
             outputStream.write( a );
@@ -33,7 +29,7 @@ TEST_CASE( "InputOutputStream retain test" ) {
             assert( a == a_read );
 
             hub::input::InputStream inputStream2( FILE_NAME, SERVER_PORT );
-            assert(inputStream2.isOpen());
+            assert( inputStream2.isOpen() );
 
             a = 6;
             outputStream.write( a );
@@ -48,7 +44,7 @@ TEST_CASE( "InputOutputStream retain test" ) {
             outputStream.setRetain( false );
 
             hub::input::InputStream inputStream3( FILE_NAME, SERVER_PORT );
-            assert(inputStream3.isOpen());
+            assert( inputStream3.isOpen() );
             inputStream.read( a_read );
             assert( a == a_read );
             inputStream2.read( a_read );

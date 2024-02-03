@@ -1,5 +1,3 @@
-// pywrap.cpp
-//#include <cassert>
 #include <pybind11/eigen.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
@@ -41,7 +39,6 @@ class CustomSensorSpec
 
 /////////////////////////////////////////////////////////////////////////
 
-// a custom vector-class, with one function "mul"
 class CustomVector
 {
   private:
@@ -56,12 +53,6 @@ class CustomVector
 
     hub::Resolution getResolution() const;
 };
-
-// ----------------
-// regular C++ code
-// ----------------
-
-// class-constructor: store the input "Eigen::VectorXd"
 
 hub::Resolution CustomVector::getResolution() const {
     return m_resolution;
@@ -103,11 +94,13 @@ PYBIND11_MODULE( Hub, m ) {
 
     py::class_<hub::sensor::Acquisition>( m, "Acquisition" )
         .def( py::init<long, long>() )
-        .def( "addMeasure", []( hub::sensor::Acquisition& self, const CustomVector& customVector ) -> void {
-            hub::Measure measure(
-                customVector.getData(), customVector.getSize(), customVector.getResolution() );
-            self.pushBack( std::move( measure ) );
-        } );
+        .def( "addMeasure",
+              []( hub::sensor::Acquisition& self, const CustomVector& customVector ) -> void {
+                  hub::Measure measure( customVector.getData(),
+                                        customVector.getSize(),
+                                        customVector.getResolution() );
+                  self.pushBack( std::move( measure ) );
+              } );
 
     py::class_<CustomVector>( m, "Measure" ).def( py::init<Matrix8u, hub::Resolution>() );
 
@@ -119,11 +112,12 @@ PYBIND11_MODULE( Hub, m ) {
                   const CustomSensorSpec& sensorSpec ) -> void {
                   self.addStream( streamName, sensorSpec.m_sensorSpec );
               } )
-        .def(
-            "newAcq",
-            []( hub::client::Streamer& self,
-                const std::string& streamName,
-                const hub::sensor::Acquisition& acq ) -> void { self.newAcquisition( streamName, acq ); } )
+        .def( "newAcq",
+              []( hub::client::Streamer& self,
+                  const std::string& streamName,
+                  const hub::sensor::Acquisition& acq ) -> void {
+                  self.newAcquisition( streamName, acq );
+              } )
         .def( "isConnected", &hub::client::Streamer::isConnected );
 
     py::enum_<hub::format>( m, "Format" )

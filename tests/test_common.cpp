@@ -1,9 +1,12 @@
 #include "test_common.hpp"
 
-// #include "core/Info.hpp"
 #include "Version.hpp"
 
-void _checkValue(double value, const std::string &name, const std::string &unit, const std::string &filename, int line) {
+void _checkValue( double value,
+                  const std::string& name,
+                  const std::string& unit,
+                  const std::string& filename,
+                  int line ) {
 
     std::string filename2 = filename;
     filename2             = ReplaceAll( filename, ".", "_" );
@@ -12,11 +15,9 @@ void _checkValue(double value, const std::string &name, const std::string &unit,
     name2             = ReplaceAll( name2, "/", "_vs_" );
     name2             = ReplaceAll( name2, ":", "_" );
     name2             = ReplaceAll( name2, " ", "" );
-    //    name2 = ReplaceAll( name2, ".", "_" );
-    name2 = ReplaceAll( name2, "(", "_" );
-    name2 = ReplaceAll( name2, ")", "_" );
-    name2 = ReplaceAll( name2, ">", "_" );
-    //    name2 = ReplaceAll( name2, "-", "_" );
+    name2             = ReplaceAll( name2, "(", "_" );
+    name2             = ReplaceAll( name2, ")", "_" );
+    name2             = ReplaceAll( name2, ">", "_" );
 
     constexpr auto extension = "_v1_0_5.log";
     bool decline             = false;
@@ -42,30 +43,14 @@ void _checkValue(double value, const std::string &name, const std::string &unit,
             }
             inFile.close();
 
-                   // double minValue  = lastValues.back();
-                   // double maxValue  = lastValues.back();
-                   // double sum       = lastValues.back();
             const int nValue = lastValues.size();
-            // for ( int i = 1; i < std::min( nRatio, nValue ); ++i ) {
-            //     minValue = std::min( lastValues[nValue - 1 - i], minValue );
-            //     maxValue = std::max( lastValues[nValue - 1 - i], maxValue );
-            //     sum += lastValues[nValue - 1 - i];
-            // }
-            // const double mean = sum / std::min( nRatio, nValue );
 
             if ( nValue >= 8 ) {
                 const auto standardDeviation =
                     algo::StandardDeviation( lastValues.begin(), lastValues.end() );
                 const auto mean = algo::Mean( lastValues.begin(), lastValues.end() );
-                // const auto lastDeviation     = maxValue - minValue;
-                // assert( lastDeviation >= 0 );
                 const auto minRatio =
                     mean - standardDeviation * 3.0; // correspond of 0.1% of the population, should
-                                                    // never happened, retry test if not.
-                // const auto minRatio = minValue - lastDeviation * 0.5;
-                // std::cout << "minValue = " << minValue << std::endl;
-                // std::cout << "maxValue = " << maxValue << std::endl;
-                // std::cout << "minRatio = " << minRatio << std::endl;
 #ifndef DEBUG
                 CHECK( minRatio <= value );
 #endif
@@ -81,18 +66,15 @@ void _checkValue(double value, const std::string &name, const std::string &unit,
     }
 
     if ( !decline ) {
-        //        std::cout << "filename: " <<  filename + "_" + name2 + extension << std::endl;
         std::ofstream logFile( logFilename.c_str(), std::ios::out | std::ios::app );
         assert( logFile.is_open() );
 
         logFile << HUB_COMMIT_HASH << " " << value << " " << unit << std::endl;
-        // logFile << s_commitHash << " " << value << " " << unit << std::endl;
 
         logFile.close();
     }
 
     {
-        //        std::ifstream inFile( ( filename + "_" + name2 + extension ).c_str() );
         std::ifstream inFile( logFilename.c_str() );
         if ( inFile.is_open() ) {
             assert( inFile.is_open() );
@@ -101,9 +83,6 @@ void _checkValue(double value, const std::string &name, const std::string &unit,
             std::string hash;
             std::string unit;
             int iRatio = 0;
-            // std::string hashes[nRatio];
-            // double values[nRatio];
-            // std::list<double> values;
             std::vector<double> values( nRatio );
             for ( int i = 0; i < nRatio; ++i ) {
                 values[i] = 0.0;
@@ -114,9 +93,6 @@ void _checkValue(double value, const std::string &name, const std::string &unit,
                 inFile >> hash >> value2 >> unit;
                 if ( value2 != -1 ) {
                     values[iRatio % nRatio] = value2;
-                    // values.push_front(value2);
-                    // values.insert(values.begin(), value2);
-                    // hashes[iRatio % nRatio] = hash;
                     ++iRatio;
                 }
             }
@@ -168,8 +144,12 @@ void _checkValue(double value, const std::string &name, const std::string &unit,
                           " " + deviationStr + "+- ";
 
                 if ( minDiff > epsilon ) { report += "\033[32m"; }
-                else if ( minDiff < -epsilon ) { report += "\033[31m"; }
-                else { report += "\033[33m"; }
+                else if ( minDiff < -epsilon ) {
+                    report += "\033[31m";
+                }
+                else {
+                    report += "\033[33m";
+                }
                 report += meanCompareStr + "\033[0m";
 
                 if ( iMean != std::log2( nEl ) ) { report += ", "; }
@@ -184,8 +164,12 @@ void _checkValue(double value, const std::string &name, const std::string &unit,
                 curRatioStr          = curRatioStr.substr( 0, 5 );
 
                 if ( diff > epsilon ) { report += "\033[32m"; }
-                else if ( diff < -epsilon ) { report += "\033[31m"; }
-                else { report += "\033[33m"; }
+                else if ( diff < -epsilon ) {
+                    report += "\033[31m";
+                }
+                else {
+                    report += "\033[33m";
+                }
                 report += curRatioStr + "\033[0m";
 
                 if ( i != nEl - 1 ) { report += " "; }

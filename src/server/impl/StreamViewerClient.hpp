@@ -1,17 +1,16 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/11/27
-	
+
 #pragma once
 
 #ifdef HUB_USE_SERVER
 
-#include <thread>
+#    include <thread>
 
-#include "Client.hpp"
-#include "sensor/OutputSensor.hpp"
-// #include "net/ClientSocket.hpp"
-#include "io/InputOutputSocket.hpp"
+#    include "Client.hpp"
+#    include "io/InputOutputSocket.hpp"
+#    include "sensor/OutputSensor.hpp"
 
 namespace hub {
 namespace server {
@@ -25,8 +24,6 @@ class StreamerClient;
 class StreamViewerClient : public Client
 {
   private:
-    //    StreamViewerClient( ServerImpl* server, int iClient, net::ClientSocket&& sock, std::string
-    //    streamName );
     StreamViewerClient( ServerImpl* server,
                         int iClient,
                         io::InputOutputSocket&& sock,
@@ -54,6 +51,5 @@ class StreamViewerClient : public Client
 } // namespace impl
 } // namespace server
 } // namespace hub
-
 
 #endif

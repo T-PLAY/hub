@@ -1,28 +1,18 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/10/25
-	
-#pragma once
 
-// #include <vector>
+#pragma once
 
 #include <queue>
 
 #include "core/Macros.hpp"
-//#include "core/Vector.hpp"
-//#include "input/InputZppBits.hpp"
-//#include "output/OutputZppBits.hpp"
 
-//#include "InputOutputBase.hpp"
-//#include "InputOutputImpl.hpp"
-//#include "InputOutputZppBits.hpp"
 #include "InputOutput.hpp"
 
 namespace hub {
 namespace io {
 
-
-//template <class InputOutputT = InputOutput<>>
 template <class SerializerT = Serializer, class InputOutputT = InputOutput<SerializerT>>
 class ArchiveT : public InputOutputT
 {
@@ -31,7 +21,7 @@ class ArchiveT : public InputOutputT
     using InputOutputT::write;
 
     void read( hub::Data_t* data, hub::Size_t size ) override {
-        assert(size > 0);
+        assert( size > 0 );
         assert( !m_datas.empty() );
         const auto& vector = m_datas.front();
 #ifdef HUB_DEBUG_INPUT
@@ -50,7 +40,7 @@ class ArchiveT : public InputOutputT
     }
 
     void write( const hub::Data_t* data, hub::Size_t size ) override {
-        assert(size > 0);
+        assert( size > 0 );
         std::vector<hub::Data_t> vector( data, data + size );
 #ifdef HUB_DEBUG_OUTPUT
         std::cout << HEADER << "write(Data_t*, Size_t) : data = " << vector << std::endl;
@@ -63,8 +53,7 @@ class ArchiveT : public InputOutputT
 #endif
     }
 
-    void close() override {
-    };
+    void close() override {};
 
     bool isOpen() const override { return true; }
 
@@ -75,23 +64,18 @@ class ArchiveT : public InputOutputT
             m_datas.pop();
     }
 
-    void setRetain(bool retained) override {
-    }
+    void setRetain( bool retained ) override {}
 
 #ifdef DEBUG
-    size_t getNCall() const {
-        return m_nCall;
-    }
+    size_t getNCall() const { return m_nCall; }
 
-    size_t getLastCallSize() const {
-        return m_lastCallSize;
-    }
+    size_t getLastCallSize() const { return m_lastCallSize; }
 #endif
 
   private:
     std::queue<std::vector<hub::Data_t>> m_datas;
 #ifdef DEBUG
-    size_t m_nCall = 0;
+    size_t m_nCall        = 0;
     size_t m_lastCallSize = 0;
 #endif
 };

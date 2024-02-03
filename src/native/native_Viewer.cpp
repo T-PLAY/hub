@@ -1,25 +1,17 @@
 
 
-
 #include "client/Viewer.hpp"
 
 #define HUB_CPP_SOURCE
 #include "native_Viewer.hpp"
 
-
 namespace hub {
 namespace native {
 
-client::Viewer* createViewer( const char* name,
-                              client::ViewerHandler * viewerHandler,
-                              const char* ipv4,
-                              int port ) {
+client::Viewer*
+createViewer( const char* name, client::ViewerHandler* viewerHandler, const char* ipv4, int port ) {
 
-    client::Viewer* viewer = new client::Viewer(
-        name,
-        std::move(*viewerHandler),
-        ipv4,
-        port );
+    client::Viewer* viewer = new client::Viewer( name, std::move( *viewerHandler ), ipv4, port );
     return viewer;
 }
 
@@ -52,13 +44,11 @@ bool viewer_isConnected( const client::Viewer* viewer ) {
     return viewer->isConnected();
 }
 
-int viewer_nStream(const client::Viewer *viewer)
-{
+int viewer_nStream( const client::Viewer* viewer ) {
     return viewer->nStream();
 }
 
-int viewer_nStreaming(const client::Viewer *viewer)
-{
+int viewer_nStreaming( const client::Viewer* viewer ) {
     return viewer->nStreaming();
 }
 

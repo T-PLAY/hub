@@ -1,13 +1,12 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/11/27
-	
+
 #pragma once
 
 #include <mutex>
 #include <string>
 
-// #include "net/ClientSocket.hpp"
 #include "io/StreamBase.hpp"
 
 namespace hub {
@@ -30,7 +29,7 @@ class SRC_API Client2
     void setServer( ServerImpl2* newServer );
 
     virtual void end( hub::io::StreamBase::ServerMessage message ) = 0;
-    virtual void notifyInited() = 0;
+    virtual void notifyInited()                                    = 0;
 
   private:
     ServerImpl2* m_server = nullptr;

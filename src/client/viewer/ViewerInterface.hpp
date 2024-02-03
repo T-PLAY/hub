@@ -25,16 +25,15 @@
             _sstr << m_nStreamer << "/" << m_streams.size() << ":" << _params; \
             m_viewerHandler.onLogMessage( _sstr.str().c_str() );               \
         }                                                                      \
-        else { std::cout << m_nStreamer << ":" << _params << std::endl; }      \
+        else {                                                                 \
+            std::cout << m_nStreamer << ":" << _params << std::endl;           \
+        }                                                                      \
     } while ( false );
 
 namespace hub {
 namespace client {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// template class SRC_API ViewerStream<input::InputStreamServer2>;
-//     std::map<std::string, std::unique_ptr<ViewerStream<InputStream>>> m_streams;
 
 ///
 /// \brief The ViewerInterface class (event dispatcher)
@@ -113,16 +112,7 @@ class ViewerInterface
     ///
     virtual const int& getPort() const;
 
-    //    ///
-    //    /// \brief setAutoSync
-    //    /// is used to use or not the auto synchronization suggestion when
-    //    /// new sensor is connecting to the server.
-    //    /// \param newAutoSync
-    //    /// enable/disable auto synchronization.
-    //    ///
-    //    void setAutoSync( bool newAutoSync );
-
-    virtual void setAutoConnect(bool autoConnect);
+    virtual void setAutoConnect( bool autoConnect );
 
     ///
     /// \brief isConnected
@@ -137,8 +127,6 @@ class ViewerInterface
     /// \brief startStream
     /// \param streamName
     ///
-    //    template <class InputStream>
-    //    template <class InputStream>
     void startStream( const std::string& streamName );
 
     ///
@@ -167,7 +155,6 @@ class ViewerInterface
 
   private:
   protected:
-    // void addStream( const std::string& streamName, const sensor::SensorSpec& sensorSpec );
     void addStream( const std::string& streamName,
                     const std::string& streamIpv4,
                     int streamPort,
@@ -183,15 +170,11 @@ class ViewerInterface
 
     std::map<std::string, std::unique_ptr<ViewerStream<InputStream>>> m_streams;
 
-    // static int m_iStreamer;
     int m_nStreamer = 0;
     bool m_autoConnect;
 
   private:
 };
-
-// template <class InputStream>
-// int ViewerInterface<InputStream>::m_iStreamer = 0;
 
 //////////////////////////////////////// Viewer ////////////////////////////////////////
 
@@ -200,31 +183,19 @@ ViewerInterface<InputStream>::ViewerInterface( const std::string& name,
                                                ViewerHandler&& viewerHandler,
                                                const std::string& ipv4,
                                                int port,
-bool autoConnect                                               ) :
+                                               bool autoConnect ) :
 
     m_name( utils::getHostname() + ":" + name ),
     m_viewerHandler( std::move( viewerHandler ) ),
     m_serverIpv4( ipv4 ),
     m_serverPort( port ),
-    m_autoConnect(autoConnect)
-{}
+    m_autoConnect( autoConnect ) {}
 
 template <class InputStream>
 ViewerInterface<InputStream>::~ViewerInterface() {
-    //    DEBUG_MSG( "[ViewerInterface] ~ViewerInterface()" );
-    //    assert(! m_stopThread);
-    //    m_stopThread = true;
-
-    //    if ( m_sock.isOpen() ) { m_sock.write( io::StreamInterface::ClientMessage::VIEWER_CLOSED
-    //    ); }
-
-    //    assert( m_thread.joinable() );
-    //    m_thread.join();
 
     assert( m_streams.empty() );
     m_streams.clear();
-    //    DEBUG_MSG( "[ViewerInterface] ~ViewerInterface() done" );
-    //    printStatus();
 }
 
 /////////////////////////////////////////////////////
@@ -233,9 +204,7 @@ template <class InputStream>
 void ViewerInterface<InputStream>::addStream( const std::string& streamName,
                                               const std::string& streamIpv4,
                                               int streamPort,
-                                              io::Header&& header )
-// const sensor::SensorSpec& sensorSpec ) {
-{
+                                              io::Header&& header ) {
     assert( m_streams.find( streamName ) == m_streams.end() );
 
 #ifndef HUB_NON_BUILD_SENSOR
@@ -244,19 +213,12 @@ void ViewerInterface<InputStream>::addStream( const std::string& streamName,
     if ( m_viewerHandler.onNewStream ) {
 #endif
 
-        m_streams[streamName] =
-            std::make_unique<ViewerStream<InputStream>>( m_nStreamer++,
-                                                         streamIpv4,
-                                                         streamPort,
-                                                         streamName,
-                                                         std::move( header ),
-                                                         // sensorSpec,
-                                                         m_viewerHandler
-                                                         // m_viewerHandler.onNewStream,
-                                                         // m_viewerHandler.onDelStream,
-                                                         // m_viewerHandler.onNewAcquisition,
-                                                         // m_viewerHandler.onLogMessage
-            );
+        m_streams[streamName] = std::make_unique<ViewerStream<InputStream>>( m_nStreamer++,
+                                                                             streamIpv4,
+                                                                             streamPort,
+                                                                             streamName,
+                                                                             std::move( header ),
+                                                                             m_viewerHandler );
         printStatus();
     }
 }
@@ -269,9 +231,7 @@ void ViewerInterface<InputStream>::delStream( const std::string& streamName ) {
 #else
     if ( m_viewerHandler.onNewStream ) {
 #endif
-        // assert( m_viewerHandler.onDelStream );
         assert( m_streams.find( streamName ) != m_streams.end() );
-        // if ( m_streams.find( streamName ) != m_streams.end() ) { m_streams.erase( streamName ); }
         m_streams.erase( streamName );
         printStatus();
     }
@@ -305,15 +265,7 @@ template <class InputStream>
 void ViewerInterface<InputStream>::setProperty( const std::string& streamName,
                                                 const std::string& id,
                                                 int property,
-                                                const Any& value ) {
-    //    if ( m_sock.isOpen() ) {
-    //        m_sock.write( io::StreamInterface::ClientMessage::SET_PROPERTY );
-    //        m_sock.write( streamName );
-    //        m_sock.write( id );
-    //        m_sock.write( property );
-    //        m_sock.write( value );
-    //    }
-}
+                                                const Any& value ) {}
 
 template <class InputStream>
 int ViewerInterface<InputStream>::nStream() const {
@@ -329,7 +281,6 @@ int ViewerInterface<InputStream>::nStreaming() const {
         if ( stream->isStreaming() ) { ++ret; }
     }
     return ret;
-    // return m_streams.size();
 }
 
 template <class InputStream>
@@ -341,7 +292,9 @@ void ViewerInterface<InputStream>::printStatus() const {
 
         const auto& stream = pair.second;
         if ( stream == nullptr ) { str += " (" + streamName + ",null)"; }
-        else { str += " (" + streamName + "," + std::to_string( stream->isStreaming() ) + ")"; }
+        else {
+            str += " (" + streamName + "," + std::to_string( stream->isStreaming() ) + ")";
+        }
     }
     DEBUG_MSG( "\033[7m[Viewer] status : server connected:"
                << m_serverConnected << ", nStreamer:" << m_streams.size() << str << "\033[0m" );
@@ -352,7 +305,6 @@ void ViewerInterface<InputStream>::setIpv4( const std::string& ipv4 ) {
     DEBUG_MSG( "[Viewer] setIpv4 " << ipv4 );
     assert( !m_serverConnected );
     m_serverIpv4 = ipv4;
-    //    m_sock.setIpv4( ipv4 );
 }
 
 template <class InputStream>
@@ -360,30 +312,22 @@ void ViewerInterface<InputStream>::setPort( int port ) {
     DEBUG_MSG( "[Viewer] setPort " << port );
     assert( !m_serverConnected );
     m_serverPort = port;
-    //    m_sock.setPort( port );
 }
 
 template <class InputStream>
 const std::string& ViewerInterface<InputStream>::getIpv4() const {
     return m_serverIpv4;
-    //    return m_sock.getIpv4();
 }
 
 template <class InputStream>
 const int& ViewerInterface<InputStream>::getPort() const {
     return m_serverPort;
-    //    return m_sock.getPort();
 }
 
-template<class InputStream>
-void ViewerInterface<InputStream>::setAutoConnect(bool autoConnect)
-{
+template <class InputStream>
+void ViewerInterface<InputStream>::setAutoConnect( bool autoConnect ) {
     m_autoConnect = autoConnect;
 }
-
-// void ViewerInterface::setAutoSync( bool newAutoSync ) {
-//     DEBUG_MSG( "[ViewerInterface] setAutoSync " << newAutoSync );
-// }
 
 template <class InputStream>
 bool ViewerInterface<InputStream>::isConnected() const {

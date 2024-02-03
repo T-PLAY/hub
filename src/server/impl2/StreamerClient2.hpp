@@ -1,7 +1,7 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/11/27
-	
+
 #pragma once
 
 #include <deque>
@@ -11,8 +11,6 @@
 #include <thread>
 
 #include "Client2.hpp"
-// #include "sensor/InputSensor.hpp"
-//  #include "net/ClientSocket.hpp"
 #include "io/InputOutputSocket.hpp"
 
 namespace hub {
@@ -37,7 +35,6 @@ class SRC_API StreamerClient2 : public Client2
     ///
     StreamerClient2( ServerImpl2* server,
                      int iClient,
-                     //                    net::ClientSocket&& sock,
                      hub::io::InputOutputSocket&& sock,
                      std::string streamName,
                      std::string streamIpv4,
@@ -55,13 +52,11 @@ class SRC_API StreamerClient2 : public Client2
     /// \brief getInputSensor
     /// \return
     ///
-    //    const sensor::InputSensor *getInputSensor() const;
 
     ///
     /// \brief getLastAcq
     /// \return
     ///
-    //    sensor::Acquisition getLastAcq() const;
 
     ///
     /// \brief end
@@ -77,28 +72,21 @@ class SRC_API StreamerClient2 : public Client2
     /// \brief getStreamName
     /// \return
     ///
-    //    const std::string& getStreamName() const;
 
     ///
     /// \brief isPackedStream
     /// \return
     ///
-    //    bool isPackedStream() const;
 
     ///
     /// \brief getPackedAcqs
     /// \return
     ///
-    //    const std::set<sensor::Acquisition>& getPackedAcqs() const;
 
     const std::string m_streamName;
-    // std::vector<hub::Data_t> m_retainedData;
-    // bool m_retained;
     const std::string m_streamIpv4;
     const int m_streamPort;
     io::Header m_header;
-    // std::atomic<bool> m_fullyRetained = false;
-    // std::atomic<bool> m_retainedSharedToViewer = false;
 
     int getNStreamViewer() const;
 
@@ -110,14 +98,6 @@ class SRC_API StreamerClient2 : public Client2
     bool m_serverDown = false;
 
     int m_nStreamViewer = 0;
-
-    //    std::unique_ptr<sensor::InputSensor> m_inputSensor;
-
-    //    sensor::Acquisition m_lastAcq;
-
-    //    int m_nAcq            = 0;
-    //    bool m_isPackedStream = false;
-    //    std::set<sensor::Acquisition> m_packedAcqs;
 };
 
 } // namespace server

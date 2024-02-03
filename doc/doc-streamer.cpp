@@ -21,40 +21,32 @@ auto getData() {
 }
 } // namespace sensorAPI
 
-// clang-format off
 int main() {
 
-// startConstruction
-// link to local server at port 4042
-hub::client::Streamer streamer( "127.0.0.1", 4042 );
-// endConstruction
+    hub::client::Streamer streamer( "127.0.0.1", 4042 );
 
-hub::sensor::SensorSpec sensorSpec;
-hub::Resolution resolution;
-bool receivingDataFromSensor = true;
+    hub::sensor::SensorSpec sensorSpec;
+    hub::Resolution resolution;
+    bool receivingDataFromSensor = true;
 
-// startFunctional
-// init stream
-streamer.addStream( "myStream", std::move( sensorSpec ) );
+    streamer.addStream( "myStream", std::move( sensorSpec ) );
 
-while ( receivingDataFromSensor ) {
+    while ( receivingDataFromSensor ) {
 
 #if ( __cplusplus >= 201703L )
-    auto [start, end] = sensorAPI::getTimestamp();
-    auto [data, size] = sensorAPI::getData();
+        auto [start, end] = sensorAPI::getTimestamp();
+        auto [data, size] = sensorAPI::getData();
 #else
-    auto start = sensorAPI::getTimestamp().start;
-    auto end = sensorAPI::getTimestamp().end;
-    auto data = sensorAPI::getData().data;
-    auto size = sensorAPI::getData().size;
+        auto start = sensorAPI::getTimestamp().start;
+        auto end   = sensorAPI::getTimestamp().end;
+        auto data  = sensorAPI::getData().data;
+        auto size  = sensorAPI::getData().size;
 #endif
 
-    auto&& acq {hub::sensor::Acquisition { start, end } << hub::Measure { data, size, resolution }};
-    // share new sensor data (only if connected to the server)
-    streamer.newAcquisition( "myStream", std::move( acq ) );
-}
-// endFunctional
+        auto&& acq { hub::sensor::Acquisition { start, end }
+                     << hub::Measure { data, size, resolution } };
+        streamer.newAcquisition( "myStream", std::move( acq ) );
+    }
 
-return 0;
+    return 0;
 }
-// clang-format on

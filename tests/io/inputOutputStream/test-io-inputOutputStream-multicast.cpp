@@ -1,7 +1,3 @@
-// #include <catch2/catch_test_macros.hpp>
-// #define HUB_DEBUG_INPUT
-// #define HUB_DEBUG_OUTPUT
-// #define HUB_DEBUG_SOCKET
 
 #include "io/test_io_common.hpp"
 #include "test_common.hpp"
@@ -13,7 +9,6 @@ TEST_CASE( "InputOutputStream multicast test" ) {
     TEST_BEGIN()
 
     const auto hostname = hub::utils::getHostname();
-    // const auto port     = GET_RANDOM_PORT;
 
     INIT_SERVER
 
@@ -26,8 +21,6 @@ TEST_CASE( "InputOutputStream multicast test" ) {
     constexpr auto nStream = 5;
 
     {
-        // hub::Server server( );
-        // server.asyncRun();
 
         {
             std::vector<hub::output::OutputStream> outputStreams;
@@ -85,6 +78,5 @@ TEST_CASE( "InputOutputStream multicast test" ) {
     // CHECK_VALUE( ratio, 100, 50, "InputOutputStream:Multicast/Serial", "%" );
     CHECK_DECLINE( ratio, "InputOutputStream:Multicast(5->5)/Serial(1->1)", "/" );
 
-    // std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
     TEST_END()
 }

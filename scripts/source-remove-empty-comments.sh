@@ -12,5 +12,6 @@ for file in $(find $(cat scripts/source_dirs.txt) -type f \( -name "*.cpp" -o -n
 	echo "$file"
 	
 	sed -i '/^ *\/\/[^ ^\/].*$/d' $file
-	sed -i '/^ *\/\/ [ ].*$/d' $file
+	# sed -i '/^ *\/\/ [ ].*$/d' $file
+	sed -i '/^ *\/\/ [^A-Z].*$/d' $file
 done

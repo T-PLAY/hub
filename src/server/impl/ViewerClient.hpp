@@ -1,18 +1,17 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/11/27
-	
+
 #pragma once
 
 #ifdef HUB_USE_SERVER
 
-#include <mutex>
-#include <thread>
+#    include <mutex>
+#    include <thread>
 
-#include "Client.hpp"
-// #include "net/ClientSocket.hpp"
-#include "io/InputOutputSocket.hpp"
-#include "sensor/SensorSpec.hpp"
+#    include "Client.hpp"
+#    include "io/InputOutputSocket.hpp"
+#    include "sensor/SensorSpec.hpp"
 
 namespace hub {
 namespace server {
@@ -43,7 +42,6 @@ class ViewerClient : public Client
   private:
     std::thread m_thread;
 
-    //    net::ClientSocket m_socket;
     io::InputOutputSocket m_socket;
 
     bool m_viewerClosed = false;
@@ -54,6 +52,5 @@ class ViewerClient : public Client
 } // namespace impl
 } // namespace server
 } // namespace hub
-
 
 #endif

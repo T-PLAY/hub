@@ -11,10 +11,7 @@ sensor::InputSensor* createInputSensor( const char* streamName, const char* ipv4
     std::cout << "[Native] createInputSensor( " << streamName << ")" << std::endl;
     sensor::InputSensor* inputSensor = nullptr;
     try {
-        inputSensor =
-            //            new InputSensor( io::InputStream( streamName, net::ClientSocket( ipv4,
-            //            port ) ) );
-            new sensor::InputSensor( input::InputStream( streamName, port, ipv4 ) );
+        inputSensor = new sensor::InputSensor( input::InputStream( streamName, port, ipv4 ) );
     }
     catch ( std::exception& e ) {
         std::cout << "[Native] createInputSensor : catch exception : " << e.what() << std::endl;
@@ -31,7 +28,6 @@ void freeInputSensor( sensor::InputSensor* inputSensor ) {
 
 int getAcquisitionSize( const sensor::InputSensor* inputSensor ) {
     assert( inputSensor != nullptr );
-    // return static_cast<int>( inputSensor->getSpec().getAcquisitionSize() );
     return static_cast<int>( inputSensor->getSpec().getResolution().size() );
 }
 
@@ -43,10 +39,8 @@ sensor::Acquisition* getAcquisition( sensor::InputSensor* inputSensor ) {
 
     auto acq = inputSensor->acqMsg();
     try {
-        // sensor::Acquisition acq;
         *inputSensor >> acq;
         std::cout << "[Native] get acq : " << acq << std::endl;
-        // ret = new sensor::Acquisition( std::move( acq ) );
         ret = new sensor::Acquisition( acq.clone() );
     }
     catch ( std::exception& e ) {

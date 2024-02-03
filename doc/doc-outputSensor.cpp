@@ -1,7 +1,7 @@
 
 
-#include <sensor/OutputSensor.hpp>
 #include <client/Streamer.hpp>
+#include <sensor/OutputSensor.hpp>
 
 #include <filesystem>
 #include <thread>
@@ -44,49 +44,30 @@ int main() {
 
     {
         hub::sensor::SensorSpec sensorSpec;
-        // clang-format off
         {
-            // startConstruction
-// bin/server is running locally on port 4042
-// the stream id name 'myStream' is not used within the server
-hub::sensor::OutputSensor outputSensor(
-    sensorSpec,
-    "myStream", hub::net::ClientSocket( "127.0.0.1", 4042 ) );
-            // endConstruction
+            hub::sensor::OutputSensor outputSensor(
+                sensorSpec, "myStream", hub::net::ClientSocket( "127.0.0.1", 4042 ) );
 
             long long start = 0, end = 0;
-            unsigned char * data = nullptr;
-            uint64_t size = 0;
+            unsigned char* data = nullptr;
+            uint64_t size       = 0;
             hub::Resolution resolution;
-            hub::Measure measure(data, size, resolution);
-            hub::Measure measure2(data, size, resolution);
-            hub::Measure measure3(data, size, resolution);
+            hub::Measure measure( data, size, resolution );
+            hub::Measure measure2( data, size, resolution );
+            hub::Measure measure3( data, size, resolution );
 
-            // clang-format on
-            // startFunctional
             outputSensor << ( hub::sensor::Acquisition { start, end }
                               << hub::Measure { data, size, resolution } );
-            // endFunctional
-            // assert( outputSensor.m_spec.getResolutions().at(0) == resolution );
-            // clang-format off
         }
 
         {
-            // startConstruction2
-// save acquisitions to file
-hub::sensor::OutputSensor outputSensor(
-    sensorSpec,
-    hub::input::InputFile( std::fstream(
-        "file.txt", std::ios::binary | std::ios::out | std::ios::trunc ) ) );
-            // endConstruction2
+            hub::sensor::OutputSensor outputSensor(
+                sensorSpec,
+                hub::input::InputFile( std::fstream(
+                    "file.txt", std::ios::binary | std::ios::out | std::ios::trunc ) ) );
         }
 
-        {
-            // startConstruction3
-// create pear buffer to shared data between different threads
-            // endConstruction3
-        }
-        // clang-format on
+        {}
     }
 
     return 0;

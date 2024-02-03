@@ -1,17 +1,15 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/09/28
-	
+
 #pragma once
 
 #include "core/Input.hpp"
 
 #include "Acquisition.hpp"
 #include "Sensor.hpp"
-// #include "core/Traits.hpp"
 //// #include "core/Tuple.hpp"
 
-//  user friendly useless includes
 #include "io/input/InputFile.hpp"
 #include "io/input/InputStream.hpp"
 
@@ -42,7 +40,6 @@ namespace sensor {
 /// todo: template class
 ///
 
-// template <typename Input>
 class InputSensor : public Sensor
 {
     template <class Input, class... Inputs>
@@ -51,24 +48,20 @@ class InputSensor : public Sensor
         SensorSpec sensorSpec;
         memory.read( sensorSpec );
         m_spec += sensorSpec;
-        m_specs.push_back(std::move(sensorSpec));
+        m_specs.push_back( std::move( sensorSpec ) );
 
-        if constexpr (sizeof...(inputs) > 0) {
-            initSensorSpec(inputs...);
-        }
+        if constexpr ( sizeof...( inputs ) > 0 ) { initSensorSpec( inputs... ); }
     }
 
   public:
     using Sensor::acqMsg;
 
     template <class InputT>
-        // requires std::is_base_of_v<Input, std::remove_cvref_t<InputT>>
     InputSensor( InputT& input ) : Sensor( SensorSpec {} ), m_inputs( { &input } ) {
         initSensorSpec( input );
     }
 
     template <class InputT>
-        // requires std::is_base_of_v<Input, std::remove_cvref_t<InputT>>
     InputSensor( InputT& input, InputT& input2 ) :
         Sensor( SensorSpec {} ), m_inputs( { &input, &input2 } ) {
         initSensorSpec( input, input2 );
@@ -76,33 +69,30 @@ class InputSensor : public Sensor
 
     template <class InputT>
 #if CPP_VERSION >= 20
-        requires std::is_base_of_v<Input, std::remove_cvref_t<InputT>>
+    requires std::is_base_of_v<Input, std::remove_cvref_t<InputT>>
 #endif
     // REQUIRES (std::is_base_of_v<Input, std::remove_cvref_t<InputT>>)
     InputSensor( InputT&& input ) : Sensor( SensorSpec {} ) {
-        static_assert(std::is_base_of_v<Input, std::remove_cvref_t<InputT>>);
+        static_assert( std::is_base_of_v<Input, std::remove_cvref_t<InputT>> );
         initSensorSpec( input );
         m_inputs.push_back( new std::remove_cvref_t<InputT>( std::move( input ) ) );
         m_inputOwner = true;
-        // assert(false);
     }
 
     template <class InputT>
 #if CPP_VERSION >= 20
-        requires std::is_base_of_v<Input, std::remove_cvref_t<InputT>>
+    requires std::is_base_of_v<Input, std::remove_cvref_t<InputT>>
 #endif
     InputSensor( InputT&& input, InputT&& input2 ) : Sensor( SensorSpec {} ) {
-        static_assert(std::is_base_of_v<Input, std::remove_cvref_t<InputT>>);
+        static_assert( std::is_base_of_v<Input, std::remove_cvref_t<InputT>> );
         initSensorSpec( input, input2 );
         m_inputs.push_back( new std::remove_cvref_t<InputT>( std::move( input ) ) );
         m_inputs.push_back( new std::remove_cvref_t<InputT>( std::move( input2 ) ) );
         m_inputOwner = true;
-        // assert(false);
     }
 
     ~InputSensor() {
         if ( m_inputOwner ) {
-            // std::cout << "[InputSensor] ~InputSensor()" << std::endl;
             auto it = m_inputs.begin();
             while ( it != m_inputs.end() ) {
                 auto cur = it;
@@ -117,7 +107,6 @@ class InputSensor : public Sensor
 
         if ( m_inputs.size() == 1 ) {
             Input& input = *m_inputs.at( 0 );
-            // input.read( acq.data(), acq.size() );
             input.read( acq );
         }
         else {
@@ -180,140 +169,17 @@ class InputSensor : public Sensor
 #endif
     }
 
-      std::vector<Acquisition> getAllAcquisitions();
+    std::vector<Acquisition> getAllAcquisitions();
 
     const Input& getInput() const { return *m_inputs.at( 0 ); }
     Input& getInput() { return *m_inputs.at( 0 ); }
 
   private:
     std::vector<Input*> m_inputs;
-    // std::vector<bool> m_inputOwners;
     bool m_inputOwner = false;
     std::list<sensor::Acquisition> m_lastAcqs;
     std::vector<hub::sensor::SensorSpec> m_specs;
 };
 
-///////////////////////////////////// TEMPLATE ////////////////////////////////////
-
-////template <typename Input, typename Measures>
-////class SRC_API InputSensorT : public Sensor
-////{
-////  public:
-////    //    using Acquisition = Acquisition<Measures>;
-
-////    ///
-////    /// \brief InputSensorT
-////    /// is called when you want to get data sensor
-////    /// \param input
-////    /// is the communication bus you want to use
-////    ///
-////    template <class InputT>
-////    //              typename = typename std::enable_if<std::is_base_of<Input, Input>::value
-////    //                                                 && !std::is_same<Input,
-////    //                                                 net::ClientSocket>::value
-////    //                                                 >::type>
-////    explicit InputSensorT( InputT&& input ) :
-
-////        m_input( std::forward<InputT>( input ) ),
-////        Sensor( sensor::SensorSpec {} )
-////    //        m_input( new Input( std::move( input ) ) )
-////    {
-////        //        static_assert( std::is_base_of<Input, Input>::value, "not a base class" );
-////        //        static_assert( !std::is_same<net::ClientSocket, Input>::value, "not
-/// clientSocket /        //        class" );
-
-////        //        m_input.read( m_spec );
-////    }
-
-////    template <class InputT>
-////    //              ,
-////    //              typename = typename std::enable_if<std::is_base_of<Input,
-/// Input>::value>::type> /    explicit InputSensorT( const InputT& input ) = delete;
-
-////    InputSensorT( const InputSensorT& inputSensor )           = delete;
-////    InputSensorT operator=( const InputSensorT& inputSensor ) = delete;
-
-////    InputSensorT( InputSensorT&& inputSensor )           = delete;
-////    InputSensorT operator=( InputSensorT&& inputSensor ) = delete;
-
-////    ///
-////    /// \brief InputSensorT
-////    /// \param inputSensor
-////    ///
-////    //    InputSensorT( InputSensorT&& inputSensor );
-
-////    //    ~InputSensorT();
-
-////    template <typename T>
-////    void operator>>( T& t ) {
-////        m_input.read( t );
-////    }
-
-////  public:
-////    //    Acquisition<Measures> getAcq() {
-////    //        Acquisition<Measures> acq;
-////    //        m_input.read(acq);
-////    //        return acq;
-////    //    }
-
-////    // todo acq
-////    //    ///
-////    //    /// \brief operator >>
-////    //    /// \param acquisition
-////    //    ///
-////    //    void operator>>( Acquisition& acquisition );
-
-////    //    ///
-////    //    /// \brief operator >>
-////    //    /// \param inputSensor
-////    //    /// \return
-////    //    ///
-////    //    Acquisition operator>>( InputSensorT& inputSensor );
-
-////    //    ///
-////    //    /// \brief getAllAcquisitions
-////    //    /// can be an asynchronous function depending of the used interface.
-////    //    /// \return
-////    //    /// all acquisitions coming from the interface.
-////    //    ///
-////    //    std::vector<Acquisition> getAllAcquisitions();
-
-////    //    ///
-////    //    /// \brief close
-////    //    ///
-////    //    void close();
-
-////    ///
-////    /// \brief getInput
-////    /// \return
-////    ///
-////    const Input& getInput() const { return m_input; }
-
-////  private:
-////    //    std::unique_ptr<Input> m_input;
-////    Input& m_input;
-////    //    bool m_moved = false;
-////};
-
 } // namespace sensor
 } // namespace hub
-
-////    template <class Input = input::InputStream,
-////    template <class Input,
-////              class... Args,
-////              typename = typename std::enable_if<std::is_base_of<Input, Input>::value
-//////              typename = typename std::enable_if<std::is_same<input::InputStream,
-/// Input>::value / #if ( __cplusplus < 201703L ) / && ( sizeof...( Args ) != 1 || /
-///!is_one_of<Input, Args...>::value ) / #else /                                                  &&
-///( sizeof...( Args ) != 1 || /                                                       !(
-/// std::is_same<Input, Args> {} || ... ) ) / #endif / >::type> /     InputSensorT( Args&&... args )
-///: /         Sensor( sensor::SensorSpec {}  ), /         m_input( new Input( std::forward<Args>(
-/// args )... ) ) { /         static_assert( std::is_base_of<Input, Input>::value, "not a base
-/// class"
-///);
-//////        static_assert( !std::is_same<net::ClientSocket, Input>::value, "not clientSocket
-/// class"
-/////);
-
-////        m_input->read( m_spec );
-////    }

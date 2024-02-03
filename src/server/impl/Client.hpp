@@ -1,16 +1,15 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/11/27
-	
+
 #pragma once
 
 #ifdef HUB_USE_SERVER
 
-#include <mutex>
-#include <string>
+#    include <mutex>
+#    include <string>
 
-// #include "net/ClientSocket.hpp"
-#include "io/StreamBase.hpp"
+#    include "io/StreamBase.hpp"
 
 namespace hub {
 namespace server {
@@ -48,6 +47,5 @@ class Client
 } // namespace impl
 } // namespace server
 } // namespace hub
-
 
 #endif

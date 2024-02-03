@@ -1,13 +1,8 @@
 
-// #define HUB_DEBUG_INPUT
-// #define HUB_DEBUG_OUTPUT
 
 #include "test_common.hpp"
 
-// #include <core/io/Archive.hpp>
 #include <core/matrix/MatrixTs.hpp>
-// #include <core/matrix/MatrixXD.hpp>
-// #include <core/Matrix.hpp>
 
 struct RGB8 {
     unsigned char r;
@@ -23,8 +18,6 @@ struct XYZ32F {
 
 TEST_CASE( "MatrixTs test" ) {
     TEST_BEGIN()
-
-    // hub::io::Archive archive;
 
     using ResCTypes = hub::MatrixTs<int, double, bool>;
     std::cout << "ResCTypes: " << ResCTypes() << std::endl;
@@ -92,7 +85,6 @@ TEST_CASE( "MatrixTs test" ) {
     assert( ( serialChar.getDims<char, 1>() == Dims { 1 } ) );
     assert( ( serialChar.getDims<char, 2>() == Dims { 1 } ) );
     assert( ( serialChar.getDims<char, 8>() == Dims { 1 } ) );
-    //    std::cout << "const char&: " << std::to_string(serialChar.get<char&>()) << std::endl;
     assert( serialChar.get<const char&>() == 'g' );
     assert( ( serialChar.get<const char&, 0>() == 'g' ) );
     assert( ( serialChar.get<const char&, 1>() == 'a' ) );
@@ -103,25 +95,11 @@ TEST_CASE( "MatrixTs test" ) {
 
     for ( int iType = 0; iType < serialChar.nType(); ++iType ) {
         const auto& dims = serialChar.getDims( iType );
-        //        const auto & size = serialChar.getSize(iType);
-        //        const auto * data = serialChar.getData(iType);
     }
 
-    // todo serialize
-    // std::cout << "archive write" << std::endl;
-    // archive.write( serialChar );
-    // // //    return 0;
     // Matrix serialChar_read;
-    // archive.read( serialChar_read );
-    // assert( serialChar == serialChar_read );
-    // //    return 0;
-    // archive.write( serialChar.data(), serialChar.size() );
-    // archive.read( serialChar_read.data(), serialChar.size() );
-    // assert( memcmp( serialChar.data(), serialChar_read.data(), serialChar.size() ) == 0 );
 
     //////////////////////////////////////////////////////////////////////
-
-    //    return;
 
     constexpr Buffer<Data_t, 2> buffer { 1, 2 };
     std::cout << "buffer: " << buffer << std::endl;
@@ -137,9 +115,6 @@ TEST_CASE( "MatrixTs test" ) {
 
     ///////////////////////////////////////////////////////////////////////////////
 
-    //    UserMatrix matrixUser;
-
-    //    MatrixTs<int, UserMatrix> matrixUser;
     MatrixTs<int, double> matrixUser;
     std::cout << "matrixUser: " << matrixUser << std::endl;
 

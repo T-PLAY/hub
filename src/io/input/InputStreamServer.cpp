@@ -3,26 +3,19 @@
 
 #ifdef HUB_USE_SERVER
 
-#include "sensor/Acquisition.hpp"
-#include "sensor/SensorSpec.hpp"
+#    include "sensor/Acquisition.hpp"
+#    include "sensor/SensorSpec.hpp"
 
 namespace hub {
 namespace input {
 
-//InputStreamServer::InputStreamServer( const std::string& streamName, net::ClientSocket&& clientSocket ) :
-InputStreamServer::InputStreamServer(const std::string &streamName,
+InputStreamServer::InputStreamServer( const std::string& streamName,
                                       int port,
-                                      const std::string &ipv4
-                                      ) :
-    io::StreamServer(streamName, ipv4, port),
-//    m_clientSocket( std::move( clientSocket ) ) {
-//    m_clientSocket(ipv4, port)
-    m_clientSocket(net::ClientSocket(ipv4, port))
-    {
+                                      const std::string& ipv4 ) :
+    io::StreamServer( streamName, ipv4, port ), m_clientSocket( net::ClientSocket( ipv4, port ) ) {
 
-    assert(m_clientSocket.isConnected());
-//    m_clientSocket.write( net::ClientSocket::Type::STREAM_VIEWER );
-    m_clientSocket.write( ClientType::STREAM_VIEWER);
+    assert( m_clientSocket.isConnected() );
+    m_clientSocket.write( ClientType::STREAM_VIEWER );
 
     assert( streamName != "" );
     m_clientSocket.write( streamName );
@@ -38,9 +31,8 @@ InputStreamServer::InputStreamServer(const std::string &streamName,
     std::cout << "[InputStreamServer:" << this << "] InputStreamServer() ended" << std::endl;
 }
 
-
 InputStreamServer::InputStreamServer( InputStreamServer&& inputStream ) :
-    io::StreamServer(inputStream.m_name, inputStream.m_ipv4, inputStream.m_port),
+    io::StreamServer( inputStream.m_name, inputStream.m_ipv4, inputStream.m_port ),
     m_clientSocket( std::move( inputStream.m_clientSocket ) ),
     m_streamViewerClientClosed( inputStream.m_streamViewerClientClosed ),
     m_streamerClosed( inputStream.m_streamerClosed ),
@@ -50,19 +42,12 @@ InputStreamServer::InputStreamServer( InputStreamServer&& inputStream ) :
     std::cout << "[InputStreamServer:" << this << "] InputStreamServer(&&)" << std::endl;
 }
 
-//InputStreamServer::~InputStreamServer() {
-//    if ( !m_moved ) {
-//        assert( !InputStreamServer::isOpen() );
-//    }
-//}
-
 void InputStreamServer::read( sensor::Acquisition& acq ) {
     assert( !m_readAcqWaiting );
     m_readAcqWaiting = true;
 
     assert( !m_streamerClosed );
 
-    // Acquisition InputStreamServer::getAcq() {
     io::StreamBase::ServerMessage serverMsg;
     try {
         m_clientSocket.read( serverMsg );
@@ -105,9 +90,7 @@ void InputStreamServer::read( sensor::SensorSpec& sensorSpec ) {
     m_clientSocket.read( sensorSpec );
 }
 
-void InputStreamServer::clear()
-{
-}
+void InputStreamServer::clear() {}
 
 } // namespace input
 } // namespace hub

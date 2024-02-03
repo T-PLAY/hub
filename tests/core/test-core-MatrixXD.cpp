@@ -1,12 +1,8 @@
 
-// #define HUB_DEBUG_INPUT
-// #define HUB_DEBUG_OUTPUT
 
 #include "test_common.hpp"
 
 #include <core/matrix/MatrixXD.hpp>
-// #include <core/matrix/MatrixTs.hpp>
-// #include <core/Matrix.hpp>
 
 #include <core/Types.h>
 
@@ -18,8 +14,6 @@ enum User : hub::TypeId_t {
     User_Count
 };
 }
-
-
 
 struct RGB8 {
     static constexpr auto id = Types::User::RGB8;
@@ -46,21 +40,12 @@ TEST_CASE( "MatrixXD test" ) {
     std::cout << "ResRGB: " << ResRGB() << std::endl;
     std::cout << "ResPoint: " << ResPoint() << std::endl;
 
-    // using Resolution      = hub::MatrixTs<ResRGB, ResPoint>;
-    // using Resolution      = hub::MatrixTs<int, double>;
-    // using Resolution      = hub::MatrixXD<hub::format::BGR8, width, height>;
-    // using Resolution = ResPoint;
-    // using Resolution = ResRGB;
-    // using Resolution      = hub::MatrixXD<hub::format::BGR8, width, height>;
     // ResRGB().getMatrix();
     std::cout << "ResRGB matrix: " << ResRGB().getMatrix() << std::endl;
     std::cout << "ResPoint matrix: " << ResPoint().getMatrix() << std::endl;
     // ResPoint().getMatrix();
-    // hub::make_matrix<Resolution>();
 
     static_assert( hub::isMatrix<hub::MatrixXD<int, 640, 480>> );
-
-    // hub::io::Archive archive;
 
     using namespace hub;
 
@@ -79,14 +64,10 @@ TEST_CASE( "MatrixXD test" ) {
 
     std::cout << "MyMatrixXD: " << MyMatrixXD() << std::endl;
 
-    //    MatrixXD<int>;
-    //    MatrixXD<int, 1>;
     static_assert( MatrixXD<int, 2>::Capacity == 2 );
 
     using MatrixInt = MatrixXD<int, 2>;
     static_assert( MatrixInt::Size == 8 );
-    //    std::array<int, 2> matrixIntRawData{1, 2};
-    //    auto matrixInt_ref = MatrixInt{1, 2};
     using MatrixFloat = MatrixXD<float, 2>;
     static_assert( MatrixFloat::Size == 8 );
     using MatrixDouble = MatrixXD<double, 2>;
@@ -139,9 +120,6 @@ TEST_CASE( "MatrixXD test" ) {
     };
 
     using UserMatrix = MatrixXD<UserClass, 2, 3>;
-    //    UserMatrix matrixUser;
-
-    //    MatrixTs<int, UserMatrix> matrixUser;
 
     ////////////////////////////////
 

@@ -1,7 +1,7 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/08/17
-	
+
 #pragma once
 
 #include <fstream>
@@ -18,11 +18,8 @@ class SRC_API InputFile : public Input, public io::File
     using Input::read;
     using io::File::getHeader;
 
-//    InputFile(std::ifstream &&file);
-    explicit InputFile(const std::string & filePath);
-    // explicit InputFile(const char * filePath);
+    explicit InputFile( const std::string& filePath );
 
-//  protected:
   public:
     ///
     /// @copydoc InputOutput::isOpen()
@@ -37,7 +34,6 @@ class SRC_API InputFile : public Input, public io::File
     ///
     /// @copydoc InputOutput::isEnd()
     ///
-//    bool isEnd() const override;
     bool isEnd() const override;
 
     ///
@@ -47,14 +43,9 @@ class SRC_API InputFile : public Input, public io::File
 
     void clear() override;
 
-    // const io::Header & getHeader() const {
-    //     return m_header;
-    // }
-
   private:
     std::ifstream m_file;
 };
-
 
 } // namespace input
 } // namespace hub

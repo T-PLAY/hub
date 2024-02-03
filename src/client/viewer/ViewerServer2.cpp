@@ -3,12 +3,10 @@
 #include <regex>
 #include <sstream>
 
-// #include <core/io/Book.hpp>
 #include <core/Serializer.hpp>
 #include <core/io/Memory.hpp>
 
 namespace hub {
-// namespace impl2 {
 namespace client {
 
 ViewerServer2::ViewerServer2( const std::string& name,
@@ -23,7 +21,6 @@ ViewerServer2::ViewerServer2( const std::string& name,
     if ( m_autoConnect ) {
         m_thread = std::thread( [this]() { threadRoutine(); } );
     }
-    // m_thread = std::thread( [this]() {} ); // thread
 }
 
 ViewerServer2::~ViewerServer2() {
@@ -79,7 +76,6 @@ void ViewerServer2::setAutoConnect( bool autoConnect ) {
         m_thread = std::thread( [this]() { threadRoutine(); } );
     }
     else {
-        // todo test
         m_stopThread = true;
         if ( m_thread.joinable() ) {
             assert( m_thread.joinable() );
@@ -97,14 +93,12 @@ void ViewerServer2::threadRoutine() {
 
             DEBUG_MSG( "[Viewer] trying to connect to server : " << m_sock );
             // DEBUG_MSG( "[Viewer] trying to connect to server at ipv4 "
-            // << m_sock.getIpv4() << " and port " << m_sock.getPort() );
 
             assert( !m_sock.isOpen() );
             m_sock.connect();
             m_serverConnected = true;
             assert( m_sock.isOpen() );
 
-            //                m_sock.write( net::ClientSocket::Type::VIEWER );
             m_sock.write( hub::io::StreamBase::ClientType::VIEWER );
 
             if ( m_viewerHandler.onServerConnected )
@@ -122,17 +116,9 @@ void ViewerServer2::threadRoutine() {
                 switch ( serverMessage ) {
 
                 case hub::io::StreamBase::ServerMessage::VIEWER_NEW_STREAMER: {
-                    // ++m_nStreamer;
-
-                    // #ifdef DEBUG
-                    //                         std::this_thread::sleep_for(
-                    //                             std::chrono::milliseconds( 100 ) ); // log
-                    //                             messages concurrency
-                    // #endif
 
                     std::string streamName;
                     m_sock.read( streamName );
-                    // std::cout << "[Viewer] read stream name: " << streamName << std::endl;
 
                     std::string streamIpv4;
                     m_sock.read( streamIpv4 );
@@ -140,27 +126,8 @@ void ViewerServer2::threadRoutine() {
                     int streamPort;
                     m_sock.read( streamPort );
 
-                    // hub::io::StreamBase::ServerMessage servMess;
-                    // m_sock.read( servMess );
-                    // assert( servMess ==
-                    //         hub::io::StreamBase::ServerMessage::RETAINED_DATA_START );
                     io::Header header;
                     m_sock.read( header );
-                    // m_sock.read( servMess );
-                    // assert( servMess == hub::io::StreamBase::ServerMessage::RETAINED_DATA_END
-                    // );
-
-                    // hub::io::Book book(header);
-
-                    // hub::io::Memory memory( header );
-                    // sensor::SensorSpec sensorSpec;
-                    // memory.read( sensorSpec );
-
-                    // hub::Serializer serializer;
-                    // serializer.read(sensorSpec);
-                    // m_sock.read( sensorSpec );
-                    // std::cout << "[Viewer] read sensor spec: " << sensorSpec << std::endl;
-                    // std::cout << "[Viewer] new streamer '" << streamName << "'" << std::endl;
 
                     DEBUG_MSG( "[Viewer] new streamer '" << streamName << "'" );
 
@@ -168,36 +135,14 @@ void ViewerServer2::threadRoutine() {
 
                     m_sock.write( io::StreamBase::ClientMessage::VIEWER_CLIENT_STREAM_ADDED );
 
-                    // prevent all son the father is comming
-
-                    // wait for client init sensorSpec with main thread context (async)
-                    // for unity side (update context different of static event function)
-                    //                        std::this_thread::sleep_for(
-                    //                        std::chrono::milliseconds( 100 ) );
-
                 } break;
 
                 case hub::io::StreamBase::ServerMessage::VIEWER_DEL_STREAMER: {
                     std::string streamName;
                     m_sock.read( streamName );
-                    // sensor::SensorSpec sensorSpec;
-                    // m_sock.read( sensorSpec );
                     DEBUG_MSG( "[Viewer] del streamer '" << streamName << "'" );
 
-                    //                        if ( m_onNewStreamer ) {
-                    //                            assert( m_onDelStreamer );
-                    //                            assert( m_streams.find( streamName ) !=
-                    //                            m_streams.end() ); m_streams.erase( streamName
-                    //                            );
-                    //                        }
                     delStream( streamName );
-
-                    // prevent all son the father is leaving
-
-                    // wait for client init sensorSpec with main thread context (async)
-                    // for unity side (update context different of static event function)
-                    //                        std::this_thread::sleep_for(
-                    //                        std::chrono::milliseconds( 100 ) );
 
                 } break;
 
@@ -249,13 +194,9 @@ void ViewerServer2::threadRoutine() {
             else {
                 DEBUG_MSG( "[Viewer] server not found : " << m_sock );
                 // DEBUG_MSG( "[Viewer] server not found at ipv4 "
-                // << m_sock.getIpv4() << " and port " << m_sock.getPort() );
                 if ( m_viewerHandler.onServerNotFound )
                     m_viewerHandler.onServerNotFound( m_sock.getIpv4().c_str(), m_sock.getPort() );
             }
-            // ping the server when this one is not started or visible in the network
-            // able the viewer clients to be aware of the starting of server less than 100
-            // milliseconds.
             int i = 0;
             while ( !m_stopThread && i < 5 ) {
                 std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
@@ -283,5 +224,4 @@ void ViewerServer2::threadRoutine() {
 }
 
 } // namespace client
-// } // namespace impl2
 } // namespace hub

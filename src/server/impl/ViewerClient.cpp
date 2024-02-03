@@ -2,8 +2,8 @@
 
 #ifdef HUB_USE_SERVER
 
-#include "ServerImpl.hpp"
-#include "StreamerClient.hpp"
+#    include "ServerImpl.hpp"
+#    include "StreamerClient.hpp"
 
 namespace hub {
 namespace server {
@@ -17,8 +17,6 @@ ViewerClient::ViewerClient( ServerImpl* server, int iClient, net::ClientSocket&&
 
     m_thread = std::thread( [this]() {
         try {
-            // check client still alive
-            // ping viewer client to know if the connection of this one still alive
 
             io::StreamBase::ClientMessage message;
             m_socket.read( message );
@@ -39,8 +37,7 @@ ViewerClient::ViewerClient( ServerImpl* server, int iClient, net::ClientSocket&&
             assert( message == io::StreamBase::ClientMessage::VIEWER_CLIENT_CLOSED );
             m_viewerClosed = true;
 
-            if ( m_socket.isOpen() )
-                m_socket.write( io::StreamBase::ServerMessage::VIEWER_CLOSED );
+            if ( m_socket.isOpen() ) m_socket.write( io::StreamBase::ServerMessage::VIEWER_CLOSED );
         }
         catch ( std::exception& ex ) {
             std::cout << headerMsg() << "catch exception : " << ex.what() << std::endl;
@@ -60,9 +57,7 @@ ViewerClient::~ViewerClient() {
     m_server->delViewer( this );
 
     if ( m_socket.isOpen() ) {
-        if ( !m_viewerClosed ) {
-            m_socket.write( io::StreamBase::ServerMessage::VIEWER_CLOSED );
-        }
+        if ( !m_viewerClosed ) { m_socket.write( io::StreamBase::ServerMessage::VIEWER_CLOSED ); }
         int iTry = 0;
         while ( !m_viewerClosed && iTry < 10 ) {
             std::cout << "[ViewerClient] close() waiting for server/viewer closing" << std::endl;
@@ -89,7 +84,6 @@ void ViewerClient::notifyNewStreamer( const std::string& streamName,
 
 void ViewerClient::notifyDelStreamer( const std::string& streamName,
                                       const sensor::SensorSpec& sensorSpec ) {
-    // void ViewerClient::notifyDelStreamer( const StreamerClient& streamer ) {
     if ( m_viewerClosed ) return;
 
     try {
@@ -135,6 +129,5 @@ void ViewerClient::notifyProperty( const std::string& streamName,
 } // namespace impl
 } // namespace server
 } // namespace hub
-
 
 #endif

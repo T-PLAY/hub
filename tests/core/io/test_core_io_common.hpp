@@ -7,12 +7,10 @@
 #include <type_traits>
 #include <vector>
 
-// #include <core/Macros.hpp>
 #include <core/Serializer.hpp>
 #include <core/Traits.hpp>
-#include <core/ios.hpp>
-// #include <core/Vector.hpp>
 #include <core/io/Archive.hpp>
+#include <core/ios.hpp>
 
 namespace testCoreIoCommon {
 
@@ -23,14 +21,8 @@ class WritableReadableData
     WritableReadableData() = default;
     auto toString() const { return "name: '" + m_name + "'" + " " + std::to_string( m_value ); }
 
-    void write( hub::Serializer& serializer ) const {
-        // std::cout << "[test][WritableReadableData] write(Serializer&) : " << *this << std::endl;
-        serializer.writeAll( m_name, m_value );
-    }
-    void read( hub::Serializer& serializer ) {
-        serializer.readAll( m_name, m_value );
-        // std::cout << "[test][WritableReadableData] read(Serializer&) : " << *this << std::endl;
-    }
+    void write( hub::Serializer& serializer ) const { serializer.writeAll( m_name, m_value ); }
+    void read( hub::Serializer& serializer ) { serializer.readAll( m_name, m_value ); }
     bool operator==( const WritableReadableData& other ) const {
         return m_name == other.m_name && m_value == other.m_value;
     }
@@ -50,7 +42,6 @@ class SerializedClass
     }
     auto toString() const { return hub::to_string( m_a, m_b ); }
 
-    // friend zpp::serializer::access;
     template <typename Archive, typename Self>
     static void serialize( Archive& archive, Self& self ) {
         archive( self.m_a, self.m_b );
@@ -81,8 +72,6 @@ static auto toString( UserEnum2 ue ) -> std::string {
 
 template <class T>
 void checkType( hub::io::Archive& archive, const T& t ) {
-    // std::cout << "-------------------------------- " << TYPE_NAME( t ) << " ----------------------"
-              // << std::endl;
     assert( archive.isEnd() );
 
     archive.write( t );
@@ -92,7 +81,7 @@ void checkType( hub::io::Archive& archive, const T& t ) {
 
     assert( archive.isEnd() );
 #ifdef DEBUG_CHECK_TYPE
-    std::cout << "<" << TYPE_NAME(t) << ">: " << t << std::endl;
+    std::cout << "<" << TYPE_NAME( t ) << ">: " << t << std::endl;
 #endif
 }
 
@@ -102,16 +91,6 @@ struct UserData {
     std::string name;
     std::vector<int> vints;
 
-    //    constexpr auto serialize() {
-    //        return std::tuple<double&, int&, std::string&, std::vector<int>&> { a, b, name, vints
-    //        };
-    //    }
-
-    // template <class Serial>
-    // void serialize( Serial& serial ) {
-        // serial( a, b, name, vints );
-    // }
-    // friend zpp::serializer::access;
     template <typename Archive, typename Self>
     static void serialize( Archive& archive, Self& self ) {
         archive( self.a, self.b, self.name, self.vints );
@@ -126,18 +105,11 @@ struct UserData {
         return a == character.a && b == character.b && name == character.name &&
                vints == character.vints;
     }
-    //    friend std::ostream& operator<<( std::ostream& os, const UserData& character );
 };
-// static_assert( hub::io::serializable_v<UserData> );
 static_assert( sizeof( int ) == 4 );
 static_assert( sizeof( double ) == 8 );
 
 static constexpr size_t s_dataSize = sizeof( UserData );
-
-// std::ostream& operator<<( std::ostream& os, const UserData& character ) {
-//     os << character.a << " " << character.b << " " << character.name;
-//     return os;
-// }
 
 struct ReadWriteStat {
     long long durationInNanoSecond = 0;
@@ -175,11 +147,7 @@ struct BenchStat {
 template <class BenchStats>
 void printStats( const BenchStats& benchStats ) {
 
-    //    std::cout << std::endl;
-
-    //    for ( int iImpl = 0; iImpl < dataBenchStats.size(); ++iImpl ) {
     for ( const auto& dataBenchStat : benchStats ) {
-        //        const auto& dataBenchStat = dataBenchStats.at( iImpl );
         const auto& implName = dataBenchStat.name;
 
         {
@@ -220,11 +188,6 @@ ReadWriteStat readWriteData( ReadInputFunc& readInputFunc,
                              size_t nReadWrite,
                              const UserData& data ) {
 
-    // #ifdef HUB_DEBUG_INPUT
-    //     std::cout << "------------------------------ " << implName
-    //               << " --------------------------------" << std::endl;
-    // #endif
-
     const auto startClock = std::chrono::high_resolution_clock::now();
 
     UserData data_write = data;
@@ -239,13 +202,6 @@ ReadWriteStat readWriteData( ReadInputFunc& readInputFunc,
         readInputFunc( data_read );
 
         assert( data_read == data_write );
-        //        if ( data_read != data_write ) {
-        //            //            std::cerr << "writeRead data_write != data_read for impl : " <<
-        //            implName
-        //            //            << std::endl;
-        //            std::cerr << data_read << " != " << data_write << std::endl;
-        //            exit( 1 );
-        //        }
 
         ++iReadWrite;
     }
@@ -261,7 +217,9 @@ ReadWriteStat readWriteData( ReadInputFunc& readInputFunc,
 
 #if CPP_VERSION >= 20 // concept
 template <class T>
-concept getableNCall_v = requires( const T a ) { a.getNCall(); };
+concept getableNCall_v = requires( const T a ) {
+    a.getNCall();
+};
 
 #else
 template <typename T>
@@ -278,14 +236,8 @@ static constexpr bool getableNCall_v = getableNCall<T>::value;
 #endif
 
 template <class InputOutput, class UserData>
-//    requires GetableNCall<InputOutput>
 ReadWriteStat readWriteData( InputOutput& inputOutput, size_t nReadWrite, const UserData& data ) {
-    //    constexpr bool getableNCall = GetableNCall<InputOutput>;
-    //    constexpr bool getableNCall = requires(const InputOutput & inputOutput) {
-    //        inputOutput.getNCall();
-    //    };
     if constexpr ( getableNCall_v<InputOutput> ) {
-//    if constexpr ( getableNCall ) {
 #ifdef DEBUG
         size_t nCallFirst = inputOutput.getNCall();
 #endif

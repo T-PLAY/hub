@@ -1,20 +1,18 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/12/07
-	
+
 #pragma once
 
 #include "core/Macros.hpp"
-
-// #include "client/Viewer.hpp"
 
 namespace hub {
 
 #ifndef HUB_CPP_SOURCE
 namespace client {
-    class Viewer;
-    class ViewerHandler;
-}
+class Viewer;
+class ViewerHandler;
+} // namespace client
 #endif
 
 ///
@@ -28,13 +26,10 @@ extern "C"
 {
 #endif
 
-    SRC_API client::Viewer*
-    createViewer( const char* name,
-                  client::ViewerHandler* viewerHandler,
-                  // const char* ipv4 = input::InputStream::s_defaultIpv4.c_str(),
-                  // int port         = input::InputStream::s_defaultPort );
-                  const char* ipv4 = "127.0.0.1",
-                  int port         = 4042 );
+    SRC_API client::Viewer* createViewer( const char* name,
+                                          client::ViewerHandler* viewerHandler,
+                                          const char* ipv4 = "127.0.0.1",
+                                          int port         = 4042 );
 
     ///
     /// \brief freeViewer
@@ -77,9 +72,9 @@ extern "C"
     ///
     SRC_API bool viewer_isConnected( const client::Viewer* viewer );
 
-    SRC_API int viewer_nStream(const client::Viewer* viewer);
+    SRC_API int viewer_nStream( const client::Viewer* viewer );
 
-    SRC_API int viewer_nStreaming(const client::Viewer* viewer);
+    SRC_API int viewer_nStreaming( const client::Viewer* viewer );
 
 #ifdef __cplusplus
 } // end extern "C"

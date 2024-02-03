@@ -1,21 +1,12 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2024/01/07
-	
+
 #pragma once
 
-// #ifdef HUB_USE_ZPP_BITS
-
 #include <array>
-// #include <concepts>
 
-// #    include "zpp_bits.h"
 #include "zpp/serializer.h"
-
-// #include "io/input/InputBase.hpp"
-
-// #include "io/input/InputImpl.hpp"
-// #include "io/input/InputZppBits.hpp"
 
 #include "SerializerI.hpp"
 #include "core/InputBase.hpp"
@@ -23,18 +14,6 @@
 
 namespace hub {
 namespace serializer {
-
-// template <class Out, class... Ts>
-// concept Outable = requires(Out & out, Ts&... ts) {out(ts...); };
-
-// template <class In, class... Ts>
-// concept Inable = requires(In & in, Ts&... ts) {in(ts...); };
-
-// template <class T>
-// concept isMap = requires( T t ) {
-//     t.begin()->first;
-//     t.begin()->second;
-// };
 
 class SRC_API SerializerZpp : public SerializerI
 {
@@ -46,35 +25,16 @@ class SRC_API SerializerZpp : public SerializerI
     }
 
     void resetIn() override {
-        // std::cout << "[SerializerZpp] resetIn() m_buff = " << &m_buff << std::endl;
         assert( !m_buff.empty() );
-        // m_in.reset( 0 );
 
         m_inPosition = 0;
     }
     void resetOut() override {
-        // std::cout << "[SerializerZpp] resetOut() m_buff = " << &m_buff << std::endl;
         m_buff.clear();
-        // m_out.reset( 0 );
         m_outPosition = 0;
     }
     Size_t inPosition() const override { return m_inPosition; }
     Size_t outPosition() const override { return m_outPosition; }
-    // void setInPosition( Size_t inPosition ) override {
-    //     m_inPosition = inPosition;
-    // }
-    // void setOutPosition( Size_t outPosition ) override { m_outPosition = outPosition; }
-
-    // template <class T>
-    // void serialize( const T& t ) {
-    //     const auto lastBuffSize = m_buff.size();
-
-    //     m_out( t );
-
-    //     const auto curBuffSize = m_buff.size();
-    //     assert( curBuffSize > lastBuffSize );
-    //     m_outPosition += curBuffSize - lastBuffSize;
-    // }
 
     template <class... Ts>
     void serialize( const Ts&... ts ) {
@@ -86,17 +46,6 @@ class SRC_API SerializerZpp : public SerializerI
         assert( curBuffSize > lastBuffSize );
         m_outPosition += curBuffSize - lastBuffSize;
     }
-
-    // template <class T>
-    // void deserialize( T& t ) {
-    //     const auto lastBuffSize = m_buff.size();
-
-    //     m_in( t );
-
-    //     const auto curBuffSize = m_buff.size();
-    //     assert( curBuffSize < lastBuffSize );
-    //     m_inPosition += lastBuffSize - curBuffSize;
-    // }
 
     template <class... Ts>
     void deserialize( Ts&... ts ) {
@@ -113,11 +62,9 @@ class SRC_API SerializerZpp : public SerializerI
     zpp::serializer::memory_output_archive m_out { m_buff };
     zpp::serializer::memory_input_archive m_in { m_buff };
 
-    Size_t m_inPosition = 0;
+    Size_t m_inPosition  = 0;
     Size_t m_outPosition = 0;
 };
 
 } // namespace serializer
 } // namespace hub
-
-// #endif

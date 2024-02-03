@@ -7,18 +7,14 @@ int main() {
     const int port         = 1883;
 
     hub::client::ViewerHandler viewerHandler;
-    // startConstruction
     viewerHandler.onNewStream = [=]( const std::string& streamName,
-                                     // const hub::sensor::SensorSpec& sensorSpec ) {
                                      const hub::io::Header& header ) {
         std::cout << "\t[example-viewer] onNewStream : " << streamName << std::endl;
-        // accept all stream to run
         return true;
     };
-    viewerHandler.onDelStream = []( const std::string& streamName )
-    // ,
-    // const hub::sensor::SensorSpec& sensorSpec )
-    { std::cout << "\t[example-viewer] onDelStream : " << streamName << std::endl; };
+    viewerHandler.onDelStream = []( const std::string& streamName ) {
+        std::cout << "\t[example-viewer] onDelStream : " << streamName << std::endl;
+    };
     viewerHandler.onServerNotFound = []( const std::string& ipv4, int port ) {
         std::cout << "\t[example-viewer] onServerNotFound : " << ipv4 << " " << port << std::endl;
     };
@@ -32,10 +28,6 @@ int main() {
     viewerHandler.onNewData = []( const std::string& streamName, const hub::Datas_t& datas ) {
         std::cout << "\t[example-viewer] onNewData : " << datas << std::endl;
     };
-    // viewerHandler.onNewAcquisition = []( const std::string& streamName,
-    //                             const hub::sensor::Acquisition& acq ) {
-    //     std::cout << "\t[example-viewer] onNewAcquisition : " << acq << std::endl;
-    // };
     viewerHandler.onSetProperty = []( const std::string& streamName,
                                       const std::string& objectName,
                                       int property,

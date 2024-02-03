@@ -1,21 +1,18 @@
-// #define HUB_DEBUG_INPUT
-// #define HUB_DEBUG_OUTPUT
 
 #include "io/test_io_common.hpp"
 #include "test_common.hpp"
 
 #include <client/Viewer.hpp>
 
-#include <io/output/OutputStream.hpp>
-// #include <sensor/OutputSensor.hpp>
 #include <core/io/Memory.hpp>
+#include <io/output/OutputStream.hpp>
 
 TEST_CASE( "Viewer stream" ) {
     TEST_BEGIN()
 
     const int port = GET_RANDOM_PORT;
 
-    const hub::io::Header header_ref { sizeof(int) };
+    const hub::io::Header header_ref { sizeof( int ) };
 
     {
 
@@ -23,7 +20,7 @@ TEST_CASE( "Viewer stream" ) {
 
         int nNewStreamer                     = 0;
         int nDelStreamer                     = 0;
-        std::atomic<int> nServerNotFound                  = 0;
+        std::atomic<int> nServerNotFound     = 0;
         int nServerConnected                 = 0;
         std::atomic<int> nServerDisconnected = 0;
         int nNewData                         = 0;
@@ -53,17 +50,12 @@ TEST_CASE( "Viewer stream" ) {
             return true;
         };
         hub::io::Memory memory;
-        viewerHandler.onNewData = [&]( const std::string& streamName,
-                                       // hub::input::InputStream& inputStream ) {
-                                       const hub::Datas_t& datas ) {
+        viewerHandler.onNewData = [&]( const std::string& streamName, const hub::Datas_t& datas ) {
             assert( streamName == FILE_NAME );
-            // assert( inputStream.getHeader() == header_ref );
             int a;
-            memory.write(datas.data(), datas.size());
-            memory.read(a);
+            memory.write( datas.data(), datas.size() );
+            memory.read( a );
             assert( a == nNewData );
-            // inputStream.read( a );
-            // std::cout << "[test-client-Viewer] onNewData : " << a << std::endl;
             std::cout << "[test-client-Viewer] onNewData : " << datas << std::endl;
             ++nNewData;
         };
@@ -137,9 +129,7 @@ TEST_CASE( "Viewer stream" ) {
             DESTRUCT_END( "OutputStream" );
 
             iTry = 0;
-            // while ( viewer.nStreaming() != 0 && iTry < 10 ) {
             while ( viewer.nStream() != 0 && iTry < 10 ) {
-            // while ( nDelStreamer == 0 && iTry < 10 ) {
                 std::cout << "[test] waiting for outputStream disconnected" << std::endl;
                 std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                 ++iTry;

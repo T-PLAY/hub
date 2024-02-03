@@ -5,20 +5,15 @@
 namespace hub {
 namespace client {
 
-
 AskerServer::AskerServer( const std::string& ipv4, int port ) :
-//    m_sock( ipv4, port )
-    m_sock( net::ClientSocket(ipv4, port) )
-{
+    m_sock( net::ClientSocket( ipv4, port ) ) {
 
     assert( m_sock.isOpen() );
 
-//    m_sock.write( net::ClientSocket::Type::ASKER );
     m_sock.write( io::StreamBase::ClientType::ASKER );
 }
 
 AskerServer::~AskerServer() {
-//    m_sock.write( io::StreamBase::ClientMessage::CLOSE );
     m_sock.write( io::StreamBase::ClientMessage::ASKER_CLIENT_CLOSED );
     assert( m_sock.isOpen() );
     m_sock.close();
@@ -26,13 +21,9 @@ AskerServer::~AskerServer() {
 }
 
 std::list<std::pair<std::string, sensor::SensorSpec>> AskerServer::listStreams() {
-//    m_sock.write( io::StreamBase::ClientMessage::LIST_STREAMS );
     m_sock.write( io::StreamBase::ClientMessage::ASKER_CLIENT_GET_LIST_STREAMS );
 
-
-    // todo server
     std::list<std::pair<std::string, sensor::SensorSpec>> ret;
-//    m_sock.read( ret );
 
     return ret;
 }

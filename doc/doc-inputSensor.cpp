@@ -154,17 +154,10 @@ int main() {
 
     //// bin/server is running locally on port 4042
     //// the stream id name 'myStream' is streaming to the server
-    // hub::sensor::InputSensor inputSensor(
-
-    // auto acq = inputSensor.getAcquisition();
-    // auto acqs = inputSensor.getAllAcquisitions();
 
     //// read saved acquisitions from file
-    // hub::sensor::InputSensor inputSensor(
 
     //// get acqusitions from different threads
-    // hub::io::CyclicBuff buff;
-    // hub::sensor::InputSensor inputSensor{ hub::io::Ram( buff ) };
 
     return 0;
 }

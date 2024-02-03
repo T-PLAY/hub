@@ -1,9 +1,8 @@
 
 #include <iostream>
-#include <thread>
 #include <string>
+#include <thread>
 
-// #include <io/Stream.hpp>
 #include <native/Native.hpp>
 
 #define COLOR "\033[44m"
@@ -15,7 +14,6 @@ int main( int argc, char* argv[] ) {
 
     std::vector<std::string> args( argv + 1, argv + argc );
 
-    // int port = hub::io::Stream::s_defaultPort;
     int port = HUB_SERVICE_PORT;
 
     auto it = args.begin();
@@ -26,7 +24,9 @@ int main( int argc, char* argv[] ) {
             std::cout << argv[0] << " usage: [--port <int>] [--exitWhenServerLost]" << std::endl;
             return 0;
         }
-        else if ( arg == "--exitWhenServerLost" ) { exitWhenServerLost = true; }
+        else if ( arg == "--exitWhenServerLost" ) {
+            exitWhenServerLost = true;
+        }
         else if ( arg == "--port" ) {
             assert( it + 1 != args.end() );
             const auto& nextArg = *( it + 1 );
@@ -45,7 +45,6 @@ int main( int argc, char* argv[] ) {
 
     auto onServerNotFound = []( const char* ipv4, int port ) {
         std::cout << HEADER_MSG "onServerNotFound : " << ipv4 << " " << port << std::endl;
-        // if ( exitWhenServerLost ) { exit = true; }
     };
     auto onServerConnected = []( const char* ipv4, int port ) {
         std::cout << HEADER_MSG "onServerConnected : " << ipv4 << " " << port << std::endl;
@@ -54,21 +53,17 @@ int main( int argc, char* argv[] ) {
         std::cout << HEADER_MSG "onServerDisconnected : " << ipv4 << " " << port << std::endl;
         if ( exitWhenServerLost ) { exit = true; }
     };
-    // auto onNewStream = []( const char* streamName, const hub::sensor::SensorSpec* sensorSpec ) {
     auto onNewStream = []( const char* streamName, const hub::io::Header* header ) {
         std::cout << HEADER_MSG "onNewStream : " << streamName << ", " << header << std::endl;
         return true;
     };
 #ifndef HUB_NON_BUILD_SENSOR
     auto onNewSensor = []( const char* streamName, const hub::sensor::SensorSpec* sensorSpec ) {
-        // std::cout << HEADER_MSG "onNewSensor : " << streamName << ", " << *sensorSpec <<
-        // std::endl;
         std::cout << HEADER_MSG "onNewSensor : " << streamName << ", "
                   << hub::native::to_string( sensorSpec ) << std::endl;
         return true;
     };
 #endif
-    // auto onDelStream = []( const char* streamName, const hub::sensor::SensorSpec* sensorSpec ) {
     auto onDelStream = []( const char* streamName ) {
         std::cout << HEADER_MSG "onDelStream : " << streamName << std::endl;
     };

@@ -1,14 +1,11 @@
 
-// #define HUB_DEBUG_INPUT
-// #define HUB_DEBUG_OUTPUT
 
 #include "test_common.hpp"
 #include <iomanip>
-#include <sstream>
 #include <set>
+#include <sstream>
 
 #include <core/Macros.hpp>
-// #include <core/Vector.hpp>
 #include <core/Traits.hpp>
 
 class Lambda
@@ -19,10 +16,7 @@ class Lambda
     double c = 0.0;
     std::vector<int> ds;
     std::string e;
-    auto toString() const {
-        return hub::to_string( a, b, c, ds, e );
-        // return std::to_string( a ) + " " + std::to_string( b ) + " " + hub::to_string( c );
-    }
+    auto toString() const { return hub::to_string( a, b, c, ds, e ); }
     static constexpr auto name() { return "Lambda"; };
 
     static constexpr auto Size = 5;
@@ -65,44 +59,31 @@ auto toString( UserEnum ue ) -> std::string {
     return "None";
 }
 
-auto name(UserEnum ue) -> std::string {
+auto name( UserEnum ue ) -> std::string {
     return "UserEnum";
 }
 
 template <class T, std::size_t typeSize = 0, std::size_t typeId = 0>
 void checkType( const std::string& typeName, const T& t ) {
 
-    // const T t{args...};
-    // const T t { std::forward<T>( args... ) };
-    // const T t(std::forward<T>(args)...);
-    // const int a = 5;
-    // std::cout << "int: " << std::to_string( t ) << std::endl;
-    // std::cout.width(20);
     std::cout << std::setw( 30 ) << std::left;
     std::cout << typeName << ": ";
     std::cout << std::setw( 30 ) << std::left;
     std::cout << TYPE_NAME( t ) << " -> ";
     std::cout << std::setw( 50 ) << std::left;
-    // std::cout << hub::to_string( t ) << std::endl;
     std::cout << t << std::endl;
-    // std::cout << hub::to_string( t ) << " (" << TYPE_ID( t ) << ")" << std::endl;
     CHECK( TYPE_NAME( t ) == typeName );
-    // std::cout << "typeId(" << typeName << "): " << TYPE_ID( t ) << std::endl;
     if constexpr ( typeSize != 0 ) { static_assert( hub::sizeOf<T>() == typeSize ); }
-    // if constexpr ( typeId != 0 ) { assert( TYPE_ID( t ) == typeId ); }
 }
 
 TEST_CASE( "Macros test" ) {
     TEST_BEGIN()
-
-    // static_assert( CPP_VERSION == 17 );
 
     CHECK( FILE_NAME == "test-core-Macros.cpp" );
     CHECK( FILE_NAME_WITHOUT_EXTENSION == "test-core-Macros" );
 
     auto printed = Printer().print();
     printed      = printed.substr( 5, printed.find_last_of( ":" ) - 4 );
-    // std::cout << printed << std::endl;
     CHECK( printed == "[test-core-Macros:" );
 
     static_assert( hub::sizeOf<Lambda>() == 5 );
@@ -119,9 +100,7 @@ TEST_CASE( "Macros test" ) {
     checkType<float, 4>( "float", 3.0f );
     static_assert( sizeof( char ) == 1 );
     checkType<char, 1>( "char", 'c' );
-//    checkType<unsigned char, 1>( "unsigned char", 'd' );
     checkType<unsigned char, 1>( "uchar", 'd' );
-//    checkType<const char*, 8>( "char const*", "bonjour" );
 #ifdef ARCH_X86
     checkType<const char*, 4>( "cstr", "bonjour" );
 #else
@@ -133,9 +112,7 @@ TEST_CASE( "Macros test" ) {
     std::cout << "* C++ types :" << std::endl;
     checkType<std::string>( "string", "hello" );
     checkType<std::vector<int>>( "vector<int>", { 1, 2, 3 } );
-//    checkType<std::vector<unsigned char>>( "vector<unsigned char>", { 1, 2, 3 } );
     checkType<std::vector<unsigned char>>( "vector<uchar>", { 1, 2, 3 } );
-//    checkType<std::vector<const char*>>( "vector<char const*>", { "ab", "bc", "cd" } );
     checkType<std::vector<const char*>>( "vector<cstr>", { "ab", "bc", "cd" } );
     checkType<std::vector<std::string>>( "vector<string>", { "a", "ab", "abc" } );
     checkType<std::vector<std::vector<int>>>( "vector<vector<int>>",
@@ -145,7 +122,7 @@ TEST_CASE( "Macros test" ) {
     checkType<std::tuple<int>>( "tuple<int>", 5 );
     checkType<std::tuple<int, double, bool, float, char, std::string>>(
         "tuple<int, double, bool, float, char, string>", { 5, 2.0, true, 3.0f, 'a', "hello" } );
-    checkType<std::set<std::string>>( "set<string>", {"abc", "def"} );
+    checkType<std::set<std::string>>( "set<string>", { "abc", "def" } );
     std::cout << std::endl;
 
     // User Types
@@ -154,15 +131,13 @@ TEST_CASE( "Macros test" ) {
         double b;
         bool c;
         static constexpr auto name() { return "UserClass"; }
-        auto toString() const {
-            return hub::to_string( a, b, c );
-        }
+        auto toString() const { return hub::to_string( a, b, c ); }
     };
 
     std::cout << "* User types :" << std::endl;
     checkType<UserClass, 24>( "UserClass", { 1, 2.0, false } );
     checkType<Lambda, 5>( "Lambda", Lambda { 1, 2.0f, 3.0, { 1, 2 }, "abc" } );
-   checkType<UserEnum>( "UserEnum", UserEnum::A );
+    checkType<UserEnum>( "UserEnum", UserEnum::A );
     std::cout << std::endl;
 
     TEST_END()

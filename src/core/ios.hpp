@@ -1,7 +1,7 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/11/09
-	
+
 #pragma once
 
 #include <type_traits>
@@ -16,11 +16,7 @@ namespace hub {
 
 #if defined( HUB_DEBUG_INPUT ) || defined( HUB_DEBUG_OUTPUT )
 
-//#ifdef  SRC_STATIC
-//extern std::mutex s_mtxIoPrint; // shared mutex over threads
-//#else
 static std::mutex s_mtxIoPrint;
-//#endif
 
 #    undef DEBUG_MSG
 #    define DEBUG_MSG( str )               \
@@ -60,17 +56,8 @@ static constexpr bool has_data_v = has_data<T>::value;
 
 ///////////
 
-// template <typename T>
-// using has_size_t = decltype( std::declval<T>().size() );
-// template <typename T, typename = std::void_t<>>
-// struct has_size : std::false_type {};
-// template <typename T>
-// struct has_size<T, std::void_t<has_size_t<T>>> : std::true_type {};
-// template <typename T>
-// static constexpr bool has_size_v = has_size<T>::value;
-
 template <class T>
-constexpr bool isPacket = has_data_v<T> && has_size_v<T>;
+constexpr bool isPacket = has_data_v<T>&& has_size_v<T>;
 
 #endif
 
@@ -82,7 +69,6 @@ template <typename T>
 struct packable<T, std::void_t<packable_t<T>>> : std::true_type {};
 template <typename T>
 static constexpr bool packable_v =
-    // packable<T>::value || std::is_arithmetic_v<T> || std::is_array_v<T> || std::is_enum_v<T> || isPacket<T>;
     packable<T>::value || std::is_arithmetic_v<T> || std::is_array_v<T> || std::is_enum_v<T>;
 
 } // namespace hub

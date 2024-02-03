@@ -44,7 +44,6 @@ TEST_CASE( "TypeId test" ) {
     static_assert( TYPE_ID( hub::format::XYZ32F ) == hub::Types::XYZ32F );
     static_assert( TYPE_ID( hub::format::Vec3 ) == hub::Types::VEC3 );
     static_assert( TYPE_ID( hub::format::Vec4 ) == hub::Types::VEC4 );
-    // static_assert( (hub::TypeId_t)(hub::Types::Format_Count + 1) == hub::Types::Count );
 
     static_assert( TYPE_ID( User0 ) == hub::Types::User0 );
     static_assert( TYPE_ID( User1 ) == hub::Types::User1 );

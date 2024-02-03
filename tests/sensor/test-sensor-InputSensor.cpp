@@ -1,6 +1,3 @@
-// #define HUB_DEBUG_INPUT
-// #define HUB_DEBUG_OUTPUT
-// #define HUB_DEBUG_INPUT_OUTPUT
 
 #include "io/test_io_common.hpp"
 #include "sensor/test_sensor_common.hpp"
@@ -9,8 +6,6 @@
 #include <core/io/Archive.hpp>
 #include <sensor/InputSensor.hpp>
 #include <sensor/OutputSensor.hpp>
-
-// #undef HUB_BUILD_SERVER
 
 TEST_CASE( "InputSensor test" ) {
     TEST_BEGIN()
@@ -22,11 +17,10 @@ TEST_CASE( "InputSensor test" ) {
 
     using Resolution = hub::format::BGR8;
 
-    const hub::sensor::SensorSpec sensorSpec( "sensorName", hub::make_matrix<Resolution>(), metaData );
+    const hub::sensor::SensorSpec sensorSpec(
+        "sensorName", hub::make_matrix<Resolution>(), metaData );
 
-    hub::sensor::OutputSensorT<Resolution> outputSensor(sensorSpec, FILE_NAME, SERVER_PORT);
-    // hub::sensor::OutputSensorT<Resolution> outputSensor(
-        // hub::output::OutputStream( hub::io::make_header(sensorSpec), FILE_NAME, SERVER_PORT ) );
+    hub::sensor::OutputSensorT<Resolution> outputSensor( sensorSpec, FILE_NAME, SERVER_PORT );
     std::cout << "[test] outputSensor inited" << std::endl;
 
     auto acq = outputSensor.acqMsg();
@@ -52,7 +46,7 @@ TEST_CASE( "InputSensor test" ) {
     assert( outputSensor.getSpec() == inputSensor.getSpec() );
     assert( inputSensor.getSpec().getResolution().hasType<hub::format::BGR8>() );
 
-    auto acq_read = inputSensor.acqMsg();
+    auto acq_read    = inputSensor.acqMsg();
     auto& start_read = acq_read.start();
     auto& end_read   = acq_read.end();
     auto& bgr8_read  = acq_read.get<hub::format::BGR8&>();
@@ -66,7 +60,5 @@ TEST_CASE( "InputSensor test" ) {
         CHECK( bgr8_read.r == i );
     }
 
-
     TEST_END()
-    return;
 }

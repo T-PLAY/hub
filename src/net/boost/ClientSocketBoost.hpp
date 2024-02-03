@@ -1,16 +1,14 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/10/18
-	
+
 #pragma once
 
 #ifdef HUB_USE_BOOST
 
-#include <boost/asio.hpp>
-#include <boost/asio/ip/tcp.hpp>
-
-#include "net/ClientSocketI.hpp"
-
+#    include "net/ClientSocketI.hpp"
+#    include <boost/asio.hpp>
+#    include <boost/asio/ip/tcp.hpp>
 
 namespace hub {
 namespace net {
@@ -21,13 +19,9 @@ namespace boost {
 /// allows connection to remote server hubs.
 /// This class describes the functionality needed to open a remote communication.
 ///
-//class SRC_API ClientSocketBoost : public Socket, public io::InputOutput
-//class SRC_API ClientSocketBoost : public ClientSocketI, public SocketSystem
 class SRC_API ClientSocketBoost : public ClientSocketI
 {
   public:
-//    ClientSocketBoost();
-
     ///
     /// \brief ClientSocketBoost
     /// is used to open a remote communication
@@ -44,8 +38,8 @@ class SRC_API ClientSocketBoost : public ClientSocketI
     /// \brief ClientSocketBoost
     /// \param fdSock
     ///
-//    explicit ClientSocketBoost( utils::socket_fd fdSock ); // server side client (bind and listen)
-    explicit ClientSocketBoost( ::boost::asio::ip::tcp::socket && fdSock ); // server side client (bind and listen)
+    explicit ClientSocketBoost(
+        ::boost::asio::ip::tcp::socket&& fdSock ); // server side client (bind and listen)
 
     ClientSocketBoost( const ClientSocketBoost& sock ) = delete;
 
@@ -71,7 +65,7 @@ class SRC_API ClientSocketBoost : public ClientSocketI
     /// \brief getIpv4
     /// \return
     ///
-    const std::string & getIpv4() const override;
+    const std::string& getIpv4() const override;
 
     ///
     /// \brief setPort
@@ -94,49 +88,38 @@ class SRC_API ClientSocketBoost : public ClientSocketI
     /// \brief isOpen
     /// \return
     ///
-//    bool isOpen() const override;
-//    bool isOpen() const;
     bool isConnected() const override;
 
     ///
     /// \brief close
     ///
-//    void close() override;
-//    void close();
     void disconnect() override;
-
 
     ///
     /// \brief write
     /// \param data
     /// \param len
     ///
-//    void write( const unsigned char* data, size_t len ) override;
-    void write(const unsigned char * data, size_t size ) override;
+    void write( const unsigned char* data, size_t size ) override;
 
     ///
     /// \brief read
     /// \param data
     /// \param len
     ///
-//    void read( unsigned char* data, size_t len ) override;
     void read( unsigned char* data, size_t size ) override;
 
   public:
-
     ///
     /// \brief isEnd
     /// \return
     ///
-//    bool isEnd() const override;
 
   private:
     ///
     /// \brief initServerAddress
     ///
     void initServerAddress();
-//    bool isOpen() const;
-//    void close();
 
   private:
     std::string m_ipv4;
@@ -146,16 +129,13 @@ class SRC_API ClientSocketBoost : public ClientSocketI
 
     ::boost::asio::ip::tcp::socket m_sock;
 
-//    utils::ClientAddr m_addr;
-//    bool m_connected = false;
-    bool m_moved     = false;
+    bool m_moved = false;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-} // namespace system
+} // namespace boost
 } // namespace net
 } // namespace hub
-
 
 #endif

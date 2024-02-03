@@ -1,12 +1,10 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/12/07
-	
+
 #pragma once
 
 #include "core/Macros.hpp"
-
-// #include "client/viewer/ViewerHandler.hpp"
 
 namespace hub {
 
@@ -23,7 +21,7 @@ class ViewerHandler;
 namespace sensor {
 class SensorSpec;
 class Acquisition;
-}
+} // namespace sensor
 
 ///
 /// @brief native
@@ -54,10 +52,6 @@ extern "C"
 #endif
 
     typedef void ( *onDelStreamFunc )( const char* streamName );
-    // const sensor::SensorSpec* sensorSpec );
-
-    // typedef void ( *onNewAcquisitionFunc )( const char* streamName,
-    // const sensor::Acquisition* acq );
 
     typedef void ( *onSetPropertyFunc )( const char* streamName,
                                          const char* objectName,
@@ -79,7 +73,6 @@ extern "C"
                          onNewAcqFunc onNewAcq,
 #endif
                          onDelStreamFunc onDelStream,
-                         // onNewAcquisitionFunc onNewAcquisition,
                          onSetPropertyFunc onSetProperty,
                          onLogMessageFunc onLogMessage );
 

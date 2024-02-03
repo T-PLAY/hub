@@ -2,13 +2,11 @@
 #include "OutputStreamServer2.hpp"
 
 #ifdef HUB_USE_TBB
-#include <execution>
+#    include <execution>
 #endif
 
 #include <iostream>
 #include <typeinfo>
-
-// include "net/ServerSocket.hpp"
 
 namespace hub {
 namespace output {
@@ -25,14 +23,10 @@ OutputStreamServer2::OutputStreamServer2( const io::Header& header, int streamPo
     startStreaming();
 }
 
-
-
 OutputStreamServer2::OutputStreamServer2( const io::Header& header,
                                           const std::string& streamName,
                                           int port,
-                                          const std::string& ipv4
-                                          // bool retained ) :
-                                          ) :
+                                          const std::string& ipv4 ) :
     io::StreamServer2( streamName, ipv4, port ),
     m_data( std::make_unique<SharedData>(
         std::make_unique<hub::io::InputOutputSocket>( net::ClientSocket( ipv4, port ) ) ) ) {
@@ -70,8 +64,6 @@ OutputStreamServer2::OutputStreamServer2( const io::Header& header,
                     data->m_serverSocket->close();
                     data->m_serverConnected = false;
                     std::this_thread::sleep_for( std::chrono::milliseconds( s_pingToServerDelay ) );
-                    // std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
-                    // continue;
                 }
                 else if ( mess == hub::io::StreamBase::ServerMessage::STREAMER_CLOSED ) {
 #ifdef DEBUG_OUTPUT_STREAM
@@ -86,34 +78,24 @@ OutputStreamServer2::OutputStreamServer2( const io::Header& header,
 #endif
                     assert( !data->m_streamViewerInited );
                     data->m_streamViewerInited = true;
-                    // continue;
                 }
                 else if ( mess == hub::io::StreamBase::ServerMessage::STREAMER_INITED ) {
 #ifdef DEBUG_OUTPUT_STREAM
                     std::cout << "[OutputStream] streamer inited" << std::endl;
 #endif
-                    // assert( !data->m_streamerInited );
                     data->m_streamerInited = true;
-                    // continue;
                 }
-                // else if ( mess == hub::io::StreamBase::ServerMessage::RETAINED_SHARED_TO_VIEWER )
-                // {
-                //     data->m_retainedSharedToViewer = true;
-                //     continue;
-                // }
-                else { assert( false ); }
+                else {
+                    assert( false );
+                }
             }
             catch ( net::system::SocketSystem::exception& ex ) {
-                // #ifdef DEBUG_OUTPUT_STREAM
                 std::cout << "[OutputStream] catch exception : " << ex.what() << std::endl;
-                // #endif
                 std::this_thread::sleep_for( std::chrono::milliseconds( s_pingToServerDelay ) );
-                // std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
             }
         } // while (! data->m_shutdown)
     } );
 
-    //    while ( !serverConnected ) {
     while ( !m_data->m_serverConnected ) {
 #ifdef DEBUG_OUTPUT_STREAM
         std::cout << "[OutputStream] waiting for server connected ..." << std::endl;
@@ -263,9 +245,13 @@ void OutputStreamServer2::startStreaming() {
             }
             else if ( clientType == hub::io::StreamBase::ClientType::KILLER ) {
                 if ( data->m_killed ) {}
-                else { data->m_killed = true; }
+                else {
+                    data->m_killed = true;
+                }
             }
-            else { assert( false ); }
+            else {
+                assert( false );
+            }
         }
         data->m_isStreaming = false;
 
@@ -290,42 +276,29 @@ void output::OutputStreamServer2::write( const Data_t* data, Size_t size ) {
 
     std::list<io::InputOutputSocket*> socketToRemoves;
 
-#if defined( OS_MACOS ) || ! defined( HUB_USE_TBB )
-     for ( auto& clientSocket : clientSockets ) {
-// #else
-//#    ifdef HUB_USE_TBB
+#if defined( OS_MACOS ) || !defined( HUB_USE_TBB )
+    for ( auto& clientSocket : clientSockets ) {
 #else
     std::for_each(
-        std::execution::par,
-        // #    else
-        // std::for_each(
-        // std::execution::seq,
-        // #    endif
-        clientSockets.begin(),
-        clientSockets.end(),
-        [&]( auto& clientSocket ) {
-//#else
-//    for ( auto& clientSocket : clientSockets ) {
+        std::execution::par, clientSockets.begin(), clientSockets.end(), [&]( auto& clientSocket ) {
 #endif
 
-            try {
-                clientSocket.write( data, size );
-            }
-            catch ( std::exception& ex ) {
-                std::cout << "[OutputStream] catch exception : " << ex.what() << std::endl;
-                socketToRemoves.push_back( &clientSocket );
-            }
+        try {
+            clientSocket.write( data, size );
+        }
+        catch ( std::exception& ex ) {
+            std::cout << "[OutputStream] catch exception : " << ex.what() << std::endl;
+            socketToRemoves.push_back( &clientSocket );
+        }
 
-// #ifdef OS_MACOS
-#if defined(OS_MACOS) || ! defined(HUB_USE_TBB)
-            }
+#if defined( OS_MACOS ) || !defined( HUB_USE_TBB )
+    }
 #else
         } );
 #endif
 
     for ( auto* socketToRemove : socketToRemoves ) {
         clientSockets.remove( *socketToRemove );
-        // if ( m_data->m_serverSocket != nullptr && m_data->m_serverSocket->isConnected() )
         if ( m_data->m_serverSocket != nullptr && m_data->m_serverSocket->isConnected() ) {
             m_data->m_serverSocket->write(
                 hub::io::StreamBase::ClientMessage::STREAMER_CLIENT_DEL_STREAM_VIEWER );
@@ -335,7 +308,6 @@ void output::OutputStreamServer2::write( const Data_t* data, Size_t size ) {
 
     m_data->m_mtxClientSockets.unlock();
 
-    // message log
     if ( !m_data->m_streamViewerSocks.empty() ) {
         m_data->m_byteWrote += m_data->m_streamViewerSocks.size() * size;
         const auto now = std::chrono::high_resolution_clock::now();
@@ -381,7 +353,6 @@ int OutputStreamServer2::getNStreamViewer() const {
 const io::Header& OutputStreamServer2::getHeader() const {
     return m_data->m_header;
 }
-
 
 void OutputStreamServer2::stopStreaming() {
     m_data->m_killed = true;

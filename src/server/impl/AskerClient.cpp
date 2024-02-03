@@ -2,7 +2,7 @@
 
 #ifdef HUB_USE_SERVER
 
-#include "ServerImpl.hpp"
+#    include "ServerImpl.hpp"
 
 namespace hub {
 namespace server {
@@ -13,7 +13,6 @@ AskerClient::AskerClient( ServerImpl* server, int iClient, net::ClientSocket&& s
 
     m_thread = std::thread( [this]() {
         try {
-            // check client still alive
             bool closeConnection = false;
             while ( !closeConnection ) {
 
@@ -28,11 +27,6 @@ AskerClient::AskerClient( ServerImpl* server, int iClient, net::ClientSocket&& s
 
                 case io::StreamBase::ClientMessage::ASKER_CLIENT_GET_LIST_STREAMS: {
                     std::cout << headerMsg() << "listing sensors" << std::endl;
-
-                    // todo server
-                    //                    assert( m_server != nullptr );
-                    //                    const auto& listStreams = m_server->listStreams();
-                    //                    m_sock.write( listStreams );
 
                 } break;
 
@@ -49,15 +43,15 @@ AskerClient::AskerClient( ServerImpl* server, int iClient, net::ClientSocket&& s
                         const auto* inputSensor = m_server->getInputSensor( streamName );
                         assert( inputSensor != nullptr );
                         const auto& sensorSpec = inputSensor->getSpec();
-                        //                        const auto& sensorSpec = m_server->getSensorSpec(
-                        //                        streamName );
                         m_sock.write( sensorSpec );
 
                         assert( m_server != nullptr );
                         const sensor::Acquisition& acq = m_server->getAcquisition( streamName );
                         m_sock.write( acq );
                     }
-                    else { m_sock.write( io::StreamBase::ServerMessage::NOT_FOUND ); }
+                    else {
+                        m_sock.write( io::StreamBase::ServerMessage::NOT_FOUND );
+                    }
 
                 } break;
 

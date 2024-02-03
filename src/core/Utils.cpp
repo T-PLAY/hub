@@ -1,27 +1,20 @@
 #include "Utils.hpp"
 
-// #include <iostream>
+#include <cassert>
 #include <chrono>
-// #include <memory>
-#include <string>
 #include <iostream>
 #include <string>
 #include <thread> // contains <chrono>
-#include <cassert>
 
 #include "Macros.hpp"
-//  #include "Types.hpp"
 
 #ifndef WIN32
 #    include <unistd.h>
 #else
 
 #    include <winsock2.h>
-#    pragma comment( lib, "ws2_32.lib")
-// #include <WinBase.h>
+#    pragma comment( lib, "ws2_32.lib" )
 #endif
-
-
 
 namespace hub {
 namespace utils {
@@ -31,11 +24,7 @@ std::string getHostname() {
     std::string computerName;
 
 #if defined( WIN32 ) || defined( _WIN32 ) || defined( _WIN64 )
-    //    temp = getenv( "COMPUTERNAME" );
-    //    char buff[256];
     // LPDWORD len;
-    // int err = _dupenv_s((char**)&buff, &len, "COMPUTERNAME");
-    // int err = gethostname( buff, 256 );
     // GetComputerNameA( buff, &len );
 
     WORD wVersionRequested;
@@ -43,28 +32,14 @@ std::string getHostname() {
     char name[255] { 0 };
     // CString ip;
     std::string ip;
-    //    PHOSTENT hostinfo;
     wVersionRequested = MAKEWORD( 2, 0 );
 
     if ( WSAStartup( wVersionRequested, &wsaData ) == 0 ) {
-        if ( gethostname( name, sizeof( name ) ) != 0 ) {
-            assert( false );
-            // if ( ( hostinfo = gethostbyname( name ) ) != NULL ) {
-            //     ip = inet_ntoa( *(struct in_addr*)*hostinfo->h_addr_list );
-            // }
-        }
+        if ( gethostname( name, sizeof( name ) ) != 0 ) { assert( false ); }
         WSACleanup();
     }
 
-    // std::cout << "hostname = " << name << std::endl;
-
-    // assert(len < 256);
-    // assert(err == 0);
     computerName = name;
-//    if ( temp != 0 ) {
-//        computerName = temp;
-//        temp         = 0;
-//    }
 #else
     temp = getenv( "HOSTNAME" );
     if ( temp != 0 ) {
@@ -83,24 +58,13 @@ std::string getHostname() {
     return computerName;
 }
 
-// using namespace std;
-
-// void println(const string& s="") {
-//     cout << s << endl;
-// }
 void sleep( const double t ) {
     if ( t > 0.0 )
         std::this_thread::sleep_for( std::chrono::milliseconds( (int)( 1E3 * t + 0.5 ) ) );
 }
 
-// struct Key {
 // ASCII codes (key>0): 8 backspace, 9 tab, 10 newline, 27 escape, 127 delete,
-// !"#$%&'()*+,-./0-9:;<=>?@A-Z[]^_`a-z{|}~üäÄöÖÜßµ´§°¹³² control key codes (key<0): -38/-40/-37/-39
-// up/down/left/right arrow, -33/-34 page up/down, -36/-35 pos1/end other key codes (key<0): -45
-// insert, -144 num lock, -20 caps lock, -91 windows key, -93 kontext menu key, -112 to -123 F1 to
 // F12 not working: ¹ (251), num lock (-144), caps lock (-20), windows key (-91), kontext menu key
-// (-93), F11 (-122)
-//#if defined( _WIN32 )
 #if defined( WIN32 ) || defined( _WIN32 ) || defined( _WIN64 )
 #    define WIN32_LEAN_AND_MEAN
 #    define VC_EXTRALEAN
@@ -137,13 +101,8 @@ Key key_press() { // not working: F11 (-122, toggles fullscreen)
                 continue; // disable AltGr + "6"
             case -12:
                 continue; // disable num block 5 with num lock deactivated
-            //case 13:
-            //    return 10; // enter
             case -46:
                 return Key::Delete;
-                //return 127; // delete
-            //case -49:
-            //    return 251; // ¹
             case 0:
                 continue;
             case 1:
@@ -160,15 +119,12 @@ Key key_press() { // not working: F11 (-122, toggles fullscreen)
                 continue; // disable Ctrl + f (opens search)
             case 7:
                 continue; // disable Ctrl + g
-            // case    8: continue; // disable Ctrl + h (ascii for backspace)
-            // case    9: continue; // disable Ctrl + i (ascii for tab)
             case 10:
                 continue; // disable Ctrl + j
             case 11:
                 continue; // disable Ctrl + k
             case 12:
                 continue; // disable Ctrl + l
-            // case   13: continue; // disable Ctrl + m (breaks console, ascii for new line)
             case 14:
                 continue; // disable Ctrl + n
             case 15:
@@ -201,12 +157,10 @@ Key key_press() { // not working: F11 (-122, toggles fullscreen)
         }
     }
 }
-//#elif defined( __linux__ )
 #else
 #    include <sys/ioctl.h>
 #    include <termios.h>
 Key key_press() { // not working: ¹ (251), num lock (-144), caps lock (-20), windows key
-                         // (-91), kontext menu key (-93)
     struct termios term;
     tcgetattr( 0, &term );
     while ( true ) {
@@ -251,19 +205,13 @@ Key key_press() { // not working: ¹ (251), num lock (-144), caps lock (-20), wi
         }
         term.c_lflag |= ( ICANON | ECHO ); // turn on line buffering and echoing
         tcsetattr( 0, TCSANOW, &term );
-        // std::cout << "input key"
-        // std::cout << "[Utils] Input is: " << std::to_string( key ) << ", \"" << (char)key << "\""
-        // << std::endl;
 
         switch ( key ) {
         case 127:
             return Key::Backspace;
-            // return 8; // backspace
         case -27:
-            // return 27; // escape
             return Key::Escape;
         case -51:
-            // return 127; // delete
             return Key::Delete;
         case -112: // F1
         case -113: // F2
@@ -276,54 +224,18 @@ Key key_press() { // not working: ¹ (251), num lock (-144), caps lock (-20), wi
         case -120: // F9
             return Key( -key - 112 + (int)Key::F1 );
 
-        // case -164:
-        //     return 132; // ä
-        // case -182:
-        //     return 148; // ö
-        // case -188:
-        //     return 129; // ü
-        // case -132:
-        //     return 142; // Ä
-        // case -150:
-        //     return 153; // Ö
-        // case -156:
-        //     return 154; // Ü
-        // case -159:
-        //     return 225; // ß
-        // case -181:
-        //     return 230; // µ
-        // case -167:
-        //     return 245; // §
-        // case -176:
-        //     return 248; // °
-        // case -178:
-        //     return 253; // ²
-        // case -179:
-        //     return 252; // ³
-        // case -180:
-        //     return 239; // ´
         case -65:
-            // return -38; // up arrow
             return Key::UpArrow;
         case -66:
-            // return -40; // down arrow
             return Key::DownArrow;
         case -68:
-            // return -37; // left arrow
             return Key::LeftArrow;
         case -67:
-            // return -39; // right arrow
             return Key::RightArrow;
         case -53:
-            // return -33; // page up
             return Key::PageUp;
         case -54:
-            // return -34; // page down
             return Key::PageDown;
-        // case -72:
-        // return -36; // pos1
-        // case -70:
-        // return -35; // end
         case 0:
             continue;
         case 1:
@@ -342,8 +254,6 @@ Key key_press() { // not working: ¹ (251), num lock (-144), caps lock (-20), wi
             continue; // disable Ctrl + g
         case 8:
             continue; // disable Ctrl + h
-        // case    9: continue; // disable Ctrl + i (ascii for tab)
-        // case   10: continue; // disable Ctrl + j (ascii for new line)
         case 11:
             continue; // disable Ctrl + k
         case 12:
@@ -544,11 +454,6 @@ std::ostream& operator<<( std::ostream& os, Key key ) {
     os << s_key2str[(int)key];
     return os;
 }
-
-// std::ostream &operator<<(std::ostream &os, Key key) {
-//     os << s_key2str[(int)key];
-//     return os;
-// }
 
 } // namespace utils
 } // namespace hub

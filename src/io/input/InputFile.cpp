@@ -1,49 +1,26 @@
 #include "InputFile.hpp"
 
-
 namespace hub {
 namespace input {
 
-//InputFile::InputFile(std::ifstream && file)
-//    : File(std::move(file))
-//{
-
-//}
-
-InputFile::InputFile(const std::string &filePath)
-    : File(filePath)
-    , m_file(filePath, std::ios::in | std::ios::binary)
-{
-    assert(m_file.is_open());
-    read(m_header);
+InputFile::InputFile( const std::string& filePath ) :
+    File( filePath ), m_file( filePath, std::ios::in | std::ios::binary ) {
+    assert( m_file.is_open() );
+    read( m_header );
 }
-
-// InputFile::InputFile(const char *filePath)
-//     : File(filePath)
-//     , m_file(filePath, std::ios::in | std::ios::binary)
-// //            io::File( std::fstream( filename, std::ios::in | std::ios::binary ) ) );
-// {
-//     assert(m_file.is_open());
-
-// }
 
 bool InputFile::isOpen() const {
     return m_file.is_open();
 }
 
-void InputFile::close()
-{
-    assert(isOpen());
+void InputFile::close() {
+    assert( isOpen() );
     m_file.close();
 }
 
-//bool InputFile::isEnd() const {
 bool InputFile::isEnd() const {
     assert( isOpen() );
-    return const_cast<std::ifstream*>(&m_file)->peek() == EOF;
-//    return m_file.t
-//    return m_file.eof();
-//    return m_file.peek() == EOF;
+    return const_cast<std::ifstream*>( &m_file )->peek() == EOF;
 }
 
 void InputFile::read( Data_t* data, Size_t len ) {
@@ -54,17 +31,13 @@ void InputFile::read( Data_t* data, Size_t len ) {
         m_file.read( reinterpret_cast<char*>( data + downloadSize ), len - downloadSize );
         auto after    = m_file.tellg();
         auto byteRead = after - before;
-        // std::cout << "[File] byteRead = " << byteRead << std::endl;
         if ( byteRead <= 0 ) { throw File::exception( "End of file" ); }
 
         downloadSize += (Size_t)byteRead;
     } while ( len != downloadSize );
 }
 
-void InputFile::clear()
-{
-
-}
+void InputFile::clear() {}
 
 } // namespace input
 } // namespace hub

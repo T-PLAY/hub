@@ -1,13 +1,12 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/10/18
-	
+
 #pragma once
 
+#include "core/Macros.hpp"
 #include <iostream>
 #include <memory>
-
-#include "core/Macros.hpp"
 
 namespace hub {
 namespace net {
@@ -22,7 +21,6 @@ void SRC_API closeSocket( socket_fd& sock );
 bool SRC_API isConnected( socket_fd sock );
 bool SRC_API isValid( const std::string& ipv4 );
 bool SRC_API isValid( int port );
-//size_t getMaxPacketSize(socket_fd sock );
 
 ///////////////////////////////////// SERVER ADDRESS ///////////////////////////////////////
 
@@ -70,7 +68,6 @@ int SRC_API bind( socket_fd sock, ServerAddr& addr );
 /// \return
 ///
 int SRC_API listen( socket_fd sock, int backlog );
-
 
 /////////////////////////////////////// CLIENT ADDRESS /////////////////////////////////////
 
@@ -126,7 +123,6 @@ class SRC_API ClientAddr
 /// \param addr
 /// \return
 ///
-//socket_fd SRC_API accept( socket_fd sock, ServerAddr& addr );
 socket_fd SRC_API accept( socket_fd sock, ClientAddr& addr );
 
 ///
@@ -160,7 +156,7 @@ int64_t SRC_API send( socket_fd sock, const char* buf, size_t len, int flags );
 /// \param flags
 /// \return
 ///
-int64_t SRC_API recv(socket_fd, char* buf, size_t len, int flags );
+int64_t SRC_API recv( socket_fd, char* buf, size_t len, int flags );
 
 } // namespace utils
 } // namespace system

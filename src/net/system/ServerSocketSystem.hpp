@@ -1,13 +1,12 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/10/18
-	
-#pragma once
 
-#include "net/ServerSocketI.hpp"
+#pragma once
 
 #include "ClientSocketSystem.hpp"
 #include "SocketSystem.hpp"
+#include "net/ServerSocketI.hpp"
 
 namespace hub {
 namespace net {
@@ -24,7 +23,6 @@ class SRC_API ServerSocketSystem : public ServerSocketI, public SocketSystem
     /// \brief ServerSocketSystem
     /// create server socket with the default service port.
     ///
-//    ServerSocketSystem();
 
     ///
     /// \brief ServerSocketSystem
@@ -35,10 +33,9 @@ class SRC_API ServerSocketSystem : public ServerSocketI, public SocketSystem
     explicit ServerSocketSystem( int port );
 
     ServerSocketSystem( const ServerSocketSystem& sock ) = delete;
-    ServerSocketSystem( ServerSocketSystem&& sock ) = delete;
+    ServerSocketSystem( ServerSocketSystem&& sock )      = delete;
     ServerSocketSystem& operator=( const ServerSocketSystem& sock ) = delete;
     ServerSocketSystem&& operator=( ServerSocketSystem&& sock ) = delete;
-    // ~ServerSocketSystem();
 
     ///
     /// \brief waitNewClient
@@ -48,12 +45,7 @@ class SRC_API ServerSocketSystem : public ServerSocketI, public SocketSystem
     ///
     ClientSocketSystem waitNewClient();
 
-//    void disconnect();
-    std::string toString() const {
-        return std::to_string(m_port);
-    }
-
-
+    std::string toString() const { return std::to_string( m_port ); }
 
   private:
     void initServer();

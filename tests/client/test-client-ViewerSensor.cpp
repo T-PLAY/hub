@@ -1,14 +1,10 @@
-// #define HUB_DEBUG_INPUT
-// #define HUB_DEBUG_OUTPUT
 
 #include "io/test_io_common.hpp"
 #include "test_common.hpp"
 
 #include <client/Viewer.hpp>
 
-// #include <io/output/OutputStream.hpp>
 #include <sensor/OutputSensor.hpp>
-// #include <core/io/Memory.hpp>
 
 TEST_CASE( "Viewer" ) {
     TEST_BEGIN()
@@ -29,7 +25,7 @@ TEST_CASE( "Viewer" ) {
 
         int nNewStreamer                     = 0;
         int nDelStreamer                     = 0;
-        std::atomic<int> nServerNotFound                  = 0;
+        std::atomic<int> nServerNotFound     = 0;
         int nServerConnected                 = 0;
         std::atomic<int> nServerDisconnected = 0;
         int nNewAcq                          = 0;
@@ -61,22 +57,11 @@ TEST_CASE( "Viewer" ) {
         hub::io::Memory memory;
         viewerHandler.onNewAcq = [&]( const std::string& streamName,
                                       const hub::sensor::Acquisition& acq ) {
-            // hub::input::InputStream& inputStream ) {
-            // const hub::Datas_t& datas ) {
             assert( streamName == FILE_NAME );
             assert( acq.getResolution() == hub::make_matrix<Resolution>() );
-            // assert( inputStream.getHeader() == sensorSpec );
-            // int a;
-            // memory.write( datas.data(), datas.size() );
-            // std::cout << "[test-client-Viewer] onNewAcq : " << acq.getData() << std::endl;
-            // std::cout << "[test-client-Viewer] data ptr : " << (uintptr_t)(acq.getData().data() +
-            // 16) << std::endl;
 
-            // assert(acq.getOffset<const hub::format::BGR8&>(0) == 0);
             assert( acq.getOffset<hub::format::BGR8>( 0 ) == 16 );
-            const auto& bgr8 = acq.get<const hub::format::BGR8&>();
-            // const auto* bgr8  = acq.get<const hub::format::BGR8*>();
-            // std::cout << "[test-client-Viewer] bgr8 ref : " << (uintptr_t)bgr8 << std::endl;
+            const auto& bgr8  = acq.get<const hub::format::BGR8&>();
             const auto& start = acq.getStart();
             const auto& end   = acq.getEnd();
             assert( start == nNewAcq );
@@ -84,10 +69,6 @@ TEST_CASE( "Viewer" ) {
             assert( bgr8.b == nNewAcq );
             assert( bgr8.g == nNewAcq );
             assert( bgr8.r == nNewAcq );
-            // memory.read( a );
-            // assert( a == nNewAcq );
-            // inputStream.read( a );
-            // std::cout << "[test-client-Viewer] onNewData : " << a << std::endl;
             mtxPrint.lock();
             std::cout << "[test-client-Viewer] onNewAcq : " << acq << std::endl;
             mtxPrint.unlock();
@@ -140,9 +121,7 @@ TEST_CASE( "Viewer" ) {
                 assert( viewer.nStream() == 0 );
                 assert( viewer.nStreaming() == 0 );
                 CONSTRUCT_BEGIN( "OutputSensor" );
-                hub::sensor::OutputSensor outputSensor( sensorSpec_ref, FILE_NAME, port);
-                // hub::sensor::OutputSensor outputSensor( hub::output::OutputStream(
-                    // hub::io::make_header( sensorSpec_ref ), FILE_NAME, port ) );
+                hub::sensor::OutputSensor outputSensor( sensorSpec_ref, FILE_NAME, port );
                 CONSTRUCT_END( "OutputSensor" );
                 assert( viewer.nStream() == 1 );
                 assert( viewer.nStreaming() == 1 );
@@ -150,10 +129,8 @@ TEST_CASE( "Viewer" ) {
                 auto& bgr8  = acq.get<hub::format::BGR8&>();
                 auto& start = acq.start();
                 auto& end   = acq.end();
-                // std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
 
                 for ( int i = 0; i < 10; ++i ) {
-                    // outputStream.write( i );
                     start  = i;
                     end    = i;
                     bgr8.r = i;
@@ -163,7 +140,6 @@ TEST_CASE( "Viewer" ) {
                     mtxPrint.lock();
                     std::cout << "[test] write acq : " << acq << std::endl;
                     mtxPrint.unlock();
-                    // std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
                 }
 
                 iTry = 0;
@@ -180,9 +156,7 @@ TEST_CASE( "Viewer" ) {
             DESTRUCT_END( "OutputStream" );
 
             iTry = 0;
-            // while ( viewer.nStreaming() != 0 && iTry < 10 ) {
             while ( viewer.nStream() != 0 && iTry < 10 ) {
-                // while ( nDelStreamer == 0 && iTry < 10 ) {
                 std::cout << "[test] waiting for outputStream disconnected" << std::endl;
                 std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                 ++iTry;

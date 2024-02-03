@@ -1,18 +1,17 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/11/27
-	
+
 #pragma once
 
 #ifdef HUB_USE_SERVER
 
-#include <mutex>
-#include <thread>
+#    include <mutex>
+#    include <thread>
 
-// #include "net/ClientSocket.hpp"
-#include "io/InputOutputSocket.hpp"
+#    include "io/InputOutputSocket.hpp"
 
-#include "Client.hpp"
+#    include "Client.hpp"
 
 namespace hub {
 namespace server {
@@ -33,7 +32,6 @@ class AskerClient : public Client
 
   private:
     std::thread m_thread;
-    //    net::ClientSocket m_sock;
     io::InputOutputSocket m_sock;
 
     friend class ServerImpl;
@@ -42,6 +40,5 @@ class AskerClient : public Client
 } // namespace impl
 } // namespace server
 } // namespace hub
-
 
 #endif

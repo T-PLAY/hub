@@ -12,17 +12,11 @@ class Test
         metaData["manufactor"] = "My Company";
         constexpr int width    = 640;
         constexpr int height   = 480;
-        // using Resolution       = hub::MatrixXD<hub::format::Y8, width, height>;
-        auto resolution = hub::make_matrix<hub::format::Y8>( 640, 480 );
+        auto resolution        = hub::make_matrix<hub::format::Y8>( 640, 480 );
         hub::sensor::SensorSpec sensorSpec( "sensorName", resolution, metaData );
-        // m_streamViews->onNewStream( "stream 0", sensorSpec );
 
-        // bool m_exitThread = false;
-        // m_thread = std::thread( [this, resolution = std::move(resolution)]() {
         m_thread = std::thread( [this]() {
-            auto resolution2 = hub::make_matrix<hub::format::Y8>( 640, 480 );
-            // hub::sensor::AcquisitionT<Resolution> acq;
-            // auto acq = hub::sensor::AcquisitionT<Resolution>().getMatrix();
+            auto resolution2         = hub::make_matrix<hub::format::Y8>( 640, 480 );
             auto acq                 = hub::sensor::make_acquisition( resolution2 );
             auto& start              = acq.start();
             auto& end                = acq.end();
@@ -49,7 +43,6 @@ class Test
                 end = hub::sensor::getClock();
                 dec += 50;
 
-                // m_streamViews->onNewAcquisition("streamName", acq);
                 std::cout << "acq: " << acq << std::endl;
 
                 std::this_thread::sleep_until( endClock );
@@ -68,7 +61,6 @@ class Test
 };
 
 int main() {
-    // std::cout << "resolution: " << resolution << std::endl;
     Test test;
     std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 

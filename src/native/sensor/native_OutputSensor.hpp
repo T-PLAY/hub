@@ -1,12 +1,10 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/12/13
-	
+
 #pragma once
 
 #include "core/Macros.hpp"
-
-// #include "sensor/OutputSensor.hpp"
 
 namespace hub {
 
@@ -35,7 +33,6 @@ extern "C"
     /// \return
     ///
     // SRC_API sensor::OutputSensor*
-    // createMat4OutputSensor( const char* sensorName, const char* ipv4, int port );
 
     ///
     /// \brief mat4OutputSensorSendAcq
@@ -44,7 +41,6 @@ extern "C"
     /// \return
     ///
     // SRC_API bool mat4OutputSensorSendAcq( sensor::OutputSensor* outputSensor, const float* input
-    // );
 
     ///
     /// \brief freeOutputSensor

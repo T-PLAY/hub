@@ -1,7 +1,7 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/03/25
-	
+
 #pragma once
 
 #include <initializer_list>
@@ -10,8 +10,6 @@
 #include <vector>
 
 #include <core/Macros.hpp>
-
-// #include "Measure.hpp"
 
 namespace hub {
 namespace data {
@@ -65,7 +63,6 @@ class MeshImpl;
 ///
 /// \brief The Mesh class
 ///
-// class SRC_API Mesh : public Measure
 class SRC_API Mesh
 {
   public:
@@ -73,7 +70,6 @@ class SRC_API Mesh
     /// \brief Mesh
     /// \param measure
     ///
-    // explicit Mesh( const Measure& measure );
 
     Mesh() = default;
 
@@ -136,15 +132,10 @@ class SRC_API Mesh
     bool operator==( const Mesh& other ) const;
 
 #if CPP_VERSION >= 20
-    static constexpr auto serialize( auto& archive, auto& self ) {
-        // todo
-        return archive();
-    }
+    static constexpr auto serialize( auto& archive, auto& self ) { return archive(); }
 #else
     template <typename Archive, typename Self>
-    static void serialize( Archive& archive, Self& self ) {
-        // archive( self.a, self.b, self.c );
-    }
+    static void serialize( Archive& archive, Self& self ) {}
 #endif
 
   private:

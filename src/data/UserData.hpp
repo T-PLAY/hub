@@ -1,11 +1,10 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/03/14
-	
+
 #pragma once
 
 #include "core/Any.hpp"
-#include "Measure.hpp"
 
 namespace hub {
 namespace data {
@@ -14,7 +13,6 @@ namespace data {
 /// \brief The UserData class
 /// is a custom data, using for event sensor.
 ///
-// class SRC_API UserData : public Measure
 class SRC_API UserData
 {
   public:
@@ -22,7 +20,6 @@ class SRC_API UserData
     /// \brief UserData
     /// \param measure
     ///
-    // explicit UserData( const Measure& measure );
     ///
     /// \brief UserData
     /// \param name

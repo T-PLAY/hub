@@ -4,33 +4,10 @@ project(doc)
 
 if(HUB_BUILD_DOC)
 
-
     file(GLOB DOC_SRC *.cpp)
 
     add_library(${PROJECT_NAME} ${DOC_SRC})
     target_link_libraries(${PROJECT_NAME} hub)
-#        set_property(TARGET ${TARGET_NAME} PROPERTY CXX_STANDARD ${CMAKE_CXX_STANDARD})
-#        set_property(TARGET ${TARGET_NAME} PROPERTY CXX_EXTENSIONS OFF)
-
-#    string(REPLACE ".cpp" "" EXAMPLE_SRC_BASENAME "${DOC_SRC}")
-#    set(EXAMPLE_SRC_BASENAME ${EXAMPLE_SRC_BASENAME})
-
-#    foreach(name ${EXAMPLE_SRC_BASENAME})
-#        get_filename_component(basename ${name} NAME)
-#        set(TARGET_NAME ${basename})
-#        add_executable(${TARGET_NAME} ${name}.cpp)
-#        target_link_libraries(${TARGET_NAME} hub)
-#        set_property(TARGET ${TARGET_NAME} PROPERTY CXX_STANDARD ${CMAKE_CXX_STANDARD})
-#        set_property(TARGET ${TARGET_NAME} PROPERTY CXX_EXTENSIONS OFF)
-
-#        if(WIN32)
-#            add_custom_command(
-#                # TARGET ${PROJECT_NAME}
-#                TARGET ${TARGET_NAME}
-#                POST_BUILD
-#                COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:hub> $<TARGET_FILE_DIR:${TARGET_NAME}>)
-#        endif()
-#    endforeach()
 
     if(NOT HUB_BROWSER)
         set(HUB_BROWSER

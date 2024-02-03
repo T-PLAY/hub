@@ -1,7 +1,7 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/12/14
-	
+
 #pragma once
 
 #include "Any.hpp"
@@ -9,13 +9,6 @@
 namespace hub {
 
 using MetaData = std::map<std::string, Any>; // any -> C++17
-
-// static std::string to_string( const std::pair<std::string, Any>& metaData ) {
-//     const auto& name = metaData.first;
-//     const auto& val  = metaData.second;
-//     std::string str  = name + " : " + val.toString();
-//     return str;
-// }
 
 static std::string to_string( const MetaData& metaData, bool expand ) {
     std::string str = "";

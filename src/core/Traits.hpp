@@ -1,7 +1,7 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/10/01
-	
+
 #pragma once
 
 #include "Macros.hpp"
@@ -13,23 +13,20 @@
 #include "traits/Vector.hpp"
 #include "traits/std_any.hpp"
 
-// #include <iostream>
 #include <map>
 #include <string>
 #include <type_traits>
-// #include <vector>
 
 ////////////////////////////////////////////////////////////////////////
 
 namespace hub {
 
-// constexpr bool stringable   = requires( T t ) { str += t; } && !std::is_arithmetic_v<T>;
-// constexpr bool hasToString = requires( T t ) { t.toString(); };
-
 #if CPP_VERSION >= 20
 
 template <class T>
-concept StringAddable = requires( std::string str, const T& t ) { str += t; };
+concept StringAddable = requires( std::string str, const T& t ) {
+    str += t;
+};
 
 #else
 
@@ -64,7 +61,9 @@ static_assert( !StringAddable<std::vector<unsigned char>> );
 
 #if CPP_VERSION >= 20
 template <class T>
-concept hasToString = requires( std::ostream& os, const T& t ) { os << t.toString(); };
+concept hasToString = requires( std::ostream& os, const T& t ) {
+    os << t.toString();
+};
 
 #else
 
@@ -85,14 +84,18 @@ static constexpr auto hasToString = has_toString_v<T>;
 
 #endif
 
-///////////////////////////////
+    ///////////////////////////////
 
 #if CPP_VERSION >= 20
 template <class T>
-concept StdToStringable = requires( std::ostream& os, const T& t ) { std::to_string(t); };
+concept StdToStringable = requires( std::ostream& os, const T& t ) {
+    std::to_string( t );
+};
 
 template <class T>
-concept toStringable_v = requires( std::ostream& os, const T& t ) { toString(t); };
+concept toStringable_v = requires( std::ostream& os, const T& t ) {
+    toString( t );
+};
 
 #else
 
@@ -125,7 +128,6 @@ struct toStringable<T, std::void_t<toStringable_t<T>>> : std::true_type {};
 template <typename T>
 static constexpr bool toStringable_v = toStringable<T>::value;
 
-
 #endif
 
 static_assert( !StdToStringable<std::string> );
@@ -143,9 +145,7 @@ static auto to_string( const char* str ) -> std::string {
     return std::string( "\"" ) + str + "\"";
 }
 static auto to_string( unsigned char c ) -> std::string {
-    // return std::string( "'" ) + std::to_string( c ) + "'";
-    // return std::string(c);
-    return std::to_string(c);
+    return std::to_string( c );
 }
 static auto to_string( bool b ) -> std::string {
     return ( b ) ? ( "true" ) : ( "false" );
@@ -166,7 +166,6 @@ typename std::enable_if_t<hasToString<T>, std::string> to_string( const T& t ) {
     static_assert( !std::is_same_v<T, std::string> );
     static_assert( !std::is_same_v<T, const char*> );
     static_assert( !std::is_same_v<T, char*> );
-    // static_assert( !StringAddable<T> );
     return t.toString();
 }
 
@@ -175,8 +174,7 @@ typename std::enable_if_t<toStringable_v<T>, std::string> to_string( const T& t 
     static_assert( !std::is_same_v<T, std::string> );
     static_assert( !std::is_same_v<T, const char*> );
     static_assert( !std::is_same_v<T, char*> );
-    // static_assert( !StringAddable<T> );
-    return toString(t);
+    return toString( t );
 }
 
 template <class T>
@@ -191,24 +189,21 @@ template <class Container, class T = std::decay_t<decltype( *std::declval<Contai
 static typename std::enable_if_t<isContainer<Container>, std::string>
 to_string( const Container& container ) {
     std::string str;
-    // str += "<" + TYPE_NAME( T ) + ">";
     str += "<" + TYPE_NAME( T() ) + ">";
     str += "[";
 
     constexpr auto nFirstData = 20;
     constexpr auto nLastData  = 8;
-    auto it = container.begin();
-    size_t i = 0;
-    while (it != container.end()) {
-    // for ( size_t i = 0; i < container.size(); ++i ) {
+    auto it                   = container.begin();
+    size_t i                  = 0;
+    while ( it != container.end() ) {
         if ( nFirstData < i && i < container.size() - nLastData ) {
             if ( i == container.size() - nLastData - 1 ) { str += "... "; }
             ++it;
             ++i;
             continue;
         }
-        // const auto& el = container.at( i );
-        const auto & el = *it;
+        const auto& el = *it;
 
         str += to_string( el );
 
@@ -231,10 +226,8 @@ static auto to_string( const std::map<T, U>& map ) {
     std::string str;
     str += "[";
     size_t i = 0;
-    // for ( const auto& [key, value] : map ) {
     for ( const auto& pair : map ) {
         str += to_string( pair );
-        // str += "{" + to_string( key ) + ": " + to_string( value ) + "}";
         if ( i != map.size() - 1 ) str += ", ";
         ++i;
     }
@@ -258,7 +251,6 @@ static auto to_string( const std::set<T>& set ) {
 
 template <Size_t tupleSize, Size_t idx, class... Ts>
 static void to_string_recurse( const std::tuple<Ts...>& tuple, std::string& str ) {
-    // str += ", " + typeName( T() );
     str += ", " + to_string( std::get<idx>( tuple ) );
     if constexpr ( idx + 1 < tupleSize ) {
         to_string_recurse<tupleSize, idx + 1, Ts...>( tuple, str );
@@ -267,29 +259,24 @@ static void to_string_recurse( const std::tuple<Ts...>& tuple, std::string& str 
 
 template <class... Ts>
 static std::string to_string( const std::tuple<Ts...>& tuple ) {
-    // std::string str = "tuple<";
     static_assert( sizeof...( Ts ) > 0 );
 
     std::string str = "(";
     str += to_string( std::get<0>( tuple ) );
     if constexpr ( sizeof...( Ts ) > 1 ) {
         to_string_recurse<sizeof...( Ts ), 1, Ts...>( tuple, str );
-        // to_string_recurse<2, 0, Ts...>(tuple, str);
     }
     str += ")";
     return str;
-    // return "map<" + typeName( Key() ) + ", " + typeName( Value() ) +
-    // ">";
 }
 
 template <char delimiter, class T, class... Ts>
 static void to_string_reduce( std::string& str, const T& t, const Ts&... ts ) {
     str += to_string( t );
     if constexpr ( sizeof...( Ts ) > 0 ) {
-        // str += " ";
         if constexpr ( delimiter == ' ' ) { str += delimiter; }
         else {
-            str += std::string(" ") + delimiter + " ";
+            str += std::string( " " ) + delimiter + " ";
         }
         to_string_reduce<delimiter>( str, ts... );
     }
@@ -314,52 +301,6 @@ struct hubToStringable<T, std::void_t<hubToStringable_t<T>>> : std::true_type {}
 template <typename T>
 static constexpr bool hubToStringable_v = hubToStringable<T>::value;
 
-// template <class T>
-// typename std::enable_if_t<! std::is_same_v<T, std::string> && !
-// std::is_same_v<std::remove_pointer_t<T>,const char> && hubToStringable_v<T>, std::ostream&>
-// operator<<( std::ostream& os,
-//                                                                            const T& t ) {
-//     os << hub::to_string( t );
-//     return os;
-// }
-// template <class T>
-// typename std::enable_if_t<! std::is_same_v<T, std::string> && !
-// std::is_same_v<std::remove_pointer_t<T>,const char> && hubToStringable_v<T>, std::ostream&>
-// operator<<( std::ostream& os, const T& t ) {
-// os << hub::to_string( t );
-// return os;
-// }
-
-// template <class T, class U>
-// std::ostream& operator<<( std::ostream& os, const std::pair<T, U>& pair ) {
-//     os << toString( pair );
-//     return os;
-// }
-
-// template <class Container, class T = std::decay_t<decltype( *std::declval<Container>().begin()
-// )>> #if CPP_VERSION >= 20
-//     requires( !std::is_same_v<Container, std::string> )
-// std::ostream&
-// #else
-// typename std::enable_if_t<!std::is_same_v<Container, std::string>, std::ostream&>
-// #endif
-// operator<<( std::ostream& os, const Container& container ) {
-//     os << toString( container );
-//     return os;
-// }
-
-// template <class T>
-//     // requires hasToString<T>
-// typename std::enable_if_t<hasToString<T>, std::ostream&>
-// operator<<( std::ostream& os, const T& t ) {
-//     os << t.toString();
-//     // os << toString(t);
-//     return os;
-// }
-
-// namespace hub {
-
-// #if ( __cplusplus < 201703L )
 #if CPP_VERSION < 17
 template <class...>
 struct is_one_of : std::false_type {};
@@ -376,89 +317,13 @@ constexpr bool is_one_of() noexcept {
 }
 #endif
 
-
-// template <class T>
-// constexpr bool isSimpleType() noexcept {
-//     return std::is_same<int, T> {};
-// }
-
-// template <typename T>
 ////    using readable_t = decltype( std::declval<T>().read( std::declval<Input&>() ) );
-// using serializable_t = decltype( std::declval<T&>().serialize() );
 
-// template <typename T, typename = std::void_t<>>
-// struct serializable : std::false_type {};
-
-// template <typename T>
-// struct serializable<T, std::void_t<serializable_t<T>>> : std::true_type {};
-
-// template <typename T>
-// static constexpr bool serializable_v = serializable<T>::value;
-
-// template <typename T>
-// concept printable = requires( T t ) {
-//     { std::cout << t } -> std::same_as<std::ostream&>;
-// };
-
-// template <typename T>
-// using isInput_t = decltype( T::isInput );
-// using isInput_t = decltype( std::declval<T>().read( std::declval<hub::Data_t*>(),
-// std::declval<hub::Size_t>() ) ); using isInput_t = decltype( std::declval<T>().read(
-// std::declval<hub::Data_t*>(), std::declval<hub::Size_t>() ) );
-
-// template <typename T, typename = std::void_t<>>
-// struct isInput : std::false_type {};
-
-// template <typename T>
-// struct isInput<T, std::void_t<isInput<T>>> : std::true_type {};
-
-// #include "core/Input.hpp"
-// template <typename T>
 ////static constexpr bool isInput_v = isInput<T>::value;
-// static constexpr bool isInput_v = std::is_base_of_v<hub::Input, T>;
 
-// #include "core/Output.hpp"
-// template <typename T>
 ////static constexpr bool isInput_v = isInput<T>::value;
-// static constexpr bool isOutput_v = std::is_base_of_v<hub::Output, T>;
-
-// template <class T>
-// std::size_t sizeofAll( T& ts ) {
-//     //        zpp::bits::in input( m_serialBuff );
-//     //        input( ts... ).or_throw();
-//     return sizeof( T );
-// }
-
-// template <class T, class... Ts>
-// std::size_t sizeofAll( T& t, Ts&... ts ) {
-//     //        assert( isOpen() );
-//     //        assert( !isEnd() );
-//     //        read( m_serialBuff.data(), sizeof(Ts)... );
-//     //        zpp::bits::in input( m_serialBuff );
-//     //        input( ts... ).or_throw();
-//     //        input( ts... ).or_throw();
-//     return sizeof( T ) + sizeofAll( ts... );
-// }
-
-// #if CPP_VERSION >= 20 // concept
-// template <class T>
-// concept Printable = requires( T a ) { std::cout << a; };
-// #else
-// template <class T>
-// static constexpr auto Printable = true;
-// #endif
-
-//} // namespace hub
 
 } // namespace hub
-
-// template <class T>
-// typename std::enable_if_t<! std::is_same_v<T, std::string> && hub::hubToStringable_v<T>,
-// std::ostream&> operator<<( std::ostream& os,
-//                                                                            const T& t ) {
-//     os << hub::to_string( t );
-//     return os;
-// }
 
 template <class T>
 typename std::enable_if_t<hub::hasToString<T>, std::ostream&> operator<<( std::ostream& os,
@@ -469,8 +334,8 @@ typename std::enable_if_t<hub::hasToString<T>, std::ostream&> operator<<( std::o
 
 template <class T>
 typename std::enable_if_t<hub::toStringable_v<T>, std::ostream&> operator<<( std::ostream& os,
-                                                                          const T& t ) {
-    os << toString(t);
+                                                                             const T& t ) {
+    os << toString( t );
     return os;
 }
 
@@ -509,57 +374,3 @@ std::ostream& operator<<( std::ostream& os, const std::tuple<Ts...>& tuple ) {
     os << hub::to_string( tuple );
     return os;
 }
-
-//     // constexpr bool stringable   = requires( T t ) { str += t; } &&
-//     !std::is_arithmetic_v<T>;
-//     // constexpr bool hasToString = requires( T t ) { t.toString(); };
-//         // if constexpr ( stringable ) { str += el; }
-//         // else if constexpr ( hasToString ) { str += el.toString(); }
-//         // else { str += std::to_string( el ); }
-//     return "string";
-
-// template <typename TupleT, std::size_t... Is>
-// std::ostream& printTupleImp( std::ostream& os, const TupleT& tp, std::index_sequence<Is...> ) {
-// template <class Tuple, class... Args>
-// static auto to_string( const std::tuple<Args...>& tuple ) {
-//     size_t index   = 0;
-//     std::string str;
-//     auto printElem = [&index, &str]( const auto& x ) {
-//         if ( index++ > 0 ) str += ", ";
-//         str += TYPE_NAME(x) + ":" + x;
-//     };
-
-//     str += "(";
-//     // ( printElem( std::get<Is>( tp ) ), ... );
-//     str += ")";
-//     return str;
-//     // return os;
-// }
-
-// template <class Tuple, class T = std::decay_t<decltype( std::get<0>( std::declval<Tuple>() ) )>>
-// typename std::enable_if_t<std::is_same_v<Tuple, std::tuple<T>>, std::string>
-// to_string( const Tuple& tuple ) {
-//     // return "(" + to_string( std::get<0>( tuple ) ) + ")";
-//     return "tuple";
-// }
-
-// template <class Tuple,
-//           class T = std::decay_t<decltype( std::get<0>( std::declval<Tuple>() ) )>,
-//           class U = std::decay_t<decltype( std::get<1>( std::declval<Tuple>() ) )>>
-// typename std::enable_if_t<std::is_same_v<Tuple, std::tuple<T, U>>, std::string>
-// to_string( const Tuple& tuple ) {
-//     // return "(" + to_string( std::get<0>( tuple ) ) + ", " + to_string( std::get<1>( tuple ) )
-//     + ")"; return "tuple2";
-// }
-
-// template <class Tuple,
-//           class T = std::decay_t<decltype( std::get<0>( std::declval<Tuple>() ) )>,
-//           class U = std::decay_t<decltype( std::get<0>( std::declval<Tuple>() ) )>,
-//           class V = std::decay_t<decltype( std::get<1>( std::declval<Tuple>() ) )>>
-// typename std::enable_if_t<std::is_same_v<Tuple, std::tuple<T, U, V>>, std::string>
-// to_string( const Tuple& tuple ) {
-//     return "tuple3";
-//     // return "(" + to_string( std::get<0>( tuple ) ) + ", " + to_string( std::get<1>( tuple ) )
-//     +
-//            // ", " + to_string( std::get<2>( tuple ) ) + ")";
-// }

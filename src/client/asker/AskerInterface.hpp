@@ -1,17 +1,15 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/11/30
-	
+
 #pragma once
 
-
-#include <string>
 #include <list>
+#include <string>
 
-#include "sensor/Acquisition.hpp"
 #include "core/Macros.hpp"
+#include "sensor/Acquisition.hpp"
 #include "sensor/SensorSpec.hpp"
-//#include "net/ClientSocket.hpp"
 
 namespace hub {
 namespace client {
@@ -23,17 +21,6 @@ namespace client {
 class SRC_API AskerInterface
 {
   public:
-//  protected:
-//    ///
-//    /// \brief Asker
-//    /// \param ipv4 of the server you want to get information
-//    /// \param port of the server you want to get information
-//    ///
-//    explicit AskerInterface( const std::string& ipv4 = net::s_defaultServiceIp,
-//                    int port                = net::s_defaultServicePort );
-
-//    ~AskerInterface();
-
     ///
     /// \brief listStreams
     /// \return
@@ -52,7 +39,6 @@ class SRC_API AskerInterface
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
   private:
-//    net::ClientSocket m_sock;
 };
 
 } // namespace client

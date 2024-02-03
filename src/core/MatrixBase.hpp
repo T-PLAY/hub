@@ -1,7 +1,7 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2024/01/04
-	
+
 #pragma once
 
 #include <algorithm>
@@ -10,18 +10,19 @@
 #include "Buffer.hpp"
 #include "Macros.hpp"
 #include "Traits.hpp"
-// #include "core/Array.hpp"
-// #include "core/Span.hpp"
 
 namespace hub {
 
 #if CPLUSPLUSVERSION >= 20
 template <class T>
-// concept isMatrix = requires { T::Capacity; };
-concept isMatrix = requires { T::matrix; };
+concept isMatrix = requires {
+    T::matrix;
+};
 
 template <class... Ts>
-concept areMatrices = requires { requires( isMatrix<Ts> && ... ); };
+concept areMatrices = requires {
+    requires( isMatrix<Ts> && ... );
+};
 
 #else
 
@@ -38,11 +39,11 @@ template <typename T>
 static constexpr bool isMatrix = is_matrix<T>::value;
 
 template <class T, class... Ts>
-constexpr bool areMatrices_( ) {
-    if constexpr ( sizeof...( Ts ) > 0 ) {
-        return isMatrix<T> && areMatrices_<Ts...>();
+constexpr bool areMatrices_() {
+    if constexpr ( sizeof...( Ts ) > 0 ) { return isMatrix<T> && areMatrices_<Ts...>(); }
+    else {
+        return isMatrix<T>;
     }
-    else { return isMatrix<T>; }
 }
 
 template <class... Ts>
@@ -50,14 +51,8 @@ constexpr bool areMatrices = areMatrices_<Ts...>();
 
 #endif
 
-// constexpr bool areMatrices = {isMatrix<Ts>} && ... ;
-// concept areMatrices = std::all_of<isMatrix,
-
 static_assert( !isMatrix<int> );
 
-// class MatrixBase {
-//   public:
 ////     virtual constexpr Size_t size() = 0;
-// };
 
 } // namespace hub

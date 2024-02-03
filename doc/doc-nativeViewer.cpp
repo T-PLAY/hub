@@ -1,19 +1,11 @@
 
+#include <client/Viewer.hpp>
 #include <sensor/InputSensor.hpp>
 #include <sensor/OutputSensor.hpp>
-#include <client/Viewer.hpp>
-
-// #include <Server.hpp>
 
 #include <Native.hpp>
 #include <filesystem>
 #include <iostream>
-
-// needs server running
-
-// void onNewStreamer( const char* sensorName, const hub::sensor::SensorSpec* sensorSpec ) {
-
-// void onDelStreamer( const char* sensorName, const hub::sensor::SensorSpec* sensorSpec ) {
 
 /// \file
 

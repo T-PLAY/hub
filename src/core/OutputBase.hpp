@@ -1,18 +1,15 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/11/09
-	
+
 #pragma once
 
 #include <cassert>
 
 #include "Macros.hpp"
-// #include "core/Traits.hpp"
 #include "ios.hpp"
 
 namespace hub {
-// namespace io {
-// namespace output {
 
 class SRC_API OutputBase : public ios
 {
@@ -23,7 +20,6 @@ class SRC_API OutputBase : public ios
 
 template <typename T>
 using writable_t = decltype( std::declval<T>().write( std::declval<OutputBase&>() ) );
-//    using writable_t = decltype( write( std::declval<T>(), std::declval<OutputImpl&>() ) );
 
 template <typename T, typename = std::void_t<>>
 struct writable : std::false_type {};
@@ -48,6 +44,4 @@ struct notWritable<T, std::void_t<notWritable_t<T>>> : std::true_type {};
 template <typename T>
 static constexpr bool notWritable_v = notWritable<T>::value;
 
-//} // namespace output
-//} // namespace io
 } // namespace hub

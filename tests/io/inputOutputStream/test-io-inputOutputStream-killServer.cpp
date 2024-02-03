@@ -1,7 +1,3 @@
-// #include <catch2/catch_test_macros.hpp>
-// #define HUB_DEBUG_INPUT
-// #define HUB_DEBUG_OUTPUT
-// #define HUB_DEBUG_SOCKET
 
 #include "io/test_io_common.hpp"
 #include "test_common.hpp"
@@ -19,11 +15,9 @@ TEST_CASE( "InputOutputStream kill server test" ) {
     auto* server = new hub::Server( port );
     server->asyncRun();
 
-    // not allowed
     {
 
-        // const hub::io::Header header{sizeof(int)};
-        hub::output::OutputStream outputStream( {sizeof(int)}, FILE_NAME, port );
+        hub::output::OutputStream outputStream( { sizeof( int ) }, FILE_NAME, port );
 
         hub::input::InputStream inputStream( FILE_NAME, port );
 
@@ -33,9 +27,7 @@ TEST_CASE( "InputOutputStream kill server test" ) {
         inputStream.read( a_read );
         assert( a == a_read );
 
-        // std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
         delete server;
-        // std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
 
         a = 6;
         outputStream.write( a );

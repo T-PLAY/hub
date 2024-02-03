@@ -1,7 +1,3 @@
-// #include <catch2/catch_test_macros.hpp>
-// #define HUB_DEBUG_INPUT
-// #define HUB_DEBUG_OUTPUT
-// #define HUB_DEBUG_SOCKET
 
 #include "io/test_io_common.hpp"
 #include "test_common.hpp"

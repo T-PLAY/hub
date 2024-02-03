@@ -22,9 +22,7 @@ class Node
   public:
     Node() = default;
     // Node( HashType hash, Dims&& dims, std::string typeName, Size_t size );
-    Node( Dims&& dims, std::string typeName, Size_t size, TypeId_t id
-          // , Data_t * data
-          );
+    Node( Dims&& dims, std::string typeName, Size_t size, TypeId_t id );
 
     std::string toString( bool pretty ) const;
 
@@ -34,11 +32,9 @@ class Node
 
 #if CPLUSPLUSVERSION >= 20
     static constexpr auto serialize( auto& archive, auto& self ) {
-        // return archive( self.m_hashCode, self.m_dims, self.m_typeName, self.m_size );
         return archive( self.m_dims, self.m_typeName, self.m_size );
     }
 #endif
-    // friend zpp::serializer::access;
     template <typename Archive, typename Self>
     static void serialize( Archive& archive, Self& self ) {
         archive( self.m_dims, self.m_typeName, self.m_size, self.m_id );
@@ -50,10 +46,8 @@ class Node
     const std::string& getTypeName() const;
     Size_t getSize() const;
     TypeId_t getTypeId() const;
-    // const Data_t *getData() const;
 
   private:
-    // cannot be const due of serialize
     // HashType m_hashCode;
     Dims m_dims;
     std::string m_typeName;
@@ -66,55 +60,35 @@ class Node
 
 template <class Type, Size_t N = 1, Size_t... Ns>
 #if CPLUSPLUSVERSION >= 20
-    requires( N > 0 && ( ( Ns > 1 ) && ... ) )
+requires( N > 0 && ( ( Ns > 1 ) && ... ) )
 #endif
-static Node make_node(
-    // Data_t * data
+    static Node make_node(
+        // Data_t * data
     ) {
-    // auto size = sizeof( Type ) * N;
     auto size = hub::sizeOf<Type>() * N;
     if constexpr ( sizeof...( Ns ) > 0 ) {
         for ( auto dim : { Ns... } ) {
             size *= dim;
         }
     }
-    return Node( std::move( Dims { N, Ns... } ), TYPE_NAME( Type() ), size, TYPE_ID(Type)
-                 // , data
-                 );
+    return Node( std::move( Dims { N, Ns... } ), TYPE_NAME( Type() ), size, TYPE_ID( Type ) );
 }
 
 template <class Type, class... Dims>
-// requires( N > 0 && ( ( Ns > 1 ) && ... ) )
 static Node make_node(
     // Data_t * data,
-                       const Dims&... dims ) {
-    // auto size = sizeof( Type );
+    const Dims&... dims ) {
     auto size = hub::sizeOf<Type>();
-    // if constexpr ( sizeof...( Ns ) > 0 ) {
-    // for ( auto dim : { Ns... } ) {
     for ( auto dim : { dims... } ) {
         size *= dim;
     }
-    // }
-    return Node( hub::Dims { dims... }, TYPE_NAME( Type() ), size, TYPE_ID(Type)
-                 // , data
-                 );
+    return Node( hub::Dims { dims... }, TYPE_NAME( Type() ), size, TYPE_ID( Type ) );
 }
 
 /////////////////////////////////////// INLINE ////////////////////////////////////////////////////
 
-inline Node::Node( Dims&& dims, std::string typeName, Size_t size, TypeId_t id
-                   // , Data_t * data
-                   ) :
-    // m_hashCode { hash },
-    m_dims { std::move( dims ) },
-    m_typeName { typeName },
-    m_size { size },
-    m_id { id }
-    // m_data { data}
-{
-
-}
+inline Node::Node( Dims&& dims, std::string typeName, Size_t size, TypeId_t id ) :
+    m_dims { std::move( dims ) }, m_typeName { typeName }, m_size { size }, m_id { id } {}
 
 inline std::string Node::toString( bool pretty ) const {
     std::string str;
@@ -145,9 +119,7 @@ inline Size_t Node::size() const {
 }
 
 inline bool Node::operator==( const Node& other ) const {
-    return
-        // m_hashCode == other.m_hashCode &&
-        m_dims == other.m_dims && m_typeName == other.m_typeName && m_size == other.m_size;
+    return m_dims == other.m_dims && m_typeName == other.m_typeName && m_size == other.m_size;
 }
 
 inline const Dims& Node::getDims() const {
@@ -158,20 +130,12 @@ inline const std::string& Node::getTypeName() const {
     return m_typeName;
 }
 
-inline TypeId_t Node::getTypeId() const
-{
+inline TypeId_t Node::getTypeId() const {
     return m_id;
 }
 
-inline Size_t Node::getSize() const
-{
+inline Size_t Node::getSize() const {
     return m_size;
 }
-
-// inline const Data_t *Node::getData() const
-// {
-//     assert(m_data != nullptr);
-//     return m_data;
-// }
 
 } // namespace hub

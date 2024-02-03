@@ -1,25 +1,25 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/11/27
-	
+
 #pragma once
 
 #ifdef HUB_USE_SERVER
 
-#include <deque>
-#include <functional>
-#include <iomanip>
-#include <map>
-#include <memory>
+#    include <deque>
+#    include <functional>
+#    include <iomanip>
+#    include <map>
+#    include <memory>
 
-#include "AskerClient.hpp"
-#include "Client.hpp"
-#include "StreamViewerClient.hpp"
-#include "StreamerClient.hpp"
-#include "ViewerClient.hpp"
+#    include "AskerClient.hpp"
+#    include "Client.hpp"
+#    include "StreamViewerClient.hpp"
+#    include "StreamerClient.hpp"
+#    include "ViewerClient.hpp"
 
-#include "io/StreamServer.hpp"
-#include "net/ServerSocket.hpp"
+#    include "io/StreamServer.hpp"
+#    include "net/ServerSocket.hpp"
 
 namespace hub {
 namespace server {
@@ -32,7 +32,6 @@ namespace impl {
 class SRC_API ServerImpl
 {
   public:
-    //    ServerImpl();
     ///
     /// \brief ServerImpl
     /// \param port
@@ -67,11 +66,9 @@ class SRC_API ServerImpl
     std::string getStatus() const;
     std::string headerMsg() const;
 
-    //    server::Client* initClient( net::ClientSocket&& sock, int iClient );
     Client* initClient( io::InputOutputSocket&& sock, int iClient );
 
     void addStreamer( StreamerClient* streamer );
-    //    void newInputSensor(StreamerClient *streamer );
     void addStreamViewer( StreamViewerClient* streamViewer );
     void addViewer( ViewerClient* viewer );
 
@@ -87,7 +84,6 @@ class SRC_API ServerImpl
     void removeClient( Client* client );
     const std::map<std::string, StreamerClient*>& getStreamers() const;
 
-    //    const SensorSpec& getSensorSpec( const std::string& streamName ) const;
     const sensor::InputSensor* getInputSensor( const std::string& streamName ) const;
 
     void setProperty( const std::string& streamName,
@@ -131,6 +127,5 @@ class SRC_API ServerImpl
 } // namespace impl
 } // namespace server
 } // namespace hub
-
 
 #endif

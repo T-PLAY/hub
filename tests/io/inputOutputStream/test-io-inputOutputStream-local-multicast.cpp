@@ -1,7 +1,3 @@
-// #include <catch2/catch_test_macros.hpp>
-// #define HUB_DEBUG_INPUT
-// #define HUB_DEBUG_OUTPUT
-// #define HUB_DEBUG_SOCKET
 
 #include "io/test_io_common.hpp"
 #include "test_common.hpp"
@@ -40,6 +36,5 @@ TEST_CASE( "InputOutputStream local multicast test" ) {
     }
     CHECK_DECLINE( ratio, "InputOutputStreamLocal:Broadcast(1->10)/Unicast(1->1)", "/" );
 
-    // std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
     TEST_END()
 }

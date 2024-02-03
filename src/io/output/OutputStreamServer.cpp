@@ -3,8 +3,8 @@
 
 #ifdef HUB_USE_SERVER
 
-#include <iostream>
-#include <typeinfo>
+#    include <iostream>
+#    include <typeinfo>
 
 namespace hub {
 namespace output {
@@ -13,25 +13,17 @@ OutputStreamServer::OutputStreamServer( const std::string& streamName,
                                         const std::string& ipv4,
                                         int port ) :
     // OutputStreamServer::OutputStreamServer( const std::string& streamName, net::ClientSocket&&
-    // clientSocket ) :
     io::StreamServer( streamName, ipv4, port ),
-    //    m_clientSocket( std::move( clientSocket ) ) {
-    //    m_clientSocket( ipv4, port )
-//    m_clientSocket( std::make_unique<net::ClientSocket>( ipv4, port ) )
-    m_clientSocket( std::make_unique<io::InputOutputSocket>( net::ClientSocket(ipv4, port) ) )
-{
+    m_clientSocket( std::make_unique<io::InputOutputSocket>( net::ClientSocket( ipv4, port ) ) ) {
 
-    //    Output::write( net::ClientSocket::Type::STREAMER );
     m_clientSocket->write( ClientType::STREAMER );
 
-    //    Output::write( streamName );
     m_clientSocket->write( streamName );
 
     io::StreamBase::ServerMessage mess;
     m_clientSocket->read( mess );
     if ( mess == io::StreamBase::ServerMessage::FOUND ) {
         m_clientSocket->close();
-//        throw net::Socket::exception(
         throw net::system::SocketSystem::exception(
             ( std::string( "stream '" ) + streamName + "' is already attached to server" )
                 .c_str() );
@@ -43,7 +35,6 @@ OutputStreamServer::OutputStreamServer( const std::string& streamName,
     auto* serverClosed   = m_serverClosed.get();
     auto* streamerClosed = m_streamerClosed.get();
     m_thread             = std::make_unique<std::thread>( [=, this]() {
-        //        auto * clientSocket = m_clientSocket.get();
         std::cout << "[OutputStreamServer:" << this
                   << "] OutputStreamServer(string, string, int) thread started" << std::endl;
         io::StreamBase::ServerMessage serverMsg;
@@ -58,7 +49,9 @@ OutputStreamServer::OutputStreamServer( const std::string& streamName,
             std::cout << "[OutputStreamServer] streamer closed" << std::endl;
             *streamerClosed = true;
         }
-        else { assert( false ); }
+        else {
+            assert( false );
+        }
 
         if ( clientSocket->isOpen() )
             clientSocket->write( io::StreamBase::ClientMessage::STREAMER_CLIENT_CLOSED );
@@ -73,7 +66,6 @@ OutputStreamServer::OutputStreamServer( const std::string& streamName,
 }
 
 OutputStreamServer::OutputStreamServer( OutputStreamServer&& outputStream ) :
-    //    OutputStreamInterface(outputStream.m_name, outputStream.m_ipv4, outputStream.m_port),
     StreamServer( outputStream.m_name, outputStream.m_ipv4, outputStream.m_port ),
     m_clientSocket( std::move( outputStream.m_clientSocket ) ),
     m_thread( std::move( outputStream.m_thread ) ),
@@ -91,10 +83,6 @@ OutputStreamServer::~OutputStreamServer() {
 
     if ( !m_moved ) {
 
-        //        assert(m_clientSocket->isOpen());
-        //        if (m_clientSocket->isOpen())
-        //            m_clientSocket->close();
-        //    assert( m_clientSocket->isOpen() );
         if ( OutputStreamServer::isOpen() ) {
             std::cout << "[OutputStreamServer:" << this
                       << "] ~OutputStreamServer() closing connection" << std::endl;

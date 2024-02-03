@@ -15,14 +15,11 @@ ViewerClient2::ViewerClient2( ServerImpl2* server, int iClient, net::ClientSocke
 
     m_thread = std::thread( [this]() {
         try {
-            // check client still alive
-            // ping viewer client to know if the connection of this one still alive
 
-            assert(! m_viewerClosed);
-            while ( ! m_viewerClosed ) {
+            assert( !m_viewerClosed );
+            while ( !m_viewerClosed ) {
                 hub::io::StreamBase::ClientMessage message;
                 m_socket.read( message );
-                // std::cout << "[ViewerClient] read message : " << message << std::endl;
                 if ( message == hub::io::StreamBase::ClientMessage::VIEWER_CLIENT_SET_PROPERTY ) {
                     std::string streamName;
                     std::string objectName;
@@ -32,9 +29,6 @@ ViewerClient2::ViewerClient2( ServerImpl2* server, int iClient, net::ClientSocke
                     m_socket.read( objectName );
                     m_socket.read( property );
                     m_socket.read( value );
-
-                    //                m_server->setProperty( streamName, objectName, property, value
-                    //                );
 
                     m_socket.read( message );
                 }
@@ -47,7 +41,7 @@ ViewerClient2::ViewerClient2( ServerImpl2* server, int iClient, net::ClientSocke
                     m_viewerClosed = true;
                 }
                 else {
-                    assert(false);
+                    assert( false );
                 }
             }
 
@@ -91,40 +85,22 @@ std::string ViewerClient2::headerMsg() const {
 }
 
 void ViewerClient2::notifyNewStreamer( const StreamerClient2* streamer ) {
-    // const std::vector<Data_t>& header ) {
 
     m_socket.write( hub::io::StreamBase::ServerMessage::VIEWER_NEW_STREAMER );
-    // std::cout << "[Viewer] write streamName : " << streamName << std::endl;
     m_socket.write( streamer->m_streamName );
 
     m_socket.write( streamer->m_streamIpv4 );
     m_socket.write( streamer->m_streamPort );
 
-    // if ( !retainedData.empty() ) {
-    // m_socket.write( hub::io::StreamBase::ServerMessage::RETAINED_DATA );
-    // std::cout << "[Viewer] write retainedData : " << retainedData << std::endl;
-    // assert( !retainedData.empty() );
-    // if ( retainedData.size() > 0 ) {
-    // m_socket.write( retainedData.data(), retainedData.size() );
-    // m_socket.write(hub::io::StreamBase::ServerMessage::RETAINED_DATA_START);
     m_socket.write( streamer->m_header );
 
-    // io::StreamBase::ClientMessage clientMessage;
-    // m_socket.read(clientMessage);
-    // assert(clientMessage == io::StreamBase::ClientMessage::VIEWER_CLIENT_STREAM_ADDED);
-
     m_clientStreamAdded = false;
-    int iTry = 0;
+    int iTry            = 0;
     while ( iTry < 10 && !m_clientStreamAdded ) {
         std::cout << "[ViewerClient] waiting for streamer added ..." << std::endl;
         std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
         ++iTry;
     }
-
-    // m_socket.write(hub::io::StreamBase::ServerMessage::RETAINED_DATA_END);
-    // }
-
-    // }
 }
 
 void ViewerClient2::notifyDelStreamer( const std::string& streamName ) {
@@ -148,7 +124,6 @@ void ViewerClient2::end( hub::io::StreamBase::ServerMessage message ) {
         try {
             assert( m_socket.isOpen() );
             m_socket.write( message );
-            // std::cout << headerMsg() << "end(" << message << ")" << std::endl;
         }
         catch ( std::exception& ex ) {
             std::cout << headerMsg() << "catch exception " << ex.what() << std::endl;

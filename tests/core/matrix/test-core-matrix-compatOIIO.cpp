@@ -3,12 +3,6 @@
 
 #include <iostream>
 
-// #include <sensor/Resolution.hpp>
-
-//#include <OpenImageIO/image_view.h>
-//#include <OpenImageIO/imagebuf.h>
-//#include <OpenImageIO/imageio.h>
-
 TEST_CASE( "Matrix compat OIIO test" ) {
     TEST_BEGIN()
 
@@ -20,21 +14,8 @@ TEST_CASE( "Matrix compat OIIO test" ) {
         data[i] = 65 + i;
     }
 
-    // todo
-
-//    OIIO::ImageSpec imageSpec(width, height, 1, OIIO::TypeDesc::UINT8);
-//    OIIO::ImageBuf imageBuf(imageSpec, data);
-//    for ( int j = 0; j < height; ++j ) {
-//        for ( int i = 0; i < width; ++i ) {
-//            float * pixel = nullptr;
-//            imageBuf.getpixel(i, j, pixel );
-//            std::cout << *pixel << " ";
-////            assert( eigenMat.coeff( i, j ) == cvMat.data[i * height + j] );
-//        }
-//        std::cout << std::endl;
-//    }
-//    std::cout << std::endl;
-////    OIIO::image_view imageView()
+    ////            assert( eigenMat.coeff( i, j ) == cvMat.data[i * height + j] );
+    ////    OIIO::image_view imageView()
 
     TEST_END()
 }

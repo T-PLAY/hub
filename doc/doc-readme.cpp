@@ -1,16 +1,12 @@
 
-// code in README.md of this project
-// streamer code
 
-#include <sensor/OutputSensor.hpp>
-#include <io/input/InputStream.hpp>
 #include <io/OutputStream.hpp>
+#include <io/input/InputStream.hpp>
+#include <sensor/OutputSensor.hpp>
 
 /// \file
 
 namespace sensorAPI {
-// class sensorAPI {
-// public:
 auto getTimestamp() {
     struct s_ret {
         long long start;
@@ -45,7 +41,6 @@ int main() {
         constexpr int imageWidth  = 640;
         constexpr int imageHeight = 480;
 
-        // init output sensor
         const hub::Resolution imageResolution { { imageWidth, imageHeight }, hub::format::BGR8 };
         hub::MetaData metaData;
         metaData["fov"]  = 60.0;
@@ -67,14 +62,12 @@ int main() {
             auto size          = sensorAPI::getData().size;
 #endif
 
-            // send data
             outputSensor << ( hub::sensor::Acquisition { start, end }
                               << hub::Measure { data, size, imageResolution } );
         }
     }
 
     {
-        // init input sensor
         hub::sensor::InputSensor inputSensor { hub::input::InputStream {
             "streamName", hub::net::ClientSocket { "serverIp", serverPort } } };
 
@@ -87,18 +80,15 @@ int main() {
             const auto& format = resolutions.at( 0 ).second;
 #endif
 
-            // if compatible resolution for the client application
             if ( nDim.size() == 2 && format == hub::format::BGR8 ) {
                 const auto& imageWidth  = nDim.at( 0 );
                 const auto& imageHeight = nDim.at( 1 );
 
                 while ( 1 ) {
-                    // receive data
                     hub::sensor::Acquisition acq;
                     inputSensor >> acq;
                     const auto& measure = acq.getMeasures().at( 0 );
 
-                    // draw image
                     clientApp::drawImage( measure.getData(),
                                           measure.getSize(),
                                           imageWidth,

@@ -1,11 +1,7 @@
-// #define HUB_DEBUG_INPUT
-// #define HUB_DEBUG_OUTPUT
 
-// #include "sensor/test_sensor_common.hpp"
 #include "test_common.hpp"
 #include "test_io_common.hpp"
 
-// #include <core/Utils.hpp>
 #include <io/InputOutputSocket.hpp>
 #include <net/ServerSocket.hpp>
 
@@ -14,11 +10,8 @@ TEST_CASE( "InputOutputSocket test" ) {
 
     const auto hostname = hub::utils::getHostname();
     const auto port     = GET_RANDOM_PORT;
-    //    const auto port2    = port + 1;
 
     const std::string ipv4 = "127.0.0.1";
-    //        constexpr int packetSize = MAX_NET_BUFFER_SIZE;
-    //        constexpr int nPart      = bigDataSize / packetSize;
 
     hub::net::ServerSocket serverSocket( port );
     hub::net::ClientSocket clientSocket( ipv4, port );
@@ -36,20 +29,16 @@ TEST_CASE( "InputOutputSocket test" ) {
     hub::io::InputOutputSocket inputOutputSocket2( std::move( clientServerSocket ) );
 
     const std::string str = "hello";
-    inputOutputSocket.write(str);
+    inputOutputSocket.write( str );
     std::string str_read;
-    inputOutputSocket2.read(str_read);
-    assert(str == str_read);
+    inputOutputSocket2.read( str_read );
+    assert( str == str_read );
 
     const auto& [durationInMillisecondInputOutputSocket, gigaBytePerSecondInputOutputSocket] =
         inputOutputBench( inputOutputSocket, inputOutputSocket2, "InputOutputSocket" );
-    // inputOutputBench( inputOutputSocket2, inputOutputSocket );
 
-    //    inputOutputSensorBench(inputOutputSocket, inputOutputSocket2);
     const auto ratio = gigaBytePerSecondInputOutputSocket / gigaBytePerSecondClientSocket;
     CHECK_DECLINE( ratio, "InputOutputSocket/ClientSocket", "/" );
-
-    //    inputOutputSensorBench<hub::io::InputOutputSocket>();
 
     std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
 

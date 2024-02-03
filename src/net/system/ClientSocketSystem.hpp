@@ -1,16 +1,13 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/10/18
-	
+
 #pragma once
 
 #include <mutex>
 
-#include "net/ClientSocketI.hpp"
-
-//#include "io/InputOutput.hpp"
 #include "SocketSystem.hpp"
-
+#include "net/ClientSocketI.hpp"
 
 namespace hub {
 namespace net {
@@ -21,12 +18,9 @@ namespace system {
 /// allows connection to remote server hubs.
 /// This class describes the functionality needed to open a remote communication.
 ///
-//class SRC_API ClientSocketSystem : public Socket, public io::InputOutput
 class SRC_API ClientSocketSystem : public ClientSocketI, public SocketSystem
 {
   public:
-//    ClientSocketSystem();
-
     ///
     /// \brief ClientSocketSystem
     /// is used to open a remote communication
@@ -43,14 +37,14 @@ class SRC_API ClientSocketSystem : public ClientSocketI, public SocketSystem
     /// \brief ClientSocketSystem
     /// \param fdSock
     ///
-    explicit ClientSocketSystem( utils::socket_fd fdSock, utils::ClientAddr clientAddr ); // server side client (bind and listen)
+    explicit ClientSocketSystem(
+        utils::socket_fd fdSock,
+        utils::ClientAddr clientAddr ); // server side client (bind and listen)
 
     ClientSocketSystem( const ClientSocketSystem& sock ) = delete;
-    ClientSocketSystem( ClientSocketSystem&& sock ) = default;
+    ClientSocketSystem( ClientSocketSystem&& sock )      = default;
     ClientSocketSystem& operator=( const ClientSocketSystem& sock ) = delete;
     ClientSocketSystem&& operator=( ClientSocketSystem&& sock ) = delete;
-
-    // ~ClientSocketSystem();
 
   public:
     ///
@@ -63,7 +57,7 @@ class SRC_API ClientSocketSystem : public ClientSocketI, public SocketSystem
     /// \brief getIpv4
     /// \return
     ///
-    const std::string & getIpv4() const override;
+    const std::string& getIpv4() const override;
 
     ///
     /// \brief setPort
@@ -86,62 +80,46 @@ class SRC_API ClientSocketSystem : public ClientSocketI, public SocketSystem
     /// \brief isOpen
     /// \return
     ///
-//    bool isOpen() const override;
-//    bool isOpen() const;
     bool isConnected() const override;
 
     ///
     /// \brief close
     ///
-//    void close() override;
-//    void close();
     void disconnect() override;
-
 
     ///
     /// \brief write
     /// \param data
     /// \param size
     ///
-//    void write( const unsigned char* data, size_t size ) override;
-    void write(const Data_t * data, size_t size ) override;
+    void write( const Data_t* data, size_t size ) override;
 
     ///
     /// \brief read
     /// \param data
     /// \param size
     ///
-//    void read( unsigned char* data, size_t size ) override;
     void read( Data_t* data, size_t size ) override;
 
-//    std::string getIpv4() const {
-//    }
-    std::string toString() const {
-        return m_ipv4 + "-" + std::to_string(m_port);
-    }
+    std::string toString() const { return m_ipv4 + "-" + std::to_string( m_port ); }
 
   public:
-
     ///
     /// \brief isEnd
     /// \return
     ///
-//    bool isEnd() const override;
 
   private:
     ///
     /// \brief initServerAddress
     ///
     void initServerAddress();
-//    bool isOpen() const;
-//    void close();
 
   private:
     std::string m_ipv4;
     int m_port;
     utils::ClientAddr m_addr;
     bool m_connected = false;
-    // bool m_moved     = false;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

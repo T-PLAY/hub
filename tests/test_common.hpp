@@ -2,38 +2,25 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-// #include <algorithm>
 #include <cmath>
-// #include <ctime>
 #include <fstream>
-// #include <random>
-// #include <set>
 #include <iostream>
-#include <thread>
-// #include <algorithm>
 #include <list>
-#include <numeric>
-// #include <set>
 #include <map>
+#include <numeric>
+#include <thread>
 
-// #include <io/input/Input.hpp>
-// #include <io/output/Output.hpp>
-// #include <sensor/Acquisition.hpp>
-// #include <sensor/InputSensor.hpp>
-// #include <sensor/OutputSensor.hpp>
-
-// #include <Version.hpp>
 #include <core/Macros.hpp>
 #include <core/Utils.hpp>
 
-#define CONSTRUCT_BEGIN( name )                                                           \
+#define CONSTRUCT_BEGIN( name )                                                              \
     std::cout << "\033[1;32m[test] -------------------------------------------------> " name \
-              << "() ..."                                                                 \
+              << "() ..."                                                                    \
               << "\033[0m" << std::endl;
 
-#define CONSTRUCT_END( name )                                                                \
+#define CONSTRUCT_END( name )                                                                   \
     std::cout << "\033[1;32m[test] -------------------------------------------------> " << name \
-              << "() done"                                                                   \
+              << "() done"                                                                      \
               << "\033[0m" << std::endl;
 
 #define DESTRUCT_BEGIN( name )                                                          \
@@ -41,9 +28,9 @@
               << "~" << name << "() ..."                                                \
               << "\033[0m" << std::endl;
 
-#define DESTRUCT_END( name )                                                  \
+#define DESTRUCT_END( name )                                                            \
     std::cout << "\033[1;31m[test] =================================================> " \
-              << "~" << name << "() done"                                     \
+              << "~" << name << "() done"                                               \
               << "\033[0m" << std::endl;
 
 #define TEST_BEGIN() auto start_test = std::chrono::high_resolution_clock::now();
@@ -59,13 +46,10 @@
 
 #define GET_RANDOM_PORT getRandomPort( __FILE__ )
 
-// static std::set<int> s_randomPortsGenerated;
-
 static int getRandomPort( const char* filename ) {
 
     const std::string randomUsedPortsFilename = "randomUsedPorts.txt";
     std::map<int, std::string> usedPorts;
-    // std::set<int> usedPorts;
 
     std::ifstream inFile( randomUsedPortsFilename.c_str() );
     if ( inFile.is_open() ) {
@@ -81,31 +65,19 @@ static int getRandomPort( const char* filename ) {
         inFile.close();
     }
 
-    // #ifdef BUILD_SERVER
-    //     return 4042;
-    // #endif
-    // #ifdef USE_MQTT
-    //     return 1883;
-    // #endif
     srand( (unsigned)time( NULL ) );
-    // constexpr int offset = 1'000;
     int randomPort;
     do {
         const unsigned int random =
             static_cast<int>( std::hash<std::string>()( filename ) ) + rand();
-        // randomPort = offset + random % ( 65535 - offset );
         randomPort = 10'000 + ( random % 1'000 ) * 10;
-        // assert( offset <= randomPort && randomPort < 1000 );
-        // assert( offset <= randomPort && randomPort < 65535 );
     } while ( usedPorts.find( randomPort ) != usedPorts.end() );
 
-    // usedPorts.insert( std::make_pair(randomPort, filename) );
     std::ofstream outFile( randomUsedPortsFilename.c_str(), std::ios::out | std::ios::app );
     assert( outFile.is_open() );
     outFile << randomPort << " " << filename << std::endl;
     outFile.close();
 
-    //    assert( randomPort != hub::io::StreamServer::s_defaultPort );
     std::cout << "using random port: " << randomPort << std::endl;
     return randomPort;
 }
@@ -122,30 +94,8 @@ static std::string ReplaceAll( std::string str, const std::string& from, const s
 #define START_REPORT()                  \
     std::ofstream file( "report.txt" ); \
     assert( file.is_open() );
-//    file << std::endl;                                                                             \
-//    file << std::endl;                                                                             \
-//    file << "####################################################################################" \
-//            "##\n"                                                                                 \
-//         << "#################################### START REPORT "                                   \
-//            "####################################\n"                                               \
-//         << "####################################################################################" \
-//            "##";                                                                                  \
-//    file.close();
 
 #define END_REPORT() (void)0
-
-//    std::ofstream file( "report.txt", std::ios::app );                                             \
-//    assert( file.is_open() );                                                                      \
-//    file << std::endl;                                                                             \
-//    file << "####################################################################################" \
-//            "##\n"                                                                                 \
-//         << "##################################### END REPORT "                                    \
-//            "#####################################\n"                                              \
-//         << "####################################################################################" \
-//            "##\n"                                                                                 \
-//         << std::endl                                                                              \
-//         << std::endl;                                                                             \
-//    file.close();
 
 #define PRINT_REPORT()                                                                           \
     do {                                                                                         \
@@ -230,7 +180,6 @@ static double Variance( const T& first, const T& last ) {
     auto variance = 0.0;
     auto it       = first;
     while ( it != last ) {
-        // for ( const auto& sample : samples ) {
         const auto& sample     = *it;
         const auto diff        = sample - mean;
         const auto diff_square = diff * diff;
@@ -252,29 +201,11 @@ static double StandardDeviation( const T& first, const T& last ) {
 } // namespace algo
 
 void _checkValue( double value,
-                         const std::string& name,
-                         const std::string& unit,
-                         const std::string& filename,
-                         int line );
+                  const std::string& name,
+                  const std::string& unit,
+                  const std::string& filename,
+                  int line );
 
-// #define CHECK_DECLINE ( ... ) _checkValue( __VA_ARGS__, FILE_NAME, __LINE__ )
-// #define CHECK_DECLINE ( ratio, name, unit )()
-// #define CHECK_VALUE ( ... ) _checkValue( __VA_ARGS__, FILE_NAME, __LINE__ )
 #define CHECK_DECLINE( ... ) _checkValue( __VA_ARGS__, FILE_NAME, __LINE__ )
 
-// #define CHECK_VALUE( ... ) ();
-
-// template <typename T>
-// bool areEnd( T&& t ) {
-//     return t.isEnd();
-// }
-
-// template <typename T, typename... Inputs>
-// bool areEnd( T&& t, Inputs&&... args ) {
-//     return t.isEnd() && areEnd( args... );
-// }
-
-// template <typename Input>
 // Input sync( Input&& input ) {
-//     return input;
-// }

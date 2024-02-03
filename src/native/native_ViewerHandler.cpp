@@ -6,7 +6,6 @@
 namespace hub {
 namespace native {
 
-// template <class InputStream>
 client::ViewerHandler* createViewerHandler( onServerNotFoundFunc onServerNotFound,
                                             onServerConnectedFunc onServerConnected,
                                             onServerDisconnectedFunc onServerDisconnected,
@@ -37,7 +36,8 @@ client::ViewerHandler* createViewerHandler( onServerNotFoundFunc onServerNotFoun
         return onNewStream( streamName.c_str(), &header );
     };
 #ifndef HUB_NON_BUILD_SENSOR
-    viewerHandler->onNewSensor = [=]( const std::string& streamName, const sensor::SensorSpec& sensorSpec ) {
+    viewerHandler->onNewSensor = [=]( const std::string& streamName,
+                                      const sensor::SensorSpec& sensorSpec ) {
         return onNewSensor( streamName.c_str(), &sensorSpec );
     };
 #endif
@@ -45,13 +45,11 @@ client::ViewerHandler* createViewerHandler( onServerNotFoundFunc onServerNotFoun
         onNewData( streamName.c_str(), &datas );
     };
 #ifndef HUB_NON_BUILD_SENSOR
-    viewerHandler->onNewAcq = [=]( const std::string& streamName,
-    const sensor::Acquisition& acq ) {
-        onNewAcq(streamName.c_str(), &acq);
+    viewerHandler->onNewAcq = [=]( const std::string& streamName, const sensor::Acquisition& acq ) {
+        onNewAcq( streamName.c_str(), &acq );
     };
 #endif
     viewerHandler->onDelStream = [=]( const std::string& streamName ) {
-        // const sensor::SensorSpec& sensorSpec ) {
         onDelStream( streamName.c_str() );
     };
     viewerHandler->onSetProperty = [=]( const std::string& streamName,
@@ -63,14 +61,6 @@ client::ViewerHandler* createViewerHandler( onServerNotFoundFunc onServerNotFoun
     viewerHandler->onLogMessage = [=]( const std::string& logMessage ) {
         onLogMessage( logMessage.c_str() );
     };
-    // client::ViewerHandler* viewerHandler = new client::ViewerHandler( onServerNotFoundCpp,
-    //                                                            onServerConnectedCpp,
-    //                                                            onServerDisconnectedCpp,
-    //                                                            onNewStreamerCpp,
-    //                                                            onDelStreamerCpp,
-    //                                                            onNewAcquisitionCpp,
-    //                                                            onSetPropertyCpp,
-    //                                                            onLogMessageCpp );
     return viewerHandler;
 }
 

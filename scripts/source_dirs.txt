@@ -4,3 +4,4 @@ examples/
 CMakeLists.txt
 doc/
 wrapper/
+bin/

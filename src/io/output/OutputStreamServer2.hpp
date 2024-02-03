@@ -1,25 +1,16 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/11/27
-	
+
 #pragma once
 
+#include <atomic>
 #include <mutex>
 #include <thread>
-#include <atomic>
 
-// #include "Output.hpp"
-// #include "OutputStreamInterface.hpp"
-// #include "net/ClientSocket.hpp"
 #include "core/Output.hpp"
-// #include "../StreamServer.hpp"
-// #include "impl/server2/io/StreamServer.hpp"
 #include "io/StreamServer2.hpp"
-// #include "sensor/Acquisition.hpp"
-// #include "sensor/SensorSpec.hpp"
 #include "net/ServerSocket.hpp"
-
-// #define DEBUG_OUTPUT_STREAM
 
 namespace hub {
 namespace output {
@@ -28,7 +19,6 @@ namespace output {
 /// \brief The OutputStreamServer2 class
 /// Describes an output communication to the server.
 ///
-// class SRC_API OutputStreamServer2 : public Output
 class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
 {
   public:
@@ -49,15 +39,12 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
     /// when the server is not found or by loosing connection to the server.
     /// Also occur when stream you want to link is already started in the server.
     ///
-    //    explicit OutputStreamServer2( const std::string& streamName,
-    //                           net::ClientSocket&& clientSocket = net::ClientSocket() );
     OutputStreamServer2( const io::Header& header, int streamPort );
 
     OutputStreamServer2( const hub::io::Header& header,
-                                  const std::string& streamName,
-                                  int port                = HUB_SERVICE_PORT,
-                                  const std::string& ipv4 = HUB_SERVICE_IPV4 );
-    // bool retained           = true );
+                         const std::string& streamName,
+                         int port                = HUB_SERVICE_PORT,
+                         const std::string& ipv4 = HUB_SERVICE_IPV4 );
     ///
     /// \brief OutputStreamServer2
     /// \param outputStream
@@ -66,21 +53,13 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
 
     ~OutputStreamServer2();
 
-    // void streamProcess();
-    //    void write( const sensor::Acquisition& acq );
-    //    void write( const sensor::SensorSpec& sensorSpec );
-
-    // #ifdef WIN32 // msvc warning C4250
-    //  protected:
     void write( const Data_t* data, Size_t size ) override;
     void close() override;
     bool isOpen() const override;
     void setRetain( bool retain ) override;
 
-    // #endif
-    // int getNStreamViewer() const;
     int getNStreamViewer() const;
-    const io::Header & getHeader() const;
+    const io::Header& getHeader() const;
 
   private:
     void startStreaming();
@@ -107,9 +86,10 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
         std::function<void( const Data_t*, Size_t )> m_writingFun;
         std::unique_ptr<std::thread> m_streamThread;
         std::unique_ptr<std::thread> m_serverThread;
-        bool m_shutdown = false;
+        bool m_shutdown       = false;
         long long m_byteWrote = 0;
-        std::chrono::high_resolution_clock::time_point m_lastClock = std::chrono::high_resolution_clock::now();
+        std::chrono::high_resolution_clock::time_point m_lastClock =
+            std::chrono::high_resolution_clock::now();
     };
     std::unique_ptr<SharedData> m_data;
     bool m_moved = false;
@@ -124,7 +104,6 @@ inline void OutputStreamServer2::close() {
 
 inline bool OutputStreamServer2::isOpen() const {
     return m_data->m_streamSocket->isConnected();
-    // return true;
 }
 
 } // namespace output

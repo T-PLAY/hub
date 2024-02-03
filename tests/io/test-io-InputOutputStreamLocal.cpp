@@ -1,32 +1,9 @@
-// #include <catch2/catch_test_macros.hpp>
-// #define HUB_DEBUG_INPUT
-// #define HUB_DEBUG_OUTPUT
-// #define HUB_DEBUG_SOCKET
 
 #include "test_common.hpp"
 #include "test_io_common.hpp"
 
-// #include <core/Utils.hpp>
 #include <io/input/InputStream.hpp>
 #include <io/output/OutputStream.hpp>
-// #include <server/Server.hpp>
-// #include <impl/server2/Server.hpp>
-// #include <impl/server2/io/input/InputStreamServer.hpp>
-// #include <sensor/InputSensor.hpp>
-// #include <sensor/OutputSensor.hpp>
-// #include <thread>
-// #include <net/ClientSocket.hpp>
-// #include <net/ServerSocket.hpp>
-
-// struct UserDefined {
-//     int a;
-//     bool b;
-//     double c;
-//     hub::Size_t dataSize() const { return sizeof( int ); }
-//     auto toString() const {
-//         return std::to_string( a ) + ":" + std::to_string( b ) + ":" + std::to_string( c );
-//     }
-// };
 
 TEST_CASE( "InputOutputStream local test" ) {
     TEST_BEGIN()
@@ -58,13 +35,10 @@ TEST_CASE( "InputOutputStream local test" ) {
     }
 
     {
-        // const UserDefined userDefined { 1, true, 2.0 };
-        // const auto header_ref = hub::io::make_header( userDefined );
 
         hub::output::OutputStream outputStream( TEST_IO_HEADER, port2 );
 
         hub::input::InputStream inputStream( port2 );
-        // assert( inputStream.getHeader() == hub::io::Header() );
         assert( inputStream.getHeader() == TEST_IO_HEADER );
 
         const auto& [durationInMillisecond, gigaBytePerSecond] =
@@ -76,8 +50,8 @@ TEST_CASE( "InputOutputStream local test" ) {
     std::cout << "------------------------------------" << std::endl;
     std::cout << "[InputOutputSocket] writing/reading rate: "
               << std::to_string( gigaBytePerSecondInputOutputSocket ) << " Go/s" << std::endl;
-    std::cout << "[InputOutputSocket] total time: " << durationInMillisecondInputOutputSocket << " ms"
-              << std::endl;
+    std::cout << "[InputOutputSocket] total time: " << durationInMillisecondInputOutputSocket
+              << " ms" << std::endl;
 
     std::cout << "------------------------------------" << std::endl;
     std::cout << "[InputOutputLocalStream] writing/reading rate: "
@@ -89,6 +63,5 @@ TEST_CASE( "InputOutputStream local test" ) {
     const auto ratio = gigaBytePerSecondInputOutputStream / gigaBytePerSecondInputOutputSocket;
     CHECK_DECLINE( ratio, "InputOutputLocalStream:InputOutputSocket", "/" );
 
-    // std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
     TEST_END()
 }

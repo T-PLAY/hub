@@ -13,6 +13,5 @@ TEST_CASE( "InputOutputStream local stream destroy after creation test" ) {
 
     { hub::output::OutputStream outputStream( {}, port ); }
 
-    // std::cout << "[test] tested on machine: '" << hostname << "'" << std::endl;
     TEST_END()
 }

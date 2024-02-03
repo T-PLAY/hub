@@ -1,13 +1,12 @@
 /// © 2021-2024 Hub, All Rights Reserved
 /// @author gauthier <gauthierbouyjou@aol.com>
 /// @date 2023/11/09
-	
+
 #pragma once
 
 #include <cassert>
 
 #include "Macros.hpp"
-// #include "core/Traits.hpp"
 #include "ios.hpp"
 
 namespace hub {
@@ -31,9 +30,6 @@ struct not_endable<T, std::void_t<not_endable_t<T>>> : std::true_type {};
 template <typename T>
 static constexpr bool not_endable_v = not_endable<T>::value;
 
-// template <class T>
-// concept NotEndable = T::not_endable;
-
 #if CPP_VERSION >= 20
 template <class T>
 concept Endable = !not_endable_v<T>;
@@ -41,7 +37,6 @@ concept Endable = !not_endable_v<T>;
 template <class T>
 constexpr bool Endable = !not_endable_v<T>;
 #endif
-
 
 ///////////////////////////////////////
 
@@ -70,10 +65,5 @@ struct notReadable<T, std::void_t<notReadable_t<T>>> : std::true_type {};
 
 template <typename T>
 static constexpr bool notReadable_v = notReadable<T>::value;
-//    static constexpr bool packable_v = ! std::is_constructible_v<T> ;
 
-// static_assert(notReadable_v<T>);
-
-//} // namespace input
-//} // namespace io
 } // namespace hub
