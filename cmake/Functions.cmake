@@ -1,3 +1,4 @@
+
 if(NOT WIN32)
     string(ASCII 27 Esc)
     set(ColourReset "${Esc}[0m")

@@ -9,11 +9,10 @@
 
 int main( int argc, char* argv[] ) {
 
-    bool exitWhenServerLost = false;
-
     std::vector<std::string> args( argv + 1, argv + argc );
 
-    int port = HUB_SERVICE_PORT;
+    bool exitWhenServerLost = false;
+    int port                = HUB_SERVICE_PORT;
 
     auto it = args.begin();
     while ( it != args.end() ) {
@@ -23,9 +22,7 @@ int main( int argc, char* argv[] ) {
             std::cout << argv[0] << " usage: [--port <int>] [--exitWhenServerLost]" << std::endl;
             return 0;
         }
-        else if ( arg == "--exitWhenServerLost" ) {
-            exitWhenServerLost = true;
-        }
+        else if ( arg == "--exitWhenServerLost" ) { exitWhenServerLost = true; }
         else if ( arg == "--port" ) {
             assert( it + 1 != args.end() );
             const auto& nextArg = *( it + 1 );
@@ -42,6 +39,39 @@ int main( int argc, char* argv[] ) {
 
     bool exit = false;
 
+    class StreamLife
+    {
+      public:
+        StreamLife( const std::string& streamName, size_t dataSize ) :
+            m_streamName( streamName ),
+            m_dataSize( dataSize ),
+            m_counterAcq( 0 ),
+            m_lastUpdateClock( std::chrono::high_resolution_clock::now() ) {}
+
+        void newData() {
+            ++m_counterAcq;
+            const auto now = std::chrono::high_resolution_clock::now();
+            const auto period =
+                std::chrono::duration_cast<std::chrono::milliseconds>( now - m_lastUpdateClock )
+                    .count();
+
+            if ( period > 1'000 ) { // 1 sec
+                const auto bytePerSecond = ( 1000.0 * m_counterAcq * m_dataSize ) / period;
+                std::cout << HEADER_MSG << m_streamName
+                          << " data rate : " << PRETTY_BYTES( bytePerSecond ) << "/s" << std::endl;
+                m_lastUpdateClock = now;
+                m_counterAcq      = 0;
+            }
+        }
+
+      private:
+        std::string m_streamName;
+        size_t m_dataSize;
+        size_t m_counterAcq;
+        std::chrono::high_resolution_clock::time_point m_lastUpdateClock;
+    };
+    std::map<std::string, std::unique_ptr<StreamLife>> m_streamLives;
+
     hub::client::ViewerHandler viewerHandler;
     viewerHandler.onServerNotFound = [&]( const std::string& ipv4, int port ) {
         std::cout << HEADER_MSG "onServerNotFound : " << ipv4 << " " << port << std::endl;
@@ -53,31 +83,42 @@ int main( int argc, char* argv[] ) {
         std::cout << HEADER_MSG "onServerDisconnected : " << ipv4 << " " << port << std::endl;
         if ( exitWhenServerLost ) { exit = true; }
     };
-    viewerHandler.onNewStream = [=]( const std::string& streamName,
+    viewerHandler.onNewStream = [&]( const std::string& streamName,
                                      const hub::io::Header& header ) {
         std::cout << HEADER_MSG "onNewStream : " << streamName << ", " << header << std::endl;
+        assert( m_streamLives.find( streamName ) == m_streamLives.end() );
+        m_streamLives[streamName] =
+            std::make_unique<StreamLife>( streamName, header.getDataSize() );
         return true;
     };
+
 #ifndef HUB_NON_BUILD_SENSOR
-    viewerHandler.onNewSensor = [=]( const std::string& streamName,
+    viewerHandler.onNewSensor = [&]( const std::string& streamName,
                                      const hub::sensor::SensorSpec& sensorSpec ) {
         std::cout << HEADER_MSG "onNewSensor : " << streamName << ", " << sensorSpec << std::endl;
+        assert( m_streamLives.find( streamName ) == m_streamLives.end() );
+        m_streamLives[streamName] =
+            std::make_unique<StreamLife>( streamName, sensorSpec.dataSize() );
         return true;
     };
 #endif
-    viewerHandler.onNewData = []( const std::string& streamName, const hub::Datas_t& datas ) {
+    viewerHandler.onNewData = [&]( const std::string& streamName, const hub::Datas_t& datas ) {
         std::cout << "\033[" << std::to_string( std::hash<std::string> {}( streamName ) % 10 + 40 )
                   << "m+\033[0m" << std::flush;
+        m_streamLives.at( streamName )->newData();
     };
 #ifndef HUB_NON_BUILD_SENSOR
-    viewerHandler.onNewAcq = []( const std::string& streamName,
-                                 const hub::sensor::Acquisition& acq ) {
+    viewerHandler.onNewAcq = [&]( const std::string& streamName,
+                                  const hub::sensor::Acquisition& acq ) {
         std::cout << "\033[" << std::to_string( std::hash<std::string> {}( streamName ) % 10 + 40 )
                   << "ma\033[0m" << std::flush;
+        m_streamLives.at( streamName )->newData();
     };
 #endif
-    viewerHandler.onDelStream = []( const std::string& streamName ) {
+    viewerHandler.onDelStream = [&]( const std::string& streamName ) {
         std::cout << HEADER_MSG "onDelStream : " << streamName << std::endl;
+        assert( m_streamLives.find( streamName ) != m_streamLives.end() );
+        m_streamLives.erase( streamName );
     };
     viewerHandler.onSetProperty = []( const std::string& streamName,
                                       const std::string& objectName,
