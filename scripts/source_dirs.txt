@@ -5,3 +5,4 @@ CMakeLists.txt
 doc/
 wrapper/
 bin/
+cmake/
