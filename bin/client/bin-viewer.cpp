@@ -57,8 +57,8 @@ int main( int argc, char* argv[] ) {
 
             if ( period > 1'000 ) { // 1 sec
                 const auto bytePerSecond = ( 1000.0 * m_counterAcq * m_dataSize ) / period;
-                std::cout << HEADER_MSG << m_streamName
-                          << " data rate : " << PRETTY_BYTES( bytePerSecond ) << "/s" << std::endl;
+                std::cout << HEADER_MSG << "onNewData : '" << m_streamName
+                          << "' " << PRETTY_BYTES( bytePerSecond ) << "/s" << std::endl;
                 m_lastUpdateClock = now;
                 m_counterAcq      = 0;
             }
