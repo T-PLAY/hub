@@ -316,7 +316,7 @@ void output::OutputStreamServer2::write( const Data_t* data, Size_t size ) {
                 .count();
         if ( period > 1'000 ) { // 1 sec
             const auto bytePerSecond = ( 1000.0 * m_data->m_byteWrote ) / period;
-            std::cout << "[OutputStream] data rate : " << PRETTY_BYTES( bytePerSecond )
+            std::cout << "[" << m_name << "] data rate : " << PRETTY_BYTES( bytePerSecond )
                       << "/s, watched by " << m_data->m_streamViewerSocks.size() << " streamViewers"
                       << std::endl;
             m_data->m_lastClock = now;

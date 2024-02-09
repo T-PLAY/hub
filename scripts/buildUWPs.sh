@@ -1,10 +1,12 @@
 
 #/bin/bash -e
 
-if [ $(basename `pwd`) != "hub" ]; then
-	echo "execute this script in root dir of hub"
-	exit 0
-fi
+# if [ $(basename `pwd`) != "hub" ]; then
+# 	echo "execute this script in root dir of hub"
+# 	exit 0
+# fi
+
+cd $(git rev-parse --show-toplevel)
 
 rootDir="builds"
 mkdir -p $rootDir

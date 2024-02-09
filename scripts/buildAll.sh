@@ -1,13 +1,15 @@
 
 #/bin/bash -e
 
-if [ $(basename `pwd`) != "hub" ]; then
-	echo "execute this script in root dir of hub"
-	exit 0
-fi
+#if [ $(basename `pwd`) != "hub" ]; then
+#	echo "execute this script in root dir of hub"
+#	exit 0
+#fi
 
-rootDir="buildAll"
-mkdir -p $rootDir
+#rootDir="buildAll"
+#mkdir -p $rootDir
+
+cd $(git rev-parse --show-toplevel)
 
 for arch in "x64" "Win32" "ARM64" "ARM"; do
 #for arch in "x64" "Win32"; do

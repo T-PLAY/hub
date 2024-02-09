@@ -214,63 +214,39 @@ class SRC_API SerializerT
         if constexpr ( sizeof...( Ts ) > 0 ) { readAll( ts... ); }
     }
 
-    /////////////////////////////////// PACKABLE ////////////////////////////////////
+    /////////////////////////////////// TEMPLATE ////////////////////////////////////
+
+//    template <class T>
+//    REQUIRES(, !Serializable<T>() && packable_v<T>, void )
+//    write( const T& t ) {
+//        // DEBUG_MSG( "<---" << HEADER << "\033[1mwrite\033[0m(packable: " << TYPE_NAME( t )
+//        const auto lastPosition = m_serializer.outPosition();
+
+//        m_serializer.serialize( t );
+
+//        const auto newPosition = m_serializer.outPosition();
+//        m_dataWrote += newPosition - lastPosition;
+
+//#ifdef HUB_DEBUG_OUTPUT
+//        // DEBUG_MSG( "<---" << HEADER << "\033[1mwrite\033[0m(packable: " << TYPE_NAME( t )
+//        const std::vector<Data_t> data( m_serialBuff.data() + lastPosition,
+//                                        m_serialBuff.data() + newPosition );
+//        DEBUG_MSG( "<---" << HEADER << "\033[1mwrite\033[0m(packable: " << TYPE_NAME( t ) << ") = "
+//                          << t << " (" << lastPosition << "->" << newPosition << ")" << data );
+//#endif
+//    }
 
     template <class T>
-    REQUIRES(, !Serializable<T>() && packable_v<T>, void )
-    write( const T& t ) {
-        // DEBUG_MSG( "<---" << HEADER << "\033[1mwrite\033[0m(packable: " << TYPE_NAME( t )
-        const auto lastPosition = m_serializer.outPosition();
-
-        m_serializer.serialize( t );
-
-        const auto newPosition = m_serializer.outPosition();
-        m_dataWrote += newPosition - lastPosition;
-
-#ifdef HUB_DEBUG_OUTPUT
-        // DEBUG_MSG( "<---" << HEADER << "\033[1mwrite\033[0m(packable: " << TYPE_NAME( t )
-        const std::vector<Data_t> data( m_serialBuff.data() + lastPosition,
-                                        m_serialBuff.data() + newPosition );
-        DEBUG_MSG( "<---" << HEADER << "\033[1mwrite\033[0m(packable: " << TYPE_NAME( t ) << ") = "
-                          << t << " (" << lastPosition << "->" << newPosition << ")" << data );
-#endif
-    }
-
-    template <class T>
-    REQUIRES(, !Serializable<T>() && packable_v<T>, void )
-    read( T& t ) {
-#ifdef HUB_DEBUG_INPUT
-        // DEBUG_MSG( "\t--->" << HEADER << "\033[1mread\033[0m(packable: " << TYPE_NAME( t )
-        auto serialCopy = m_serialBuff;
-#endif
-        const auto lastPosition = m_serializer.inPosition();
-
-        m_serializer.deserialize( t );
-
-        const auto newPosition = m_serializer.inPosition();
-        m_dataReaded += newPosition - lastPosition;
-#ifdef HUB_DEBUG_INPUT
-        const std::vector<Data_t> data( serialCopy.data(),
-                                        serialCopy.data() + newPosition - lastPosition );
-        DEBUG_MSG( "\t--->" << HEADER << "\033[1mread\033[0m(packable: " << TYPE_NAME( t ) << ") = "
-                            << t << " (" << lastPosition << "->" << newPosition << ")" << data );
-        // DEBUG_MSG( "\t--->" << HEADER << "\033[1mread\033[0m(packable: " << TYPE_NAME( t )
-#endif
-    }
-
-    /////////////////////////////////// WRITABLE/READABLE ////////////////////////////////////
-
-    template <class T>
-    REQUIRES(, !Serializable<T>() && !packable_v<T>, void )
+//    REQUIRES(, !Serializable<T>() && !packable_v<T>, void )
+    REQUIRES(, Writable_v<T>, void )
+//    typename std::enable_if_t<!Serializable<T>() && !packable_v<T>, void>
     write( const T& t ) {
         static_assert( Writable_v<T> );
 #ifdef HUB_DEBUG_OUTPUT
         DEBUG_MSG( "<---" << HEADER << "\033[1mwrite\033[0m(writable: " << TYPE_NAME( t )
                           << ") ..." );
 #endif
-
         t.write( *this );
-
 #ifdef HUB_DEBUG_OUTPUT
         DEBUG_MSG( "<---" << HEADER << "\033[1mwrite\033[0m(writable: " << TYPE_NAME( t )
                           << ") = " << t );
@@ -278,26 +254,7 @@ class SRC_API SerializerT
     }
 
     template <class T>
-    REQUIRES(, (!Serializable<T>() && !packable_v<T>), void )
-    read( T& t ) {
-        static_assert( Readable_v<T> );
-#ifdef HUB_DEBUG_INPUT
-        DEBUG_MSG( "\t--->" << HEADER << "\033[1mread\033[0m(readable: " << TYPE_NAME( t )
-                            << ") ..." );
-#endif
-
-        t.read( *this );
-
-#ifdef HUB_DEBUG_INPUT
-        DEBUG_MSG( "\t--->" << HEADER << "\033[1mread\033[0m(readable: " << TYPE_NAME( t )
-                            << ") = " << t );
-#endif
-    }
-
-    //////////////////////////////////////// SERIALIZABLE //////////////////
-
-    template <class T>
-    REQUIRES(, Serializable<T>(), void )
+    REQUIRES(, ! Writable_v<T>, void )
     write( const T& t ) {
 
         const auto lastPosition = m_serializer.outPosition();
@@ -315,8 +272,48 @@ class SRC_API SerializerT
 #endif
     }
 
+    //////////////////////////////////
+
+//    template <class T>
+//    REQUIRES(, !Serializable<T>() && packable_v<T>, void )
+//    read( T& t ) {
+//#ifdef HUB_DEBUG_INPUT
+//        // DEBUG_MSG( "\t--->" << HEADER << "\033[1mread\033[0m(packable: " << TYPE_NAME( t )
+//        auto serialCopy = m_serialBuff;
+//#endif
+//        const auto lastPosition = m_serializer.inPosition();
+
+//        m_serializer.deserialize( t );
+
+//        const auto newPosition = m_serializer.inPosition();
+//        m_dataReaded += newPosition - lastPosition;
+//#ifdef HUB_DEBUG_INPUT
+//        const std::vector<Data_t> data( serialCopy.data(),
+//                                        serialCopy.data() + newPosition - lastPosition );
+//        DEBUG_MSG( "\t--->" << HEADER << "\033[1mread\033[0m(packable: " << TYPE_NAME( t ) << ") = "
+//                            << t << " (" << lastPosition << "->" << newPosition << ")" << data );
+//        // DEBUG_MSG( "\t--->" << HEADER << "\033[1mread\033[0m(packable: " << TYPE_NAME( t )
+//#endif
+//    }
+
     template <class T>
-    REQUIRES(, Serializable<T>(), void )
+//    REQUIRES(, (!Serializable<T>() && !packable_v<T>), void )
+    REQUIRES(, Readable_v<T>, void )
+    read( T& t ) {
+        static_assert( Readable_v<T> );
+#ifdef HUB_DEBUG_INPUT
+        DEBUG_MSG( "\t--->" << HEADER << "\033[1mread\033[0m(readable: " << TYPE_NAME( t )
+                            << ") ..." );
+#endif
+        t.read( *this );
+#ifdef HUB_DEBUG_INPUT
+        DEBUG_MSG( "\t--->" << HEADER << "\033[1mread\033[0m(readable: " << TYPE_NAME( t )
+                            << ") = " << t );
+#endif
+    }
+
+    template <class T>
+    REQUIRES(, ! Readable_v<T>, void )
     read( T& t ) {
 #ifdef HUB_DEBUG_INPUT
         // DEBUG_MSG( "\t--->" << HEADER << "\033[1;36mread\033[0m(serial: " << TYPE_NAME( t )

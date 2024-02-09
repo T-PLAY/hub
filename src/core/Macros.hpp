@@ -51,6 +51,7 @@ namespace hub {
 #    endif
 
 #elif defined( _MSC_VER )
+//#if _MSC_VER >= 1900
 #    define COMPILER_MSVC
 #    define _USE_MATH_DEFINES
 #else
@@ -141,6 +142,11 @@ namespace hub {
 #endif
 
 // Dll import/export.
+// You must define SRC_STATIC to force static link for external use (.lib)
+
+#ifndef SRC_STATIC
+#define SRC_STATIC
+#endif
 
 #ifdef OS_WINDOWS
 #    if defined SRC_STATIC

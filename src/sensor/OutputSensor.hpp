@@ -132,10 +132,10 @@ class OutputSensor : public Sensor
 template <class Resolution, class Output = output::OutputStream>
 class OutputSensorT : public Sensor
 {
+  public:
     static_assert( std::is_base_of_v<hub::Output, Output> );
     using Acquisition = AcquisitionT<Resolution>;
 
-  public:
     template <class... Args>
     OutputSensorT( const SensorSpec& sensorSpec, const Args&... args ) :
         Sensor( sensorSpec ),

@@ -90,31 +90,44 @@ requires( sizeof...( Types ) > 1 )
     constexpr MatrixTs( Args&&... args ) : m_buffer { std::forward<Data_t&&>( args )... } {}
 
     template <class Type, int i = 0, class RawType = std::remove_pointer_t<Type>>
-    REQUIRES(, std::is_pointer_v<Type>&& hasType<RawType>() && i < nType<RawType>(), Type )
+//    REQUIRES(, (std::is_pointer_v<Type>&& hasType<RawType>() && i < nType<RawType>()), Type )
+//    typename std::enable_if_t<(std::is_pointer_v<Type>&& hasType<RawType>() && i < nType<RawType>()), Type >
+    typename std::enable_if_t<(std::is_pointer_v<Type>), Type >
     get() {
+        static_assert(hasType<RawType>() && i < nType<RawType>());
         const auto offset = getOffset<i, 0, RawType, Types...>();
         static_assert( 0 <= offset && offset < Size );
         return ( Type )( m_buffer.data() + offset );
     }
+
     template <class Type, int i = 0, class RawType = std::remove_pointer_t<Type>>
-    REQUIRES(, std::is_pointer_v<Type>&& hasType<RawType>() && i < nType<RawType>(), Type )
+//    REQUIRES(, std::is_pointer_v<Type>&& hasType<RawType>() && i < nType<RawType>(), Type )
+    REQUIRES(, std::is_pointer_v<Type>, Type )
     get() const {
+        static_assert(hasType<RawType>() && i < nType<RawType>());
         const auto offset = getOffset<i, 0, RawType, Types...>();
         static_assert( 0 <= offset && offset < Size );
         return ( Type )( m_buffer.data() + offset );
     }
 
     template <class Type, int i = 0, class RawType = std::remove_cvref_t<Type>>
-    REQUIRES(, !std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>(), Type )
+//    REQUIRES(, (!std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>()), Type )
+//    typename std::enable_if_t<(!std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>()), Type>
+    typename std::enable_if_t<(!std::is_pointer_v<Type>), Type>
+//    typename std::enable_if_t<!std::is_pointer_v<Type> && hasType<RawType>(), Type>
     get() {
+        static_assert(hasType<RawType>() && i < nType<RawType>());
         const auto offset = getOffset<i, 0, RawType, Types...>();
         static_assert( 0 <= offset && offset < Size );
         return reinterpret_cast<Type>( *( m_buffer.data() + offset ) );
     }
 
     template <class Type, int i = 0, class RawType = std::remove_cvref_t<Type>>
-    REQUIRES(, !std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>(), Type )
+//    REQUIRES(, !std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>(), Type )
+//    REQUIRES(, !std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>(), Type )
+    REQUIRES(, !std::is_pointer_v<Type>, Type )
     get() const {
+        static_assert(hasType<RawType>() && i < nType<RawType>());
         const auto offset = getOffset<i, 0, RawType, Types...>();
         static_assert( 0 <= offset && offset < Size );
         return reinterpret_cast<Type>( *( m_buffer.data() + offset ) );

@@ -176,6 +176,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 # # set(HUB_MODULES "core" "net" "io" "server" "client" "native")
 # # set(HUB_MODULES "core" "net" "io" "server" "client" "native" "sensor")
 set(HUB_MODULES "core" "net" "io" "server" "client" "native" "sensor" "data")
+
 set(ALL_HUB_MODULES "core" "net" "data" "io" "sensor" "server" "client" "native")
 # cmake-format: on
 

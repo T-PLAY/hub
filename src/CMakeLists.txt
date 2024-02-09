@@ -73,7 +73,9 @@ else()
     message(FATAL_ERROR "unknown system")
 endif()
 
-message(STATUS "${HEADER_MSG} Dependencies: ${REQUIRED_LIBS}")
+if (REQUIRED_LIBS)
+        message(STATUS "${HEADER_MSG} Dependencies: ${REQUIRED_LIBS}")
+endif()
 
 file(# GLOB
      GLOB_RECURSE external_sources ${HUB_EXTERNAL_DIR}/*.cpp ${HUB_EXTERNAL_DIR}/*.c)
