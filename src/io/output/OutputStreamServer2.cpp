@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <typeinfo>
+#include <iomanip>
 
 namespace hub {
 namespace output {
@@ -310,17 +311,20 @@ void output::OutputStreamServer2::write( const Data_t* data, Size_t size ) {
 
     if ( !m_data->m_streamViewerSocks.empty() ) {
         m_data->m_byteWrote += m_data->m_streamViewerSocks.size() * size;
+        ++m_data->m_acqWrote;
         const auto now = std::chrono::high_resolution_clock::now();
         const auto period =
             std::chrono::duration_cast<std::chrono::milliseconds>( now - m_data->m_lastClock )
                 .count();
         if ( period > 1'000 ) { // 1 sec
             const auto bytePerSecond = ( 1000.0 * m_data->m_byteWrote ) / period;
-            std::cout << "[" << m_name << "] data rate : " << PRETTY_BYTES( bytePerSecond )
+            const auto acqPerSecond = (1000.0 * m_data->m_acqWrote)  / period;
+            std::cout << "[" << m_name << "] " << std::setprecision(3) << acqPerSecond << " Hz, " << PRETTY_BYTES( bytePerSecond )
                       << "/s, watched by " << m_data->m_streamViewerSocks.size() << " streamViewers"
                       << std::endl;
             m_data->m_lastClock = now;
             m_data->m_byteWrote = 0;
+            m_data->m_acqWrote = 0;
         }
     }
 }

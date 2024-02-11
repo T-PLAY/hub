@@ -3,6 +3,7 @@
 
 #include <client/Viewer.hpp>
 #include <io/Stream.hpp>
+#include <iomanip>
 
 #define COLOR "\033[41m"
 #define HEADER_MSG "\t\t" COLOR "[Viewer]\033[0m "
@@ -57,8 +58,9 @@ int main( int argc, char* argv[] ) {
 
             if ( period > 1'000 ) { // 1 sec
                 const auto bytePerSecond = ( 1000.0 * m_counterAcq * m_dataSize ) / period;
-                std::cout << HEADER_MSG << "onNewData : '" << m_streamName
-                          << "' " << PRETTY_BYTES( bytePerSecond ) << "/s" << std::endl;
+                const auto acqPerSecond  = ( 1000.0 * m_counterAcq ) / period;
+                std::cout << HEADER_MSG << "onNewData : '" << m_streamName << "' "
+                          << std::setprecision(3) << acqPerSecond << " Hz, " << PRETTY_BYTES( bytePerSecond ) << "/s" << std::endl;
                 m_lastUpdateClock = now;
                 m_counterAcq      = 0;
             }

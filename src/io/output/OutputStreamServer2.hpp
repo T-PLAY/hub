@@ -88,6 +88,7 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
         std::unique_ptr<std::thread> m_serverThread;
         bool m_shutdown       = false;
         long long m_byteWrote = 0;
+        size_t m_acqWrote = 0;
         std::chrono::high_resolution_clock::time_point m_lastClock =
             std::chrono::high_resolution_clock::now();
     };
