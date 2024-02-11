@@ -59,8 +59,12 @@ int main( int argc, char* argv[] ) {
     };
 #ifndef HUB_NON_BUILD_SENSOR
     auto onNewSensor = []( const char* streamName, const hub::sensor::SensorSpec* sensorSpec ) {
+        char buff[256];
+        int strLen = 0;
+        hub::native::sensorSpec_toString( sensorSpec, buff, &strLen );
         std::cout << HEADER_MSG "onNewSensor : " << streamName << ", "
-                  << hub::native::to_string( sensorSpec ) << std::endl;
+                  //<< hub::native::toString( sensorSpec ) << std::endl;
+                  << buff << std::endl;
         return true;
     };
 #endif

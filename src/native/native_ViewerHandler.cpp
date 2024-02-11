@@ -69,5 +69,9 @@ void freeViewer( client::ViewerHandler* viewerHandler ) {
     delete viewerHandler;
 }
 
+int printStatus() {
+    return 4;
+}
+
 } // namespace native
 } // namespace hub

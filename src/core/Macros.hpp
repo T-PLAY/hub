@@ -144,9 +144,9 @@ namespace hub {
 // Dll import/export.
 // You must define SRC_STATIC to force static link for external use (.lib)
 
-#ifndef SRC_STATIC
-#define SRC_STATIC
-#endif
+//#ifndef SRC_STATIC
+//#define SRC_STATIC
+//#endif
 
 #ifdef OS_WINDOWS
 #    if defined SRC_STATIC
@@ -494,9 +494,9 @@ template <typename T>
 static constexpr bool has_id_v = has_id<T>::value;
 
 namespace Types {
-enum Cpp : TypeId_t { INT = 0, BOOL, Cpp_Count };
+enum Cpp : TypeId_t { NONE = 0, INT, BOOL, Cpp_Count };
 }
-static_assert( Types::Cpp_Count == 2 );
+static_assert( Types::Cpp_Count == 3 );
 
 template <class T>
 static constexpr typename std::enable_if_t<has_id_v<T>, TypeId_t> typeId( const T& t ) {

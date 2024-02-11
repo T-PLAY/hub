@@ -82,6 +82,8 @@ extern "C"
     ///
     SRC_API void freeViewerHandler( client::ViewerHandler* viewerHandler );
 
+    SRC_API int printStatus();
+
 #ifdef __cplusplus
 } // end extern "C"
 #endif
