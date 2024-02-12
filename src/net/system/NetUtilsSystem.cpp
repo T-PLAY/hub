@@ -44,7 +44,7 @@ class NetManager
 #ifdef HUB_DEBUG_NET
         std::cout << "[net] all socket closed" << std::endl;
 #endif
-        // todo fix
+        // Todo fix
 #ifndef WIN32
 		assert( m_sockets.empty() );
 #endif

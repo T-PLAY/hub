@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <iostream>
+
 #include "core/Matrix.hpp"
 #include "core/MatrixBase.hpp"
 
@@ -140,6 +142,7 @@ requires( sizeof...( Types ) > 1 )
     template <class Type, int i = 0>
     REQUIRES( static constexpr, hasType<Type>() && i < nType<Type>(), Size_t )
     getOffset() {
+        //std::cout << "[MatrixTs] getOffset(" << TYPE_NAME( Type() ) << " " << i << std::endl;
         return getOffset<i, 0, Type, Types...>();
     }
 
@@ -154,7 +157,7 @@ requires( sizeof...( Types ) > 1 )
 
     bool operator==( const Matrix& matrix ) { return getMatrix() == matrix; }
 
-  private:
+ // private:
     template <class Type_, class... Types_>
     void serialize_( Matrix& matrix ) const {
         // Matrix::serialize_( matrix );
@@ -191,8 +194,12 @@ requires( sizeof...( Types ) > 1 )
     template <int ith, int i, class targetType, class Matrix, class... Types_>
     REQUIRES( static constexpr, isMatrix<Matrix>, Size_t )
     getOffset() {
+        //std::cout << "[MatrixTs] getOffset(Matrix)" << std::endl;
         if constexpr ( Matrix::template hasType<targetType>() ) {
-            if ( ith == i ) { return 0; }
+            if ( ith == i ) { 
+                return Matrix::template getOffset<targetType>();
+                //return 0; 
+            }
             else {
                 if constexpr ( sizeof...( Types_ ) > 0 ) {
                     return Matrix::Size + getOffset<ith, i + 1, targetType, Types_...>();
@@ -215,6 +222,7 @@ requires( sizeof...( Types ) > 1 )
     template <int ith, int i, class targetType, class Type_, class... Types_>
     REQUIRES( static constexpr, !isMatrix<Type_>, Size_t )
     getOffset() {
+        //std::cout << "[MatrixTs] getOffset(! Matrix)" << std::endl;
         if constexpr ( std::is_same_v<targetType, Type_> ) {
             if ( ith == i ) { return 0; }
             else {

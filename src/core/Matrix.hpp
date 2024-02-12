@@ -256,6 +256,7 @@ inline void Matrix::setData( const Data_t* data, Size_t size ) {
     assert( size == m_size );
     if ( m_vector.empty() ) m_vector.resize( m_size );
     assert( !m_vector.empty() );
+    // Todo fix
     assert( m_vector.size() == m_size );
     std::copy( data, data + size, m_vector.data() );
 }

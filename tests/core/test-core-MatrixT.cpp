@@ -246,5 +246,20 @@ TEST_CASE( "MatrixT test" ) {
 
     ////////////////////////////////
 
+    constexpr int width    = 512;
+    constexpr int height   = 512;
+    using ResolutionCam    = hub::MatrixXD<hub::format::RGB8, width, height>;
+    using Resolution       = hub::MatrixTs<hub::format::Dof6, ResolutionCam>;
+
+    static_assert( Resolution::getOffset<hub::format::Dof6>() == 0 );
+    static_assert( Resolution::getOffset<hub::format::RGB8>() == 28);
+    static_assert( Resolution::Size == 512 * 512 * 3 + 28);
+
+    using Resolution2       = hub::MatrixTs<ResolutionCam, hub::format::Dof6>;
+    static_assert( Resolution2::getOffset<hub::format::Dof6>() == 512 * 512 * 3 );
+    static_assert( Resolution2::getOffset<hub::format::RGB8>() == 0);
+    static_assert( Resolution2::Size == 512 * 512 * 3 + 28);
+
+
     TEST_END()
 }

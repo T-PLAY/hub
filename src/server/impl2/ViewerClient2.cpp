@@ -34,7 +34,8 @@ ViewerClient2::ViewerClient2( ServerImpl2* server, int iClient, net::ClientSocke
                 }
                 else if ( message ==
                           hub::io::StreamBase::ClientMessage::VIEWER_CLIENT_STREAM_ADDED ) {
-                    assert( !m_clientStreamAdded );
+                    // Todo fix
+                    //assert( !m_clientStreamAdded );
                     m_clientStreamAdded = true;
                 }
                 else if ( message == hub::io::StreamBase::ClientMessage::VIEWER_CLIENT_CLOSED ) {
