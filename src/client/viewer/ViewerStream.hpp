@@ -160,7 +160,10 @@ void ViewerStream<InputStream>::startStream() {
 #ifdef HUB_DEBUG_VIEWER_STREAM
             // DEBUG_MSG( "[Viewer][Stream] starting streaming thread" );
 #endif
+            // assert(m_inputStream == nullptr);
+            // if (m_inputStream == nullptr) {
             m_inputStream = std::make_unique<InputStream>( m_streamPort, m_streamIpv4 );
+            // }
             assert( m_inputStream->isOpen() );
 
 #ifdef HUB_DEBUG_VIEWER_STREAM
@@ -203,6 +206,8 @@ void ViewerStream<InputStream>::startStream() {
                 }
             }
 #endif
+            // m_inputStream->close();
+            // m_inputStream.release();
         }
 #ifdef DEBUG
         catch ( std::exception& ex ) {

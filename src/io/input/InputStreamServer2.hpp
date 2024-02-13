@@ -107,7 +107,7 @@ inline void InputStreamServer2::read( Data_t* data, Size_t size ) {
 }
 
 inline void InputStreamServer2::close() {
-    assert( false );
+    // assert( false );
 #ifdef HUB_DEBUG_INPUT_STREAM
     std::cout << "[InputStreamServer2] close() started" << std::endl;
 #endif
@@ -116,7 +116,7 @@ inline void InputStreamServer2::close() {
     ////        assert( message == io::StreamInterface::ServerMessage::STREAM_VIEWER_CLOSED );
     ////        std::cout << "[InputStreamServer2] stream viewer client closed" << std::endl;
 
-    if ( m_serverSocket->isOpen() ) m_serverSocket->close();
+    if ( m_serverSocket != nullptr && m_serverSocket->isOpen() ) m_serverSocket->close();
 
 #ifdef HUB_DEBUG_INPUT_STREAM
     std::cout << "[InputStreamServer2] close() ended" << std::endl;
