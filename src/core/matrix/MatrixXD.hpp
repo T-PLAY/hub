@@ -65,8 +65,8 @@ requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
         return std::is_same_v<Type, Type_>;
     }
 
-	template <class Type, int i = 0>
-    REQUIRES( static constexpr, hasType<Type>() && i < nType<Type>(), Size_t )
+    template <class Type_, int i = 0>
+    REQUIRES( static constexpr, hasType<Type_>() && i < nType<Type_>(), Size_t )
     getOffset() {
         return 0;
     }
