@@ -169,7 +169,15 @@ class InputSensor : public Sensor
 #endif
     }
 
-    std::vector<Acquisition> getAllAcquisitions();
+    std::vector<Acquisition> getAllAcquisitions() {
+        std::vector<Acquisition> acqs;
+        auto acq = acqMsg();
+        while (std::none_of(m_inputs.begin(), m_inputs.end(), [](const Input * input) { return input->isEnd(); })) {
+            *this >> acq;
+            acqs.push_back(acq.clone());
+        }
+        return acqs;
+    }
 
     const Input& getInput() const { return *m_inputs.at( 0 ); }
     Input& getInput() { return *m_inputs.at( 0 ); }

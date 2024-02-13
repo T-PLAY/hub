@@ -152,6 +152,9 @@ class ViewerInterface
     int nStream() const;
     int nStreaming() const;
     void printStatus() const;
+    bool hasStream( const std::string& streamName );
+    std::set<std::string> getActiveStreams() const;
+
 
   private:
   protected:
@@ -299,6 +302,22 @@ void ViewerInterface<InputStream>::printStatus() const {
     DEBUG_MSG( "\033[7m[Viewer] status : server connected:"
                << m_serverConnected << ", nStreamer:" << m_streams.size() << str << "\033[0m" );
 }
+
+template <class InputStream>
+bool ViewerInterface<InputStream>::hasStream( const std::string& streamName ) {
+    return m_streams.find( streamName ) != m_streams.end();
+}
+
+template <class InputStream>
+std::set<std::string> ViewerInterface<InputStream>::getActiveStreams() const {
+    std::set<std::string> streamNames;
+    for ( const auto& [streamName, inputStream] : m_streams ) {
+        if ( inputStream->isStreaming() ) { streamNames.insert( streamName ); }
+    }
+    return streamNames;
+}
+
+
 
 template <class InputStream>
 void ViewerInterface<InputStream>::setIpv4( const std::string& ipv4 ) {
