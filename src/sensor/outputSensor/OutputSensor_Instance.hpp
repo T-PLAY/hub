@@ -10,25 +10,27 @@ namespace outputSensor {
 class OutputSensor_Instance
 {
   public:
-    OutputSensor_Instance()                               = default;
+    // OutputSensor_Instance()                               = default;
     OutputSensor_Instance( OutputSensor_Instance&& )      = delete;
     OutputSensor_Instance( const OutputSensor_Instance& ) = delete;
+    OutputSensor_Instance( int port = HUB_SERVICE_PORT, std::string ipv4 = HUB_SERVICE_IPV4 ) :
+        m_port { port }, m_ipv4 { ipv4 } {};
 
     ~OutputSensor_Instance() {
         if ( m_running ) { stop(); }
     }
 
-    virtual void routine()  = 0;
+    virtual void routine() = 0;
 
     void run() {
-        assert(! m_running);
+        assert( !m_running );
         m_running = true;
         routine();
     }
 
     void asyncRun() {
         m_running = true;
-        m_thread = std::thread( [this]() { routine(); } );
+        m_thread  = std::thread( [this]() { routine(); } );
     }
 
     void stop() {
@@ -40,6 +42,8 @@ class OutputSensor_Instance
   protected:
     std::thread m_thread;
     bool m_running = false;
+    int m_port;
+    std::string m_ipv4;
 };
 
 } // namespace outputSensor

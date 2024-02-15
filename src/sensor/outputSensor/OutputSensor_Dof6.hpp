@@ -7,19 +7,22 @@ namespace hub {
 namespace sensor {
 namespace outputSensor {
 
-class OutputSensor_Dof6 : protected OutputSensor_Instance
+class OutputSensor_Dof6 : public OutputSensor_Instance
 {
   public:
     using OutputSensor_Instance::run;
     using OutputSensor_Instance::asyncRun;
     using OutputSensor_Instance::stop;
+    using OutputSensor_Instance::OutputSensor_Instance;
+
+
 
     void routine() override {
         using Resolution = hub::format::Dof6;
         const hub::sensor::SensorSpec sensorSpec( FILE_NAME, Resolution() );
         assert( FILE_NAME == "OutputSensor_Dof6.hpp" );
 
-        hub::sensor::OutputSensorT<Resolution> outputSensor( sensorSpec, FILE_NAME );
+        hub::sensor::OutputSensorT<Resolution> outputSensor( sensorSpec, FILE_NAME, m_port, m_ipv4 );
         auto acq    = outputSensor.acqMsg();
         auto& start = acq.start();
         auto& end   = acq.end();
