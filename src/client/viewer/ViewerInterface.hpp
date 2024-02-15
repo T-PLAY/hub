@@ -299,8 +299,10 @@ void ViewerInterface<InputStream>::printStatus() const {
             str += " (" + streamName + "," + std::to_string( stream->isStreaming() ) + ")";
         }
     }
-    DEBUG_MSG( "\033[7m[Viewer] status : server connected:"
-               << m_serverConnected << ", nStreamer:" << m_streams.size() << str << "\033[0m" );
+    // Todo fix for Hololens, no unicode \u001B
+    //DEBUG_MSG( "\033[7m[Viewer] status : server connected:"
+    DEBUG_MSG( "[Viewer] status : server connected:"
+               << m_serverConnected << ", nStreamer:" << m_streams.size() << str );
 }
 
 template <class InputStream>
