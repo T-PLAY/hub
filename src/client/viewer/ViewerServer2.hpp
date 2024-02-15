@@ -21,15 +21,15 @@ class ViewerServer2 : public hub::client::ViewerInterface<input::InputStreamServ
   public:
     SRC_API explicit ViewerServer2( const std::string& name,
                                     ViewerHandler&& viewerHandler,
-                                    const std::string& ipv4 = HUB_SERVICE_IPV4,
-                                    int port                = HUB_SERVICE_PORT,
+                                    const std::string& serverIpv4 = HUB_SERVICE_IPV4,
+                                    int serverPort                = HUB_SERVICE_PORT,
                                     bool autoConnect        = true );
 
     SRC_API ~ViewerServer2();
 
-    void setIpv4( const std::string& ipv4 ) override;
+    void setIpv4( const std::string& serverIpv4 ) override;
 
-    void setPort( int port ) override;
+    void setPort( int serverPort ) override;
 
     void setProperty( const std::string& streamName,
                       const std::string& objectName,

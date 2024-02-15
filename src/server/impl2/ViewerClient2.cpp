@@ -13,6 +13,8 @@ ViewerClient2::ViewerClient2( ServerImpl2* server, int iClient, net::ClientSocke
     assert( m_server != nullptr );
     m_server->addViewer( this );
 
+    std::cout << headerMsg() << "new viewer at " << m_socket << std::endl;
+
     m_thread = std::thread( [this]() {
         try {
 

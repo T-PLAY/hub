@@ -11,12 +11,12 @@ namespace client {
 
 ViewerServer2::ViewerServer2( const std::string& name,
                               ViewerHandler&& viewerHandler,
-                              const std::string& ipv4,
-                              int port,
+                              const std::string& serverIpv4,
+                              int serverPort,
                               bool autoConnect ) :
 
-    ViewerInterface( name, std::move( viewerHandler ), ipv4, port, autoConnect ),
-    m_sock( net::ClientSocket( ipv4, port, false ) ) {
+    ViewerInterface( name, std::move( viewerHandler ), serverIpv4, serverPort, autoConnect ),
+    m_sock( net::ClientSocket( serverIpv4, serverPort, false ) ) {
 
     if ( m_autoConnect ) {
         m_thread = std::thread( [this]() { threadRoutine(); } );
@@ -40,20 +40,20 @@ ViewerServer2::~ViewerServer2() {
     DEBUG_MSG( "[Viewer] ~Viewer() done" );
 }
 
-void ViewerServer2::setIpv4( const std::string& ipv4 ) {
-    ViewerInterface::setIpv4( ipv4 );
+void ViewerServer2::setIpv4( const std::string& serverIpv4 ) {
+    ViewerInterface::setIpv4( serverIpv4 );
 
-    DEBUG_MSG( "[Viewer] setIpv4 " << ipv4 );
+    DEBUG_MSG( "[Viewer] setIpv4 " << serverIpv4 );
     assert( !m_serverConnected );
-    m_sock.setIpv4( ipv4 );
+    m_sock.setIpv4( serverIpv4 );
 }
 
-void ViewerServer2::setPort( int port ) {
-    ViewerInterface::setPort( port );
+void ViewerServer2::setPort( int serverPort ) {
+    ViewerInterface::setPort( serverPort );
 
-    DEBUG_MSG( "[Viewer] setPort " << port );
+    DEBUG_MSG( "[Viewer] setPort " << serverPort );
     assert( !m_serverConnected );
-    m_sock.setPort( port );
+    m_sock.setPort( serverPort );
 }
 
 void ViewerServer2::setProperty( const std::string& streamName,
@@ -92,7 +92,7 @@ void ViewerServer2::threadRoutine() {
         try {
 
             DEBUG_MSG( "[Viewer] trying to connect to server : " << m_sock );
-            // DEBUG_MSG( "[Viewer] trying to connect to server at ipv4 "
+            // DEBUG_MSG( "[Viewer] trying to connect to server at serverIpv4 "
 
             assert( !m_sock.isOpen() );
             m_sock.connect();
@@ -122,6 +122,9 @@ void ViewerServer2::threadRoutine() {
 
                     std::string streamIpv4;
                     m_sock.read( streamIpv4 );
+                    if (streamIpv4 == "127.0.0.1") {
+                        streamIpv4 = m_serverIpv4;
+                    }
 
                     int streamPort;
                     m_sock.read( streamPort );
@@ -193,7 +196,7 @@ void ViewerServer2::threadRoutine() {
             }
             else {
                 DEBUG_MSG( "[Viewer] server not found : " << m_sock );
-                // DEBUG_MSG( "[Viewer] server not found at ipv4 "
+                // DEBUG_MSG( "[Viewer] server not found at serverIpv4 "
                 if ( m_viewerHandler.onServerNotFound )
                     m_viewerHandler.onServerNotFound( m_sock.getIpv4().c_str(), m_sock.getPort() );
             }

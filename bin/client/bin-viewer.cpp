@@ -14,13 +14,14 @@ int main( int argc, char* argv[] ) {
 
     bool exitWhenServerLost = false;
     int port                = HUB_SERVICE_PORT;
+    std::string ipv4 = "127.0.0.1";
 
     auto it = args.begin();
     while ( it != args.end() ) {
         const auto& arg = *it;
 
         if ( arg == "-h" || arg == "--help" ) {
-            std::cout << argv[0] << " usage: [--port <int>] [--exitWhenServerLost]" << std::endl;
+            std::cout << argv[0] << " usage: [--port <int>] [--ipv4 <string>] [--exitWhenServerLost]" << std::endl;
             return 0;
         }
         else if ( arg == "--exitWhenServerLost" ) { exitWhenServerLost = true; }
@@ -28,6 +29,12 @@ int main( int argc, char* argv[] ) {
             assert( it + 1 != args.end() );
             const auto& nextArg = *( it + 1 );
             port                = std::atoi( nextArg.c_str() );
+            ++it;
+        }
+        else if ( arg == "--ipv4" ) {
+            assert( it + 1 != args.end() );
+            const auto& nextArg = *( it + 1 );
+            ipv4 = nextArg;
             ++it;
         }
         else {
@@ -133,7 +140,7 @@ int main( int argc, char* argv[] ) {
         std::cout << HEADER_MSG "onLogMessage '" << logMessage << "'" << std::endl;
     };
 
-    hub::client::Viewer viewer( FILE_NAME, std::move( viewerHandler ), "127.0.0.1", port );
+    hub::client::Viewer viewer( FILE_NAME, std::move( viewerHandler ), ipv4, port );
 
     std::cout << "\t[viewer] Ctrl+C to exit" << std::endl;
 

@@ -24,7 +24,7 @@ StreamerClient2::StreamerClient2( ServerImpl2* server,
     m_streamPort( streamPort ),
     m_sock( std::make_unique<hub::io::InputOutputSocket>( std::move( sock ) ) ) {
 
-    std::cout << headerMsg() << "new stream '" << m_streamName << "'" << std::endl;
+    std::cout << headerMsg() << "new stream '" << m_streamName << "' at " << *m_sock << std::endl;
 
     m_sock->read( m_nStreamViewer );
 
