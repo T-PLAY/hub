@@ -15,7 +15,7 @@ class OutputSensor_Dof6_RGB8_Packed_Updated : protected OutputSensor_Instance
     using OutputSensor_Instance::stop;
 
     void routine() override {
-        constexpr int nAcq = 10;
+        constexpr int nAcq = 50;
 
         hub::MetaData metaData;
         metaData["nAcq"]     = nAcq;
@@ -34,7 +34,7 @@ class OutputSensor_Dof6_RGB8_Packed_Updated : protected OutputSensor_Instance
         auto& dof6               = acq.get<hub::format::Dof6&>();
         dof6                     = hub::format::Dof6();
 
-        constexpr auto maxFps = 10.0;
+        constexpr auto maxFps = 40.0;
 
         const auto third = width / 3;
 
@@ -46,7 +46,7 @@ class OutputSensor_Dof6_RGB8_Packed_Updated : protected OutputSensor_Instance
 
                 // start  = hub::sensor::getClock();
                 start  = iAcq;
-                dof6.y = iAcq * 10;
+                dof6.y = iAcq * 1;
                 assert( dof6.w0 == 1 );
                 assert( dof6.w1 == 0 );
                 assert( dof6.w2 == 0 );

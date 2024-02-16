@@ -27,6 +27,8 @@ class OutputSensor_Dof6_RGB8_Packed : protected OutputSensor_Instance
         const hub::sensor::SensorSpec sensorSpec( FILE_NAME, Resolution(), metaData );
 
         hub::sensor::OutputSensorT<Resolution> outputSensor( sensorSpec, FILE_NAME );
+        auto & output = outputSensor.getOutput();
+        output.setRetain(true);
         auto acq                 = outputSensor.acqMsg();
         auto& start              = acq.start();
         auto& end                = acq.end();
@@ -77,6 +79,12 @@ class OutputSensor_Dof6_RGB8_Packed : protected OutputSensor_Instance
             const auto endClock =
                 startClock + std::chrono::microseconds( (int)( 1'000'000 / maxFps ) );
             std::this_thread::sleep_until( endClock );
+        }
+        output.setRetain(false);
+
+        while (1) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            outputSensor << acq;
         }
     }
 

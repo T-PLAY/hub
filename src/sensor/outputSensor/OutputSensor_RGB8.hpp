@@ -16,7 +16,7 @@ class OutputSensor_RGB8 : protected OutputSensor_Instance
 
     void routine() override {
         hub::MetaData metaData;
-        metaData["parent"]   = "OutputSensor_Dof6.cpp";
+        metaData["parent"]   = "OutputSensor_Dof6.hpp";
         constexpr int width  = 640;
         constexpr int height = 480;
         using Resolution     = hub::MatrixXD<hub::format::RGB8, 640, 480>;
