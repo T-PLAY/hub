@@ -22,35 +22,19 @@ class MeshImpl
     ~MeshImpl();
 
   private:
-    uint64_t m_nVertice  = 0;
-    uint64_t m_nTriangle = 0;
-    uint64_t m_nDraw     = 0;
-
-    uint64_t m_nMesh           = 0;
-    uint64_t m_mesh_triangles  = 0;
-    uint64_t m_mesh_vertices   = 0;
-    uint64_t m_total_triangles = 0;
-    uint64_t m_total_instances = 0;
-    uint64_t m_total_draws     = 0;
-
-    std::string m_name = "";
-
-    std::vector<Shape> m_shapes;
-    std::vector<Material> m_materials;
-
     friend class Mesh;
 };
 
 MeshImpl::~MeshImpl() {}
 
-Mesh::Mesh( const Mesh& mesh ) :
-    m_pimpl( mesh.m_pimpl )
+// Mesh::Mesh( const Mesh& mesh ) :
+//     m_pimpl( mesh.m_pimpl )
 
-{}
+// {}
 
 Mesh::Mesh( const std::string& filePath ) : Mesh( { filePath } ) {}
 
-Mesh::~Mesh() = default;
+// Mesh::~Mesh() = default;
 
 Mesh::Mesh( std::initializer_list<std::string> filePaths ) : m_pimpl( new MeshImpl ) {
 
@@ -118,8 +102,8 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) : m_pimpl( new MeshIm
 
     for ( int i = 0; i < filenames.size(); ++i ) {
         const auto& filename = filenames.at( i );
-        m_pimpl->m_name += filename;
-        if ( i != filenames.size() - 1 ) m_pimpl->m_name += " + ";
+        m_name += filename;
+        if ( i != filenames.size() - 1 ) m_name += " + ";
     }
 
     std::vector<cgltf_data*> glbCgltfData;
@@ -162,11 +146,11 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) : m_pimpl( new MeshIm
             const auto& stream = mesh.streams[i];
 
             if ( stream.type == cgltf_attribute_type_position ) {
-                m_pimpl->m_nVertice += mesh.streams[i].data.size();
-                m_pimpl->m_nDraw += std::max( size_t( 1 ), mesh.nodes.size() );
+                m_nVertice += mesh.streams[i].data.size();
+                m_nDraw += std::max( size_t( 1 ), mesh.nodes.size() );
             }
         }
-        m_pimpl->m_nTriangle += mesh.indices.size() / 3;
+        m_nTriangle += mesh.indices.size() / 3;
 
         ++iMesh;
     }
@@ -176,8 +160,8 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) : m_pimpl( new MeshIm
 
         for ( int i = 0; i < gltfData->materials_count; ++i ) {
             const auto& gltfMaterial = gltfData->materials[i];
-            m_pimpl->m_materials.push_back( Material() );
-            auto& material = m_pimpl->m_materials.back();
+            m_materials.push_back( Material() );
+            auto& material = m_materials.back();
             material.name  = gltfMaterial.name;
             for ( int j = 0; j < 3; ++j ) {
                 material.Kd[j] = gltfMaterial.pbr_metallic_roughness.base_color_factor[j];
@@ -190,8 +174,8 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) : m_pimpl( new MeshIm
     iMesh = 0;
     for ( const auto& mesh : glbMeshes ) {
 
-        m_pimpl->m_shapes.push_back( Shape() );
-        auto& shape          = m_pimpl->m_shapes.back();
+        m_shapes.push_back( Shape() );
+        auto& shape          = m_shapes.back();
         shape.hasNormal      = false;
         auto& shapeVertices  = shape.vertices;
         auto& shapeIndices   = shape.indices;
@@ -244,8 +228,8 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) : m_pimpl( new MeshIm
 
         shape.material = -1;
         if ( mesh.material != nullptr ) {
-            for ( int iMaterial = 0; iMaterial < m_pimpl->m_materials.size(); ++iMaterial ) {
-                const auto& material = m_pimpl->m_materials.at( iMaterial );
+            for ( int iMaterial = 0; iMaterial < m_materials.size(); ++iMaterial ) {
+                const auto& material = m_materials.at( iMaterial );
                 if ( material.name == mesh.material->name ) {
                     shape.material = iMaterial;
                     break;
@@ -259,82 +243,49 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) : m_pimpl( new MeshIm
     for ( size_t i = 0; i < glbMeshes.size(); ++i ) {
         const _Mesh& mesh = glbMeshes[i];
 
-        m_pimpl->m_mesh_triangles += mesh.indices.size() / 3;
-        m_pimpl->m_mesh_vertices += mesh.streams.empty() ? 0 : mesh.streams[0].data.size();
+        m_mesh_triangles += mesh.indices.size() / 3;
+        m_mesh_vertices += mesh.streams.empty() ? 0 : mesh.streams[0].data.size();
 
         size_t instances = std::max( size_t( 1 ), mesh.nodes.size() + mesh.instances.size() );
 
-        m_pimpl->m_total_triangles += mesh.indices.size() / 3 * instances;
-        m_pimpl->m_total_instances += instances;
-        m_pimpl->m_total_draws += std::max( size_t( 1 ), mesh.nodes.size() );
+        m_total_triangles += mesh.indices.size() / 3 * instances;
+        m_total_instances += instances;
+        m_total_draws += std::max( size_t( 1 ), mesh.nodes.size() );
     }
-    m_pimpl->m_nMesh = glbMeshes.size();
+    m_nMesh = glbMeshes.size();
 
-    std::vector<unsigned char> buff;
-
-    m_pimpl->m_shapes.clear();
-    m_pimpl->m_materials.clear();
+    // std::vector<unsigned char> buff;
+    // m_shapes.clear();
+    // m_materials.clear();
 }
 
-void Mesh::unpack( bool headerOnly ) const {
+// void Mesh::unpack( bool headerOnly ) const {
 
-    const auto start = std::chrono::high_resolution_clock::now();
+//     const auto start = std::chrono::high_resolution_clock::now();
 
-    std::vector<unsigned char> buff;
-}
-
-std::string Mesh::to_string() const {
-    if ( m_pimpl->m_name == "" ) unpack();
-    assert( m_pimpl->m_name != "" );
-
-    std::string str = "";
-    str += "'" + m_pimpl->m_name + "'";
-    str += ", draw:" + std::to_string( m_pimpl->m_nDraw );
-    str += ", vx:" + std::to_string( m_pimpl->m_nVertice );
-    str += ", tri:" + std::to_string( m_pimpl->m_nTriangle );
-
-    ////        str += shape.name + ": nb points = " + std::to_string(shape.points.indices.size());
-    ////        str += shape.name + ": nTriangle = " + std::to_string(nFace);
-    ////        if (s != m_shapes.size() - 1) {
-    ////            str += ", ";
-    ////        }
-    return str;
-}
-
-const std::vector<Shape>& Mesh::getShapes() const {
-    if ( m_pimpl->m_shapes.empty() ) unpack( false );
-    assert( !m_pimpl->m_shapes.empty() );
-
-    return m_pimpl->m_shapes;
-}
-
-const std::vector<Material>& Mesh::getMaterials() const {
-    if ( m_pimpl->m_shapes.empty() ) unpack( false );
-    assert( !m_pimpl->m_shapes.empty() );
-
-    return m_pimpl->m_materials;
-}
+//     std::vector<unsigned char> buff;
+// }
 
 void Mesh::printStats() const {
-    if ( m_pimpl->m_name == "" ) unpack();
-    assert( m_pimpl->m_name != "" );
+    // if ( m_name == "" ) unpack();
+    // assert( m_name != "" );
 
     std::cout << "mesh statistics:" << std::endl;
     printf( "%s: %d mesh primitives (%d triangles, %d vertices); %d draw calls (%d instances, %lld "
             "triangles)\n",
-            m_pimpl->m_name.c_str(),
-            int( m_pimpl->m_nMesh ),
-            int( m_pimpl->m_mesh_triangles ),
-            int( m_pimpl->m_mesh_vertices ),
-            int( m_pimpl->m_total_draws ),
-            int( m_pimpl->m_total_instances ),
-            (long long)m_pimpl->m_total_triangles );
+            m_name.c_str(),
+            int( m_nMesh ),
+            int( m_mesh_triangles ),
+            int( m_mesh_vertices ),
+            int( m_total_draws ),
+            int( m_total_instances ),
+            (long long)m_total_triangles );
     std::cout << "-----------------" << std::endl;
 }
 
 void Mesh::printInfo() const {
-    if ( m_pimpl->m_shapes.empty() ) unpack( false );
-    assert( !m_pimpl->m_shapes.empty() );
+    // if ( m_shapes.empty() ) unpack( false );
+    // assert( !m_shapes.empty() );
 
     const auto& shapes    = getShapes();
     const auto& materials = getMaterials();
@@ -360,13 +311,20 @@ void Mesh::printInfo() const {
 }
 
 bool Mesh::operator==( const Mesh& other ) const {
-    return false;
+    return m_name == other.m_name
+           && m_shapes == other.m_shapes &&
+           m_materials == other.m_materials && m_nVertice == other.m_nVertice &&
+           m_nTriangle == other.m_nTriangle && m_nDraw == other.m_nDraw &&
+           m_nMesh == other.m_nMesh && m_mesh_triangles == other.m_mesh_triangles &&
+           m_mesh_vertices == other.m_mesh_vertices &&
+           m_total_triangles == other.m_total_triangles &&
+           m_total_instances == other.m_total_instances && m_total_draws == other.m_total_draws;
 }
 
-std::ostream& operator<<( std::ostream& os, const Mesh& mesh ) {
-    os << mesh.to_string();
-    return os;
-}
+// std::ostream& operator<<( std::ostream& os, const Mesh& mesh ) {
+//     os << mesh.to_string();
+//     return os;
+// }
 
 } // namespace data
 } // namespace hub
