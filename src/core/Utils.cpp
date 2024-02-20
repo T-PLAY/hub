@@ -69,112 +69,167 @@ namespace utils {
 // ASCII codes (key>0): 8 backspace, 9 tab, 10 newline, 27 escape, 127 delete,
 // F12 not working: ¹ (251), num lock (-144), caps lock (-20), windows key (-91), kontext menu key
 #if defined(WIN32) || defined(_WIN32) || defined(_WIN64)
-#define WIN32_LEAN_AND_MEAN
-#define VC_EXTRALEAN
-#include <Windows.h>
+
+    HWND g_mainWindow = 0;
+
+    static std::map<int, Key> s_input2key {
+//          {VK_SHIFT, Key::Shift},
+          {VK_OEM_PERIOD, Key::Dot},
+          {VK_SPACE, Key::Space},
+          {VK_ESCAPE, Key::Escape},
+          {VK_RIGHT, Key::RightArrow},
+          {VK_LEFT, Key::LeftArrow},
+          {VK_UP, Key::UpArrow},
+          {VK_DOWN, Key::DownArrow},
+          {VK_F1, Key::F1},
+          {VK_F2, Key::F2},
+          {VK_F5, Key::F5},
+          {'A', Key::A},
+          {'B', Key::B},
+          {'H', Key::H},
+    };
+
     Key key_press()
-    { // not working: F11 (-122, toggles fullscreen)
-        //    KEY_EVENT_RECORD keyevent;
-        //    INPUT_RECORD irec;
-        //    DWORD events;
-        HANDLE hIn = GetStdHandle(STD_INPUT_HANDLE);
-        HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-        INPUT_RECORD inp;
-        DWORD num_of_events;
+    {
+        if (!g_mainWindow) {
+            g_mainWindow = GetForegroundWindow();
+        }
 
-        while (true) {
-            //        ReadConsoleInput( GetStdHandle( STD_INPUT_HANDLE ), &irec, 1, &events );
-            ReadConsoleInput(hIn, &inp, 1, &num_of_events);
+        HWND activeWindow = GetForegroundWindow();
+        while (activeWindow != g_mainWindow) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            activeWindow = GetForegroundWindow();
+        }
 
-            //        if ( irec.EventType == KEY_EVENT && ( (KEY_EVENT_RECORD&)irec.Event ).bKeyDown ) {
-            //	    switch (inp.EventType) {
-            //		case KEY_EVENT:
-            if (inp.EventType == KEY_EVENT) {
-                //                keyevent = (KEY_EVENT_RECORD&)irec.Event;
-                auto keyevent = (KEY_EVENT_RECORD&)inp.Event;
-                const int ca = (int)keyevent.uChar.AsciiChar;
-                const int cv = (int)keyevent.wVirtualKeyCode;
-                const int key = ca == 0 ? -cv : ca + (ca > 0 ? 0 : 256);
-                auto key2 = Key(key);
-                std::cout << "[hub::utils] receive key : " << keyevent.uChar.AsciiChar << " " << keyevent.wVirtualKeyCode << " " << key2 << std::endl;
-                return key2;
-                switch (key) {
-                case -16:
-                    continue; // disable Shift
-                case -17:
-                    continue; // disable Ctrl / AltGr
-                case -18:
-                    continue; // disable Alt / AltGr
-                case -220:
-                    continue; // disable first detection of "^" key (not "^" symbol)
-                case -221:
-                    continue; // disable first detection of "`" key (not "`" symbol)
-                case -191:
-                    continue; // disable AltGr + "#"
-                case -52:
-                    continue; // disable AltGr + "4"
-                case -53:
-                    continue; // disable AltGr + "5"
-                case -54:
-                    continue; // disable AltGr + "6"
-                case -12:
-                    continue; // disable num block 5 with num lock deactivated
-                case -46:
-                    return Key::Delete;
-                case 0:
-                    continue;
-                case 1:
-                    continue; // disable Ctrl + a (selects all text)
-                case 2:
-                    continue; // disable Ctrl + b
-                case 3:
-                    continue; // disable Ctrl + c (terminates program)
-                case 4:
-                    continue; // disable Ctrl + d
-                case 5:
-                    continue; // disable Ctrl + e
-                case 6:
-                    continue; // disable Ctrl + f (opens search)
-                case 7:
-                    continue; // disable Ctrl + g
-                case 10:
-                    continue; // disable Ctrl + j
-                case 11:
-                    continue; // disable Ctrl + k
-                case 12:
-                    continue; // disable Ctrl + l
-                case 14:
-                    continue; // disable Ctrl + n
-                case 15:
-                    continue; // disable Ctrl + o
-                case 16:
-                    continue; // disable Ctrl + p
-                case 17:
-                    continue; // disable Ctrl + q
-                case 18:
-                    continue; // disable Ctrl + r
-                case 19:
-                    continue; // disable Ctrl + s
-                case 20:
-                    continue; // disable Ctrl + t
-                case 21:
-                    continue; // disable Ctrl + u
-                case 22:
-                    continue; // disable Ctrl + v (inserts clipboard)
-                case 23:
-                    continue; // disable Ctrl + w
-                case 24:
-                    continue; // disable Ctrl + x
-                case 25:
-                    continue; // disable Ctrl + y
-                case 26:
-                    continue; // disable Ctrl + z
-                default:
-                    return (Key)key; // any other ASCII/virtual character
+        bool keyPressed = false;
+
+        while (!keyPressed) {
+            bool shifted = false;
+            if (GetKeyState(VK_SHIFT) & 0x8000) {
+                shifted = true;
+            }
+            for (const auto & [input, key] : s_input2key) {
+                if (GetKeyState(input) & 0x8000) {
+                    while (GetKeyState(input) & 0x8000) {
+                        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+                    }
+                    if (! shifted && 'A' <= input && input <= 'Z') {
+                        return Key((int)key - (int)Key::A + (int)Key::a);
+                    }
+                    return key;
                 }
             }
         }
+
+        return Key(0);
     }
+
+//#define WIN32_LEAN_AND_MEAN
+//#define VC_EXTRALEAN
+//#include <Windows.h>
+//    Key key_press()
+//    { // not working: F11 (-122, toggles fullscreen)
+//        //    KEY_EVENT_RECORD keyevent;
+//        //    INPUT_RECORD irec;
+//        //    DWORD events;
+//        HANDLE hIn = GetStdHandle(STD_INPUT_HANDLE);
+//        HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+//        INPUT_RECORD inp;
+//        DWORD num_of_events;
+
+//        while (true) {
+//            //        ReadConsoleInput( GetStdHandle( STD_INPUT_HANDLE ), &irec, 1, &events );
+//            ReadConsoleInput(hIn, &inp, 1, &num_of_events);
+
+//            //        if ( irec.EventType == KEY_EVENT && ( (KEY_EVENT_RECORD&)irec.Event ).bKeyDown ) {
+//            //	    switch (inp.EventType) {
+//            //		case KEY_EVENT:
+//            if (inp.EventType == KEY_EVENT) {
+//                //                keyevent = (KEY_EVENT_RECORD&)irec.Event;
+//                auto keyevent = (KEY_EVENT_RECORD&)inp.Event;
+//                const int ca = (int)keyevent.uChar.AsciiChar;
+//                const int cv = (int)keyevent.wVirtualKeyCode;
+//                const int key = ca == 0 ? -cv : ca + (ca > 0 ? 0 : 256);
+//                auto key2 = Key(key);
+//                std::cout << "[hub::utils] receive key : " << keyevent.uChar.AsciiChar << " " << keyevent.wVirtualKeyCode << " " << key2 << std::endl;
+//                return key2;
+//                switch (key) {
+//                case -16:
+//                    continue; // disable Shift
+//                case -17:
+//                    continue; // disable Ctrl / AltGr
+//                case -18:
+//                    continue; // disable Alt / AltGr
+//                case -220:
+//                    continue; // disable first detection of "^" key (not "^" symbol)
+//                case -221:
+//                    continue; // disable first detection of "`" key (not "`" symbol)
+//                case -191:
+//                    continue; // disable AltGr + "#"
+//                case -52:
+//                    continue; // disable AltGr + "4"
+//                case -53:
+//                    continue; // disable AltGr + "5"
+//                case -54:
+//                    continue; // disable AltGr + "6"
+//                case -12:
+//                    continue; // disable num block 5 with num lock deactivated
+//                case -46:
+//                    return Key::Delete;
+//                case 0:
+//                    continue;
+//                case 1:
+//                    continue; // disable Ctrl + a (selects all text)
+//                case 2:
+//                    continue; // disable Ctrl + b
+//                case 3:
+//                    continue; // disable Ctrl + c (terminates program)
+//                case 4:
+//                    continue; // disable Ctrl + d
+//                case 5:
+//                    continue; // disable Ctrl + e
+//                case 6:
+//                    continue; // disable Ctrl + f (opens search)
+//                case 7:
+//                    continue; // disable Ctrl + g
+//                case 10:
+//                    continue; // disable Ctrl + j
+//                case 11:
+//                    continue; // disable Ctrl + k
+//                case 12:
+//                    continue; // disable Ctrl + l
+//                case 14:
+//                    continue; // disable Ctrl + n
+//                case 15:
+//                    continue; // disable Ctrl + o
+//                case 16:
+//                    continue; // disable Ctrl + p
+//                case 17:
+//                    continue; // disable Ctrl + q
+//                case 18:
+//                    continue; // disable Ctrl + r
+//                case 19:
+//                    continue; // disable Ctrl + s
+//                case 20:
+//                    continue; // disable Ctrl + t
+//                case 21:
+//                    continue; // disable Ctrl + u
+//                case 22:
+//                    continue; // disable Ctrl + v (inserts clipboard)
+//                case 23:
+//                    continue; // disable Ctrl + w
+//                case 24:
+//                    continue; // disable Ctrl + x
+//                case 25:
+//                    continue; // disable Ctrl + y
+//                case 26:
+//                    continue; // disable Ctrl + z
+//                default:
+//                    return (Key)key; // any other ASCII/virtual character
+//                }
+//            }
+//        }
+//    }
 #else
 #include <sys/ioctl.h>
 #include <termios.h>
