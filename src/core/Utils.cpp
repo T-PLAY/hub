@@ -94,16 +94,17 @@ namespace utils {
         if (!g_mainWindow) {
             g_mainWindow = GetForegroundWindow();
         }
-
-        HWND activeWindow = GetForegroundWindow();
-        while (activeWindow != g_mainWindow) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            activeWindow = GetForegroundWindow();
-        }
+//        std::cout << "foreground window : " << g_mainWindow << std::endl;
 
         bool keyPressed = false;
-
         while (!keyPressed) {
+            HWND activeWindow = GetForegroundWindow();
+            while (activeWindow != g_mainWindow) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                activeWindow = GetForegroundWindow();
+            }
+//            std::cout << "active window : " << activeWindow << std::endl;
+
             bool shifted = false;
             if (GetKeyState(VK_SHIFT) & 0x8000) {
                 shifted = true;

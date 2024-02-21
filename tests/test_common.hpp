@@ -40,9 +40,9 @@
     const auto duration =                                                                       \
         std::chrono::duration_cast<std::chrono::milliseconds>( end_test - start_test ).count(); \
     std::cout << "[" << FILE_NAME << "] duration : " << duration << " ms" << std::endl;         \
-    std::ofstream file( "duration_tests.txt", std::ios::app );                                  \
-    file << duration << " " << FILE_NAME << std::endl;                                          \
-    file.close();
+    std::ofstream outFile( "duration_tests.txt", std::ios::app );                                  \
+    outFile << duration << " " << FILE_NAME << std::endl;                                          \
+    outFile.close();
 
 #define GET_RANDOM_PORT getRandomPort( __FILE__ )
 

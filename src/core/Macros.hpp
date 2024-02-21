@@ -200,9 +200,9 @@ namespace hub {
 
 #ifdef WIN32
 #    define FILE_NAME                                                          \
-        std::string( __FILE__ )                                                \
-            .substr( std::max( std::string( __FILE__ ).find_last_of( '\\' ),   \
-                               std::string( __FILE__ ).find_last_of( '/' ) ) + \
+        std::string( "/\\" __FILE__ )                                                \
+            .substr( std::max( std::string( "/\\" __FILE__ ).find_last_of( '\\' ),   \
+                               std::string( "/\\" __FILE__ ).find_last_of( '/' ) ) + \
                      1 )
 
 #else // unix system
