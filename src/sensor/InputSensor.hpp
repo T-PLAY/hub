@@ -179,6 +179,18 @@ class InputSensor : public Sensor
         return acqs;
     }
 
+    template <class Container,
+              typename T = std::decay_t<decltype( *begin( std::declval<Container>() ) )>>
+    void fillAllAcquisitions(Container & ts) {
+        auto acq = acqMsg();
+        while (std::none_of(m_inputs.begin(), m_inputs.end(), [](const Input * input) { return input->isEnd(); })) {
+            *this >> acq;
+//            acqs.push_back(acq.clone());
+            ts.push_back(acq.clone());
+        }
+
+    }
+
     const Input& getInput() const { return *m_inputs.at( 0 ); }
     Input& getInput() { return *m_inputs.at( 0 ); }
 

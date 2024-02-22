@@ -9,7 +9,7 @@
 TEST_CASE( "Buffer test" ) {
     TEST_BEGIN()
 
-#if CPP_VERSION >= 20
+//#if CPP_VERSION >= 20
     using namespace hub;
 
     constexpr auto dataSize   = 1'000'000l; // 1Mo
@@ -30,17 +30,19 @@ TEST_CASE( "Buffer test" ) {
     Buffer<Data_t, dataSize, BufferOption::DynamicMemory> myDynamicData;
     std::cout << "[dynamic] myDynamicData: " << myDynamicData << std::endl;
     auto dynamicStart = std::chrono::high_resolution_clock::now();
-#    if CPP_VERSION >= 20
     for ( int i = 0; i < nIteration; ++i ) {
+        std::copy(rawData, rawData + dataSize, myDynamicData.data());
+#    if CPP_VERSION >= 20
         myDynamicData.setData( rawSpan );
-    }
 #    endif
+    }
     auto dynamicEnd = std::chrono::high_resolution_clock::now();
     auto dynamicDuration =
         std::chrono::duration_cast<std::chrono::microseconds>( dynamicEnd - dynamicStart ).count();
 #    if CPP_VERSION >= 20
     CHECK( myDynamicData.getSpan() == rawSpan );
 #    endif
+//    assert(! memcmp(myDynamicData.data(), rawData, dataSize));
     std::cout << "[dynamic] myDynamicData: " << myDynamicData << std::endl;
     std::cout << "[dynamic] static copy duration: " << dynamicDuration / 1000.0 << " ms"
               << std::endl;
@@ -52,17 +54,19 @@ TEST_CASE( "Buffer test" ) {
     static Buffer<Data_t, dataSize, BufferOption::StaticMemory> myStaticData;
     std::cout << "[static] myStaticData: " << myStaticData << std::endl;
     auto staticStart = std::chrono::high_resolution_clock::now();
-#    if CPP_VERSION >= 20
     for ( int i = 0; i < nIteration; ++i ) {
+#    if CPP_VERSION >= 20
         myStaticData.setData( rawSpan );
-    }
 #    endif
+        std::copy(rawData, rawData + dataSize, myDynamicData.data());
+    }
     auto staticEnd = std::chrono::high_resolution_clock::now();
     auto staticDuration =
         std::chrono::duration_cast<std::chrono::microseconds>( staticEnd - staticStart ).count();
 #    if CPP_VERSION >= 20
     CHECK( myStaticData.getSpan() == rawSpan );
 #    endif
+//    assert(! memcmp(myDynamicData.data(), rawData, dataSize));
     std::cout << "[static] myStaticData: " << myStaticData << std::endl;
     std::cout << "[static] static copy duration: " << staticDuration / 1000.0 << " ms" << std::endl;
     std::cout << "[static] static copy speed: "
@@ -72,7 +76,10 @@ TEST_CASE( "Buffer test" ) {
 
     const auto ratio = staticDuration / (double)dynamicDuration;
     // CHECK_VALUE( ratio, 3.0, 2.0, "DynamicData/StaticData", "/" );
+    std::cout << "ratio : " << ratio << std::endl;
+    std::cout << "check_decline ..." << std::endl;
     CHECK_DECLINE( ratio, "Buffer:DynamicData/StaticData", "/" );
+    std::cout << "check_decline done" << std::endl;
 
     delete[] rawData;
 
@@ -96,6 +103,6 @@ TEST_CASE( "Buffer test" ) {
                                                                    Random { 2, false } };
     std::cout << "buffer5: " << buffer5 << std::endl;
 
-#endif
+//#endif
     TEST_END()
 }

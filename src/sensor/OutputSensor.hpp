@@ -122,6 +122,16 @@ class OutputSensor : public Sensor
 
     Output& getOutput() const { return m_output; }
 
+    template <class Container,
+              typename T = std::decay_t<decltype( *begin( std::declval<Container>() ) )>>
+    void fill(Container & ts) {
+        static_assert(std::is_same_v<T, Acquisition>);
+        for (const auto & t : ts) {
+            m_output.write(t.data(), t.size());
+        }
+
+    }
+
   private:
     Output& m_output;
     bool m_outputOwner = false;

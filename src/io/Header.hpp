@@ -32,7 +32,11 @@ class SRC_API Header
                m_dataSize == other.m_dataSize && m_userDefined == other.m_userDefined;
     }
     auto toString() const {
-        return std::to_string( m_headerSize ) + ":" + std::to_string( m_dataSize ) + ":" +
+        std::string str;
+        for (const auto & number : m_magicNumber) {
+            str += number;
+        }
+        return str + "\n" + std::to_string( m_headerSize ) + "\n" + std::to_string( m_dataSize ) + "\n" +
                hub::to_string( m_userDefined );
     }
     template <class Output>

@@ -10,6 +10,8 @@
 
 #include "InputOutput.hpp"
 
+#include "io/Header.hpp"
+
 namespace hub {
 namespace io {
 
@@ -19,6 +21,9 @@ class ArchiveT : public InputOutputT
   public:
     using InputOutputT::read;
     using InputOutputT::write;
+
+    ArchiveT() = default;
+    ArchiveT(const io::Header & header) : m_header{header} {};
 
     void read( hub::Data_t* data, hub::Size_t size ) override {
         assert( size > 0 );
@@ -66,6 +71,11 @@ class ArchiveT : public InputOutputT
 
     void setRetain( bool retained ) override {}
 
+    const Header& getHeader() const {
+        return
+     m_header;
+    }
+
 #ifdef DEBUG
     size_t getNCall() const { return m_nCall; }
 
@@ -78,6 +88,7 @@ class ArchiveT : public InputOutputT
     size_t m_nCall        = 0;
     size_t m_lastCallSize = 0;
 #endif
+    io::Header m_header;
 };
 
 using Archive = ArchiveT<>;

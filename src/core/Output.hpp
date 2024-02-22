@@ -8,6 +8,9 @@
 #include "OutputBase.hpp"
 #include "Serializer.hpp"
 
+// Todo getHeader() = 0
+//#include "io/Header.hpp"
+
 namespace hub {
 
 template <class SerializerT = Serializer>
@@ -17,6 +20,8 @@ class SRC_API OutputT : public OutputBase
     using OutputBase::write;
 
     virtual ~OutputT() = default;
+
+//    virtual const io::Header & getHeader() const = 0;
 
     template <class T>
     typename std::enable_if<packable_v<T>>::type write( const T& t ) {
