@@ -14,7 +14,7 @@ TEST_CASE("Sensor utils test")
 {
     TEST_BEGIN()
 
-    const std::string filename = FILE_NAME + ".hub";
+    const std::string filename = FILE_NAME + "." + HUB_EXTENSION;
     assert(FILE_NAME == "test-sensor-utils.cpp");
 
 
@@ -69,29 +69,29 @@ TEST_CASE("Sensor utils test")
     const std::string rootDir = "test-sensor-utils/";
     std::filesystem::create_directory(rootDir);
 
-//    hub::sensor::OutputSensorT<Resolution, hub::output::OutputFile> outputSensor(sensorSpec, rootDir + sensorSpec.getSensorName() + ".hub");
+//    hub::sensor::OutputSensorT<Resolution, hub::output::OutputFile> outputSensor(sensorSpec, rootDir + sensorSpec.getSensorName() + "." + HUB_EXTENSION);
 //    hub::sensor::OutputSensor outputSensor(sensorSpec, archive);
     {
-        hub::sensor::OutputSensor outputSensor(refSensorSpec, hub::output::OutputFile(hub::io::make_header(refSensorSpec), rootDir + refSensorSpec.getSensorName() + ".hub"));
+        hub::sensor::OutputSensor outputSensor(refSensorSpec, hub::output::OutputFile(hub::io::make_header(refSensorSpec), rootDir + refSensorSpec.getSensorName() + "." + HUB_EXTENSION));
         outputSensor.fill(refAcqs);
         assert(outputSensor.getSpec() == refSensorSpec);
 //        for (const auto & acq : refAcqs) {
 //            outputSensor << acq;
 //        }
     //    hub::sensor::OutputSensor outputSensor2(refSensorSpec2, archive2);
-        hub::sensor::OutputSensor outputSensor2(refSensorSpec2, hub::output::OutputFile(hub::io::make_header(refSensorSpec2), rootDir + refSensorSpec2.getSensorName() + ".hub"));
+        hub::sensor::OutputSensor outputSensor2(refSensorSpec2, hub::output::OutputFile(hub::io::make_header(refSensorSpec2), rootDir + refSensorSpec2.getSensorName() + "." + HUB_EXTENSION));
         outputSensor2.fill(refAcqs2);
         assert(outputSensor2.getSpec() == refSensorSpec2);
 //        for (const auto & acq : refAcqs2) {
 //            outputSensor2 << acq;
 //        }
-        hub::sensor::OutputSensor outputSensor3(refSensorSpec3, hub::output::OutputFile(hub::io::make_header(refSensorSpec3), rootDir + refSensorSpec3.getSensorName() + ".hub"));
+        hub::sensor::OutputSensor outputSensor3(refSensorSpec3, hub::output::OutputFile(hub::io::make_header(refSensorSpec3), rootDir + refSensorSpec3.getSensorName() + "." + HUB_EXTENSION));
         outputSensor3.fill(refAcqs3);
 
-        hub::sensor::OutputSensor outputSensor4(refSensorSpec4, hub::output::OutputFile(hub::io::make_header(refSensorSpec4), rootDir + refSensorSpec4.getSensorName() + ".hub"));
+        hub::sensor::OutputSensor outputSensor4(refSensorSpec4, hub::output::OutputFile(hub::io::make_header(refSensorSpec4), rootDir + refSensorSpec4.getSensorName() + "." + HUB_EXTENSION));
         outputSensor4.fill(refAcqs4);
 
-        hub::sensor::OutputSensor outputSensor5(refSensorSpec5, hub::output::OutputFile(hub::io::make_header(refSensorSpec5), rootDir + refSensorSpec5.getSensorName() + ".hub"));
+        hub::sensor::OutputSensor outputSensor5(refSensorSpec5, hub::output::OutputFile(hub::io::make_header(refSensorSpec5), rootDir + refSensorSpec5.getSensorName() + "." + HUB_EXTENSION));
         outputSensor5.fill(refAcqs5);
     }
 

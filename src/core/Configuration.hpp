@@ -11,9 +11,11 @@ namespace hub {
 #ifdef SRC_STATIC
 extern const int s_servicePort;
 extern const std::string s_serviceIpv4;
+extern const std::string s_extension;
 #else
 static const int s_servicePort         = 4042;
 static const std::string s_serviceIpv4 = "127.0.0.1";
+static const std::string s_extension = "hub";
 #endif
 
 } // namespace hub
@@ -24,4 +26,8 @@ static const std::string s_serviceIpv4 = "127.0.0.1";
 
 #ifndef HUB_SERVICE_IPV4
 #    define HUB_SERVICE_IPV4 hub::s_serviceIpv4
+#endif
+
+#ifndef HUB_EXTENSION
+#    define HUB_EXTENSION hub::s_extension
 #endif

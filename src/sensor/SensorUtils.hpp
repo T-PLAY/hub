@@ -66,7 +66,7 @@ namespace sensor {
                         hub::sensor::InputSensor inputSensor2(input2);
                         const auto& parentSensorName = inputSensor2.getSpec().getSensorName();
                         if (parentSensorName == parentName) {
-//                            std::cout << "parent name : " << parentName << std::endl;
+                            std::cout << inputSensor.getSpec().getSensorName() << " -> " << parentName << std::endl;
                             hub::sensor::InputSensor inputSyncSensor(input, input2);
                             specAcqs.push_back(inputSyncSensor.getSpec());
                             inputSyncSensor.fillAllAcquisitions(specAcqs.back().m_acqs);
@@ -101,6 +101,7 @@ namespace sensor {
                 //                hub::input::InputFile inputFile(filePath.string());
                 //                inputFiles.push_back(std::move(inputFile));
                 inputFiles.emplace_back(filePath.path().string());
+                std::cout << "input file : " << filePath.path().string() << std::endl;
             }
 
             return inputFiles;
@@ -111,6 +112,9 @@ namespace sensor {
             auto inputFiles = getInputFiles(dir);
 
             const auto syncDir = dir + "sync/";
+            if (std::filesystem::exists(syncDir)) {
+                std::filesystem::path(syncDir).remove_filename();
+            }
             std::filesystem::create_directory(syncDir);
 
             const auto & specAcqs = synchonizeInputs(inputFiles);
@@ -122,7 +126,7 @@ namespace sensor {
 //                for (const auto& acq : specAcq.m_acqs) {
 //                    std::cout << acq << std::endl;
 //                }
-                const std::string syncFile = syncDir + specAcq.m_sensorSpec.getSensorName() + ".hub";
+                const std::string syncFile = syncDir + specAcq.m_sensorSpec.getSensorName() + "." + HUB_EXTENSION;
                 hub::sensor::OutputSensor outputSensor(sensorSpec, hub::output::OutputFile(hub::io::make_header(sensorSpec), syncFile));
                 outputSensor.fill(acqs);
             }
@@ -150,8 +154,8 @@ namespace sensor {
             // const auto& parentSensorName = parentSensorSpec.getSensorName();
 
             //            std::filesystem::create_directories(outputPath);
-            // std::fstream recordFile( outputPath + sensorName + "_" + parentSensorName + ".txt",
-            //            const std::string recordFile = outputPath + sensorName + ".txt";
+            // std::fstream recordFile( outputPath + sensorName + "_" + parentSensorName + "." + HUB_EXTENSION,
+            //            const std::string recordFile = outputPath + sensorName + "." + HUB_EXTENSION;
             // std::ios::out | std::ios::binary | std::ios::trunc );
             // assert( recordFile.is_open() );
 

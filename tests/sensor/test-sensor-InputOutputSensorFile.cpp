@@ -11,7 +11,7 @@ TEST_CASE( "InputOutputSensorArchive test" ) {
     TEST_BEGIN()
 
     test::sensor::inputOutputSensorAsyncBench<hub::input::InputFile, hub::output::OutputFile>(
-        FILE_NAME + ".hub" );
+        FILE_NAME + "." + HUB_EXTENSION );
 
     TEST_END()
 }
