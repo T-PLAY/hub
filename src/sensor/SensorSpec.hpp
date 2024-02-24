@@ -120,7 +120,7 @@ class SRC_API SensorSpec
         return *this;
     }
 
-    std::string getSensorName() const { return m_sensorName; }
+    const std::string & getSensorName() const { return m_sensorName; }
     const Matrix& getResolution() const { return m_resolution; }
     const MetaData& getMetaData() const { return m_metaData; }
     MetaData& getMetaData() { return m_metaData; }

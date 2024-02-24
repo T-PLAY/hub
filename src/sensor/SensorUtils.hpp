@@ -24,32 +24,32 @@ namespace sensor {
             std::vector<hub::sensor::Acquisition> m_acqs;
         };
 
-        template <class... InputT>
-        std::vector<SpecAcqs> synchonizeInputs(InputT&... inputs)
-        {
-            std::vector<SpecAcqs> specAcqs;
+//         template <class... InputT>
+//         std::vector<SpecAcqs> synchonizeInputs(InputT&... inputs)
+//         {
+//             std::vector<SpecAcqs> specAcqs;
 
-            for (auto input : { inputs... }) {
-                hub::sensor::InputSensor inputSensor(input);
-                const auto& metaData = inputSensor.getSpec().getMetaData();
-                if (metaData.find("parent") != metaData.end()) {
-                    const auto* parentName = metaData.at("parent").get<const char*>();
+//             for (auto input : { inputs... }) {
+//                 hub::sensor::InputSensor inputSensor(input);
+//                 const auto& metaData = inputSensor.getSpec().getMetaData();
+//                 if (metaData.find("parent") != metaData.end()) {
+//                     const auto* parentName = metaData.at("parent").get<const char*>();
 
-                    for (auto input2 : { inputs... }) {
-                        hub::sensor::InputSensor inputSensor2(input2);
-                        const auto& parentSensorName = inputSensor2.getSpec().getSensorName();
-                        if (parentSensorName == parentName) {
-//                            std::cout << "parent name : " << parentName << std::endl;
-                            hub::sensor::InputSensor inputSyncSensor(input, input2);
-                            specAcqs.push_back(inputSyncSensor.getSpec());
-                            inputSyncSensor.fillAllAcquisitions(specAcqs.back().m_acqs);
-                        }
-                    }
-                }
-            }
+//                     for (auto input2 : { inputs... }) {
+//                         hub::sensor::InputSensor inputSensor2(input2);
+//                         const auto& parentSensorName = inputSensor2.getSpec().getSensorName();
+//                         if (parentSensorName == parentName) {
+// //                            std::cout << "parent name : " << parentName << std::endl;
+//                             hub::sensor::InputSensor inputSyncSensor(input, input2);
+//                             specAcqs.push_back(inputSyncSensor.getSpec());
+//                             inputSyncSensor.fillAllAcquisitions(specAcqs.back().m_acqs);
+//                         }
+//                     }
+//                 }
+//             }
 
-            return specAcqs;
-        }
+//             return specAcqs;
+//         }
 
         template <class Input>
         std::vector<SpecAcqs> synchonizeInputs(std::vector<Input>& inputs)
@@ -67,9 +67,13 @@ namespace sensor {
                         const auto& parentSensorName = inputSensor2.getSpec().getSensorName();
                         if (parentSensorName == parentName) {
                             std::cout << inputSensor.getSpec().getSensorName() << " -> " << parentName << std::endl;
-                            hub::sensor::InputSensor inputSyncSensor(input, input2);
+                            // hub::sensor::InputSensor inputSyncSensor(input, input2);
+                            hub::sensor::InputSensor inputSyncSensor(input2, input);
                             specAcqs.push_back(inputSyncSensor.getSpec());
-                            inputSyncSensor.fillAllAcquisitions(specAcqs.back().m_acqs);
+
+                            auto & specAcq = specAcqs.back();
+                            inputSyncSensor.fillAllAcquisitions(specAcq.m_acqs);
+                            specAcq.m_sensorSpec.getMetaData()["nAcq"] = (int)specAcq.m_acqs.size();
                         }
                     }
                 }
@@ -78,7 +82,7 @@ namespace sensor {
             return specAcqs;
         }
 
-        std::vector<hub::input::InputFile> getInputFiles(const std::string & dir) {
+        static std::vector<hub::input::InputFile> getInputFiles(const std::string & dir) {
             assert(std::filesystem::exists(dir));
             assert(std::filesystem::is_directory(dir));
             std::filesystem::path path(dir);
@@ -107,7 +111,7 @@ namespace sensor {
             return inputFiles;
         }
 
-        void synchronizePath(const std::string& dir)
+        static void synchronizePath(const std::string& dir)
         {
             auto inputFiles = getInputFiles(dir);
 

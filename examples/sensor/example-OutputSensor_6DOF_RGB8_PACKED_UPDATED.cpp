@@ -5,8 +5,8 @@
 
 int main() {
 
-    hub::sensor::outputSensor::OutputSensor_Dof6_RGB8_Packed_Updated outputSensor_Dof6_RGB8_Packed_Updated;
-    outputSensor_Dof6_RGB8_Packed_Updated.run();
+    // hub::sensor::outputSensor::OutputSensor_Dof6_RGB8_Packed_Updated outputSensor_Dof6_RGB8_Packed_Updated;
+    // outputSensor_Dof6_RGB8_Packed_Updated.run();
 
 
     return 0;

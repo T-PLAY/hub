@@ -10,7 +10,7 @@
 namespace hub {
 namespace native {
 
-sensor::SensorSpec* createSensorSpec(char* sensorName) {
+sensor::SensorSpec* createSensorSpec(const char* sensorName) {
     return new hub::sensor::SensorSpec( sensorName, {} );
 
 }

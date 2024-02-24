@@ -7,34 +7,53 @@ namespace hub {
 namespace sensor {
 namespace outputSensor {
 
-class OutputSensor_RGB8 : protected OutputSensor_Instance
+class OutputSensor_RGB8 : public OutputSensor_Instance
 {
   public:
     using OutputSensor_Instance::asyncRun;
+    using OutputSensor_Instance::OutputSensor_Instance;
     using OutputSensor_Instance::run;
     using OutputSensor_Instance::stop;
 
-    void routine() override {
-        hub::MetaData metaData;
-        metaData["parent"]   = "OutputSensor_Dof6.hpp";
-        constexpr int width  = 640;
-        constexpr int height = 480;
-        using Resolution     = hub::MatrixXD<hub::format::RGB8, 640, 480>;
-        const hub::sensor::SensorSpec sensorSpec( FILE_NAME, Resolution(), metaData );
+    static constexpr int width  = 1920;
+    static constexpr int height = 1080;
+    using Resolution            = hub::MatrixXD<hub::format::RGB8, width, height>;
+    // using Resolution            = hub::MatrixXD<hub::format::RGB8, 640, 480>;
 
-        hub::sensor::OutputSensorT<Resolution> outputSensor( sensorSpec, FILE_NAME );
-        auto acq                 = outputSensor.acqMsg();
+    void init() const override {
+        hub::MetaData metaData;
+        metaData["author"] = "gauthier";
+        metaData["parent"] = "OutputSensor_Dof6";
+        m_sensorSpec       = SensorSpec( FILE_NAME_WITHOUT_EXTENSION, Resolution(), metaData );
+        m_streamName       = FILE_NAME_WITHOUT_EXTENSION;
+        m_inited           = true;
+    }
+
+    void routine() override {
+    // constexpr int width  = 640;
+    // constexpr int height = 480;
+
+        // hub::sensor::OutputSensorT<Resolution> outputSensor( sensorSpec, FILE_NAME );
+        std::unique_ptr<OutputSensor> outputSensor;
+        if ( onNewAcq == nullptr ) {
+            outputSensor =
+                std::make_unique<OutputSensor>( m_sensorSpec, getName(), m_port, m_ipv4 );
+        }
+
+        // auto acq                 = outputSensor.acqMsg();
+        // auto acq = hub::sensor::make_acquisition(hub::make_matrix<Resolution>());
+        auto acq                 = hub::sensor::make_acquisition( Resolution().getMatrix() );
         auto& start              = acq.start();
         auto& end                = acq.end();
         auto* imgData            = acq.get<hub::format::RGB8*>();
         constexpr size_t imgSize = width * height;
 
-        constexpr auto maxFps = 10.0;
+        constexpr auto maxFps = 60.0;
 
         int dec          = 0;
         const auto third = width / 3;
 
-        while ( 1 ) {
+        while ( m_running ) {
             const auto startClock = std::chrono::high_resolution_clock::now();
 
             start = hub::sensor::getClock();
@@ -57,7 +76,9 @@ class OutputSensor_RGB8 : protected OutputSensor_Instance
             end = hub::sensor::getClock();
             ++dec;
 
-            outputSensor << acq;
+            // outputSensor << acq;
+            if ( onNewAcq ) { onNewAcq( m_streamName, acq ); }
+            else { *outputSensor << acq; }
 
             const auto endClock =
                 startClock + std::chrono::microseconds( (int)( 1'000'000 / maxFps ) );

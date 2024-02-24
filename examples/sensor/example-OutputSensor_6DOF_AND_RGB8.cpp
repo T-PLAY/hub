@@ -6,11 +6,11 @@
 
 int main() {
 
-    hub::sensor::outputSensor::OutputSensor_Dof6 outputSensor_Dof6;
-    outputSensor_Dof6.asyncRun();
+    // hub::sensor::outputSensor::OutputSensor_Dof6 outputSensor_Dof6;
+    // outputSensor_Dof6.asyncRun();
 
-    hub::sensor::outputSensor::OutputSensor_RGB8 outputSensor_RGB8;
-    outputSensor_RGB8.run();
+    // hub::sensor::outputSensor::OutputSensor_RGB8 outputSensor_RGB8;
+    // outputSensor_RGB8.run();
 
     return 0;
 }

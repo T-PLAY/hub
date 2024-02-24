@@ -28,7 +28,7 @@ extern "C"
 {
 #endif
 
-    SRC_API sensor::SensorSpec* createSensorSpec( char* sensorName );
+    SRC_API sensor::SensorSpec* createSensorSpec( const char* sensorName );
 
     SRC_API void freeSensorSpec( sensor::SensorSpec* sensorSpec );
 
