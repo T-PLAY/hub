@@ -150,7 +150,8 @@ static_assert( sizeof( Vec4 ) == 16 );
 
 struct Density {
     static constexpr auto id = Types::Format::DENSITY;
-    uint32_t value;
+    // uint32_t value;
+    float value;
     static constexpr auto name() { return "Density"; };
 };
 static_assert( sizeof( Density ) == 4 );

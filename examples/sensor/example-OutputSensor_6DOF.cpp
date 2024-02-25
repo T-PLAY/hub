@@ -1,7 +1,7 @@
 
 #include <thread>
 
-#include <sensor/outputSensor/OutputSensor_Dof6.hpp>
+#include <sensor/outputSensor/OutputSensor_1D_Dof6.hpp>
 
 int main(int argc, char* argv[]) {
     std::vector<std::string> args( argv + 1, argv + argc );
@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
     }
 
 
-    hub::sensor::outputSensor::OutputSensor_Dof6 outputSensorDof6(port, ipv4);
+    hub::sensor::outputSensor::OutputSensor_1D_Dof6 outputSensorDof6(port, ipv4);
     outputSensorDof6.run();
 
     return 0;

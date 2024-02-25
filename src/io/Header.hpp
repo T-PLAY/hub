@@ -13,6 +13,7 @@
 namespace hub {
 namespace io {
 
+// Todo move to core input/output ios class, all stream data need versioning to be aware of compatibility
 class SRC_API Header
 {
   public:

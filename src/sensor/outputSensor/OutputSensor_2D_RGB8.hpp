@@ -7,7 +7,7 @@ namespace hub {
 namespace sensor {
 namespace outputSensor {
 
-class OutputSensor_RGB8 : public OutputSensor_Instance
+class OutputSensor_2D_RGB8 : public OutputSensor_Instance
 {
   public:
     using OutputSensor_Instance::asyncRun;
@@ -15,15 +15,15 @@ class OutputSensor_RGB8 : public OutputSensor_Instance
     using OutputSensor_Instance::run;
     using OutputSensor_Instance::stop;
 
-    static constexpr int width  = 1920;
-    static constexpr int height = 1080;
+    static constexpr int width  = 640;
+    static constexpr int height = 480;
     using Resolution            = hub::MatrixXD<hub::format::RGB8, width, height>;
     // using Resolution            = hub::MatrixXD<hub::format::RGB8, 640, 480>;
 
     void init() const override {
         hub::MetaData metaData;
         metaData["author"] = "gauthier";
-        metaData["parent"] = "OutputSensor_Dof6";
+        metaData["parent"] = "OutputSensor_1D_Dof6";
         m_sensorSpec       = SensorSpec( FILE_NAME_WITHOUT_EXTENSION, Resolution(), metaData );
         m_streamName       = FILE_NAME_WITHOUT_EXTENSION;
         m_inited           = true;
@@ -48,7 +48,7 @@ class OutputSensor_RGB8 : public OutputSensor_Instance
         auto* imgData            = acq.get<hub::format::RGB8*>();
         constexpr size_t imgSize = width * height;
 
-        constexpr auto maxFps = 60.0;
+        constexpr auto maxFps = 120.0;
 
         int dec          = 0;
         const auto third = width / 3;

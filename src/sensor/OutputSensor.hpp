@@ -44,6 +44,7 @@ namespace sensor {
 ///// todo: template class
 //// template <typename Output, typename Measures, typename Acquisition = Acquisition<Measures>>
 
+// Todo clean all construction, template args ... are not user friendly
 class OutputSensor : public Sensor
 {
   public:

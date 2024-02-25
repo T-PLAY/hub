@@ -7,7 +7,7 @@ namespace hub {
 namespace sensor {
 namespace outputSensor {
 
-class OutputSensor_Dof6 : public OutputSensor_Instance
+class OutputSensor_1D_Dof6 : public OutputSensor_Instance
 {
   public:
     using OutputSensor_Instance::asyncRun;
