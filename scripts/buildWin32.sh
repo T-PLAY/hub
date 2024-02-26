@@ -13,8 +13,8 @@ installDir="install"
 rootDir="builds"
 mkdir -p $rootDir
 
-# for mode in "Debug" "Release"; do
-for mode in "Debug"; do
+for mode in "Debug" "Release"; do
+#for mode in "Debug"; do
 	for arch in "Win32"; do
 		buildDir="$rootDir/$arch-$mode"
 		mkdir -p $buildDir

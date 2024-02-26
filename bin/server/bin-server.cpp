@@ -12,7 +12,8 @@ int main( int argc, char* argv[] ) {
 
     std::vector<std::string> args( argv + 1, argv + argc );
 
-    const auto helperMessage = "bin-server usage: [--port <int>]";
+    const auto helperMsg = "bin-server usage: [--port <int>]\n"
+                           "info: [.|Esc] -> exit, [F5|' '] -> print stats, h -> print this helper message";
 
     auto it = args.begin();
     while ( it != args.end() ) {
@@ -20,7 +21,7 @@ int main( int argc, char* argv[] ) {
 
         if ( arg == "-h" || arg == "--help" ) {
 //            std::cout << argv[0] << " usage: [--port <int>]" << std::endl;
-            std::cout << helperMessage << std::endl;
+            std::cout << helperMsg << std::endl;
             return 0;
         }
         else if ( arg == "--port" ) {
@@ -35,7 +36,7 @@ int main( int argc, char* argv[] ) {
         else {
             std::cout << "unrecognized argument: " << arg << std::endl;
 //            std::cout << argv[0] << " usage: [--maxClient <int>]" << std::endl;
-            std::cout << helperMessage << std::endl;
+            std::cout << helperMsg << std::endl;
             return 0;
         }
         ++it;
@@ -47,9 +48,9 @@ int main( int argc, char* argv[] ) {
     else {
 
         server.asyncRun();
-        const auto helperMsg =
-            std::string( argv[0] ) +
-            " info: [.|Esc] -> exit, [F5|' '] -> print stats, h -> print this helper message";
+//        const auto helperMsg =
+//            std::string( argv[0] ) +
+//            " info: [.|Esc] -> exit, [F5|' '] -> print stats, h -> print this helper message";
         std::cout << helperMsg << std::endl;
         bool exit = false;
         while ( !exit && server.running() ) {         // ESC to quit
