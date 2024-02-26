@@ -14,6 +14,9 @@
 
 #include <winsock2.h>
 #pragma comment(lib, "ws2_32.lib")
+//#include <windows.h>
+//#include <WinUser.h>
+//#include <winapifamily.h>
 #endif
 
 namespace hub {
@@ -91,6 +94,7 @@ namespace utils {
 
     Key key_press()
     {
+#if WINAPI_FAMILY_PARTITION ( WINAPI_PARTITION_DESKTOP )
         if (!g_mainWindow) {
             g_mainWindow = GetForegroundWindow();
         }
@@ -120,7 +124,8 @@ namespace utils {
                     return key;
                 }
             }
-        }
+	}
+#endif
 
         return Key(0);
     }
