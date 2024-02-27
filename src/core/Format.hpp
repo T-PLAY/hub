@@ -240,14 +240,21 @@ struct Orientation // Euler
 // Pose data packed as floats array, containing translation vector (x, y, z), rotation quaternion
 struct Dof6 {
     static constexpr auto id = Types::Format::DOF6;
-    float x                  = 0.0;
-    float y                  = 0.0;
-    float z                  = 0.0;
-    float w0                 = 1.0; // w
-    float w1                 = 0.0; // x
-    float w2                 = 0.0; // y
-    float w3                 = 0.0; // z
+    float x                  ;
+    float y                  ;
+    float z                  ;
+    float w0                 ; // w
+    float w1                 ; // x
+    float w2                 ; // y
+    float w3                 ; // z
     static constexpr auto name() { return "Dof6"; };
+
+    constexpr Dof6(float _x = 0.0, float _y = 0.0, float _z = 0.0, float _w0 = 1.0, float _w1 = 0.0, float _w2 = 0.0, float _w3 = 0.0)
+        : x{_x}, y{_y}, z{_z}, w0{_w0}, w1{_w1}, w2{_w2}, w3{_w3}
+    {
+    }
+
+    Dof6( const float* array ) { memcpy( this, array, 28 ); }
 
     auto toString() const {
         return "x:" + std::to_string( x ) + " y:" + std::to_string( y ) +

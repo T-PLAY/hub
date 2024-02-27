@@ -6,6 +6,8 @@
 #include <core/Serializer.hpp>
 #include <core/io/Memory.hpp>
 
+#include <core/Macros.hpp>
+
 namespace hub {
 namespace client {
 
@@ -132,7 +134,7 @@ void ViewerServer2::threadRoutine() {
                     io::Header header;
                     m_sock.read( header );
 
-                    DEBUG_MSG( "[Viewer] new streamer '" << streamName << "'" );
+                    DEBUG_MSG( "[Viewer] new streamer '" << streamName << "', header size : " << PRETTY_BYTES(header.getSize())  );
 
                     addStream( streamName, streamIpv4, streamPort, std::move( header ) );
 
