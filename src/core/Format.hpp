@@ -49,7 +49,21 @@ struct Mat4 {
     float data[16];
     static constexpr auto name() { return "Mat4"; };
 
-    constexpr Mat4( float value = 0.0f ) :
+    // clang-format off
+    Mat4(
+        float a11 = 1.0, float a12 = 0.0, float a13 = 0.0, float a14 = 0.0,
+        float a21 = 0.0, float a22 = 1.0, float a23 = 0.0, float a24 = 0.0,
+        float a31 = 0.0, float a32 = 0.0, float a33 = 1.0, float a34 = 0.0,
+        float a41 = 0.0, float a42 = 0.0, float a43 = 0.0, float a44 = 1.0 )
+    {
+        data[0] = a11; 	data[1] = a12; 	data[2] = a13; 	data[3] = a14;
+        data[4] = a21; 	data[5] = a22; 	data[6] = a23; 	data[7] = a24;
+        data[8] = a31; 	data[9] = a32; 	data[10] = a33; data[11] = a34;
+        data[12] = a41; data[13] = a42; data[14] = a43; data[15] = a44;
+    }
+    // clang-format on
+
+    constexpr Mat4( float value ) :
         data { value,
                value,
                value,

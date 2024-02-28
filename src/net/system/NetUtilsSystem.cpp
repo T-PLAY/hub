@@ -45,7 +45,8 @@ class NetManager
         std::cout << "[net] all socket closed" << std::endl;
 #endif
         // Todo fix
-#ifndef WIN32
+//#ifndef WIN32
+#if defined( OS_LINUX ) || defined(OS_MACOS)
 		assert( m_sockets.empty() );
 #endif
     }

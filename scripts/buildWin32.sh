@@ -19,7 +19,7 @@ for mode in "Debug" "Release"; do
 		buildDir="$rootDir/$arch-$mode"
 		mkdir -p $buildDir
 		# cmake -B $buildDir . -A $arch -DHUB_BUILD_SHARED=OFF -DCMAKE_BUILD_TYPE=$mode -DCMAKE_INSTALL_PREFIX=$installDir
-		cmake -B $buildDir . -A $arch -DCMAKE_BUILD_TYPE=$mode -DCMAKE_INSTALL_PREFIX=$installDir
+		cmake -B $buildDir . -A $arch -DCMAKE_BUILD_TYPE=$mode -DCMAKE_INSTALL_PREFIX=$installDir -DHUB_BUILD_SHARED=OFF
 
 		cmake --build $buildDir --config $mode
 		cmake -B $buildDir --install --config $mode --parallel

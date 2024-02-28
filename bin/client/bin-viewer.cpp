@@ -16,12 +16,15 @@ int main( int argc, char* argv[] ) {
     int port                = HUB_SERVICE_PORT;
     std::string ipv4 = "127.0.0.1";
 
+    const auto helperMsg = "bin-viewer usage: [--port <int>] [--ipv4 <string>] [--exitWhenServerLost]\n"
+                           "info: [.|Esc] -> exit, [F5|' '] -> print stats, h -> print this helper message";
+
     auto it = args.begin();
     while ( it != args.end() ) {
         const auto& arg = *it;
 
         if ( arg == "-h" || arg == "--help" ) {
-            std::cout << argv[0] << " usage: [--port <int>] [--ipv4 <string>] [--exitWhenServerLost]" << std::endl;
+            std::cout << argv[0] << helperMsg << std::endl;
             return 0;
         }
         else if ( arg == "--exitWhenServerLost" ) { exitWhenServerLost = true; }
@@ -150,9 +153,6 @@ int main( int argc, char* argv[] ) {
         }
     }
     else {
-        const auto helperMsg =
-            std::string( argv[0] ) +
-            " info: [.|Esc] -> exit, [F5|' '] -> print stats, h -> print this helper message";
         std::cout << helperMsg << std::endl;
         bool exit = false;
         while ( !exit ) {                             // ESC to quit
