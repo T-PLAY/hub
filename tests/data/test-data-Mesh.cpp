@@ -12,6 +12,7 @@ TEST_CASE( "Mesh test" ) {
     const std::string meshPath = HUB_PROJECT_DIR "data/assets/";
     // hub::data::Mesh quadMesh()
     assert(std::filesystem::exists(meshPath));
+    assert(std::filesystem::exists(meshPath + "quad.gltf"));
 
     const hub::data::Mesh quadMesh(meshPath + "quad");
     const auto quadShapes = quadMesh.getShapes();
