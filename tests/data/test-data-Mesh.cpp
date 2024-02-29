@@ -15,6 +15,7 @@ TEST_CASE( "Mesh test" ) {
     assert(std::filesystem::exists(meshPath + "quad.gltf"));
 
     const hub::data::Mesh quadMesh(meshPath + "quad");
+//    const hub::data::Mesh quadMesh(meshPath + "sensor");
     const auto quadShapes = quadMesh.getShapes();
     assert(quadShapes.size() == 1);
     const auto quadShape = quadShapes.at(0);
