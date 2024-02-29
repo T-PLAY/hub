@@ -9,7 +9,7 @@
 
 TEST_CASE( "Mesh test" ) {
 
-    const std::string meshPath = HUB_PROJECT_DIR "assets/";
+    const std::string meshPath = HUB_PROJECT_DIR "data/assets/";
     // hub::data::Mesh quadMesh()
     assert(std::filesystem::exists(meshPath));
 

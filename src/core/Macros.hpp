@@ -192,6 +192,7 @@ namespace hub {
 #    define CONSTEXPR const
 #endif
 
+// #define HUB_DEBUG_INPUT_OUTPUT
 #ifdef HUB_DEBUG_INPUT_OUTPUT
 #    define HUB_DEBUG_INPUT
 #    define HUB_DEBUG_OUTPUT

@@ -56,6 +56,7 @@ namespace sensor {
         {
             std::vector<SpecAcqs> specAcqs;
 
+            // Todo minimize inputSensor instance due of sensorSpec weight (Mesh inside ~ 1Go)
             for (auto& input : inputs) {
                 hub::sensor::InputSensor inputSensor(input);
                 const auto& metaData = inputSensor.getSpec().getMetaData();

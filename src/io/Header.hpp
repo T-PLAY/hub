@@ -17,7 +17,8 @@ namespace io {
 class SRC_API Header
 {
   public:
-    using MagicNumber = std::array<char, 128>;
+    // using MagicNumber = std::array<char, 128>;
+    using MagicNumber = std::array<char, 16>;
 
     auto getSize() const {
         return sizeof( m_headerSize ) + sizeof( m_dataSize ) + 4 + m_userDefined.size();
@@ -37,7 +38,7 @@ class SRC_API Header
         for (const auto & number : m_magicNumber) {
             str += number;
         }
-        return str + "\n" + std::to_string( m_headerSize ) + "\n" + std::to_string( m_dataSize ) + "\n" +
+        return str + "header size: " + std::to_string( m_headerSize ) + "\ndata size: " + std::to_string( m_dataSize ) + "\nuser defined: " +
                hub::to_string( m_userDefined );
     }
     template <class Output>
@@ -74,11 +75,16 @@ class SRC_API Header
 template <class T>
 Header make_header( const T& t ) {
 
+    // std::cout << "[Header] make_header() making header ..." << std::endl;
+
     Memory memory;
     memory.write( t );
 
+    // std::cout << "[Header] make_header() memory : " << memory.getData() << std::endl;
+
     Header header( t.dataSize(), memory.getData() );
 
+    // std::cout << "[Header] make_header() done" << std::endl;
     return header;
 }
 

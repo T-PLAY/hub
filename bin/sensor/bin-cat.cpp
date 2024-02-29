@@ -31,18 +31,17 @@ int main( int argc, char* argv[] ) {
 
     filePath = argv[1];
 
-    std::cout << "filePath = '" << filePath << "'" << std::endl;
+    std::cout << "filePath: '" << filePath << "'" << std::endl;
     assert(std::filesystem::exists(filePath));
 
     hub::input::InputFile inputFile{filePath};
-    std::cout << "header : " << inputFile.getHeader() << std::endl;
+    std::cout << "header: " << inputFile.getHeader() << std::endl;
     hub::sensor::InputSensor inputSensor(inputFile);
-//    std::cout << "header : " << inputSensor.getInput().
-    std::cout << "sensorSpec : " << inputSensor.getSpec() << std::endl;
+    std::cout << "sensorSpec: " << inputSensor.getSpec() << std::endl;
     auto acqs = inputSensor.getAllAcquisitions();
     int iAcq = 0;
     for (const auto & acq : acqs) {
-        std::cout << iAcq << " : " << acq << std::endl;
+        std::cout << iAcq << ": " << acq << std::endl;
         ++iAcq;
     }
 

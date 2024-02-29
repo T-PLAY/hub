@@ -25,7 +25,7 @@ bool metaData_getString( const MetaData* metaData,
 bool metaData_getMat4( const MetaData* metaData, const char* metaName, float* output ) {
     if ( metaData->find( metaName ) != metaData->end() ) {
         const auto& mat4 = metaData->at( metaName ).get<format::Mat4>();
-        memcpy( output, mat4.data, 64 );
+        memcpy( output, mat4.data(), 64 );
         return true;
     }
     return false;

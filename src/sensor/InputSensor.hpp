@@ -52,11 +52,11 @@ namespace sensor {
             const auto start = std::chrono::high_resolution_clock::now();
             memory.read(sensorSpec);
             const auto end = std::chrono::high_resolution_clock::now();
-            const auto period = std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
+            const auto period = std::chrono::duration_cast<std::chrono::microseconds>(end - start)
                                     .count();
             const auto nBytes = header.getSize();
-            const auto bytesPerSecond = 1'000'000.0 * nBytes / period;
-            std::cout << "[InputSensor] unpacked sensor spec speedup : " << PRETTY_BYTES(bytesPerSecond) << "/s (" << PRETTY_BYTES(nBytes) << ")" << std::endl;
+            const auto bytesPerSecond = (1'000'000.0 * nBytes) / period;
+            std::cout << "\033[35m[InputSensor] unpacked sensor spec speedup : " << period / 1000.0 << " ms, " << PRETTY_BYTES(bytesPerSecond) << "/s (" << PRETTY_BYTES(nBytes) << ") " << sensorSpec << "\033[0m" << std::endl;
             m_spec += sensorSpec;
             m_specs.push_back(std::move(sensorSpec));
 
@@ -73,6 +73,9 @@ namespace sensor {
             : Sensor(SensorSpec {})
             , m_inputs({ &input })
         {
+            static_assert(! std::is_same_v<InputSensor, InputT>);
+            static_assert(std::is_base_of_v<Input, std::remove_cvref_t<InputT>>);
+            // std::cout << "[InputSensor] InputSensor(InputT&)" << std::endl;
             initSensorSpec(input);
         }
 
@@ -81,6 +84,8 @@ namespace sensor {
             : Sensor(SensorSpec {})
             , m_inputs({ &input, &input2 })
         {
+            static_assert(std::is_base_of_v<Input, std::remove_cvref_t<InputT>>);
+            // std::cout << "[InputSensor] InputSensor(InputT&, InputT&)" << std::endl;
             initSensorSpec(input, input2);
         }
 
@@ -92,6 +97,7 @@ namespace sensor {
         InputSensor(InputT&& input)
             : Sensor(SensorSpec {})
         {
+            // std::cout << "[InputSensor] InputSensor(InputT&&)" << std::endl;
             static_assert(std::is_base_of_v<Input, std::remove_cvref_t<InputT>>);
             initSensorSpec(input);
             m_inputs.push_back(new std::remove_cvref_t<InputT>(std::move(input)));
@@ -105,6 +111,7 @@ namespace sensor {
         InputSensor(InputT&& input, InputT&& input2)
             : Sensor(SensorSpec {})
         {
+            // std::cout << "[InputSensor] InputSensor(InputT&&, InputT&&)" << std::endl;
             static_assert(std::is_base_of_v<Input, std::remove_cvref_t<InputT>>);
             initSensorSpec(input, input2);
             m_inputs.push_back(new std::remove_cvref_t<InputT>(std::move(input)));

@@ -192,7 +192,7 @@ to_string( const Container& container ) {
     str += "<" + TYPE_NAME( T() ) + ">";
     str += "[";
 
-    constexpr auto nFirstData = 20;
+    constexpr auto nFirstData = 30;
     constexpr auto nLastData  = 8;
     auto it                   = container.begin();
     size_t i                  = 0;

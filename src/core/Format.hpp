@@ -46,46 +46,49 @@ struct Mat4 {
     static constexpr auto id = Types::Format::MAT4;
     static struct {
     } packable;
-    float data[16];
+    // float data[16];
+    std::array<float, 16> m_array;
     static constexpr auto name() { return "Mat4"; };
 
     // clang-format off
-    Mat4(
+    constexpr Mat4(
         float a11 = 1.0, float a12 = 0.0, float a13 = 0.0, float a14 = 0.0,
         float a21 = 0.0, float a22 = 1.0, float a23 = 0.0, float a24 = 0.0,
         float a31 = 0.0, float a32 = 0.0, float a33 = 1.0, float a34 = 0.0,
         float a41 = 0.0, float a42 = 0.0, float a43 = 0.0, float a44 = 1.0 )
+        : m_array{
+                a11, a12, a13, a14,
+                a21, a22, a23, a24,
+                a31, a32, a33, a34,
+                a41, a42, a43, a44
+              }
     {
-        data[0] = a11; 	data[1] = a12; 	data[2] = a13; 	data[3] = a14;
-        data[4] = a21; 	data[5] = a22; 	data[6] = a23; 	data[7] = a24;
-        data[8] = a31; 	data[9] = a32; 	data[10] = a33; data[11] = a34;
-        data[12] = a41; data[13] = a42; data[14] = a43; data[15] = a44;
     }
     // clang-format on
 
-    constexpr Mat4( float value ) :
-        data { value,
-               value,
-               value,
-               value,
-               value,
-               value,
-               value,
-               value,
-               value,
-               value,
-               value,
-               value,
-               value,
-               value,
-               value,
-               value } {}
+    // constexpr Mat4( float value ) :
+    //     m_array { value,
+    //            value,
+    //            value,
+    //            value,
+    //            value,
+    //            value,
+    //            value,
+    //            value,
+    //            value,
+    //            value,
+    //            value,
+    //            value,
+    //            value,
+    //            value,
+    //            value,
+    //            value } {}
 
-    Mat4( const float* array ) { memcpy( data, array, 64 ); }
+    Mat4( const float* array ) { memcpy( m_array.data(), array, 64 ); }
 
     auto toString() const {
         float dataTmp[16];
-        memcpy( dataTmp, data, 64 );
+        memcpy( dataTmp, m_array.data(), 64 );
 
         std::string str = "[";
         for ( int i = 0; i < 4; ++i ) {
@@ -108,11 +111,18 @@ struct Mat4 {
         (void)dataTmp;
         return str + "]";
     }
-    bool operator==( const Mat4& other ) const { return !memcmp( data, other.data, 64 ); }
+    bool operator==( const Mat4& other ) const {
+        return m_array == other.m_array;
+        // return !memcmp( data, other.data, 64 );
+    }
+    const float * data() const {
+        return m_array.data();
+    }
 #if CPP_VERSION <= 17
     template <typename Archive, typename Self>
     static void serialize( Archive& archive, Self& self ) {
-        archive( self.data );
+        // archive( self.data );
+        archive(self.m_array);
     }
 #endif
 };
@@ -254,19 +264,23 @@ struct Orientation // Euler
 // Pose data packed as floats array, containing translation vector (x, y, z), rotation quaternion
 struct Dof6 {
     static constexpr auto id = Types::Format::DOF6;
-    float x                  ;
-    float y                  ;
-    float z                  ;
-    float w0                 ; // w
-    float w1                 ; // x
-    float w2                 ; // y
-    float w3                 ; // z
+    float x;
+    float y;
+    float z;
+    float w0; // w
+    float w1; // x
+    float w2; // y
+    float w3; // z
     static constexpr auto name() { return "Dof6"; };
 
-    constexpr Dof6(float _x = 0.0, float _y = 0.0, float _z = 0.0, float _w0 = 1.0, float _w1 = 0.0, float _w2 = 0.0, float _w3 = 0.0)
-        : x{_x}, y{_y}, z{_z}, w0{_w0}, w1{_w1}, w2{_w2}, w3{_w3}
-    {
-    }
+    constexpr Dof6( float _x  = 0.0,
+                    float _y  = 0.0,
+                    float _z  = 0.0,
+                    float _w0 = 1.0,
+                    float _w1 = 0.0,
+                    float _w2 = 0.0,
+                    float _w3 = 0.0 ) :
+        x { _x }, y { _y }, z { _z }, w0 { _w0 }, w1 { _w1 }, w2 { _w2 }, w3 { _w3 } {}
 
     Dof6( const float* array ) { memcpy( this, array, 28 ); }
 

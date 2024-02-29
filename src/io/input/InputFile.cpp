@@ -4,7 +4,8 @@ namespace hub {
 namespace input {
 
 InputFile::InputFile( const std::string& filePath ) :
-    File( filePath ), m_file( filePath, std::ios::in | std::ios::binary ) {
+    File( filePath ),
+    m_file( filePath, std::ios::in | std::ios::binary ) {
     assert( m_file.is_open() );
     read( m_header );
 }

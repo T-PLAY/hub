@@ -179,3 +179,11 @@ add_custom_target(
     USES_TERMINAL
     COMMENT "Running tests")
 custom_target_added(tests)
+
+
+# if (UNIX)
+add_custom_command(
+    TARGET test-common
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy "${HUB_PROJECT_DIR}/scripts/showDurationTest.sh" ${CMAKE_CURRENT_BINARY_DIR})
+# endif()

@@ -155,7 +155,7 @@ requires( sizeof...( Types ) > 1 )
         return matrix;
     }
 
-    bool operator==( const Matrix& matrix ) { return getMatrix() == matrix; }
+    bool operator==( const Matrix& matrix ) const { return getMatrix() == matrix; }
 
  // private:
     template <class Type_, class... Types_>

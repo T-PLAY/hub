@@ -100,23 +100,24 @@ class SRC_API SerializerT
     template <class... Ts>
     static constexpr auto Serializables = ( Serializable<Ts>() && ... );
 
-    static constexpr Size_t BuffSize = 2'000'000; // 2 Mo
+    // static constexpr Size_t BuffSize = 2'000'000; // 2 Mo
+    static constexpr Size_t BuffSize = 20'000'000; // 20 Mo
 
     SerializerT() :
         m_serialBuff( BuffSize ),
-        m_packData( m_serialBuff.data() ),
+        // m_packData( m_serialBuff.data() ),
         m_dataWrote( 0 ),
         m_dataReaded( 0 ),
         m_serializer( m_serialBuff ) {}
     SerializerT( const SerializerT& ) :
         m_serialBuff( BuffSize ),
-        m_packData( m_serialBuff.data() ),
+        // m_packData( m_serialBuff.data() ),
         m_dataWrote( 0 ),
         m_dataReaded( 0 ),
         m_serializer( m_serialBuff ) {}
     SerializerT( SerializerT&& ) :
         m_serialBuff( BuffSize ),
-        m_packData( m_serialBuff.data() ),
+        // m_packData( m_serialBuff.data() ),
         m_dataWrote( 0 ),
         m_dataReaded( 0 ),
         m_serializer( m_serialBuff ) {}
@@ -124,9 +125,11 @@ class SRC_API SerializerT
     using ByteView = std::vector<Data_t>;
     ByteView m_serialBuff;
 
-    Data_t* const m_packData;
+    // Data_t* const m_packData;
     Size_t m_dataWrote;
+    Size_t m_nWrote;
     Size_t m_dataReaded;
+    Size_t m_nReaded;
     Serializer m_serializer;
 
   public:
@@ -135,16 +138,22 @@ class SRC_API SerializerT
         assert( &m_serializer.getBuff() == &m_serialBuff );
         m_serializer.resetOut();
         m_dataWrote = 0;
+        m_nWrote = 0;
         assert( m_serializer.outPosition() == 0 );
         writeAll( ts... );
 
         Size_t m_packSize = m_serializer.outPosition();
         assert( m_packSize == m_dataWrote );
+        // assert(m_serialBuff.size() == m_packSize);
+        // std::cout << "[SerializerT] packing size : " << m_packSize << ", nWrote : " << m_nWrote << std::endl;
         assert( 0 < m_packSize && m_packSize < BuffSize );
         output.write( reinterpret_cast<const Data_t*>( &m_packSize ), sizeof( Size_t ) );
-        output.write( m_packData, m_packSize );
+        assert(m_serialBuff.size() == m_packSize);
+        // output.write( m_packData, m_packSize );
+        output.write( m_serialBuff.data(), m_serialBuff.size() );
 #ifdef HUB_DEBUG_OUTPUT
-        std::vector<Data_t> data( m_packData, m_packData + m_packSize );
+        // std::vector<Data_t> data( m_packData, m_packData + m_packSize );
+        std::vector<Data_t> data( m_serialBuff.data(), m_serialBuff.data() + m_packSize );
         DEBUG_MSG( "<---" << HEADER << "packing serial data : " << data )
 #endif
     }
@@ -155,20 +164,27 @@ class SRC_API SerializerT
         assert( !input.isEnd() );
         Size_t m_packSize;
         input.read( reinterpret_cast<Data_t*>( &m_packSize ), sizeof( Size_t ) );
+        // std::cout << "[SerializerT] unpacking size : " << m_packSize << std::endl;
         assert( 0 < m_packSize && m_packSize < BuffSize );
 #ifndef HUB_USE_ZPP_BITS
         m_serialBuff.resize( m_packSize );
 #endif
-        input.read( m_packData, m_packSize );
+        // input.read( m_packData, m_packSize );
+        assert(m_serialBuff.size() == m_packSize);
+        input.read( m_serialBuff.data(), m_serialBuff.size() );
 #ifdef HUB_DEBUG_INPUT
-        std::vector<Data_t> data( m_packData, m_packData + m_packSize );
+        // std::vector<Data_t> data( m_packData, m_packData + m_packSize );
+        std::vector<Data_t> data( m_serialBuff.data(), m_serialBuff.data() + m_packSize );
         DEBUG_MSG( "\t--->" << HEADER << "unpacking serial data : " << data );
 #endif
 
         m_serializer.resetIn();
         m_dataReaded = 0;
+        m_nReaded = 0;
         assert( m_serializer.inPosition() == 0 );
         readAll( ts... );
+
+        // std::cout << "[SerializerT] unpacking size : " << m_dataReaded << ", nRead : " << m_nReaded << std::endl;
 
         assert( m_dataReaded == m_serializer.inPosition() );
         assert( m_packSize == m_dataReaded );
@@ -263,6 +279,7 @@ class SRC_API SerializerT
 
         const auto newPosition = m_serializer.outPosition();
         m_dataWrote += newPosition - lastPosition;
+        ++m_nWrote;
 
 #ifdef HUB_DEBUG_OUTPUT
         const std::vector<Data_t> data( m_serialBuff.data() + lastPosition,
@@ -325,6 +342,7 @@ class SRC_API SerializerT
 
         const auto newPosition = m_serializer.inPosition();
         m_dataReaded += newPosition - lastPosition;
+        ++m_nReaded;
 
 #ifdef HUB_DEBUG_INPUT
         const std::vector<Data_t> data( serialCopy.data(),

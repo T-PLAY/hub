@@ -25,6 +25,8 @@ class SRC_API File
   public:
     const Header& getHeader() const;
 
+    const std::string & getFilePath() const;
+
   protected:
     ///
     /// \brief File

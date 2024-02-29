@@ -49,17 +49,19 @@ Header::Header( Size_t dataSize, const Datas_t& userDefined ) :
                   .c_str() );
 #    else
     sprintf( m_magicNumber.data(),
-             "%c%c%c %d.%d.%d * %s",
+             // "%c%c%c %d.%d.%d * %s",
+             "%c%c%c %d.%d.%d",
              'H',
              'U',
              'B',
              s_versionMajor,
              s_versionMinor,
-             s_versionPatch,
-             std::string( "Copyright " + std::to_string( s_contributionStart ) + "-" +
-                          std::to_string( s_contributionEnd ) +
-                          "* author : gauthierbouyjou@aol.com" )
-                 .c_str() );
+             s_versionPatch
+             // std::string( "Copyright " + std::to_string( s_contributionStart ) + "-" +
+                          // std::to_string( s_contributionEnd ) +
+                          // "* author : gauthierbouyjou@aol.com" )
+                 // .c_str()
+             );
 #    endif
 #endif
 

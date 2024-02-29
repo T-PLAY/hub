@@ -105,11 +105,15 @@ TEST_CASE("Sensor utils test")
 //    std::vector<hub::sensor::InputSensor*> inputSensors{&inputSensor, &inputSensor2};
 
     hub::sensor::utils::synchronizePath(rootDir);
+    std::cout << "[test-sensor-utils] synchronization done" << std::endl;
+    std::cout << "------------------------------------------------------------------------" << std::endl;
 
     const auto syncDir = rootDir + "sync/";
 
     auto inputFiles = hub::sensor::utils::getInputFiles(syncDir);
     for (auto & inputFile : inputFiles) {
+        std::cout << "input file : " << inputFile.getFilePath() << std::endl;
+
         hub::sensor::InputSensor inputSensor{inputFile};
         const auto & sensorSpec = inputSensor.getSpec();
         if (sensorSpec == refSensorSpec + refSensorSpec2) {

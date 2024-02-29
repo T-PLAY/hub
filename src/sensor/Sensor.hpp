@@ -26,8 +26,10 @@ class SRC_API Sensor
     ///
     Sensor() = default;
     explicit Sensor( const SensorSpec& sensorSpec ) : m_spec { sensorSpec } {}
-    Sensor( const Sensor& sensor ) = delete;
-    Sensor& operator=( const Sensor& sensor ) = delete;
+    Sensor( const Sensor& )            = delete;
+    Sensor( Sensor& )                  = delete;
+    Sensor& operator=( const Sensor& ) = delete;
+    Sensor& operator=( Sensor& )       = delete;
 
     Acquisition acqMsg() const { return make_acquisition( m_spec.getResolution() ); }
 

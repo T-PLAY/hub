@@ -27,18 +27,37 @@ class MemoryT : public InputOutputT
     }
 
     MemoryT() = default;
+    // MemoryT() {
+        // m_data.reserve(20'000'000);
+    // }
 
     void read( hub::Data_t* data, hub::Size_t size ) override {
         assert( size > 0 );
         assert( !m_data.empty() );
 
+        // std::cout << "[Memory] data " << m_data << std::endl;
+
         std::copy( m_data.begin(), std::next( m_data.begin(), size ), data );
         m_data.erase( m_data.begin(), std::next( m_data.begin(), size ) );
+
+        std::vector<Data_t> vector( data, data + size );
+        // std::cout << "[Memory] read " << vector << std::endl;
+
+        // std::cout << "[Memory] data " << m_data << std::endl;
     }
 
     void write( const hub::Data_t* data, hub::Size_t size ) override {
+        std::vector<Data_t> vector( data, data + size );
+        // std::cout << "[Memory] data " << m_data << std::endl;
+        // std::cout << "[Memory] write " << vector << std::endl;
+
         assert( size > 0 );
-        m_data.insert( m_data.end(), data, data + size );
+        const auto prevSize = m_data.size();
+        m_data.resize(prevSize + size);
+        // m_data.insert( m_data.end(), data, data + size );
+        std::copy(data, data + size, std::next(m_data.begin(), prevSize));
+
+        // std::cout << "[Memory] data " << m_data << std::endl;
     }
 
     void close() override {};
@@ -51,13 +70,18 @@ class MemoryT : public InputOutputT
 
     void setRetain( bool retained ) override {}
 
-    Datas_t getData() const {
-        Datas_t datas( m_data.begin(), m_data.end() );
-        return datas;
+    const Datas_t & getData() const {
+        return m_data;
+        // Datas_t datas( m_data.begin(), m_data.end() );
+        // return datas;
     }
 
+
+
   private:
-    std::list<hub::Data_t> m_data;
+    // std::list<hub::Data_t> m_data;
+    // std::vector<hub::Data_t> m_data;
+    Datas_t m_data;
 };
 
 using Memory = MemoryT<>;
