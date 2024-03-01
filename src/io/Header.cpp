@@ -14,9 +14,7 @@ Header::Header( Size_t dataSize, const Datas_t& userDefined ) :
     m_dataSize( dataSize ), m_userDefined( userDefined ) {
     m_headerSize = getSize();
 
-    const auto joker = ' ';
-    std::fill( m_magicNumber.begin(), m_magicNumber.end(), joker );
-    m_magicNumber.back() = '\n';
+//    const auto joker = ' ';
 
 #ifdef WIN32
     sprintf_s( m_magicNumber.data(),
@@ -69,8 +67,14 @@ Header::Header( Size_t dataSize, const Datas_t& userDefined ) :
 #    endif
 #endif
 
-    assert( strlen( m_magicNumber.data() ) < sizeof( m_magicNumber ) );
-    m_magicNumber[strlen( m_magicNumber.data() )] = joker;
+    const auto joker = '_';
+    const auto strLen = strlen(m_magicNumber.data());
+    assert( strLen < sizeof( m_magicNumber ) );
+//    std::fill( m_magicNumber.begin(), m_magicNumber.end(), joker );
+    std::fill( m_magicNumber.begin() + strLen, m_magicNumber.end(), joker );
+    m_magicNumber.back() = '\n';
+
+//    m_magicNumber[strlen( m_magicNumber.data() )] = joker;
 }
 
 void Header::checkMagicNumber() const {

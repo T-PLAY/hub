@@ -106,7 +106,7 @@ namespace sensor {
                 //                hub::input::InputFile inputFile(filePath.string());
                 //                inputFiles.push_back(std::move(inputFile));
                 inputFiles.emplace_back(filePath.path().string());
-                std::cout << "input file : " << filePath.path().string() << std::endl;
+//                std::cout << "input file : " << filePath.path().string() << std::endl;
             }
 
             return inputFiles;

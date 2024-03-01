@@ -41,32 +41,16 @@ TEST_CASE("Sensor utils test")
     const hub::sensor::SensorSpec refSensorSpec5(
         "sensorName5", Resolution5());
 
-//    hub::io::Archive archive(hub::io::make_header(refSensorSpec));
-//    hub::io::Archive archive2(hub::io::make_header(refSensorSpec2));
-
     const auto refAcqs = test::sensor::generateRefAcqs(5, 10, refSensorSpec);
-//    std::cout << "refAcqs" << std::endl;
-//    for (const auto & refAcq : refAcqs) {
-//        std::cout << refAcq << std::endl;
-//    }
-
     const auto refAcqs2 = test::sensor::generateRefAcqs(0, 20, refSensorSpec2);
-//    std::cout << "refAcqs2" << std::endl;
-//    for (const auto & refAcq2 : refAcqs2) {
-//        std::cout << refAcq2 << std::endl;
-//    }
-
     const auto refSyncAcqs = test::sensor::computeSyncAcqs(refAcqs, refAcqs2);
-//    std::cout << "refSyncAcqs" << std::endl;
-//    for (const auto & refSyncAcq : refSyncAcqs) {
-//        std::cout << refSyncAcq << std::endl;
-//    }
     const auto refAcqs3 = test::sensor::generateRefAcqs(0, 5, refSensorSpec3);
     const auto refAcqs4 = test::sensor::generateRefAcqs(0, 10, refSensorSpec4);
     const auto refSyncAcqs2 = test::sensor::computeSyncAcqs(refAcqs4, refAcqs3);
     const auto refAcqs5 = test::sensor::generateRefAcqs(5, 5, refSensorSpec5);
 
     const std::string rootDir = "test-sensor-utils/";
+    std::filesystem::remove_all(rootDir);
     std::filesystem::create_directory(rootDir);
 
 //    hub::sensor::OutputSensorT<Resolution, hub::output::OutputFile> outputSensor(sensorSpec, rootDir + sensorSpec.getSensorName() + "." + HUB_EXTENSION);
@@ -116,6 +100,7 @@ TEST_CASE("Sensor utils test")
 
         hub::sensor::InputSensor inputSensor{inputFile};
         const auto & sensorSpec = inputSensor.getSpec();
+        std::cout << sensorSpec << std::endl;
         if (sensorSpec == refSensorSpec + refSensorSpec2) {
             const auto & syncAcqs = inputSensor.getAllAcquisitions();
             CHECK(refSyncAcqs == syncAcqs);
