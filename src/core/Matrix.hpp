@@ -292,7 +292,7 @@ inline bool Matrix::operator!=( const Matrix& other ) const {
 
 inline void Matrix::push_back( const Node& node ) {
     m_nodes.push_back( node );
-    m_size += node.size();
+    m_size += node.getSize();
 }
 
 inline bool Matrix::hasValue() const {

@@ -39,6 +39,23 @@ static constexpr auto Count = Format_Count;
 
 namespace format {
 
+static inline int nChannel(Types::Format format) {
+    switch (format) {
+    case Types::Y8:
+        return 1;
+    case Types::Y16:
+    case Types::Z16:
+        return 2;
+    case Types::RGB8:
+    case Types::BGR8:
+        return 3;
+    case Types::RGBA8:
+        return 4;
+    default:
+        return 1;
+    }
+}
+
 /////////////////////////////////////// 1D ////////////////////////////////////////
 
 // Transform matrix 4x4 of float.

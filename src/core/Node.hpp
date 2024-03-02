@@ -26,7 +26,7 @@ class Node
 
     std::string toString( bool pretty ) const;
 
-    Size_t size() const;
+    // Size_t size() const;
 
     bool operator==( const Node& other ) const;
 
@@ -114,9 +114,9 @@ inline std::string Node::toString( bool pretty ) const {
     return str;
 }
 
-inline Size_t Node::size() const {
-    return m_size;
-}
+// inline Size_t Node::size() const {
+//     return m_size;
+// }
 
 inline bool Node::operator==( const Node& other ) const {
     return m_dims == other.m_dims && m_typeName == other.m_typeName && m_size == other.m_size;

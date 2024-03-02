@@ -61,16 +61,16 @@ class OutputSensor_2D_RGB8 : public OutputSensor_Instance
                 for ( int j = 0; j < width; ++j ) {
                     const auto idx = i * width + j;
                     assert( idx < imgSize );
-                    imgData[idx].r = ( i + j + dec ) % 128;
-                    imgData[idx].g = ( i + j + dec ) % 128;
-                    imgData[idx].b = ( i + j + dec ) % 128;
-                    if ( j < third ) { imgData[idx].r += 128; }
-                    else if ( j < 2 * third ) {
-                        imgData[idx].r += 128;
-                        imgData[idx].g += 128;
-                        imgData[idx].b += 128;
-                    }
-                    else { imgData[idx].b += 128; }
+                    imgData[idx].r = ( i + j + dec ) / 10 % 128;
+                    imgData[idx].g = ( i + j + dec ) / 10 % 128;
+                    imgData[idx].b = ( i + j + dec ) / 10 % 128;
+                    // if ( j < third ) { imgData[idx].r += 128; }
+                    // else if ( j < 2 * third ) {
+                    //     imgData[idx].r += 128;
+                    //     imgData[idx].g += 128;
+                    //     imgData[idx].b += 128;
+                    // }
+                    // else { imgData[idx].b += 128; }
                 }
             }
             end = hub::sensor::getClock();
