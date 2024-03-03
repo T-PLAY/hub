@@ -495,7 +495,7 @@ template <typename T>
 static constexpr bool has_id_v = has_id<T>::value;
 
 namespace Types {
-enum Cpp : TypeId_t { NONE = 0, INT, BOOL, Cpp_Count };
+enum Cpp : TypeId_t { NONE = 0, INT /* 1 */, BOOL /* 2 */, Cpp_Count /* 3 */ };
 }
 static_assert( Types::Cpp_Count == 3 );
 

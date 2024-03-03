@@ -15,23 +15,23 @@ namespace hub {
 
 namespace Types {
 enum Format : TypeId_t {
-    MAT4 = Cpp_Count,
-    DENSITY,
-    DISTANCE,
-    RGB8,
-    RGBA8,
-    BGR8,
-    Y8,
-    Y16,
-    Z16,
-    POSITION,
-    ORIENTATION,
-    DOF6,
-    XYZ32F,
-    VEC3,
-    VEC4,
+    MAT4 = Cpp_Count, // 3
+    DENSITY, // 4
+    DISTANCE, // 5
+    RGB8, // 6
+    RGBA8, // 7
+    BGR8, // 8
+    Y8, // 9
+    Y16, // 10
+    Z16, // 11
+    POSITION, // 12
+    ORIENTATION, // 13
+    DOF6, // 14
+    XYZ32F, // 15
+    VEC3, // 16
+    VEC4, // 17
 
-    Format_Count
+    Format_Count // 18
 };
 
 static constexpr auto Count = Format_Count;
@@ -39,7 +39,8 @@ static constexpr auto Count = Format_Count;
 
 namespace format {
 
-static inline int nChannel(Types::Format format) {
+// static inline int nChannel(Types::Format format) {
+static inline int nChannel(TypeId_t format) {
     switch (format) {
     case Types::Y8:
         return 1;
