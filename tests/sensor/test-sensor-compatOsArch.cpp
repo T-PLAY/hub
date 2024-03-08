@@ -18,8 +18,8 @@ TEST_CASE( "sensor compat os and arch test" ) {
     // INIT_SERVER
 
     const std::string meshPath = HUB_PROJECT_DIR "data/assets/";
-    const hub::data::Mesh mesh( meshPath + "Bunny" );
-    // const hub::data::Mesh mesh( meshPath + "sensor" );
+    // const hub::data::Mesh mesh( meshPath + "Bunny" );
+    const hub::data::Mesh mesh( meshPath + "sensor" );
 
     hub::MetaData metaData;
     metaData["asset"] = mesh;
