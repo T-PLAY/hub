@@ -42,17 +42,17 @@ int main() {
 
     std::string ipServer = "192.168.2.1";
 
-    hub::client::Viewer viewer { onNewStreamer,
-                                 onDelStreamer,
-                                 onServerNotFound,
-                                 onServerConnected,
-                                 onServerDisconnected,
-                                 onNewAcquisition,
-                                 onSetProperty,
-                                 ipServer.c_str(),
-                                 HUB_SERVICE_PORT,
-                                 false,
-                                 onLogMessage };
+    // hub::client::Viewer viewer { onNewStreamer,
+    //                              onDelStreamer,
+    //                              onServerNotFound,
+    //                              onServerConnected,
+    //                              onServerDisconnected,
+    //                              onNewAcquisition,
+    //                              onSetProperty,
+    //                              ipServer.c_str(),
+    //                              HUB_SERVICE_PORT,
+    //                              false,
+    //                              onLogMessage };
 
     while ( true ) {
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );

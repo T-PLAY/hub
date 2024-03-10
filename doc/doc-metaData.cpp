@@ -1,7 +1,7 @@
 
 #include <iostream>
 
-#include <SensorSpec.hpp>
+#include <core/MetaData.hpp>
 
 int main() {
 
@@ -10,7 +10,7 @@ int main() {
 
     hub::Any any( "hello" );
 
-    const auto& value = any.getConstCharPtr();
+    auto value = any.get<const char*>();
     std::cout << value << std::endl;
 
     return 0;

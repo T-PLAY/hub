@@ -25,7 +25,7 @@ if(HUB_BUILD_DOC)
         message("Doxygen build started")
 
         add_custom_target(
-            doc-doxygen
+            hub-doc-doxygen
             COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
             COMMAND ${HUB_BROWSER} ${CMAKE_BINARY_DIR}/doc/docs_doxygen/html/annotated.html
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
@@ -38,7 +38,7 @@ if(HUB_BUILD_DOC)
     endif(DOXYGEN_FOUND)
 
     add_custom_target(
-        doc-sphinx
+        hub-doc-sphinx
         COMMAND make -C ${PROJECT_SOURCE_DIR}/doc/docs_sphinx html
         COMMAND ${HUB_BROWSER} ${PROJECT_SOURCE_DIR}/doc/docs_sphinx/_build/html/api/index.html
         COMMENT "Generating API documentation with Sphinx")

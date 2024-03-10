@@ -1,7 +1,7 @@
 
 
-#include <io/OutputStream.hpp>
-#include <io/input/InputStream.hpp>
+// #include <io/OutputStream.hpp>
+// #include <io/input/InputStream.hpp>
 #include <sensor/OutputSensor.hpp>
 
 /// \file
@@ -36,68 +36,65 @@ void drawImage( const unsigned char* data, uint64_t size, int width, int height,
 
 int main() {
 
-    constexpr int serverPort = 4042;
+    constexpr auto serverPort = 4042;
     {
-        constexpr int imageWidth  = 640;
-        constexpr int imageHeight = 480;
+        constexpr auto width  = 640;
+        constexpr auto height = 480;
 
-        const hub::Resolution imageResolution { { imageWidth, imageHeight }, hub::format::BGR8 };
+        using Format = hub::format::BGR8;
+        using Resolution = hub::MatrixXD<Format, width, height>;
+        // const hub::Resolution imageResolution { { width, height }, hub::format::BGR8 };
         hub::MetaData metaData;
         metaData["fov"]  = 60.0;
         metaData["iso"]  = 200;
         metaData["date"] = "now";
-        const hub::sensor::SensorSpec sensorSpec( "sensorName", { imageResolution }, metaData );
+        const hub::sensor::SensorSpec sensorSpec( "sensorName", Resolution(), metaData );
 
-        hub::sensor::OutputSensor outputSensor {
-            sensorSpec, "streamName", hub::net::ClientSocket { "serverIp", serverPort } };
+        hub::sensor::OutputSensorT<Resolution> outputSensor {
+                                                              sensorSpec, "streamName"};
+        auto acq = outputSensor.acqMsg();
+        auto [start, end] = acq.clocks();
+        auto * const bgr8s = acq.get<Format*>();
 
         while ( 1 ) {
-#if ( __cplusplus >= 201703L )
             auto [start, end] = sensorAPI::getTimestamp();
             auto [data, size] = sensorAPI::getData();
-#else
-            auto start         = sensorAPI::getTimestamp().start;
-            auto end           = sensorAPI::getTimestamp().end;
-            auto data          = sensorAPI::getData().data;
-            auto size          = sensorAPI::getData().size;
-#endif
 
-            outputSensor << ( hub::sensor::Acquisition { start, end }
-                              << hub::Measure { data, size, imageResolution } );
+            outputSensor << acq;
         }
     }
 
-    {
-        hub::sensor::InputSensor inputSensor { hub::input::InputStream {
-            "streamName", hub::net::ClientSocket { "serverIp", serverPort } } };
+//     {
+//         hub::sensor::InputSensor inputSensor { hub::input::InputStream {
+//             "streamName", hub::net::ClientSocket { "serverIp", serverPort } } };
 
-        const auto& resolutions = inputSensor.getSpec().getResolutions();
-        if ( resolutions.size() == 1 ) {
-#if ( __cplusplus >= 201703L )
-            const auto& [nDim, format] = resolutions.at( 0 );
-#else
-            const auto& nDim   = resolutions.at( 0 ).first;
-            const auto& format = resolutions.at( 0 ).second;
-#endif
+//         const auto& resolutions = inputSensor.getSpec().getResolutions();
+//         if ( resolutions.size() == 1 ) {
+// #if ( __cplusplus >= 201703L )
+//             const auto& [nDim, format] = resolutions.at( 0 );
+// #else
+//             const auto& nDim   = resolutions.at( 0 ).first;
+//             const auto& format = resolutions.at( 0 ).second;
+// #endif
 
-            if ( nDim.size() == 2 && format == hub::format::BGR8 ) {
-                const auto& imageWidth  = nDim.at( 0 );
-                const auto& imageHeight = nDim.at( 1 );
+//             if ( nDim.size() == 2 && format == hub::format::BGR8 ) {
+//                 const auto& width  = nDim.at( 0 );
+//                 const auto& height = nDim.at( 1 );
 
-                while ( 1 ) {
-                    hub::sensor::Acquisition acq;
-                    inputSensor >> acq;
-                    const auto& measure = acq.getMeasures().at( 0 );
+//                 while ( 1 ) {
+//                     hub::sensor::Acquisition acq;
+//                     inputSensor >> acq;
+//                     const auto& measure = acq.getMeasures().at( 0 );
 
-                    clientApp::drawImage( measure.getData(),
-                                          measure.getSize(),
-                                          imageWidth,
-                                          imageHeight,
-                                          clientApp::Format::BGR888 );
-                }
-            }
-        }
-    }
+//                     clientApp::drawImage( measure.getData(),
+//                                           measure.getSize(),
+//                                           width,
+//                                           height,
+//                                           clientApp::Format::BGR888 );
+//                 }
+//             }
+//         }
+//     }
 
     return 0;
 }
