@@ -13,6 +13,8 @@ namespace hub {
 
 ///
 /// \brief The SerializerT class
+/// defined features allow to serialize data
+/// used custom serializer as template parameter
 ///
 template <class Serializer>
 class SRC_API SerializerT

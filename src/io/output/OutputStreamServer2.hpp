@@ -26,9 +26,20 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
 
     ///
     /// \brief OutputStreamServer2
+    /// \param header
+    /// \param streamPort
+    ///
+    OutputStreamServer2( const io::Header& header, int streamPort );
+
+    ///
+    ///
+    /// \brief OutputStreamServer2
     /// is used to instantiate an OutputSensor.
+    /// \param header
     /// \param streamName
     /// [in] is an unique identifier name of stream
+    /// \param port
+    /// \param ipv4
     /// \param clientSocket
     /// [in] is an existing connection to a hub server
     /// \warning The hub service must be accessible, that means the
@@ -38,15 +49,6 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
     /// \exception net::Socket::exception
     /// when the server is not found or by loosing connection to the server.
     /// Also occur when stream you want to link is already started in the server.
-    ///
-    OutputStreamServer2( const io::Header& header, int streamPort );
-
-    ///
-    /// \brief OutputStreamServer2
-    /// \param header
-    /// \param streamName
-    /// \param port
-    /// \param ipv4
     ///
     OutputStreamServer2( const hub::io::Header& header,
                          const std::string& streamName,

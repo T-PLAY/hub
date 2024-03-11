@@ -11,6 +11,9 @@
 namespace hub {
 namespace output {
 
+///
+/// \brief OutputStream
+///
 using OutputStream = OutputStreamServer2;
 
 static_assert( std::is_base_of<Output, OutputStream>::value,

@@ -4,6 +4,13 @@
 
 #pragma once
 
+// namespace hub {
+// /// @brief The native namespace
+// /// Export these "C" functions usable by Unity C++ plugin or Matlab (loadlibrary).
+// ///
+// namespace native {}
+// } // namespace hub
+
 #include "native_Any.hpp"
 #include "native_MetaData.hpp"
 #include "native_OutputStream.hpp"

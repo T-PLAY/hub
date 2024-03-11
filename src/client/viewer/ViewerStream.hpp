@@ -41,6 +41,7 @@ namespace client {
 
 ///
 /// \brief The ViewerStream class
+/// defined a stream in (viewer) client side
 ///
 template <class InputStream>
 class ViewerStream

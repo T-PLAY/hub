@@ -17,10 +17,6 @@ class SensorSpec;
 }
 #endif
 
-///
-/// @brief native
-/// Export these "C" functions usable by Unity C++ plugin or Matlab (loadlibrary).
-///
 namespace native {
 
 #ifdef __cplusplus

@@ -23,6 +23,7 @@ enum BufferOption {
 
 ///
 /// \brief The BufferBase class
+/// is an interface representing buffer
 ///
 template <class Type, Size_t Size, BufferOption Option>
 class BufferBase
@@ -70,6 +71,8 @@ class BufferBase
 
 ///
 /// \brief The Buffer class
+/// is an implement of BufferBase
+/// the data is stored in the heap/stack depending of the size of data
 ///
 template <class Type,
           Size_t Size,
@@ -85,6 +88,7 @@ class Buffer : public BufferBase<Type, Size, Option>
 
 ///
 /// \brief The Buffer class
+/// represents data stored in stack memory
 ///
 template <class Type, Size_t Size>
 class Buffer<Type, Size, StaticMemory> : public BufferBase<Type, Size, StaticMemory>
@@ -148,6 +152,7 @@ class Buffer<Type, Size, StaticMemory> : public BufferBase<Type, Size, StaticMem
 
 ///
 /// \brief The Buffer class
+/// represents data stored in heap memory
 ///
 template <class Type, Size_t Size>
 class Buffer<Type, Size, DynamicMemory> : public BufferBase<Type, Size, DynamicMemory>

@@ -9,6 +9,9 @@
 namespace hub {
 namespace input {
 
+///
+/// \brief InputStream
+///
 using InputStream = InputStreamServer2;
 
 static_assert( std::is_base_of<Input, InputStream>::value, "Input is base class of InputStream" );

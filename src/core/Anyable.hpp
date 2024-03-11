@@ -27,6 +27,7 @@ namespace hub {
 
 ///
 /// \brief The Anyable class
+/// able to register new user defined anyable class
 ///
 class SRC_API Anyable
 {

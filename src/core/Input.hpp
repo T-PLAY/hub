@@ -12,6 +12,8 @@ namespace hub {
 
 ///
 /// \brief The InputT class
+/// is an implement of InputBase
+/// able to use custom serializer as a template parameter
 ///
 template <class SerializerT = Serializer>
 class SRC_API InputT : public InputBase

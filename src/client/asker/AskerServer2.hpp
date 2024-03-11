@@ -13,6 +13,7 @@ namespace client {
 
 ///
 /// \brief The AskerServer2 class
+/// is an implement of AskerInterface
 ///
 class SRC_API AskerServer2 : public hub::client::AskerInterface
 {

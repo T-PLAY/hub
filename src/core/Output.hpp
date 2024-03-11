@@ -15,6 +15,8 @@ namespace hub {
 
 ///
 /// \brief The OutputT class
+/// is an implement of OutputBase
+/// able to use custom serializer as a template parameter
 ///
 template <class SerializerT = Serializer>
 class SRC_API OutputT : public OutputBase

@@ -13,6 +13,7 @@ namespace hub {
 
 ///
 /// \brief The OutputBase class
+/// is an ios interface specify basic output features
 ///
 class SRC_API OutputBase : public ios
 {

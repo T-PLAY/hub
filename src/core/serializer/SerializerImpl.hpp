@@ -24,6 +24,9 @@
 namespace hub {
 namespace serializer {
 
+///
+/// \brief serializable_t
+///
 template <typename T>
 using serializable_t = decltype( std::declval<T>().serialize( std::declval<ios&>() ) );
 

@@ -13,6 +13,7 @@ namespace hub {
 
 ///
 /// \brief InputBase
+/// is an ios interface specify basic input features
 ///
 class SRC_API InputBase : public ios
 {

@@ -36,6 +36,7 @@ class SRC_API ClientSocketSystem : public ClientSocketI, public SocketSystem
     ///
     /// \brief ClientSocketSystem
     /// \param fdSock
+    /// \param clientAddr
     ///
     explicit ClientSocketSystem(
         utils::socket_fd fdSock,

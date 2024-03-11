@@ -32,6 +32,8 @@ class SRC_API StreamerClient2 : public Client2
     /// \param iClient
     /// \param sock
     /// \param streamName
+    /// \param streamIpv4
+    /// \param port
     ///
     StreamerClient2( ServerImpl2* server,
                      int iClient,

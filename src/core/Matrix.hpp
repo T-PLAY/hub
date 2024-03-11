@@ -19,6 +19,9 @@ namespace hub {
 
 ///
 /// \brief The Matrix class
+/// represents everything which can be represent as a matrix
+/// data is serialized during the declaration
+/// improve input/output transport process
 ///
 class SRC_API Matrix
 {

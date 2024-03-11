@@ -30,6 +30,8 @@ static std::mutex s_mtxIoPrint;
 
 ///
 /// \brief The ios class
+/// is an interface
+/// defined minimal features of input/output purpose
 ///
 class SRC_API ios
 {

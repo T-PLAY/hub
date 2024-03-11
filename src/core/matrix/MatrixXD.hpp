@@ -18,6 +18,7 @@ namespace hub {
 
 ///
 /// \brief The MatrixXDBase class
+/// defined basic features of nd array
 ///
 template <class Type, Size_t... Ns>
 #if CPP_VERSION >= 20
@@ -205,6 +206,7 @@ static_assert( isMatrix<MatrixXDBase<int, 2>> );
 
 ///
 /// \brief The MatrixXD class
+/// represent nd array basic features
 ///
 template <class Type, Size_t... Ns>
 #if CPP_VERSION >= 20
@@ -234,6 +236,8 @@ requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
 
 ///
 /// \brief The MatrixXD class
+/// is a 1D matrix
+/// vector with constant length
 ///
 template <class Type, Size_t N>
 #if CPP_VERSION >= 20
@@ -252,6 +256,8 @@ requires( N > 1 )
 
 ///
 /// \brief The MatrixXD class
+/// is a 2D matrix
+/// similar to image with constant width and height
 ///
 template <class Type, Size_t N, Size_t N2>
 class MatrixXD<Type, N, N2> : public MatrixXDBase<Type, N, N2>
@@ -272,6 +278,7 @@ class MatrixXD<Type, N, N2> : public MatrixXDBase<Type, N, N2>
 
 ///
 /// \brief The MatrixXD class
+/// is a 3D matrix
 ///
 template <class Type, Size_t N, Size_t N2, Size_t N3>
 class MatrixXD<Type, N, N2, N3> : public MatrixXDBase<Type, N, N2, N3>
@@ -298,6 +305,7 @@ class MatrixXD<Type, N, N2, N3> : public MatrixXDBase<Type, N, N2, N3>
 
 ///
 /// \brief The MatrixXD class
+/// is a 4D matrix
 ///
 template <class Type, Size_t N, Size_t N2, Size_t N3, Size_t N4>
 class MatrixXD<Type, N, N2, N3, N4> : public MatrixXDBase<Type, N, N2, N3, N4>

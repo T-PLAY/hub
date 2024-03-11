@@ -40,8 +40,8 @@ class SRC_API File
     /// \brief File
     /// constructor from a std::fstream, if you use an InputSensor uses the std::ios::in constructor
     /// option, if you use an OutputSensor the std::ios::out option when creating a std::fstream.
-    /// \param file
-    /// is a movable fstream you want to use as a sensor communication bus.
+    /// \param filePath
+    /// is a file path on system
     ///
     explicit File( const std::string& filePath );
 

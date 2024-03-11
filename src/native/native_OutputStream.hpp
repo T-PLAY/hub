@@ -17,10 +17,6 @@ class Header;
 }
 #endif
 
-///
-/// @brief native
-/// Export these "C" functions usable by Unity C++ plugin or Matlab (loadlibrary).
-///
 namespace native {
 
 #ifdef __cplusplus
@@ -28,33 +24,32 @@ extern "C"
 {
 #endif
 
+
     ///
-    /// \brief createMat4OutputSensor
-    /// \param sensorName
-    /// \param ipv4
+    /// \brief createOutputStream
+    /// \param header
+    /// \param streamName
     /// \param port
+    /// \param ipv4
     /// \return
     ///
-    // SRC_API sensor::OutputSensor*
-
     SRC_API output::OutputStream* createOutputStream( const io::Header* header,
                                                       const char* streamName,
                                                       int port,
                                                       const char* ipv4 );
 
-    ///
-    /// \brief mat4OutputSensorSendAcq
-    /// \param outputSensor
-    /// \param input
-    /// \return
-    ///
     // SRC_API bool mat4OutputSensorSendAcq( sensor::OutputSensor* outputSensor, const float* input
 
+    ///
+    /// \brief outputStream_write_int
+    /// \param outputStream
+    /// \param value
+    ///
     SRC_API void outputStream_write_int( output::OutputStream* outputStream, int value );
 
     ///
-    /// \brief freeOutputSensor
-    /// \param outputSensor
+    /// \brief freeOutputStream
+    /// \param outputStream
     ///
     SRC_API void freeOutputStream( output::OutputStream* outputStream );
 

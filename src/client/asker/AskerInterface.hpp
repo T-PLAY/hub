@@ -15,7 +15,7 @@ namespace hub {
 namespace client {
 
 ///
-/// \brief The Asker class
+/// \brief The AskerInterface interface
 /// allow user to get some information from connected sensor to the server.
 ///
 class SRC_API AskerInterface

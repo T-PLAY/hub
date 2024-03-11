@@ -35,7 +35,7 @@ class SRC_API SensorSpec
     /// \brief
     /// \param sensorName
     /// [in] Given by the sensor manufacturer or user defined.
-    /// \param resolutions
+    /// \param resolution
     /// [in] Resolution of the corresponding sensor.
     /// \param metaData
     /// [in] Additional informations of the sensor and acquisition.

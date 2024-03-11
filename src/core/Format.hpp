@@ -62,6 +62,7 @@ static inline int nChannel(TypeId_t format) {
 // Transform matrix 4x4 of float.
 ///
 /// \brief The Mat4 class
+/// is 4x4 Matrix of float
 ///
 struct Mat4 {
     ///
@@ -209,6 +210,7 @@ static_assert( sizeof( Mat4 ) == 64 );
 
 ///
 /// \brief The Vec3 class
+/// is 3D vector of float
 ///
 struct Vec3 {
     ///
@@ -272,6 +274,7 @@ static_assert( sizeof( Vec3 ) == 12 );
 
 ///
 /// \brief The Vec4 class
+/// is a vector with 4 float
 ///
 struct Vec4 {
     ///
@@ -340,6 +343,8 @@ static_assert( sizeof( Vec4 ) == 16 );
 
 ///
 /// \brief The Density class
+/// represents normalized density of medium (float 0.0 -> 1.0)
+/// can be used to defined volume (MRI, DICOM)
 ///
 struct Density {
     ///
@@ -360,6 +365,8 @@ static_assert( sizeof( Density ) == 4 );
 
 ///
 /// \brief The Distance class
+/// represents distance error (float)
+/// can be used in 2D space or 3D space (point to mesh distance)
 ///
 struct Distance {
     ///
@@ -381,6 +388,7 @@ static_assert( sizeof( Distance ) == 4 );
 
 ///
 /// \brief The RGB8 class
+/// represents red, green and blue image pixel (3 bytes)
 ///
 struct RGB8 {
     ///
@@ -421,6 +429,7 @@ static_assert( sizeof( RGB8 ) == 3 );
 
 ///
 /// \brief The RGBA8 class
+/// represents red, green, blue and alpha image pixel (4 bytes)
 ///
 struct RGBA8 {
     ///
@@ -452,6 +461,7 @@ static_assert( sizeof( RGBA8 ) == 4 );
 
 ///
 /// \brief The BGR8 class
+/// represents blue, green and red image pixel (3 bytes)
 ///
 struct BGR8 {
     ///
@@ -477,6 +487,7 @@ static_assert( sizeof( BGR8 ) == 3 );
 
 ///
 /// \brief The Y8 class
+/// represents grayscale image (1 bytes)
 ///
 struct Y8 {
     ///
@@ -496,6 +507,7 @@ static_assert( sizeof( Y8 ) == 1 );
 
 ///
 /// \brief The Y16 class
+/// represents grayscale image (2 bytes)
 ///
 struct Y16 {
     ///
@@ -514,6 +526,7 @@ struct Y16 {
 
 ///
 /// \brief The Z16 class
+/// represents depth image (2 bytes)
 ///
 struct Z16 {
     ///
@@ -535,6 +548,7 @@ static_assert( sizeof( Z16 ) == 2 );
 
 ///
 /// \brief The Position class
+/// represents x, y and z cartezian position (3 floats)
 ///
 struct Position // Cartesian
 {
@@ -562,6 +576,7 @@ struct Position // Cartesian
 
 ///
 /// \brief The Orientation class
+/// represents Euler (roll, pitch, yaw) orientation (3 floats)
 ///
 struct Orientation // Euler
 {
@@ -590,6 +605,7 @@ struct Orientation // Euler
 // Pose data packed as floats array, containing translation vector (x, y, z), rotation quaternion
 ///
 /// \brief The Dof6 class
+/// represents cartesian position with quaternion orientation (7 floats)
 ///
 struct Dof6 {
     ///
@@ -669,6 +685,7 @@ static_assert( sizeof( Dof6 ) == 28 );
 
 ///
 /// \brief The XYZ32F class
+/// represents x, y and z cartezian position (3 floats)
 ///
 struct XYZ32F {
     ///

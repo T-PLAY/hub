@@ -24,6 +24,7 @@ namespace client {
 
 ///
 /// \brief The ViewerHandler class
+/// is a facade, able the viewer client to catch event from sensor
 ///
 class SRC_API ViewerHandler
 {

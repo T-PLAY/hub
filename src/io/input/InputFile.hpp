@@ -14,6 +14,7 @@ namespace input {
 
 ///
 /// \brief The InputFile class
+/// is an implement of Input using disk file
 ///
 class SRC_API InputFile : public Input, public io::File
 {

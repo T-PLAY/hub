@@ -18,6 +18,7 @@ namespace data {
 
 ///
 /// \brief The Vertex class
+/// represents textured point in cartezian space with 3D normal
 ///
 struct Vertex {
     /// \brief px
@@ -59,6 +60,7 @@ struct Vertex {
 
 ///
 /// \brief The Shape class
+/// represents single manifold object
 ///
 struct Shape {
     ///
@@ -109,6 +111,7 @@ struct Shape {
 
 ///
 /// \brief The Material class
+/// represents render information
 ///
 struct Material {
     ///
@@ -193,6 +196,7 @@ class MeshImpl;
 
 ///
 /// \brief The Mesh class
+/// represent a set of Shape with different material
 ///
 class SRC_API Mesh
 {

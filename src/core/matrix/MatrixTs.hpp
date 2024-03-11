@@ -15,6 +15,9 @@ namespace hub {
 
 ///
 /// \brief The MatrixTs class
+/// represents a bunch of type, matrix
+/// able to merge type or matrices into single matrix
+/// everything is matrix at the end
 ///
 template <class... Types>
 #if CPP_VERSION >= 20

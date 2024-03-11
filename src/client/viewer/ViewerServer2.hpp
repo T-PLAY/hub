@@ -18,6 +18,7 @@ namespace client {
 
 ///
 /// \brief The ViewerServer2 class
+/// is an implement of ViewerInterface
 ///
 class ViewerServer2 : public hub::client::ViewerInterface<input::InputStreamServer2>
 {

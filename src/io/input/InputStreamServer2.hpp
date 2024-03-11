@@ -34,25 +34,26 @@ class SRC_API InputStreamServer2 : public Input, public io::StreamServer2
 
     ///
     /// \brief InputStreamServer2
+    /// \param streamPort
+    /// \param ipv4
+    ///
+    InputStreamServer2( int streamPort, const std::string& ipv4 = "127.0.0.1" );
+
+    ///
+    /// \brief InputStreamServer2
     /// is used to instantiate an InputSensor.
     /// \param streamName
     /// [in] is an unique identifier name of stream.
-    /// \param clientSocket
-    /// [in] is an existing connection to a hub server.
+    /// \param serverPort
+    /// [in] is a running service port you want to use
+    /// \param serverIpv4
+    /// [in] is a ip of running server
     /// \warning The hub service must be accessible, that means the
     /// server hub is running on a machine you know the ip and the oppened port of the service.
     /// \warning Stream you want to link (by their names) needs to be active in the server hub.
     /// \exception net::Socket::exception
     /// when the server is not found or by loosing connection to the server.
     /// Also occur when stream you want to link is not connected to the server.
-    ///
-    InputStreamServer2( int streamPort, const std::string& ipv4 = "127.0.0.1" );
-
-    ///
-    /// \brief InputStreamServer2
-    /// \param streamName
-    /// \param serverPort
-    /// \param serverIpv4
     ///
     InputStreamServer2( const std::string& streamName,
                         int serverPort                = HUB_SERVICE_PORT,

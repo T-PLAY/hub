@@ -52,21 +52,11 @@ class ViewerInterface
   public:
     ///
     /// \brief
-    /// \param onNewStream
-    /// is an event handler called when new streamer (OutputStream) is recently connected to the
-    /// server.
-    /// \param onDelStream is an event handler called when connected streamer
-    /// (OutputStream) is recently disconnected from the server.
-    /// \param onServerNotFound
-    /// \param onServerConnected is an event handler called when viewer is recently connected to the
-    /// server. \param onServerDisconnected is an event handler called when viewer is recently
-    /// disconnected from the server. \param onNewAcquisition is an event handler called when new
-    /// acquisition is sended from any connected OutputStream to the server. \param onSetProperty
+    /// \param name
+    /// \param viewerHandler
     /// \param ipv4 is the ip of the server you want to connect.
     /// \param port is the port server of the server you want to connect.
-    /// \param autoSync server suggest auto synchronisation between OutputStream able to be
-    /// synchronize if enable. \param onLogMessage is an event handler to receive debug message from
-    /// server.
+    /// \param autoConnect
     ///
     explicit ViewerInterface( const std::string& name,
                               ViewerHandler&& viewerHandler = ViewerHandler(),
