@@ -43,9 +43,9 @@ jobs:
       # run: mkdir build && cd build && cmake ../src  -GNinja -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }} -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../install -DPONCA_CONFIGURE_EXAMPLES=ON -DPONCA_CONFIGURE_DOC=ON -DPONCA_CONFIGURE_TESTS=ON
 
 
-    - name: Build
-      # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+    # - name: Build
+    #   # Build your program with the given configuration
+    #   run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
     # - name: Install
     #   run: cmake --install ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
@@ -57,11 +57,26 @@ jobs:
     #   # run: ctest -C ${{env.BUILD_TYPE}}
     #   run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target hub-tests-bin
 
-    - name: Doc doxygen
-      run: cmake --build ${{github.workspace}}/build --target hub-doc-doxygen
+    # - name: Doc doxygen
+    #   run: cmake --build ${{github.workspace}}/build --target hub-doc-doxygen
 
-    - name: Doc sphinx
-      run: cmake --build ${{github.workspace}}/build --target hub-doc-sphinx
+    - name: Sphinx Build
+  # You may pin to the exact commit or the version.
+  # uses: ammaraskar/sphinx-action@8b4f60114d7fd1faeba1a712269168508d4750d2
+      uses: ammaraskar/sphinx-action@0.4
+      with:
+      # The folder containing your sphinx docs.
+        docs-folder: doc/doc_sphinx
+        # The command used to build your documentation.
+        # build-command: # optional, default is make html
+        # Run before the build command, you can use this to install system level dependencies, for example with "apt-get update -y && apt-get install -y perl"
+        # pre-build-command: # optional
+          
+    # - name: Doc sphinx
+    #   uses: ammaraskar/sphinx-action@0.4
+    #   with:
+    #     docs-folder: doc/docs_sphinx
+    #   run: cmake --build ${{github.workspace}}/build --target hub-doc-sphinx
 
   
 
