@@ -3,9 +3,8 @@
 
 #include <iostream>
 
-#ifdef HUB_USE_OPENCV
-#    include <opencv2/opencv.hpp>
-#endif
+// #    include <opencv2/opencv.hpp>
+#include <opencv2/opencv.hpp>
 
 TEST_CASE( "Matrix compat OpenCV test" ) {
     TEST_BEGIN()
@@ -18,7 +17,6 @@ TEST_CASE( "Matrix compat OpenCV test" ) {
         data[i] = 65 + i;
     }
 
-#ifdef HUB_USE_OPENCV
     cv::Mat cvMat( height, width, CV_8UC3, data ); // row major
 
     for ( int j = 0; j < height; ++j ) {
@@ -27,7 +25,6 @@ TEST_CASE( "Matrix compat OpenCV test" ) {
         }
         std::cout << std::endl;
     }
-#endif
 
     TEST_END()
 }

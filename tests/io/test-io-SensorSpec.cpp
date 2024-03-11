@@ -6,7 +6,7 @@
 #include <sensor/SensorSpec.hpp>
 
 
-TEST_CASE( "Test io header" ) {
+TEST_CASE( "Test io sensorSpec" ) {
     TEST_BEGIN()
 
     const std::string meshPath = HUB_PROJECT_DIR "data/assets/";
