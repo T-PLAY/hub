@@ -12,6 +12,9 @@
 namespace hub {
 namespace io {
 
+///
+/// \brief The StreamServer2 class
+///
 class SRC_API StreamServer2 : public hub::io::StreamBase
 {
   public:

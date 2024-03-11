@@ -28,6 +28,9 @@ static std::mutex s_mtxIoPrint;
 
 #endif
 
+///
+/// \brief The ios class
+///
 class SRC_API ios
 {
   public:
@@ -45,6 +48,9 @@ concept isPacket = requires( T t ) {
 
 #else
 
+///
+/// \brief has_data_t
+///
 template <typename T>
 using has_data_t = decltype( std::declval<T>().data() );
 template <typename T, typename = std::void_t<>>
@@ -61,6 +67,9 @@ constexpr bool isPacket = has_data_v<T>&& has_size_v<T>;
 
 #endif
 
+///
+/// \brief packable_t
+///
 template <typename T>
 using packable_t = decltype( T::packable );
 template <typename T, typename = std::void_t<>>

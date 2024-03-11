@@ -16,6 +16,9 @@
 namespace hub {
 namespace client {
 
+///
+/// \brief The ViewerServer2 class
+///
 class ViewerServer2 : public hub::client::ViewerInterface<input::InputStreamServer2>
 {
   public:

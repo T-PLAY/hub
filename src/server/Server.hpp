@@ -8,6 +8,9 @@
 
 namespace hub {
 
+///
+/// \brief Server
+///
 using Server = server::ServerImpl2;
 
 } // namespace hub

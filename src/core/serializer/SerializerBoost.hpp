@@ -18,6 +18,9 @@
 namespace hub {
 namespace serializer {
 
+///
+/// \brief The SerializerBoost class
+///
 class SerializerBoost : public SerializerI
 {
   public:

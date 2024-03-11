@@ -11,6 +11,9 @@
 namespace hub {
 namespace client {
 
+///
+/// \brief The AskerServer2 class
+///
 class SRC_API AskerServer2 : public hub::client::AskerInterface
 {
   public:

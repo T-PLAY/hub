@@ -26,6 +26,9 @@ concept areMatrices = requires {
 
 #else
 
+///
+/// \brief is_matrix_t
+///
 template <typename T>
 using is_matrix_t = decltype( T::matrix );
 template <typename T, typename = std::void_t<>>

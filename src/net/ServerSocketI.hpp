@@ -10,6 +10,9 @@
 namespace hub {
 namespace net {
 
+///
+/// \brief The ServerSocketI class
+///
 class SRC_API ServerSocketI
 {
   public:

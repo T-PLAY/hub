@@ -39,6 +39,9 @@
 namespace hub {
 namespace client {
 
+///
+/// \brief The ViewerStream class
+///
 template <class InputStream>
 class ViewerStream
 {

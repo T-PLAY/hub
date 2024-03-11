@@ -13,6 +13,9 @@ namespace hub {
 
 //////////////////////////////////////////// TEMPLATES /////////////////////////////////////////
 
+///
+/// \brief The MatrixTs class
+///
 template <class... Types>
 #if CPP_VERSION >= 20
 requires( sizeof...( Types ) > 1 )

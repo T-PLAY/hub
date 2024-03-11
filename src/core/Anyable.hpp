@@ -25,6 +25,9 @@
 
 namespace hub {
 
+///
+/// \brief The Anyable class
+///
 class SRC_API Anyable
 {
 

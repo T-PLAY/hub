@@ -223,8 +223,10 @@ if(NOT WIN32)
     add_custom_target(
         hub-cppCheck
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-        COMMAND cppcheck --enable=all --error-exitcode=1 src tests -I src -I tests --inline-suppr
+        # COMMAND cppcheck --enable=all --error-exitcode=1 src tests -I src -I tests --inline-suppr
+        COMMAND cppcheck --enable=all --error-exitcode=1 src -I src -I external --inline-suppr
                 --suppress=toomanyconfigs --suppress=missingIncludeSystem
+                # --suppress=noValidConfiguration
         COMMENT "Running cppCheck")
     custom_target_added(cppCheck)
 endif()

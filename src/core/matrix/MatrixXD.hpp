@@ -14,8 +14,11 @@ namespace hub {
 /////////////////////////////////////////// TEMPLATES
 /////////////////////////////////////////////////////
 
-namespace _ {
+// namespace _ {
 
+///
+/// \brief The MatrixXDBase class
+///
 template <class Type, Size_t... Ns>
 #if CPP_VERSION >= 20
 requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
@@ -127,20 +130,23 @@ requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
 };
 static_assert( isMatrix<MatrixXDBase<int, 2>> );
 
-} // namespace _
+// } // namespace _
 
+///
+/// \brief The MatrixXD class
+///
 template <class Type, Size_t... Ns>
 #if CPP_VERSION >= 20
 requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
 #endif
-    class MatrixXD : public _::MatrixXDBase<Type, Ns...>
+    class MatrixXD : public MatrixXDBase<Type, Ns...>
 {
     static_assert( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) );
 
   public:
     template <int i>
     static constexpr Size_t n() {
-        static_assert( 0 <= i && i < _::MatrixXDBase<Type, Ns...>::nDim() );
+        static_assert( 0 <= i && i < MatrixXDBase<Type, Ns...>::nDim() );
         int j = 0;
         for ( const auto& n : { Ns... } ) {
             if ( i == j ) return n;
@@ -150,11 +156,14 @@ requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
     }
 };
 
+///
+/// \brief The MatrixXD class
+///
 template <class Type, Size_t N>
 #if CPP_VERSION >= 20
 requires( N > 1 )
 #endif
-    class MatrixXD<Type, N> : public _::MatrixXDBase<Type, N>
+    class MatrixXD<Type, N> : public MatrixXDBase<Type, N>
 {
     static_assert( N > 1 );
 
@@ -162,16 +171,22 @@ requires( N > 1 )
     static constexpr auto length() { return N; }
 };
 
+///
+/// \brief The MatrixXD class
+///
 template <class Type, Size_t N, Size_t N2>
-class MatrixXD<Type, N, N2> : public _::MatrixXDBase<Type, N, N2>
+class MatrixXD<Type, N, N2> : public MatrixXDBase<Type, N, N2>
 {
   public:
     static constexpr Size_t width() { return N; }
     static constexpr Size_t height() { return N2; }
 };
 
+///
+/// \brief The MatrixXD class
+///
 template <class Type, Size_t N, Size_t N2, Size_t N3>
-class MatrixXD<Type, N, N2, N3> : public _::MatrixXDBase<Type, N, N2, N3>
+class MatrixXD<Type, N, N2, N3> : public MatrixXDBase<Type, N, N2, N3>
 {
   public:
     static constexpr Size_t nx() { return N; }
@@ -179,8 +194,11 @@ class MatrixXD<Type, N, N2, N3> : public _::MatrixXDBase<Type, N, N2, N3>
     static constexpr Size_t nz() { return N3; }
 };
 
+///
+/// \brief The MatrixXD class
+///
 template <class Type, Size_t N, Size_t N2, Size_t N3, Size_t N4>
-class MatrixXD<Type, N, N2, N3, N4> : public _::MatrixXDBase<Type, N, N2, N3, N4>
+class MatrixXD<Type, N, N2, N3, N4> : public MatrixXDBase<Type, N, N2, N3, N4>
 {
   public:
     static constexpr Size_t nx() { return N; }
@@ -189,21 +207,53 @@ class MatrixXD<Type, N, N2, N3, N4> : public _::MatrixXDBase<Type, N, N2, N3, N4
     static constexpr Size_t nt() { return N4; }
 };
 
+///////////////////////////// 1D
+
+///
+/// \brief Matrix1D
+///
 template <class Type, Size_t N>
 using Matrix1D = MatrixXD<Type, N>;
+
+///
+/// \brief Vector
+///
 template <class Type, Size_t N>
 using Vector = MatrixXD<Type, N>;
 
+///////////////////////////// 2D
+
+///
+/// \brief Matrix2D
+///
 template <class Type, Size_t N, Size_t N2>
 using Matrix2D = MatrixXD<Type, N, N2>;
+
+///
+/// \brief Image
+///
 template <class Type, Size_t N, Size_t N2>
 using Image = MatrixXD<Type, N, N2>;
 
+///////////////////////////// 3D
+
+///
+/// \brief Matrix3D
+///
 template <class Type, Size_t N, Size_t N2, Size_t N3>
 using Matrix3D = MatrixXD<Type, N, N2, N3>;
+
+///
+/// \brief Volume
+///
 template <class Type, Size_t N, Size_t N2, Size_t N3>
 using Volume = MatrixXD<Type, N, N2, N3>;
 
+///////////////////////////// 4D
+
+///
+/// \brief Matrix4D
+///
 template <class Type, Size_t N, Size_t N2, Size_t N3, Size_t N4>
 using Matrix4D = MatrixXD<Type, N, N2, N3, N4>;
 

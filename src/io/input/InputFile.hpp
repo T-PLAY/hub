@@ -12,6 +12,9 @@
 namespace hub {
 namespace input {
 
+///
+/// \brief The InputFile class
+///
 class SRC_API InputFile : public Input, public io::File
 {
   public:
@@ -21,26 +24,10 @@ class SRC_API InputFile : public Input, public io::File
     explicit InputFile( const std::string& filePath );
 
   public:
-    ///
-    /// @copydoc InputOutput::isOpen()
-    ///
     bool isOpen() const override;
-
-    ///
-    /// @copydoc InputOutput::close()
-    ///
     void close() override;
-
-    ///
-    /// @copydoc InputOutput::isEnd()
-    ///
     bool isEnd() const override;
-
-    ///
-    /// @copydoc InputOutput::read()
-    ///
     void read( Data_t* data, Size_t len ) override;
-
     void clear() override;
 
   private:

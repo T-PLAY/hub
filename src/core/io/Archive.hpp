@@ -15,6 +15,9 @@
 namespace hub {
 namespace io {
 
+///
+/// \brief The ArchiveT class
+///
 template <class SerializerT = Serializer, class InputOutputT = InputOutput<SerializerT>>
 class ArchiveT : public InputOutputT
 {

@@ -11,6 +11,9 @@
 namespace hub {
 namespace io {
 
+///
+/// \brief The StreamMqtt class
+///
 class StreamMqtt : public StreamBase
 {
   public:

@@ -43,12 +43,18 @@
 
 namespace std {
 
+///
+/// \brief The bad_any_cast class
+///
 class bad_any_cast : public std::bad_cast
 {
   public:
     const char* what() const noexcept override { return "bad any cast"; }
 };
 
+///
+/// \brief The any class
+///
 class any final
 {
   public:

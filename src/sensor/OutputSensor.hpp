@@ -31,20 +31,19 @@
 namespace hub {
 namespace sensor {
 
-/////
-///// \brief The OutputSensor class
-///// describes what a sensor physically is.
-///// A sensor measures physical information from the environment around us.
-///// We declare a sensor with its intrinsic data and the transportable
-///// data format that the sensor driver proposes to export.
-///// The sensor transmits volatile and potentially unrecordable data.
-///// This class allows the data to be transmitted without being recorded
-///// so that it can be used in real time on various network machines.
-/////
-///// todo: template class
-//// template <typename Output, typename Measures, typename Acquisition = Acquisition<Measures>>
-
-// Todo clean all construction, template args ... are not user friendly
+///
+/// \brief The OutputSensor class
+/// describes what a sensor physically is.
+/// A sensor measures physical information from the environment around us.
+/// We declare a sensor with its intrinsic data and the transportable
+/// data format that the sensor driver proposes to export.
+/// The sensor transmits volatile and potentially unrecordable data.
+/// This class allows the data to be transmitted without being recorded
+/// so that it can be used in real time on various network machines.
+///
+/// todo: template class
+/// template <typename Output, typename Measures, typename Acquisition = Acquisition<Measures>>
+/// Todo clean all construction, template args ... are not user friendly
 class OutputSensor : public Sensor
 {
   public:
@@ -140,6 +139,9 @@ class OutputSensor : public Sensor
 
 /////////////////////////////////////// TEMPLATE //////////////////////////////////////////////////
 
+///
+/// \brief The OutputSensorT class
+///
 template <class Resolution, class Output = output::OutputStream>
 class OutputSensorT : public Sensor
 {

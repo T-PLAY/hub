@@ -8,6 +8,9 @@
 
 namespace hub {
 
+///
+/// \brief MetaData
+///
 using MetaData = std::map<std::string, Any>; // any -> C++17
 
 static std::string to_string( const MetaData& metaData, bool expand ) {

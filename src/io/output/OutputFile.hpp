@@ -13,6 +13,9 @@
 namespace hub {
 namespace output {
 
+///
+/// \brief The OutputFile class
+///
 class SRC_API OutputFile : public Output, public io::File
 {
   public:
@@ -22,20 +25,9 @@ class SRC_API OutputFile : public Output, public io::File
     explicit OutputFile( const io::Header& header, const std::string& filePath );
 
   public:
-    ///
-    /// @copydoc InputOutput::isOpen()
-    ///
     bool isOpen() const override;
-    ///
-    /// @copydoc InputOutput::close()
-    ///
     void close() override;
-
-    ///
-    /// @copydoc InputOutput::write()
-    ///
     void write( const Data_t* data, Size_t len ) override;
-
     void setRetain( bool retained ) override;
 
   private:

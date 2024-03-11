@@ -19,6 +19,9 @@
 namespace hub {
 namespace output {
 
+///
+/// \brief The OutputStreamMqtt class
+///
 class SRC_API OutputStreamMqtt : public Output, public io::StreamMqtt
 {
   public:

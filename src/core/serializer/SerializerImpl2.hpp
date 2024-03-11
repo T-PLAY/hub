@@ -13,6 +13,9 @@
 namespace hub {
 namespace serializer {
 
+///
+/// \brief The SerializerImpl2 class
+///
 class SerializerImpl2 : public SerializerI
 {
   public:

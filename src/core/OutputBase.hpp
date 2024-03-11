@@ -11,6 +11,9 @@
 
 namespace hub {
 
+///
+/// \brief The OutputBase class
+///
 class SRC_API OutputBase : public ios
 {
   public:
@@ -18,6 +21,9 @@ class SRC_API OutputBase : public ios
     virtual void setRetain( bool retain )                = 0;
 };
 
+///
+/// \brief writable_t
+///
 template <typename T>
 using writable_t = decltype( std::declval<T>().write( std::declval<OutputBase&>() ) );
 
@@ -32,6 +38,9 @@ static constexpr bool writable_v = writable<T>::value;
 
 ////////////////////
 
+///
+/// \brief notWritable_t
+///
 template <typename T>
 using notWritable_t = decltype( T::notWritable );
 

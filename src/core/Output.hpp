@@ -13,6 +13,9 @@
 
 namespace hub {
 
+///
+/// \brief The OutputT class
+///
 template <class SerializerT = Serializer>
 class SRC_API OutputT : public OutputBase
 {
@@ -62,6 +65,9 @@ class SRC_API OutputT : public OutputBase
     SerializerT m_serializer;
 };
 
+///
+/// \brief Output
+///
 using Output = OutputT<>;
 
 } // namespace hub

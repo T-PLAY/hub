@@ -10,6 +10,9 @@
 namespace hub {
 namespace io {
 
+///
+/// \brief The InputOutputBase class
+///
 class InputOutputBase : public InputBase, public OutputBase
 {
   public:

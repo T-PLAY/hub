@@ -11,6 +11,9 @@
 
 namespace hub {
 
+///
+/// \brief The SerializerT class
+///
 template <class Serializer>
 class SRC_API SerializerT
 {

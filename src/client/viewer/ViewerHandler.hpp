@@ -22,6 +22,9 @@
 namespace hub {
 namespace client {
 
+///
+/// \brief The ViewerHandler class
+///
 class SRC_API ViewerHandler
 {
   public:

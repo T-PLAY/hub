@@ -10,6 +10,9 @@
 
 namespace hub {
 
+///
+/// \brief The InputT class
+///
 template <class SerializerT = Serializer>
 class SRC_API InputT : public InputBase
 {
@@ -63,6 +66,9 @@ class SRC_API InputT : public InputBase
     SerializerT m_serializer;
 };
 
+///
+/// \brief Input
+///
 using Input = InputT<Serializer>;
 
 } // namespace hub

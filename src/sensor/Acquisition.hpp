@@ -24,6 +24,9 @@ static inline Clock getClock() {
         .count();
 }
 
+///
+/// \brief The Acquisition class
+///
 class SRC_API Acquisition : public Matrix
 {
   public:
@@ -102,6 +105,9 @@ SRC_API Acquisition make_acquisition( const Matrix& resolution );
 
 ///////////////////////////////////// TEMPLATE ////////////////////////////////
 
+///
+/// \brief The AcquisitionT class
+///
 template <class Resolution>
 class AcquisitionT : public MatrixTs<Clock, Clock, Resolution>
 {

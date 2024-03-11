@@ -8,6 +8,9 @@
 
 /* cppcheck-suppress missingInclude */
 
+///
+/// \brief hub
+///
 namespace hub {
 
 extern const int s_contributionStart;
@@ -24,22 +27,49 @@ extern const std::string s_version;
 
 extern const std::string s_commitHash;
 
+///
+/// \brief core
+///
 namespace core {}
 
+///
+/// \brief net
+///
 namespace net {}
 
+///
+/// \brief io
+///
 namespace io {}
 
+///
+/// \brief server
+///
 namespace server {}
 
+///
+/// \brief client
+///
 namespace client {}
 
+///
+/// \brief native
+///
 namespace native {}
 
+///
+/// \brief sensor
+///
 namespace sensor {}
 
+///
+/// \brief data
+///
 namespace data {}
 
+///
+/// \brief server
+///
 namespace server {}
 
 } // namespace hub

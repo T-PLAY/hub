@@ -7,6 +7,9 @@ namespace hub {
 namespace sensor {
 namespace outputSensor {
 
+///
+/// \brief The OutputSensor_2D_RGB8 class
+///
 class OutputSensor_2D_RGB8 : public OutputSensor_Instance
 {
   public:

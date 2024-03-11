@@ -17,6 +17,9 @@ namespace io {
 
 ///////////////////////////////////////////////////////////////
 
+///
+/// \brief The StreamBase class
+///
 class SRC_API StreamBase
 {
   public:
@@ -89,6 +92,9 @@ class SRC_API StreamBase
     };
     SRC_API friend std::ostream& operator<<( std::ostream& os, const ServerMessage& msg );
 
+    ///
+    /// \brief The exception class
+    ///
     class exception : public std::runtime_error
     {
       public:

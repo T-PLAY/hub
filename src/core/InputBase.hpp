@@ -10,6 +10,10 @@
 #include "ios.hpp"
 
 namespace hub {
+
+///
+/// \brief InputBase
+///
 class SRC_API InputBase : public ios
 {
   public:
@@ -18,6 +22,9 @@ class SRC_API InputBase : public ios
     virtual void clear()                          = 0;
 };
 
+///
+/// \brief not_endable_t
+///
 template <typename T>
 using not_endable_t = decltype( T::not_endable );
 
@@ -40,6 +47,9 @@ constexpr bool Endable = !not_endable_v<T>;
 
 ///////////////////////////////////////
 
+///
+/// \brief readable_t
+///
 template <typename T>
 using readable_t = decltype( std::declval<T>().read( std::declval<InputBase&>() ) );
 
@@ -54,6 +64,9 @@ static constexpr bool readable_v = readable<T>::value;
 
 ///////////////////////////////////////
 
+///
+/// \brief notReadable_t
+///
 template <typename T>
 using notReadable_t = decltype( T::notReadable );
 

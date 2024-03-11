@@ -16,6 +16,9 @@ namespace server {
 
 class StreamerClient2;
 
+///
+/// \brief The ViewerClient2 class
+///
 class SRC_API ViewerClient2 : public Client2
 {
   private:

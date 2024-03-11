@@ -9,6 +9,9 @@
 namespace hub {
 namespace serializer {
 
+///
+/// \brief The SerializerI class
+///
 class SRC_API SerializerI
 {
   public:

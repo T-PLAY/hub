@@ -12,6 +12,9 @@
 namespace hub {
 namespace io {
 
+///
+/// \brief The InputOutputSocket class
+///
 class InputOutputSocket : public InputOutput<>, public net::ClientSocket
 {
   public:

@@ -40,7 +40,6 @@ namespace sensor {
     ///
     /// todo: template class
     ///
-
     class InputSensor : public Sensor {
         template <class Input, class... Inputs>
         void initSensorSpec(const Input& input, const Inputs&... inputs)

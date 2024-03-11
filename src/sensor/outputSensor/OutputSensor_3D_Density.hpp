@@ -7,6 +7,9 @@ namespace hub {
 namespace sensor {
 namespace outputSensor {
 
+///
+/// \brief The OutputSensor_3D_Density class
+///
 class OutputSensor_3D_Density : public OutputSensor_Instance
 {
   public:

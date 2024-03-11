@@ -17,6 +17,9 @@
 
 namespace hub {
 
+///
+/// \brief The Matrix class
+///
 class SRC_API Matrix
 {
   public:
@@ -159,6 +162,8 @@ class SRC_API Matrix
 
 template <class Type, Size_t N = 1, Size_t... Ns>
 REQUIRES(, !isMatrix<Type> && N > 0 && ( ( Ns > 1 ) && ... ), Matrix )
+// typename std::enable_if_t<(!isMatrix<Type> && N > 0 && ( ( Ns > 1 ) && ... )), Matrix>
+// typename std::enable_if_t<(  ), Matrix>
 make_matrix() {
     Matrix matrix;
     matrix.push_back( make_node<Type, N, Ns...>() );

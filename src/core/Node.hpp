@@ -15,8 +15,14 @@
 
 namespace hub {
 
+///
+/// \brief Dims
+///
 using Dims = std::vector<int>;
 
+///
+/// \brief The Node class
+///
 class Node
 {
   public:

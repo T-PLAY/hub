@@ -30,6 +30,9 @@ concept StringAddable = requires( std::string str, const T& t ) {
 
 #else
 
+///
+/// \brief is_string_t
+///
 template <typename T>
 using is_string_t = decltype( std::declval<std::string>() += std::declval<T>() );
 
@@ -67,6 +70,9 @@ concept hasToString = requires( std::ostream& os, const T& t ) {
 
 #else
 
+///
+/// \brief has_toString_t
+///
 template <typename T>
 using has_toString_t = decltype( std::declval<T>().toString() );
 
@@ -99,6 +105,9 @@ concept toStringable_v = requires( std::ostream& os, const T& t ) {
 
 #else
 
+///
+/// \brief stdToStringable_t
+///
 template <typename T>
 using stdToStringable_t = decltype( std::to_string( std::declval<T>() ) );
 
@@ -116,6 +125,9 @@ static constexpr auto StdToStringable = stdToStringable_v<T>;
 
 ////////////////////////////////
 
+///
+/// \brief toStringable_t
+///
 template <typename T>
 using toStringable_t = decltype( toString( std::declval<T>() ) );
 
@@ -289,6 +301,9 @@ static std::string to_string( const Ts&... ts ) {
     return str;
 }
 
+///
+/// \brief hubToStringable_t
+///
 template <typename T>
 using hubToStringable_t = decltype( hub::to_string( std::declval<T>() ) );
 

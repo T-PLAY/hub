@@ -18,6 +18,9 @@
 namespace hub {
 namespace input {
 
+///
+/// \brief The InputStreamMqtt class
+///
 class SRC_API InputStreamMqtt : public Input, public io::StreamMqtt
 {
   public:

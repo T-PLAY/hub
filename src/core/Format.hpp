@@ -60,6 +60,9 @@ static inline int nChannel(TypeId_t format) {
 /////////////////////////////////////// 1D ////////////////////////////////////////
 
 // Transform matrix 4x4 of float.
+///
+/// \brief The Mat4 class
+///
 struct Mat4 {
     static constexpr auto id = Types::Format::MAT4;
     static struct {
@@ -146,6 +149,9 @@ struct Mat4 {
 };
 static_assert( sizeof( Mat4 ) == 64 );
 
+///
+/// \brief The Vec3 class
+///
 struct Vec3 {
     float x;
     float y;
@@ -167,6 +173,9 @@ struct Vec3 {
 };
 static_assert( sizeof( Vec3 ) == 12 );
 
+///
+/// \brief The Vec4 class
+///
 struct Vec4 {
     float x;
     float y;
@@ -190,6 +199,9 @@ struct Vec4 {
 };
 static_assert( sizeof( Vec4 ) == 16 );
 
+///
+/// \brief The Density class
+///
 struct Density {
     static constexpr auto id = Types::Format::DENSITY;
     // uint32_t value;
@@ -198,6 +210,9 @@ struct Density {
 };
 static_assert( sizeof( Density ) == 4 );
 
+///
+/// \brief The Distance class
+///
 struct Distance {
     static constexpr auto id = Types::Format::DISTANCE;
     float value;
@@ -207,6 +222,9 @@ static_assert( sizeof( Distance ) == 4 );
 
 /////////////////////////////////////// 2D ////////////////////////////////////////
 
+///
+/// \brief The RGB8 class
+///
 struct RGB8 {
     static constexpr auto id = Types::Format::RGB8;
     RGB8()                   = default;
@@ -220,6 +238,9 @@ struct RGB8 {
 };
 static_assert( sizeof( RGB8 ) == 3 );
 
+///
+/// \brief The RGBA8 class
+///
 struct RGBA8 {
     static constexpr auto id = Types::Format::RGBA8;
     unsigned char r;
@@ -230,6 +251,9 @@ struct RGBA8 {
 };
 static_assert( sizeof( RGBA8 ) == 4 );
 
+///
+/// \brief The BGR8 class
+///
 struct BGR8 {
     static constexpr auto id = Types::Format::BGR8;
     unsigned char b;
@@ -239,6 +263,9 @@ struct BGR8 {
 };
 static_assert( sizeof( BGR8 ) == 3 );
 
+///
+/// \brief The Y8 class
+///
 struct Y8 {
     static constexpr auto id = Types::Format::Y8;
     unsigned char y;
@@ -246,12 +273,18 @@ struct Y8 {
 };
 static_assert( sizeof( Y8 ) == 1 );
 
+///
+/// \brief The Y16 class
+///
 struct Y16 {
     static constexpr auto id = Types::Format::Y16;
     uint16_t y;
     static constexpr auto name() { return "Y16"; };
 };
 
+///
+/// \brief The Z16 class
+///
 struct Z16 {
     static constexpr auto id = Types::Format::Z16;
     uint16_t depth; // meters
@@ -261,6 +294,9 @@ static_assert( sizeof( Z16 ) == 2 );
 
 /////////////////////////////////////// 3D ////////////////////////////////////////
 
+///
+/// \brief The Position class
+///
 struct Position // Cartesian
 {
     static constexpr auto id = Types::Format::POSITION;
@@ -270,6 +306,9 @@ struct Position // Cartesian
     static constexpr auto name() { return "Position"; };
 };
 
+///
+/// \brief The Orientation class
+///
 struct Orientation // Euler
 {
     static constexpr auto id = Types::Format::ORIENTATION;
@@ -280,6 +319,9 @@ struct Orientation // Euler
 };
 
 // Pose data packed as floats array, containing translation vector (x, y, z), rotation quaternion
+///
+/// \brief The Dof6 class
+///
 struct Dof6 {
     static constexpr auto id = Types::Format::DOF6;
     float x;
@@ -313,6 +355,9 @@ static_assert( sizeof( Dof6 ) == 28 );
 
 // Point consist of x, y and z position, rgb color and depth .
 
+///
+/// \brief The XYZ32F class
+///
 struct XYZ32F {
     static constexpr auto id = Types::Format::XYZ32F;
     float x;

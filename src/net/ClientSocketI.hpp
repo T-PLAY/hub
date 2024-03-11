@@ -9,6 +9,9 @@
 namespace hub {
 namespace net {
 
+///
+/// \brief The ClientSocketI class
+///
 class SRC_API ClientSocketI
 {
   public:

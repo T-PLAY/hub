@@ -36,6 +36,9 @@ struct serializable<T, std::void_t<serializable_t<T>>> : std::true_type {};
 template <typename T>
 static constexpr bool serializable_v = serializable<T>::value;
 
+///
+/// \brief The SerializerImpl class
+///
 class SerializerImpl : public SerializerI
 {
     static constexpr Size_t BuffSize = 1'000'000; // 1 Mo
