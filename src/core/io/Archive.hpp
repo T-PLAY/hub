@@ -10,7 +10,9 @@
 
 #include "InputOutput.hpp"
 
+#ifndef HUB_NON_BUILD_IO
 #include "io/Header.hpp"
+#endif
 
 namespace hub {
 namespace io {
@@ -31,7 +33,9 @@ class ArchiveT : public InputOutputT
     /// \brief ArchiveT
     /// \param header
     ///
-    explicit ArchiveT(const io::Header & header) : m_header{header} {};
+#ifndef HUB_NON_BUILD_IO
+    explicit ArchiveT( const io::Header& header ) : m_header { header } {};
+#endif
 
     ///
     /// \brief read
@@ -111,10 +115,9 @@ class ArchiveT : public InputOutputT
     /// \brief getHeader
     /// \return
     ///
-    const Header& getHeader() const {
-        return
-     m_header;
-    }
+#ifndef HUB_NON_BUILD_IO
+    const Header& getHeader() const { return m_header; }
+#endif
 
 #ifdef DEBUG
     ///
@@ -136,7 +139,9 @@ class ArchiveT : public InputOutputT
     size_t m_nCall        = 0;
     size_t m_lastCallSize = 0;
 #endif
+#ifndef HUB_NON_BUILD_IO
     io::Header m_header;
+#endif
 };
 
 ///
