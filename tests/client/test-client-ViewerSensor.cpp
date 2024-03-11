@@ -113,7 +113,7 @@ TEST_CASE( "Viewer" ) {
                 std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                 ++iTry;
             }
-            assert( iTry != 20 );
+            assert( iTry < 20 );
             assert( viewer.isConnected() );
             assert( nServerConnected == 1 );
 
@@ -124,11 +124,13 @@ TEST_CASE( "Viewer" ) {
                 hub::sensor::OutputSensor outputSensor( sensorSpec_ref, FILE_NAME, port );
                 CONSTRUCT_END( "OutputSensor" );
                 iTry = 0;
-                while (viewer.nStream() == 0) {
+                // while (viewer.nStream() == 0) {
+                while ( viewer.nStream() == 0 && iTry < 10 ) {
                     std::cout << "[test] waiting for viewer new stream ..." << std::endl;
                     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                     ++iTry;
                 }
+                assert(iTry < 10);
                 assert( viewer.nStream() == 1 );
                 assert( viewer.nStreaming() == 1 );
                 auto acq    = outputSensor.acqMsg();
@@ -154,7 +156,7 @@ TEST_CASE( "Viewer" ) {
                     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                     ++iTry;
                 }
-                assert( iTry != 10 );
+                assert( iTry < 10 );
                 assert( nNewAcq == 10 );
 
                 DESTRUCT_BEGIN( "OutputStream" );
@@ -167,7 +169,7 @@ TEST_CASE( "Viewer" ) {
                 std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                 ++iTry;
             }
-            assert( iTry != 10 );
+            assert( iTry < 10 );
             assert( viewer.nStream() == 0 );
             assert( viewer.nStreaming() == 0 );
             assert( nDelStreamer == 1 );
@@ -183,7 +185,7 @@ TEST_CASE( "Viewer" ) {
             std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
             ++iTry;
         }
-        assert( iTry != 20 );
+        assert( iTry < 20 );
         assert( !viewer.isConnected() );
         std::cout << "[test] nServerDisconnected : " << nServerDisconnected << std::endl;
         assert( nServerDisconnected == 1 );
