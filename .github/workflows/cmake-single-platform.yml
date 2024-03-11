@@ -66,7 +66,7 @@ jobs:
       uses: ammaraskar/sphinx-action@0.4
       with:
       # The folder containing your sphinx docs.
-        docs-folder: doc/doc_sphinx
+        docs-folder: doc/docs_sphinx
         # The command used to build your documentation.
         # build-command: # optional, default is make html
         # Run before the build command, you can use this to install system level dependencies, for example with "apt-get update -y && apt-get install -y perl"
