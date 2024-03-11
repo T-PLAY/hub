@@ -17,7 +17,17 @@ namespace hub {
 class SRC_API OutputBase : public ios
 {
   public:
+    ///
+    /// \brief write
+    /// \param data
+    /// \param len
+    ///
     virtual void write( const Data_t* data, Size_t len ) = 0;
+
+    ///
+    /// \brief setRetain
+    /// \param retain
+    ///
     virtual void setRetain( bool retain )                = 0;
 };
 

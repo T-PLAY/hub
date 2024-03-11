@@ -46,6 +46,12 @@ class SerializerImpl : public SerializerI
     bool m_reading                   = false;
 
   public:
+
+    ///
+    /// \brief pack
+    /// \param output
+    /// \param ts
+    ///
     template <class Output, class... Ts>
     void pack( Output& output, const Ts&... ts ) {
         m_writing  = true;
@@ -59,6 +65,11 @@ class SerializerImpl : public SerializerI
         m_writing = false;
     }
 
+    ///
+    /// \brief unpack
+    /// \param input
+    /// \param ts
+    ///
     template <class Input, class... Ts>
     void unpack( Input& input, Ts&... ts ) {
         m_reading = true;
@@ -72,6 +83,11 @@ class SerializerImpl : public SerializerI
         assert( m_position == size );
         m_reading = false;
     }
+
+    ///
+    /// \brief operator ()
+    /// \param ts
+    ///
     template <class... Ts>
     void operator()( Ts&... ts ) {
         if ( m_writing ) { writeAll( ts... ); }
@@ -81,6 +97,11 @@ class SerializerImpl : public SerializerI
         }
     }
 
+    ///
+    /// \brief write
+    /// \param data
+    /// \param size
+    ///
     virtual void write( const Data_t* data, Size_t size ) {
 #ifdef HUB_DEBUG_OUTPUT
         std::vector<Data_t> vector( data, data + size );
@@ -91,16 +112,31 @@ class SerializerImpl : public SerializerI
         m_position += size;
     }
 
+    ///
+    /// \brief writeAll
+    /// \param t
+    ///
     template <class T>
     void writeAll( const T& t ) {
         write( t );
     }
+
+    ///
+    /// \brief writeAll
+    /// \param t
+    /// \param ts
+    ///
     template <class T, class... Ts>
     void writeAll( const T& t, const Ts&... ts ) {
         write( t );
         writeAll( ts... );
     }
 
+    ///
+    /// \brief read
+    /// \param data
+    /// \param size
+    ///
     virtual void read( Data_t* data, Size_t size ) {
         memcpy( data, &m_serialBuff[m_position], size );
         m_position += size;
@@ -112,10 +148,20 @@ class SerializerImpl : public SerializerI
 #endif
     }
 
+    ///
+    /// \brief readAll
+    /// \param t
+    ///
     template <class T>
     void readAll( T& t ) {
         read( t );
     }
+
+    ///
+    /// \brief readAll
+    /// \param t
+    /// \param ts
+    ///
     template <class T, class... Ts>
     void readAll( T& t, Ts&... ts ) {
         read( t );

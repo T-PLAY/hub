@@ -23,8 +23,16 @@ namespace io {
 class SRC_API File
 {
   public:
+    ///
+    /// \brief getHeader
+    /// \return
+    ///
     const Header& getHeader() const;
 
+    ///
+    /// \brief getFilePath
+    /// \return
+    ///
     const std::string & getFilePath() const;
 
   protected:
@@ -37,6 +45,10 @@ class SRC_API File
     ///
     explicit File( const std::string& filePath );
 
+    ///
+    /// \brief File
+    /// \param filePath
+    ///
     explicit File( const char* filePath );
 
     ///
@@ -62,10 +74,15 @@ class SRC_API File
         ///
         const char* what() const throw() { return std::runtime_error::what(); }
     };
+
     ///
     /// \brief m_file
     ///
     io::Header m_header;
+
+    ///
+    /// \brief m_filePath
+    ///
     const std::string m_filePath;
 };
 

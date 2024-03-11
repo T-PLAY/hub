@@ -34,32 +34,76 @@ extern "C"
 {
 #endif
 
+    ///
+    /// \brief onServerNotFoundFunc
+    ///
     typedef void ( *onServerNotFoundFunc )( const char* ipv4, int port );
 
+    ///
+    /// \brief onServerConnectedFunc
+    ///
     typedef void ( *onServerConnectedFunc )( const char* ipv4, int port );
 
+    ///
+    /// \brief onServerDisconnectedFunc
+    ///
     typedef void ( *onServerDisconnectedFunc )( const char* ipv4, int port );
 
+    ///
+    /// \brief onNewStreamFunc
+    ///
     typedef bool ( *onNewStreamFunc )( const char* streamName, const io::Header* header );
 #ifndef HUB_NON_BUILD_SENSOR
+    ///
+    /// \brief onNewSensorFunc
+    ///
     typedef bool ( *onNewSensorFunc )( const char* streamName,
                                        const sensor::SensorSpec* sensorSpec );
 #endif
 
+    ///
+    /// \brief onNewDataFunc
+    ///
     typedef void ( *onNewDataFunc )( const char* streamName, const Datas_t* datas );
 #ifndef HUB_NON_BUILD_SENSOR
+    ///
+    /// \brief onNewAcqFunc
+    ///
     typedef void ( *onNewAcqFunc )( const char* streamName, const sensor::Acquisition* acq );
 #endif
 
+    ///
+    /// \brief onDelStreamFunc
+    ///
     typedef void ( *onDelStreamFunc )( const char* streamName );
 
+    ///
+    /// \brief onSetPropertyFunc
+    ///
     typedef void ( *onSetPropertyFunc )( const char* streamName,
                                          const char* objectName,
                                          int property,
                                          const Any* value );
 
+    ///
+    /// \brief onServerNotFoundFunc
+    ///
     typedef void ( *onLogMessageFunc )( const char* logMessage );
 
+    ///
+    /// \brief createViewerHandler
+    /// \param onServerNotFound
+    /// \param onServerConnected
+    /// \param onServerDisconnected
+    /// \param onNewStream
+    /// \param onNewSensor
+    /// \param onNewData
+    /// \param onNewAcq
+    /// \param onDelStream
+    /// \param onSetProperty
+    /// \param onLogMessage
+    /// \return
+    ///
     SRC_API client::ViewerHandler*
     createViewerHandler( onServerNotFoundFunc onServerNotFound,
                          onServerConnectedFunc onServerConnected,
@@ -82,6 +126,10 @@ extern "C"
     ///
     SRC_API void freeViewerHandler( client::ViewerHandler* viewerHandler );
 
+    ///
+    /// \brief printStatus
+    /// \return
+    ///
     SRC_API int printStatus();
 
 #ifdef __cplusplus

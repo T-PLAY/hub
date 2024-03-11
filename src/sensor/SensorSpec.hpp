@@ -40,12 +40,17 @@ class SRC_API SensorSpec
     /// \param metaData
     /// [in] Additional informations of the sensor and acquisition.
     ///
-
     SensorSpec( const std::string& sensorName,
                 const Matrix& resolution,
                 const MetaData& metaData = {} ) :
         m_sensorName { sensorName }, m_resolution { resolution.clone() }, m_metaData { metaData } {}
 
+    ///
+    /// \brief SensorSpec
+    /// \param sensorName
+    /// \param resolution
+    /// \param metaData
+    ///
     template <class Resolution>
     SensorSpec( const std::string& sensorName,
                 const Resolution& resolution,
@@ -57,28 +62,41 @@ class SRC_API SensorSpec
         }
     }
 
+    ///
+    /// \brief toString
+    ///
     auto toString() const {
         return "'" + m_sensorName + "' " + m_resolution.toString() + " " +
                hub::to_string( m_metaData );
     }
 
+    ///
+    /// \brief operator ==
+    /// \param other
+    /// \return
+    ///
     bool operator==( const SensorSpec& other ) const {
         return m_sensorName == other.m_sensorName && m_resolution == other.m_resolution &&
                m_metaData == other.m_metaData;
     }
 
-    ////        , m_resolutions(input.get<decltype(m_resolutions)>())
-    ////        input.read( m_sensorName );
-    ////        input.read( m_resolutions );
-    ////        input.read( m_metaData );
 
     SensorSpec() = default;
 
+    ///
+    /// \brief SensorSpec
+    /// \param sensorSpec
+    ///
     SensorSpec( const SensorSpec& sensorSpec ) :
         m_sensorName { sensorSpec.m_sensorName },
         m_resolution { sensorSpec.m_resolution.clone() },
         m_metaData { sensorSpec.m_metaData } {};
 
+    ///
+    /// \brief operator =
+    /// \param sensorSpec
+    /// \return
+    ///
     SensorSpec& operator=( const SensorSpec& sensorSpec ) {
         m_sensorName = sensorSpec.m_sensorName;
         m_resolution = sensorSpec.m_resolution.clone();
@@ -86,13 +104,27 @@ class SRC_API SensorSpec
         return *this;
     }
 
+    ///
+    /// \brief write
+    /// \param serializer
+    ///
     void write( Serializer& serializer ) const {
         serializer.writeAll( m_sensorName, m_resolution, m_metaData );
     }
+
+    ///
+    /// \brief read
+    /// \param serializer
+    ///
     void read( Serializer& serializer ) {
         serializer.readAll( m_sensorName, m_resolution, m_metaData );
     }
 
+    ///
+    /// \brief operator +
+    /// \param other
+    /// \return
+    ///
     SensorSpec operator+( const SensorSpec& other ) const {
 
         std::string sensorName;
@@ -112,6 +144,11 @@ class SRC_API SensorSpec
             std::move( sensorName ), std::move( resolution ), std::move( metaData ) );
     }
 
+    ///
+    /// \brief operator +=
+    /// \param other
+    /// \return
+    ///
     SensorSpec& operator+=( const SensorSpec& other ) {
         if ( m_sensorName == "" ) { *this = other; }
         else {
@@ -120,14 +157,46 @@ class SRC_API SensorSpec
         return *this;
     }
 
+    ///
+    /// \brief getSensorName
+    /// \return
+    ///
     const std::string & getSensorName() const { return m_sensorName; }
+
+    ///
+    /// \brief getResolution
+    /// \return
+    ///
     const Matrix& getResolution() const { return m_resolution; }
+
+    ///
+    /// \brief getMetaData
+    /// \return
+    ///
     const MetaData& getMetaData() const { return m_metaData; }
+
+    ///
+    /// \brief getMetaData
+    /// \return
+    ///
     MetaData& getMetaData() { return m_metaData; }
 
+    ///
+    /// \brief setResolution
+    /// \param newResolution
+    ///
     void setResolution( Matrix&& newResolution ) { m_resolution = std::move( newResolution ); }
+
+    ///
+    /// \brief setResolution
+    /// \param newResolution
+    ///
     void setResolution( const Matrix& newResolution ) { m_resolution = newResolution.clone(); }
 
+    ///
+    /// \brief dataSize
+    /// \return
+    ///
     Size_t dataSize() const { return 2 * sizeof( hub::sensor::Clock ) + m_resolution.size(); };
 
   private:

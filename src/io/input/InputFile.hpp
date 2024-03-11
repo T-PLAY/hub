@@ -21,13 +21,36 @@ class SRC_API InputFile : public Input, public io::File
     using Input::read;
     using io::File::getHeader;
 
+    ///
+    /// \brief InputFile
+    /// \param filePath
+    ///
     explicit InputFile( const std::string& filePath );
 
   public:
+    ///
+    /// \brief isOpen
+    /// \return
+    ///
     bool isOpen() const override;
+    ///
+    /// \brief close
+    ///
     void close() override;
+    ///
+    /// \brief isEnd
+    /// \return
+    ///
     bool isEnd() const override;
+    ///
+    /// \brief read
+    /// \param data
+    /// \param len
+    ///
     void read( Data_t* data, Size_t len ) override;
+    ///
+    /// \brief clear
+    ///
     void clear() override;
 
   private:

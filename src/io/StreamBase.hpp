@@ -23,9 +23,22 @@ namespace io {
 class SRC_API StreamBase
 {
   public:
+    ///
+    /// \brief The ClientType enum
+    ///
     enum class ClientType { NONE = 0, STREAMER, STREAM_VIEWER, VIEWER, ASKER, KILLER, COUNT };
+
+    ///
+    /// \brief operator <<
+    /// \param os
+    /// \param clientType
+    /// \return
+    ///
     SRC_API friend std::ostream& operator<<( std::ostream& os, const ClientType& clientType );
 
+    ///
+    /// \brief The ClientMessage enum
+    ///
     enum class ClientMessage {
         NONE = 0,
 
@@ -57,8 +70,18 @@ class SRC_API StreamBase
 
         COUNT
     };
+
+    ///
+    /// \brief operator <<
+    /// \param os
+    /// \param msg
+    /// \return
+    ///
     SRC_API friend std::ostream& operator<<( std::ostream& os, const ClientMessage& msg );
 
+    ///
+    /// \brief The ServerMessage enum
+    ///
     enum class ServerMessage {
         NONE = 0,
 
@@ -90,6 +113,13 @@ class SRC_API StreamBase
 
         COUNT
     };
+
+    ///
+    /// \brief operator <<
+    /// \param os
+    /// \param msg
+    /// \return
+    ///
     SRC_API friend std::ostream& operator<<( std::ostream& os, const ServerMessage& msg );
 
     ///
@@ -116,12 +146,29 @@ class SRC_API StreamBase
     };
 
   protected:
+    ///
+    /// \brief StreamBase
+    /// \param name
+    /// \param ipv4
+    /// \param port
+    ///
     StreamBase( const std::string& name, const std::string& ipv4, int port );
     // StreamBase( const char* name, const char* ipv4, int port, const Header& header );
 
     // Header m_header;
+    ///
+    /// \brief m_name
+    ///
     const std::string m_name;
+
+    ///
+    /// \brief m_ipv4
+    ///
     const std::string m_ipv4;
+
+    ///
+    /// \brief m_port
+    ///
     const int m_port;
 };
 

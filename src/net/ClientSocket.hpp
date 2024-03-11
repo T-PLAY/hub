@@ -10,6 +10,9 @@
 namespace hub {
 namespace net {
 
+///
+/// \brief ClientSocket
+///
 using ClientSocket = system::ClientSocketSystem;
 
 static_assert( std::is_base_of<ClientSocketI, ClientSocket>::value,

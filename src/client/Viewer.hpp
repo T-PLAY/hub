@@ -11,6 +11,9 @@
 namespace hub {
 namespace client {
 
+///
+/// \brief Viewer
+///
 using Viewer = ViewerServer2;
 
 static_assert( std::is_base_of<client::ViewerInterface<input::InputStream>, Viewer>::value,

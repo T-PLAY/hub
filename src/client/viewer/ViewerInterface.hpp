@@ -112,6 +112,10 @@ class ViewerInterface
     ///
     virtual const int& getPort() const;
 
+    ///
+    /// \brief setAutoConnect
+    /// \param autoConnect
+    ///
     virtual void setAutoConnect( bool autoConnect );
 
     ///
@@ -149,31 +153,95 @@ class ViewerInterface
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
+    ///
+    /// \brief nStream
+    /// \return
+    ///
     int nStream() const;
+
+    ///
+    /// \brief nStreaming
+    /// \return
+    ///
     int nStreaming() const;
+
+    ///
+    /// \brief printStatus
+    ///
     void printStatus() const;
+
+    ///
+    /// \brief hasStream
+    /// \param streamName
+    /// \return
+    ///
     bool hasStream( const std::string& streamName );
+
+    ///
+    /// \brief getActiveStreams
+    /// \return
+    ///
     std::set<std::string> getActiveStreams() const;
 
 
   private:
   protected:
+    ///
+    /// \brief addStream
+    /// \param streamName
+    /// \param streamIpv4
+    /// \param streamPort
+    /// \param header
+    ///
     void addStream( const std::string& streamName,
                     const std::string& streamIpv4,
                     int streamPort,
                     io::Header&& header );
+
+    ///
+    /// \brief delStream
+    /// \param streamName
+    ///
     void delStream( const std::string& streamName );
 
+    ///
+    /// \brief m_name
+    ///
     std::string m_name;
+
+    ///
+    /// \brief m_viewerHandler
+    ///
     ViewerHandler m_viewerHandler;
+
+    ///
+    /// \brief m_serverIpv4
+    ///
     std::string m_serverIpv4;
+
+    ///
+    /// \brief m_serverPort
+    ///
     int m_serverPort;
 
+    ///
+    /// \brief m_serverConnected
+    ///
     bool m_serverConnected = false;
 
+    ///
+    /// \brief m_streams
+    ///
     std::map<std::string, std::unique_ptr<ViewerStream<InputStream>>> m_streams;
 
+    ///
+    /// \brief m_nStreamer
+    ///
     int m_nStreamer = 0;
+
+    ///
+    /// \brief m_autoConnect
+    ///
     bool m_autoConnect;
 
   private:

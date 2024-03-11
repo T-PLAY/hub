@@ -9,6 +9,9 @@
 namespace hub {
 namespace client {
 
+///
+/// \brief Asker
+///
 using Asker = AskerServer2;
 
 static_assert( std::is_base_of<client::AskerInterface, Asker>::value,

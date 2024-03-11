@@ -9,6 +9,9 @@
 namespace hub {
 namespace io {
 
+///
+/// \brief Stream
+///
 using Stream = StreamServer2;
 
 } // namespace io

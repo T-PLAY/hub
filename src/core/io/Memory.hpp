@@ -23,17 +23,29 @@ class MemoryT : public InputOutputT
     using InputOutputT::read;
     using InputOutputT::write;
 
+    ///
+    /// \brief MemoryT
+    /// \param container
+    ///
     template <class Container>
     explicit MemoryT( Container& container ) {
         m_data.clear();
         m_data.insert( m_data.end(), container.begin(), container.end() );
     }
 
+    ///
+    /// \brief MemoryT
+    ///
     MemoryT() = default;
     // MemoryT() {
         // m_data.reserve(20'000'000);
     // }
 
+    ///
+    /// \brief read
+    /// \param data
+    /// \param size
+    ///
     void read( hub::Data_t* data, hub::Size_t size ) override {
         assert( size > 0 );
         assert( !m_data.empty() );
@@ -49,6 +61,11 @@ class MemoryT : public InputOutputT
         // std::cout << "[Memory] data " << m_data << std::endl;
     }
 
+    ///
+    /// \brief write
+    /// \param data
+    /// \param size
+    ///
     void write( const hub::Data_t* data, hub::Size_t size ) override {
         std::vector<Data_t> vector( data, data + size );
         // std::cout << "[Memory] data " << m_data << std::endl;
@@ -63,23 +80,43 @@ class MemoryT : public InputOutputT
         // std::cout << "[Memory] data " << m_data << std::endl;
     }
 
+    ///
+    /// \brief close
+    ///
     void close() override {};
 
+    ///
+    /// \brief isOpen
+    /// \return
+    ///
     bool isOpen() const override { return true; }
 
+    ///
+    /// \brief isEnd
+    /// \return
+    ///
     bool isEnd() const override { return m_data.empty(); }
 
+    ///
+    /// \brief clear
+    ///
     void clear() override { m_data.clear(); }
 
+    ///
+    /// \brief setRetain
+    /// \param retained
+    ///
     void setRetain( bool retained ) override {}
 
+    ///
+    /// \brief getData
+    /// \return
+    ///
     const Datas_t & getData() const {
         return m_data;
         // Datas_t datas( m_data.begin(), m_data.end() );
         // return datas;
     }
-
-
 
   private:
     // std::list<hub::Data_t> m_data;
@@ -87,6 +124,9 @@ class MemoryT : public InputOutputT
     Datas_t m_data;
 };
 
+///
+/// \brief Memory
+///
 using Memory = MemoryT<>;
 
 } // namespace io

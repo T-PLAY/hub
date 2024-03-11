@@ -13,14 +13,24 @@ namespace outputSensor {
 class OutputSensor_1D_Dof6 : public OutputSensor_Instance
 {
   public:
+    /// \brief asyncRun
     using OutputSensor_Instance::asyncRun;
+    /// \brief OutputSensor_Instance
     using OutputSensor_Instance::OutputSensor_Instance;
+    /// \brief run
     using OutputSensor_Instance::run;
+    /// \brief stop
     using OutputSensor_Instance::stop;
 
+    ///
+    /// \brief Resolution
+    ///
     using Resolution = hub::format::Dof6;
     // using OutputSensor = hub::sensor::OutputSensorT<Resolution>;
 
+    ///
+    /// \brief init
+    ///
     void init() const override {
         hub::MetaData metaData;
         metaData["author"] = "gauthier";
@@ -29,6 +39,9 @@ class OutputSensor_1D_Dof6 : public OutputSensor_Instance
         m_inited           = true;
     }
 
+    ///
+    /// \brief routine
+    ///
     void routine() override {
 
         std::unique_ptr<OutputSensor> outputSensor;

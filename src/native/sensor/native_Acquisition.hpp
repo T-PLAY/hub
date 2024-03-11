@@ -10,7 +10,6 @@ namespace hub {
 
 #ifndef HUB_CPP_SOURCE
 
-
 namespace sensor {
 class Acquisition;
 }
@@ -27,15 +26,37 @@ extern "C"
 {
 #endif
 
-SRC_API void freeAcquisition( sensor::Acquisition* acquisition );
+    ///
+    /// \brief freeAcquisition
+    /// \param acquisition
+    ///
+    SRC_API void freeAcquisition( sensor::Acquisition* acquisition );
 
-SRC_API void
-acquisition_getMeasure( const sensor::Acquisition* acquisition, unsigned char* data, int iMeasure = 0 );
+    ///
+    /// \brief acquisition_getMeasure
+    /// \param acquisition
+    /// \param data
+    /// \param iMeasure
+    ///
+    SRC_API void acquisition_getMeasure( const sensor::Acquisition* acquisition,
+                                         unsigned char* data,
+                                         int iMeasure = 0 );
 
-SRC_API long long acquisition_getStart( const sensor::Acquisition* acquisition );
+    ///
+    /// \brief acquisition_getStart
+    /// \param acquisition
+    /// \return
+    ///
+    SRC_API long long acquisition_getStart( const sensor::Acquisition* acquisition );
 
-SRC_API void acquisition_to_string( const sensor::Acquisition* acquisition, char* str, int* strLen );
-
+    ///
+    /// \brief acquisition_to_string
+    /// \param acquisition
+    /// \param str
+    /// \param strLen
+    ///
+    SRC_API void
+    acquisition_to_string( const sensor::Acquisition* acquisition, char* str, int* strLen );
 
 #ifdef __cplusplus
 } // end extern "C"

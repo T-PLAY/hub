@@ -26,6 +26,11 @@ class SRC_API OutputT : public OutputBase
 
 //    virtual const io::Header & getHeader() const = 0;
 
+    ///
+    /// \brief write
+    /// \param t
+    /// \return
+    ///
     template <class T>
     typename std::enable_if<packable_v<T>>::type write( const T& t ) {
 #ifdef HUB_DEBUG_OUTPUT
@@ -38,6 +43,11 @@ class SRC_API OutputT : public OutputBase
         }
     }
 
+    ///
+    /// \brief write
+    /// \param t
+    /// \return
+    ///
     template <class T>
     typename std::enable_if<!packable_v<T> && writable_v<T>>::type write( const T& t ) {
 #ifdef HUB_DEBUG_OUTPUT
@@ -47,6 +57,11 @@ class SRC_API OutputT : public OutputBase
         const_cast<T&>( t ).write( *this );
     }
 
+    ///
+    /// \brief write
+    /// \param t
+    /// \return
+    ///
     template <class T>
     typename std::enable_if<!packable_v<T> && !writable_v<T>>::type write( const T& t ) {
 #ifdef HUB_DEBUG_OUTPUT
@@ -56,6 +71,11 @@ class SRC_API OutputT : public OutputBase
         m_serializer.pack( *this, t );
     }
 
+    ///
+    /// \brief writeAll
+    /// \param t
+    /// \param ts
+    ///
     template <class T, class... Ts>
     void writeAll( const T& t, const Ts&... ts ) {
         m_serializer.pack( *this, t, ts... );

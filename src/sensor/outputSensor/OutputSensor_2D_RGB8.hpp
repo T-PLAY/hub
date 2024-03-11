@@ -13,16 +13,34 @@ namespace outputSensor {
 class OutputSensor_2D_RGB8 : public OutputSensor_Instance
 {
   public:
+    /// \brief asyncRun
     using OutputSensor_Instance::asyncRun;
+    /// \brief OutputSensor_Instance
     using OutputSensor_Instance::OutputSensor_Instance;
+    /// \brief run
     using OutputSensor_Instance::run;
+    /// \brief stop
     using OutputSensor_Instance::stop;
 
+    ///
+    /// \brief width
+    ///
     static constexpr int width  = 640;
+
+    ///
+    /// \brief height
+    ///
     static constexpr int height = 480;
+
+    ///
+    /// \brief Resolution
+    ///
     using Resolution            = hub::MatrixXD<hub::format::RGB8, width, height>;
     // using Resolution            = hub::MatrixXD<hub::format::RGB8, 640, 480>;
 
+    ///
+    /// \brief init
+    ///
     void init() const override {
         hub::MetaData metaData;
         metaData["author"] = "gauthier";
@@ -32,6 +50,9 @@ class OutputSensor_2D_RGB8 : public OutputSensor_Instance
         m_inited           = true;
     }
 
+    ///
+    /// \brief routine
+    ///
     void routine() override {
     // constexpr int width  = 640;
     // constexpr int height = 480;

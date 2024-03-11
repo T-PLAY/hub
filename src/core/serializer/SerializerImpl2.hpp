@@ -19,18 +19,47 @@ namespace serializer {
 class SerializerImpl2 : public SerializerI
 {
   public:
+    ///
+    /// \brief SerializerImpl2
+    /// \param byteView
+    ///
     SerializerImpl2( ByteView& byteView ) : SerializerI( byteView ) {}
 
+    ///
+    /// \brief resetIn
+    ///
     void resetIn() override {}
+
+    ///
+    /// \brief resetOut
+    ///
     void resetOut() override {}
+
+    ///
+    /// \brief inPosition
+    /// \return
+    ///
     Size_t inPosition() const override { return m_inPosition; }
+
+    ///
+    /// \brief outPosition
+    /// \return
+    ///
     Size_t outPosition() const override { return m_outPosition; }
 
+    ///
+    /// \brief serialize
+    /// \param ts
+    ///
     template <class... Ts>
     void serialize( const Ts&... ts ) {
         assert( false );
     }
 
+    ///
+    /// \brief deserialize
+    /// \param ts
+    ///
     template <class... Ts>
     void deserialize( const Ts&... ts ) {
         assert( false );

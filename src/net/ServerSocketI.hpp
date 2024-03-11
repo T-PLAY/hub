@@ -16,7 +16,16 @@ namespace net {
 class SRC_API ServerSocketI
 {
   public:
+    ///
+    /// \brief getPort
+    /// \return
+    ///
     virtual int getPort() const = 0;
+
+    ///
+    /// \brief waitNewClient
+    /// \return
+    ///
     ClientSocketI waitNewClient();
 };
 

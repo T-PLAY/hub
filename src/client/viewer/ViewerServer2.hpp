@@ -22,6 +22,14 @@ namespace client {
 class ViewerServer2 : public hub::client::ViewerInterface<input::InputStreamServer2>
 {
   public:
+    ///
+    /// \brief ViewerServer2
+    /// \param name
+    /// \param viewerHandler
+    /// \param serverIpv4
+    /// \param serverPort
+    /// \param autoConnect
+    ///
     SRC_API explicit ViewerServer2( const std::string& name,
                                     ViewerHandler&& viewerHandler,
                                     const std::string& serverIpv4 = HUB_SERVICE_IPV4,
@@ -30,15 +38,34 @@ class ViewerServer2 : public hub::client::ViewerInterface<input::InputStreamServ
 
     SRC_API ~ViewerServer2();
 
+    ///
+    /// \brief setIpv4
+    /// \param serverIpv4
+    ///
     void setIpv4( const std::string& serverIpv4 ) override;
 
+    ///
+    /// \brief setPort
+    /// \param serverPort
+    ///
     void setPort( int serverPort ) override;
 
+    ///
+    /// \brief setProperty
+    /// \param streamName
+    /// \param objectName
+    /// \param property
+    /// \param value
+    ///
     void setProperty( const std::string& streamName,
                       const std::string& objectName,
                       int property,
                       const Any& value ) override;
 
+    ///
+    /// \brief setAutoConnect
+    /// \param autoConnect
+    ///
     void setAutoConnect( bool autoConnect ) override;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

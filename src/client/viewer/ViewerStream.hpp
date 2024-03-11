@@ -46,6 +46,15 @@ template <class InputStream>
 class ViewerStream
 {
   public:
+    ///
+    /// \brief ViewerStream
+    /// \param iStreamer
+    /// \param streamIpv4
+    /// \param streamPort
+    /// \param streamName
+    /// \param header
+    /// \param viewerHandler
+    ///
     ViewerStream( int iStreamer,
                   const std::string& streamIpv4,
                   int streamPort,
@@ -61,8 +70,20 @@ class ViewerStream
 
     ~ViewerStream();
 
+    ///
+    /// \brief startStream
+    ///
     void startStream();
+
+    ///
+    /// \brief stopStream
+    ///
     void stopStream();
+
+    ///
+    /// \brief isStreaming
+    /// \return
+    ///
     bool isStreaming() const;
 
   private:

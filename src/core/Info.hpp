@@ -8,12 +8,12 @@
 
 /* cppcheck-suppress missingInclude */
 
-///
-/// \brief hub
-///
 namespace hub {
 
+/// \brief s_contributionStart
 extern const int s_contributionStart;
+
+/// \brief s_contributionEnd
 extern const int s_contributionEnd;
 
 /** @brief Returns major library version */
@@ -25,51 +25,25 @@ extern const int s_versionPatch;
 /** @sa MajorVersion.MinorVersion.PatchVersion */
 extern const std::string s_version;
 
+/// \brief s_commitHash
 extern const std::string s_commitHash;
 
-///
-/// \brief core
-///
 namespace core {}
 
-///
-/// \brief net
-///
 namespace net {}
 
-///
-/// \brief io
-///
 namespace io {}
 
-///
-/// \brief server
-///
 namespace server {}
 
-///
-/// \brief client
-///
 namespace client {}
 
-///
-/// \brief native
-///
 namespace native {}
 
-///
-/// \brief sensor
-///
 namespace sensor {}
 
-///
-/// \brief data
-///
 namespace data {}
 
-///
-/// \brief server
-///
 namespace server {}
 
 } // namespace hub

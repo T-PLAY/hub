@@ -26,8 +26,18 @@ class ArchiveT : public InputOutputT
     using InputOutputT::write;
 
     ArchiveT() = default;
+
+    ///
+    /// \brief ArchiveT
+    /// \param header
+    ///
     ArchiveT(const io::Header & header) : m_header{header} {};
 
+    ///
+    /// \brief read
+    /// \param data
+    /// \param size
+    ///
     void read( hub::Data_t* data, hub::Size_t size ) override {
         assert( size > 0 );
         assert( !m_datas.empty() );
@@ -47,6 +57,11 @@ class ArchiveT : public InputOutputT
 #endif
     }
 
+    ///
+    /// \brief write
+    /// \param data
+    /// \param size
+    ///
     void write( const hub::Data_t* data, hub::Size_t size ) override {
         assert( size > 0 );
         std::vector<hub::Data_t> vector( data, data + size );
@@ -61,27 +76,57 @@ class ArchiveT : public InputOutputT
 #endif
     }
 
+    ///
+    /// \brief close
+    ///
     void close() override {};
 
+    ///
+    /// \brief isOpen
+    /// \return
+    ///
     bool isOpen() const override { return true; }
 
+    ///
+    /// \brief isEnd
+    /// \return
+    ///
     bool isEnd() const override { return m_datas.empty(); }
 
+    ///
+    /// \brief clear
+    ///
     void clear() override {
         while ( !m_datas.empty() )
             m_datas.pop();
     }
 
+    ///
+    /// \brief setRetain
+    /// \param retained
+    ///
     void setRetain( bool retained ) override {}
 
+    ///
+    /// \brief getHeader
+    /// \return
+    ///
     const Header& getHeader() const {
         return
      m_header;
     }
 
 #ifdef DEBUG
+    ///
+    /// \brief getNCall
+    /// \return
+    ///
     size_t getNCall() const { return m_nCall; }
 
+    ///
+    /// \brief getLastCallSize
+    /// \return
+    ///
     size_t getLastCallSize() const { return m_lastCallSize; }
 #endif
 
@@ -94,6 +139,9 @@ class ArchiveT : public InputOutputT
     io::Header m_header;
 };
 
+///
+/// \brief Archive
+///
 using Archive = ArchiveT<>;
 
 } // namespace io

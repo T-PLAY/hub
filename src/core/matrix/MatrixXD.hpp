@@ -28,15 +28,45 @@ requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
     static_assert( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) );
 
   public:
+    ///
+    /// \brief matrix
+    ///
     static struct {
     } matrix;
+
+    ///
+    /// \brief Capacity
+    ///
     static constexpr auto Capacity = ( Ns * ... );
+
+    ///
+    /// \brief Size
+    ///
     static constexpr auto Size     = sizeOf<Type>() * Capacity;
+
+    ///
+    /// \brief capacity
+    ///
     static constexpr auto capacity() { return Capacity; };
+
+    ///
+    /// \brief size
+    ///
     static constexpr auto size() { return Size; };
 
+    ///
+    /// \brief nType
+    ///
     static constexpr auto nType() { return 1; };
+
+    ///
+    /// \brief nDim
+    ///
     static constexpr auto nDim() { return sizeof...( Ns ); };
+
+    ///
+    /// \brief getDim
+    ///
     template <Size_t i>
 #if CPP_VERSION >= 20
     requires( 0 <= i && i < nDim() )
@@ -50,30 +80,51 @@ requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
         }
         return (Size_t)0;
     }
+
+    ///
+    /// \brief data
+    /// \return
+    ///
     const Data_t* data() const { return m_buffer.data(); }
 
+    ///
+    /// \brief hasType
+    ///
     template <class Type_>
     static constexpr auto hasType() {
         return std::is_same<Type, Type_>();
     }
 
+    ///
+    /// \brief hasType
+    /// \return
+    ///
     template <class... Types>
-    REQUIRES( static constexpr, sizeof...( Types ) > 1, bool )
+    // REQUIRES( static constexpr, sizeof...( Types ) > 1, bool )
+    static constexpr typename std::enable_if_t<(sizeof...( Types ) > 1), bool>
     hasType() {
         return ( hasType<Types>() && ... );
     }
 
+    ///
+    /// \brief nType
+    /// \return
+    ///
     template <class Type_>
     static constexpr int nType() {
         return std::is_same_v<Type, Type_>;
     }
 
+    ///
+    /// \brief getOffset
+    /// \return
+    ///
     template <class Type_, int i = 0>
-    REQUIRES( static constexpr, hasType<Type_>() && i < nType<Type_>(), Size_t )
+    // REQUIRES( static constexpr, hasType<Type_>() && i < nType<Type_>(), Size_t )
+            static constexpr typename std::enable_if_t<hasType<Type_>() && i < nType<Type_>(), Size_t>
     getOffset() {
         return 0;
     }
-
 
     template <Size_t ith>
 #if CPP_VERSION >= 20
@@ -101,20 +152,35 @@ requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
         return str;
     }
 
+    ///
+    /// \brief toString
+    ///
     constexpr auto toString() const { return name() + " = " + m_buffer.toString(); }
 
+    ///
+    /// \brief get
+    /// \return
+    ///
     template <int i = 0>
     const Type& get() {
         static_assert( 0 <= i && i < Capacity );
         return reinterpret_cast<const Type&>( *( m_buffer.data() + i * sizeof( Type ) ) );
     }
 
+    ///
+    /// \brief serialize
+    /// \param matrix
+    ///
     void serialize( Matrix& matrix ) const {
         assert( !matrix.hasValue() );
         auto matrix2 = make_matrix<Type, Ns...>();
         matrix |= matrix2;
     }
 
+    ///
+    /// \brief getMatrix
+    /// \return
+    ///
     Matrix getMatrix() const {
         Matrix matrix;
         serialize( matrix );
@@ -122,6 +188,11 @@ requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
         return matrix;
     }
 
+    ///
+    /// \brief operator ==
+    /// \param matrix
+    /// \return
+    ///
     bool operator==( const Matrix& matrix ) { return getMatrix() == matrix; }
 
   private:
@@ -144,6 +215,11 @@ requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
     static_assert( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) );
 
   public:
+
+    ///
+    /// \brief n
+    /// \return
+    ///
     template <int i>
     static constexpr Size_t n() {
         static_assert( 0 <= i && i < MatrixXDBase<Type, Ns...>::nDim() );
@@ -168,6 +244,9 @@ requires( N > 1 )
     static_assert( N > 1 );
 
   public:
+    ///
+    /// \brief length
+    ///
     static constexpr auto length() { return N; }
 };
 
@@ -178,7 +257,16 @@ template <class Type, Size_t N, Size_t N2>
 class MatrixXD<Type, N, N2> : public MatrixXDBase<Type, N, N2>
 {
   public:
+    ///
+    /// \brief width
+    /// \return
+    ///
     static constexpr Size_t width() { return N; }
+
+    ///
+    /// \brief height
+    /// \return
+    ///
     static constexpr Size_t height() { return N2; }
 };
 
@@ -189,8 +277,22 @@ template <class Type, Size_t N, Size_t N2, Size_t N3>
 class MatrixXD<Type, N, N2, N3> : public MatrixXDBase<Type, N, N2, N3>
 {
   public:
+    ///
+    /// \brief nx
+    /// \return
+    ///
     static constexpr Size_t nx() { return N; }
+
+    ///
+    /// \brief ny
+    /// \return
+    ///
     static constexpr Size_t ny() { return N2; }
+
+    ///
+    /// \brief nz
+    /// \return
+    ///
     static constexpr Size_t nz() { return N3; }
 };
 
@@ -201,9 +303,28 @@ template <class Type, Size_t N, Size_t N2, Size_t N3, Size_t N4>
 class MatrixXD<Type, N, N2, N3, N4> : public MatrixXDBase<Type, N, N2, N3, N4>
 {
   public:
+    ///
+    /// \brief nx
+    /// \return
+    ///
     static constexpr Size_t nx() { return N; }
+
+    ///
+    /// \brief ny
+    /// \return
+    ///
     static constexpr Size_t ny() { return N2; }
+
+    ///
+    /// \brief nz
+    /// \return
+    ///
     static constexpr Size_t nz() { return N3; }
+
+    ///
+    /// \brief nt
+    /// \return
+    ///
     static constexpr Size_t nt() { return N4; }
 };
 

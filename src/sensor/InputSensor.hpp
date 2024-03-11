@@ -65,8 +65,15 @@ namespace sensor {
         }
 
     public:
+        ///
+        /// \brief acqMsg
+        ///
         using Sensor::acqMsg;
 
+      ///
+      /// \brief InputSensor
+      /// \param input
+      ///
         template <class InputT>
         InputSensor(InputT& input)
             : Sensor(SensorSpec {})
@@ -78,6 +85,11 @@ namespace sensor {
             initSensorSpec(input);
         }
 
+        ///
+        /// \brief InputSensor
+        /// \param input
+        /// \param input2
+        ///
         template <class InputT>
         InputSensor(InputT& input, InputT& input2)
             : Sensor(SensorSpec {})
@@ -88,6 +100,10 @@ namespace sensor {
             initSensorSpec(input, input2);
         }
 
+        ///
+        /// \brief InputSensor
+        /// \param input
+        ///
         template <class InputT>
 #if CPP_VERSION >= 20
         requires std::is_base_of_v<Input, std::remove_cvref_t<InputT>>
@@ -103,6 +119,11 @@ namespace sensor {
             m_inputOwner = true;
         }
 
+        ///
+        /// \brief InputSensor
+        /// \param input
+        /// \param input2
+        ///
         template <class InputT>
 #if CPP_VERSION >= 20
         requires std::is_base_of_v<Input, std::remove_cvref_t<InputT>>
@@ -130,6 +151,10 @@ namespace sensor {
             }
         }
 
+        ///
+        /// \brief operator >>
+        /// \param acq
+        ///
         void operator>>(Acquisition& acq)
         {
             assert(m_spec.getResolution() == acq.getResolution());
@@ -195,6 +220,10 @@ namespace sensor {
 #endif
         }
 
+        ///
+        /// \brief getAllAcquisitions
+        /// \return
+        ///
         std::vector<Acquisition> getAllAcquisitions()
         {
             std::vector<Acquisition> acqs;
@@ -206,6 +235,10 @@ namespace sensor {
             return acqs;
         }
 
+        ///
+        /// \brief fillAllAcquisitions
+        /// \param ts
+        ///
         template <class Container,
             typename T = std::decay_t<decltype(*begin(std::declval<Container>()))>>
         void fillAllAcquisitions(Container& ts)
@@ -218,7 +251,16 @@ namespace sensor {
             }
         }
 
+        ///
+        /// \brief getInput
+        /// \return
+        ///
         const Input& getInput() const { return *m_inputs.at(0); }
+
+        ///
+        /// \brief getInput
+        /// \return
+        ///
         Input& getInput() { return *m_inputs.at(0); }
 
     private:

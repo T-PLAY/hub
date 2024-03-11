@@ -49,6 +49,10 @@ namespace std {
 class bad_any_cast : public std::bad_cast
 {
   public:
+    ///
+    /// \brief what
+    /// \return
+    ///
     const char* what() const noexcept override { return "bad any cast"; }
 };
 
@@ -439,6 +443,11 @@ inline ValueType* any_cast( any* operand ) noexcept {
 } // namespace std
 
 namespace std {
+///
+/// \brief swap
+/// \param lhs
+/// \param rhs
+///
 inline void swap( std::any& lhs, std::any& rhs ) noexcept {
     lhs.swap( rhs );
 }

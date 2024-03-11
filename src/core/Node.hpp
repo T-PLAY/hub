@@ -28,12 +28,30 @@ class Node
   public:
     Node() = default;
     // Node( HashType hash, Dims&& dims, std::string typeName, Size_t size );
+
+    ///
+    /// \brief Node
+    /// \param dims
+    /// \param typeName
+    /// \param size
+    /// \param id
+    ///
     Node( Dims&& dims, std::string typeName, Size_t size, TypeId_t id );
 
+    ///
+    /// \brief toString
+    /// \param pretty
+    /// \return
+    ///
     std::string toString( bool pretty ) const;
 
     // Size_t size() const;
 
+    ///
+    /// \brief operator ==
+    /// \param other
+    /// \return
+    ///
     bool operator==( const Node& other ) const;
 
 #if CPLUSPLUSVERSION >= 20
@@ -41,6 +59,11 @@ class Node
         return archive( self.m_dims, self.m_typeName, self.m_size );
     }
 #endif
+    ///
+    /// \brief serialize
+    /// \param archive
+    /// \param self
+    ///
     template <typename Archive, typename Self>
     static void serialize( Archive& archive, Self& self ) {
         archive( self.m_dims, self.m_typeName, self.m_size, self.m_id );
@@ -48,9 +71,28 @@ class Node
 
     friend class Matrix;
 
+    ///
+    /// \brief getDims
+    /// \return
+    ///
     const Dims& getDims() const;
+
+    ///
+    /// \brief getTypeName
+    /// \return
+    ///
     const std::string& getTypeName() const;
+
+    ///
+    /// \brief getSize
+    /// \return
+    ///
     Size_t getSize() const;
+
+    ///
+    /// \brief getTypeId
+    /// \return
+    ///
     TypeId_t getTypeId() const;
 
   private:

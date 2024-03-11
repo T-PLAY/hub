@@ -22,12 +22,34 @@ class SRC_API OutputFile : public Output, public io::File
     using io::File::getHeader;
     using Output::write;
 
+    ///
+    /// \brief OutputFile
+    /// \param header
+    /// \param filePath
+    ///
     explicit OutputFile( const io::Header& header, const std::string& filePath );
 
   public:
+    ///
+    /// \brief isOpen
+    /// \return
+    ///
     bool isOpen() const override;
+
+    ///
+    /// \brief close
+    ///
     void close() override;
+    ///
+    /// \brief write
+    /// \param data
+    /// \param len
+    ///
     void write( const Data_t* data, Size_t len ) override;
+    ///
+    /// \brief setRetain
+    /// \param retained
+    ///
     void setRetain( bool retained ) override;
 
   private:

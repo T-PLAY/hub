@@ -21,24 +21,49 @@ namespace serializer {
 class SRC_API SerializerZpp : public SerializerI
 {
   public:
+    ///
+    /// \brief SerializerZpp
+    /// \param byteView
+    ///
     SerializerZpp( ByteView& byteView ) : SerializerI( byteView ) {
         m_buff.clear();
         m_in.reset( 0 );
         m_out.reset( 0 );
     }
 
+    ///
+    /// \brief resetIn
+    ///
     void resetIn() override {
         assert( !m_buff.empty() );
 
         m_inPosition = 0;
     }
+
+    ///
+    /// \brief resetOut
+    ///
     void resetOut() override {
         m_buff.clear();
         m_outPosition = 0;
     }
+
+    ///
+    /// \brief inPosition
+    /// \return
+    ///
     Size_t inPosition() const override { return m_inPosition; }
+
+    ///
+    /// \brief outPosition
+    /// \return
+    ///
     Size_t outPosition() const override { return m_outPosition; }
 
+    ///
+    /// \brief serialize
+    /// \param ts
+    ///
     template <class... Ts>
     void serialize( const Ts&... ts ) {
         const auto lastBuffSize = m_buff.size();
@@ -50,6 +75,10 @@ class SRC_API SerializerZpp : public SerializerI
         m_outPosition += curBuffSize - lastBuffSize;
     }
 
+    ///
+    /// \brief deserialize
+    /// \param ts
+    ///
     template <class... Ts>
     void deserialize( Ts&... ts ) {
         const auto lastBuffSize = m_buff.size();

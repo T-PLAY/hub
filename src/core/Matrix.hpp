@@ -23,65 +23,158 @@ namespace hub {
 class SRC_API Matrix
 {
   public:
+    ///
+    /// \brief matrix
+    ///
     static struct {
     } matrix;
 
     Matrix() = default;
 
+    ///
+    /// \brief Matrix
+    /// \param matrix
+    ///
     Matrix( Matrix&& matrix )      = default;
+
     Matrix( const Matrix& matrix ) = delete;
 
+    ///
+    /// \brief operator =
+    /// \param matrix
+    /// \return
+    ///
     Matrix& operator=( Matrix&& matrix ) = default;
     Matrix& operator=( const Matrix& matrix ) = delete;
 
+    ///
+    /// \brief clone
+    /// \return
+    ///
     Matrix clone() const;
 
+    ///
+    /// \brief operator |=
+    /// \param other
+    /// \return
+    ///
     Matrix& operator|=( const Matrix& other );
+
+    ///
+    /// \brief operator |
+    /// \param other
+    /// \return
+    ///
     Matrix operator|( const Matrix& other ) const;
 
+    ///
+    /// \brief toString
+    /// \param pretty
+    /// \return
+    ///
     std::string toString( bool pretty = false ) const;
 
+    ///
+    /// \brief hasType
+    /// \return
+    ///
     template <class Type>
     bool hasType() const;
 
+    ///
+    /// \brief hasAnyType
+    /// \return
+    ///
     template <class... Types>
-    REQUIRES(, sizeof...( Types ) > 1, bool )
+    // REQUIRES(, sizeof...( Types ) > 1, bool )
+    typename std::enable_if_t<(sizeof...( Types ) > 1), bool>
     hasAnyType() const;
 
+    ///
+    /// \brief hasSomeType
+    /// \return
+    ///
     template <class... Types>
-    REQUIRES(, sizeof...( Types ) > 1, bool )
+    // REQUIRES(, sizeof...( Types ) > 1, bool )
+    typename std::enable_if_t<(sizeof...( Types ) > 1), bool>
     hasSomeType() const;
 
+    ///
+    /// \brief nType
+    /// \return
+    ///
     template <class Type>
     int nType();
 
+    ///
+    /// \brief getDims
+    /// \param i
+    /// \return
+    ///
     Dims getDims( int i = 0 ) const;
 
+    ///
+    /// \brief getDims
+    /// \return
+    ///
     template <class Type, int i = 0>
     Dims getDims() const;
 
+    ///
+    /// \brief getSize
+    /// \return
+    ///
     template <class Type, int i = 0>
     Size_t getSize() const;
 
+    ///
+    /// \brief getCapacity
+    /// \return
+    ///
     template <class Type, int i = 0>
     Size_t getCapacity() const;
 
+    ///
+    /// \brief get
+    /// \return
+    ///
     template <class Type, int i = 0, class RawType = std::remove_pointer_t<Type>>
-    REQUIRES(, std::is_pointer_v<Type>, Type )
+    // REQUIRES(, std::is_pointer_v<Type>, Type )
+    typename std::enable_if_t<std::is_pointer_v<Type>, Type>
     get();
 
+    ///
+    /// \brief get
+    /// \return
+    ///
     template <class Type, int i = 0, class RawType = std::remove_pointer_t<Type>>
-    REQUIRES(, std::is_pointer_v<Type>, Type )
+    // REQUIRES(, std::is_pointer_v<Type>, Type )
+    typename std::enable_if_t<std::is_pointer_v<Type>, Type>
     get() const;
 
+    ///
+    /// \brief get
+    /// \return
+    ///
     template <class Type, int i = 0, class RawType = std::remove_cvref_t<Type>>
-    REQUIRES(, !std::is_pointer_v<Type>, Type )
+    // REQUIRES(, !std::is_pointer_v<Type>, Type )
+    typename std::enable_if_t<!std::is_pointer_v<Type>, Type>
     get();
 
+    ///
+    /// \brief get
+    /// \return
+    ///
     template <class Type, int i = 0, class RawType = std::remove_cvref_t<Type>>
-    REQUIRES(, !std::is_pointer_v<Type>, Type )
+    // REQUIRES(, !std::is_pointer_v<Type>, Type )
+    typename std::enable_if_t<!std::is_pointer_v<Type>, Type>
     get() const;
 
+    ///
+    /// \brief fill_reduce
+    /// \param t
+    /// \param ts
+    ///
     template <int i = 0, class T, class... Ts>
     void fill_reduce( const T& t, const Ts&... ts ) {
         Data_t* data = getData( i );
@@ -91,24 +184,66 @@ class SRC_API Matrix
         if constexpr ( sizeof...( ts ) > 0 ) { fill_reduce<i + 1>( ts... ); }
     }
 
+    ///
+    /// \brief fill
+    /// \param ts
+    ///
     template <class... Ts>
     void fill( const Ts&... ts ) {
         fill_reduce<0>( ts... );
     }
 
+    ///
+    /// \brief nType
+    /// \return
+    ///
     Size_t nType() const;
 
+    ///
+    /// \brief setData
+    /// \param data
+    /// \param size
+    ///
     void setData( const Data_t* data, Size_t size );
 
+    ///
+    /// \brief data
+    /// \return
+    ///
     const Data_t* data() const;
+
+    ///
+    /// \brief data
+    /// \return
+    ///
     Data_t* data();
+
+    ///
+    /// \brief size
+    /// \return
+    ///
     Size_t size() const;
 
+    ///
+    /// \brief getOffset
+    /// \param i
+    /// \return
+    ///
     template <class Type>
     Size_t getOffset( int i = 0 ) const;
 
+    ///
+    /// \brief getOffset
+    /// \param i
+    /// \return
+    ///
     Size_t getOffset( int i = 0 ) const;
 
+    ///
+    /// \brief getData
+    /// \param i
+    /// \return
+    ///
     Data_t* getData( int i = 0 ) {
         assert( !m_vector.empty() );
         assert( m_vector.size() == m_size );
@@ -118,6 +253,11 @@ class SRC_API Matrix
         return m_vector.data() + offset;
     }
 
+    ///
+    /// \brief getData
+    /// \param i
+    /// \return
+    ///
     const Data_t* getData( int i = 0 ) const {
         assert( !m_vector.empty() );
         assert( m_vector.size() == m_size );
@@ -127,11 +267,26 @@ class SRC_API Matrix
         return m_vector.data() + offset;
     }
 
+    ///
+    /// \brief operator ==
+    /// \param other
+    /// \return
+    ///
     bool operator==( const Matrix& other ) const;
+
 #if CPP_VERSION < 20
+    ///
+    /// \brief operator !=
+    /// \param other
+    /// \return
+    ///
     bool operator!=( const Matrix& other ) const;
 #endif
 
+    ///
+    /// \brief push_back
+    /// \param node
+    ///
     void push_back( const Node& node );
 
 #if CPP_VERSION >= 20
@@ -139,37 +294,75 @@ class SRC_API Matrix
         return archive( self.m_nodes, self.m_size, self.m_vector );
     }
 #endif
+
+    ///
+    /// \brief serialize
+    /// \param archive
+    /// \param self
+    ///
     template <typename Archive, typename Self>
     static void serialize( Archive& archive, Self& self ) {
         archive( self.m_nodes, self.m_size, self.m_vector );
     }
 
+    ///
+    /// \brief hasValue
+    /// \return
+    ///
     bool hasValue() const;
 
+    ///
+    /// \brief clear
+    ///
     void clear();
+
+    ///
+    /// \brief init
+    ///
     void init();
 
+    ///
+    /// \brief getNodes
+    /// \return
+    ///
     const std::vector<Node>& getNodes() const;
 
   protected:
-  protected:
+    ///
+    /// \brief m_nodes
+    ///
     std::vector<Node> m_nodes;
+
+    ///
+    /// \brief m_size
+    ///
     Size_t m_size = 0;
+
+    ///
+    /// \brief m_vector
+    ///
     std::vector<Data_t> m_vector;
 };
 
 /////////////////////////////////////// MAKER /////////////////////////////////////////////////////
 
+///
+/// \brief make_matrix
+/// \return
+///
 template <class Type, Size_t N = 1, Size_t... Ns>
-REQUIRES(, !isMatrix<Type> && N > 0 && ( ( Ns > 1 ) && ... ), Matrix )
-// typename std::enable_if_t<(!isMatrix<Type> && N > 0 && ( ( Ns > 1 ) && ... )), Matrix>
-// typename std::enable_if_t<(  ), Matrix>
+// REQUIRES(, !isMatrix<Type> && N > 0 && ( ( Ns > 1 ) && ... ), Matrix )
+typename std::enable_if_t<(!isMatrix<Type> && N > 0 && ( ( Ns > 1 ) && ... )), Matrix>
 make_matrix() {
     Matrix matrix;
     matrix.push_back( make_node<Type, N, Ns...>() );
     return matrix;
 }
 
+///
+/// \brief fill_matrix
+/// \param matrix
+///
 template <class Type, class... Types>
 void fill_matrix( Matrix& matrix ) {
     if constexpr ( isMatrix<Type> ) { matrix |= Type().getMatrix(); }
@@ -179,24 +372,41 @@ void fill_matrix( Matrix& matrix ) {
     if constexpr ( sizeof...( Types ) > 0 ) { fill_matrix<Types...>( matrix ); }
 }
 
+///
+/// \brief make_matrix
+/// \return
+///
 template <class... Types>
-REQUIRES(, sizeof...( Types ) > 1, Matrix )
+// REQUIRES(, sizeof...( Types ) > 1, Matrix )
+typename std::enable_if_t<(sizeof...( Types ) > 1), Matrix>
 make_matrix() {
     Matrix matrix;
     fill_matrix<Types...>( matrix );
     return matrix;
 }
 
+///
+/// \brief make_matrix
+/// \param dims
+/// \return
+///
 template <class Type, class... Dims>
-REQUIRES(, !isMatrix<Type> && sizeof...( Dims ) > 0, Matrix )
+// REQUIRES(, !isMatrix<Type> && sizeof...( Dims ) > 0, Matrix )
+typename std::enable_if_t<(!isMatrix<Type> && sizeof...( Dims ) > 0), Matrix>
 make_matrix( const Dims&... dims ) {
     Matrix matrix;
     matrix.push_back( make_node<Type>( dims... ) );
     return matrix;
 }
 
+///
+/// \brief make_matrix
+/// \param matrices
+/// \return
+///
 template <class... Matrices>
-REQUIRES(, areMatrices<Matrices...> && sizeof...( Matrices ) > 1, Matrix )
+// REQUIRES(, areMatrices<Matrices...> && sizeof...( Matrices ) > 1, Matrix )
+typename std::enable_if_t<(areMatrices<Matrices...> && sizeof...( Matrices ) > 1), Matrix>
 make_matrix( const Matrices&... matrices ) {
     Matrix matrix;
     matrix = ( matrices | ... );
@@ -314,13 +524,15 @@ bool Matrix::hasType() const {
 }
 
 template <class... Types>
-REQUIRES(, sizeof...( Types ) > 1, bool )
+// REQUIRES(, sizeof...( Types ) > 1, bool )
+typename std::enable_if_t<(sizeof...( Types ) > 1), bool>
 Matrix::hasAnyType() const {
     return ( hasType<Types>() && ... );
 }
 
 template <class... Types>
-REQUIRES(, sizeof...( Types ) > 1, bool )
+// REQUIRES(, sizeof...( Types ) > 1, bool )
+typename std::enable_if_t<(sizeof...( Types ) > 1), bool>
 Matrix::hasSomeType() const {
     return ( hasType<Types>() || ... );
 }
@@ -424,7 +636,8 @@ Size_t Matrix::getOffset( int i ) const {
 }
 
 template <class Type, int i, class RawType>
-REQUIRES(, std::is_pointer_v<Type>, Type )
+// REQUIRES(, std::is_pointer_v<Type>, Type )
+typename std::enable_if_t<std::is_pointer_v<Type>, Type>
 Matrix::get() {
     assert( !m_vector.empty() );
     assert( m_vector.size() == m_size );
@@ -434,7 +647,8 @@ Matrix::get() {
 }
 
 template <class Type, int i, class RawType>
-REQUIRES(, std::is_pointer_v<Type>, Type )
+// REQUIRES(, std::is_pointer_v<Type>, Type )
+typename std::enable_if_t<std::is_pointer_v<Type>, Type>
 Matrix::get() const {
     assert( !m_vector.empty() );
     assert( m_vector.size() == m_size );
@@ -444,7 +658,8 @@ Matrix::get() const {
 }
 
 template <class Type, int i, class RawType>
-REQUIRES(, !std::is_pointer_v<Type>, Type )
+// REQUIRES(, !std::is_pointer_v<Type>, Type )
+typename std::enable_if_t<!std::is_pointer_v<Type>, Type>
 Matrix::get() {
     assert( !m_vector.empty() );
     assert( m_vector.size() == m_size );
@@ -454,7 +669,8 @@ Matrix::get() {
 }
 
 template <class Type, int i, class RawType>
-REQUIRES(, !std::is_pointer_v<Type>, Type )
+// REQUIRES(, !std::is_pointer_v<Type>, Type )
+typename std::enable_if_t<!std::is_pointer_v<Type>, Type>
 Matrix::get() const {
     assert( !m_vector.empty() );
     assert( m_vector.size() == m_size );

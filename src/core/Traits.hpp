@@ -173,6 +173,11 @@ static typename std::enable_if_t<StringAddable<T>, std::string> to_string( const
     return str;
 }
 
+///
+/// \brief to_string
+/// \param t
+/// \return
+///
 template <class T>
 typename std::enable_if_t<hasToString<T>, std::string> to_string( const T& t ) {
     static_assert( !std::is_same_v<T, std::string> );
@@ -181,6 +186,11 @@ typename std::enable_if_t<hasToString<T>, std::string> to_string( const T& t ) {
     return t.toString();
 }
 
+///
+/// \brief to_string
+/// \param t
+/// \return
+///
 template <class T>
 typename std::enable_if_t<toStringable_v<T>, std::string> to_string( const T& t ) {
     static_assert( !std::is_same_v<T, std::string> );
@@ -189,6 +199,11 @@ typename std::enable_if_t<toStringable_v<T>, std::string> to_string( const T& t 
     return toString( t );
 }
 
+///
+/// \brief to_string
+/// \param t
+/// \return
+///
 template <class T>
 static typename std::enable_if_t<StdToStringable<T>, std::string> to_string( const T& t ) {
     static_assert( !std::is_same_v<T, std::string> );
@@ -197,6 +212,11 @@ static typename std::enable_if_t<StdToStringable<T>, std::string> to_string( con
     return std::to_string( t );
 }
 
+///
+/// \brief to_string
+/// \param container
+/// \return
+///
 template <class Container, class T = std::decay_t<decltype( *std::declval<Container>().begin() )>>
 static typename std::enable_if_t<isContainer<Container>, std::string>
 to_string( const Container& container ) {

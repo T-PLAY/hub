@@ -17,10 +17,26 @@ namespace client {
 class SRC_API AskerServer2 : public hub::client::AskerInterface
 {
   public:
+    ///
+    /// \brief AskerServer2
+    /// \param ipv4
+    /// \param port
+    ///
     AskerServer2( const std::string& ipv4 = HUB_SERVICE_IPV4, int port = HUB_SERVICE_PORT );
+
     ~AskerServer2();
 
+    ///
+    /// \brief listStreams
+    /// \return
+    ///
     std::list<std::pair<std::string, sensor::SensorSpec>> listStreams() override;
+
+    ///
+    /// \brief getAcquisition
+    /// \param streamName
+    /// \return
+    ///
     sensor::Acquisition getAcquisition( const std::string& streamName ) override;
 
   private:

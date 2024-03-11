@@ -107,8 +107,16 @@ class SRC_API ClientAddr
     ///
     void setIpv4( const std::string& ipv4 );
 
+    ///
+    /// \brief getIpv4
+    /// \return
+    ///
     std::string getIpv4() const;
 
+    ///
+    /// \brief getPort
+    /// \return
+    ///
     int getPort() const;
 
     ///

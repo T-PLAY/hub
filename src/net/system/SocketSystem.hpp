@@ -63,11 +63,20 @@ class SRC_API SocketSystem
 #ifdef HUB_DEBUG_SOCKET
     std::string getHeader() const;
 #endif
+    ///
+    /// \brief SocketSystem
+    ///
     SocketSystem();
     ~SocketSystem();
 
     SocketSystem( const SocketSystem& socket ) = delete;
+
+    ///
+    /// \brief SocketSystem
+    /// \param socket
+    ///
     SocketSystem( SocketSystem&& socket );
+
     SocketSystem& operator=( const SocketSystem& socket ) = delete;
     SocketSystem&& operator=( SocketSystem&& socket ) = delete;
 
@@ -77,7 +86,14 @@ class SRC_API SocketSystem
     ///
     utils::socket_fd m_fdSock = utils::invalidSocket();
 
+    ///
+    /// \brief m_serverSide
+    ///
     bool m_serverSide = false;
+
+    ///
+    /// \brief m_moved
+    ///
     bool m_moved      = false;
 };
 

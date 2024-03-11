@@ -17,8 +17,22 @@ namespace hub {
 class SRC_API InputBase : public ios
 {
   public:
+    ///
+    /// \brief read
+    /// \param data
+    /// \param len
+    ///
     virtual void read( Data_t* data, Size_t len ) = 0;
+
+    ///
+    /// \brief isEnd
+    /// \return
+    ///
     virtual bool isEnd() const                    = 0;
+
+    ///
+    /// \brief clear
+    ///
     virtual void clear()                          = 0;
 };
 
@@ -41,8 +55,13 @@ static constexpr bool not_endable_v = not_endable<T>::value;
 template <class T>
 concept Endable = !not_endable_v<T>;
 #else
+
+///
+/// \brief Endable
+///
 template <class T>
 constexpr bool Endable = !not_endable_v<T>;
+
 #endif
 
 ///////////////////////////////////////

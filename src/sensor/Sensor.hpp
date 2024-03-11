@@ -25,12 +25,22 @@ class SRC_API Sensor
     /// [in] user defined sensor spec
     ///
     Sensor() = default;
+
+    ///
+    /// \brief Sensor
+    /// \param sensorSpec
+    ///
     explicit Sensor( const SensorSpec& sensorSpec ) : m_spec { sensorSpec } {}
+
     Sensor( const Sensor& )            = delete;
     Sensor( Sensor& )                  = delete;
     Sensor& operator=( const Sensor& ) = delete;
     Sensor& operator=( Sensor& )       = delete;
 
+    ///
+    /// \brief acqMsg
+    /// \return
+    ///
     Acquisition acqMsg() const { return make_acquisition( m_spec.getResolution() ); }
 
   public:

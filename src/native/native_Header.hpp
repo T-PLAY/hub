@@ -21,8 +21,18 @@ extern "C"
 {
 #endif
 
+    ///
+    /// \brief createHeader
+    /// \param dataSize
+    /// \return
+    ///
     io::Header* createHeader( Size_t dataSize );
 
+
+    ///
+    /// \brief freeHeader
+    /// \param header
+    ///
     SRC_API void freeHeader( io::Header* header );
 
 #ifdef __cplusplus

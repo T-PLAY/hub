@@ -46,11 +46,32 @@ class SRC_API ServerImpl2
     ///
     void asyncRun();
 
+    ///
+    /// \brief stop
+    ///
     void stop();
+
+    ///
+    /// \brief printStatus
+    ///
     void printStatus() const;
+
+    ///
+    /// \brief running
+    /// \return
+    ///
     bool running() const;
 
+    ///
+    /// \brief nStreamer
+    /// \return
+    ///
     int nStreamer() const;
+
+    ///
+    /// \brief nClient
+    /// \return
+    ///
     int nClient() const;
 
   private:

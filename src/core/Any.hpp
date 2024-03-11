@@ -41,6 +41,10 @@ class SRC_API Any
         m_anyHelper = std::make_unique<Anyable::AnyHelper>( Anyable::s_anyables.at( "void" ) );
     }
 
+    ///
+    /// \brief Any
+    /// \param any
+    ///
     Any( const Any& any ) : m_any( any.m_any ) {
 #ifdef HUB_DEBUG_ANY
         std::cout << "[Any] Any(const Any&)" << std::endl;
@@ -49,8 +53,16 @@ class SRC_API Any
             std::make_unique<Anyable::AnyHelper>( Anyable::s_anyables.at( any.typeName() ) );
     }
 
+    ///
+    /// \brief Any
+    ///
     Any( Any&& ) = default;
 
+    ///
+    /// \brief operator =
+    /// \param any
+    /// \return
+    ///
     Any& operator=( const Any& any ) {
 #ifdef HUB_DEBUG_ANY
         std::cout << "[Any] Any& operator=(const Any&)" << std::endl;
@@ -61,8 +73,16 @@ class SRC_API Any
         return *this;
     }
 
+    ///
+    /// \brief operator =
+    /// \return
+    ///
     Any& operator=( Any&& ) = default;
 
+    ///
+    /// \brief Any
+    /// \param t
+    ///
     template <class T,
               typename = typename std::enable_if_t<!std::is_same_v<std::remove_cvref_t<T>, Any>>>
     Any( T&& t ) : m_any( std::forward<T>( t ) ) {
@@ -79,6 +99,10 @@ class SRC_API Any
             std::make_unique<Anyable::AnyHelper>( Anyable::s_anyables.at( TYPE_NAME( t ) ) );
     }
 
+    ///
+    /// \brief Any
+    /// \param t
+    ///
     template <class T,
               typename = typename std::enable_if_t<!std::is_same_v<std::remove_cvref_t<T>, Any>>>
     Any( const T* t ) : m_any( t ) {
@@ -94,6 +118,10 @@ class SRC_API Any
             std::make_unique<Anyable::AnyHelper>( Anyable::s_anyables.at( TYPE_NAME( t ) ) );
     };
 
+    ///
+    /// \brief write
+    /// \param serializer
+    ///
     void write( Serializer& serializer ) const {
         assert( m_anyHelper != nullptr );
         const auto& type_name = typeName();
@@ -102,6 +130,10 @@ class SRC_API Any
         m_anyHelper->write( serializer, m_any );
     }
 
+    ///
+    /// \brief read
+    /// \param serializer
+    ///
     void read( Serializer& serializer ) {
         decltype( typeName() ) type_name;
         serializer.read( type_name );
@@ -111,6 +143,10 @@ class SRC_API Any
         m_anyHelper->read( serializer, m_any );
     }
 
+    ///
+    /// \brief hasValue
+    /// \return
+    ///
     bool hasValue() const {
 #if CPP_VERSION < 17
         return !m_any.empty();
@@ -119,28 +155,47 @@ class SRC_API Any
 #endif
     }
 
+    ///
+    /// \brief is
+    /// \return
+    ///
     template <class T>
     bool is() const {
         return m_any.type() == typeid( T );
     }
 
+    ///
+    /// \brief get
+    /// \return
+    ///
     template <class T>
     const T& get() const {
         return std::any_cast<const T&>( m_any );
     }
 
+    ///
+    /// \brief typeName
+    /// \return
+    ///
     std::string typeName() const {
         assert( m_anyHelper != nullptr );
         assert( m_anyHelper->getTypeName != nullptr );
         return m_anyHelper->getTypeName();
     }
 
+    ///
+    /// \brief valueAsString
+    /// \return
+    ///
     std::string valueAsString() const {
         assert( m_anyHelper != nullptr );
         assert( m_anyHelper->getValueStr != nullptr );
         return m_anyHelper->getValueStr( m_any );
     }
 
+    ///
+    /// \brief toString
+    ///
     auto toString() const {
         std::string str;
         assert( m_anyHelper != nullptr );
@@ -148,16 +203,26 @@ class SRC_API Any
         return str;
     }
 
+    ///
+    /// \brief operator ==
+    /// \param other
+    /// \return
+    ///
     bool operator==( const Any& other ) const {
         assert( m_anyHelper != nullptr );
         assert( m_anyHelper->compare != nullptr );
         return m_any.type() == other.m_any.type() && m_anyHelper->compare( m_any, other.m_any );
     }
+
 #if CPP_VERSION < 20
+    ///
+    /// \brief operator !=
+    /// \param other
+    /// \return
+    ///
     bool operator!=( const Any& other ) const { return !( *this == other ); }
 #endif
 
-  private:
   private:
     std::any m_any;
     std::unique_ptr<Anyable::AnyHelper> m_anyHelper;

@@ -18,12 +18,23 @@ namespace io {
 class SRC_API StreamServer2 : public hub::io::StreamBase
 {
   public:
+    ///
+    /// \brief stopServer
+    /// \param ipv4
+    /// \param port
+    ///
     static void stopServer( std::string ipv4 = HUB_SERVICE_IPV4, int port = HUB_SERVICE_PORT ) {
         auto clientSock = hub::io::InputOutputSocket( hub::net::ClientSocket( ipv4, port ) );
         clientSock.write( hub::io::StreamBase::ClientType::KILLER );
     }
 
   protected:
+    ///
+    /// \brief StreamServer2
+    /// \param name
+    /// \param ipv4
+    /// \param port
+    ///
     StreamServer2( const std::string& name, const std::string& ipv4, int port );
 };
 

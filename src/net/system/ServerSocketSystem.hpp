@@ -45,6 +45,10 @@ class SRC_API ServerSocketSystem : public ServerSocketI, public SocketSystem
     ///
     ClientSocketSystem waitNewClient();
 
+    ///
+    /// \brief toString
+    /// \return
+    ///
     std::string toString() const { return std::to_string( m_port ); }
 
   private:

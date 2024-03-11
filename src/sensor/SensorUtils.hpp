@@ -21,9 +21,26 @@ class SpecAcqs
 {
   public:
     SpecAcqs( const SpecAcqs& ) = delete;
+
+    ///
+    /// \brief SpecAcqs
+    ///
     SpecAcqs( SpecAcqs&& )      = default;
+
+    ///
+    /// \brief SpecAcqs
+    /// \param sensorSpec
+    ///
     SpecAcqs( const hub::sensor::SensorSpec& sensorSpec ) : m_sensorSpec { sensorSpec } {};
+
+    ///
+    /// \brief m_sensorSpec
+    ///
     hub::sensor::SensorSpec m_sensorSpec;
+
+    ///
+    /// \brief m_acqs
+    ///
     std::vector<hub::sensor::Acquisition> m_acqs;
 };
 

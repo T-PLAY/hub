@@ -22,6 +22,11 @@ class SRC_API InputT : public InputBase
     virtual ~InputT() = default;
 
   public:
+    ///
+    /// \brief read
+    /// \param t
+    /// \return
+    ///
     template <class T>
     typename std::enable_if<packable_v<T>>::type read( T& t ) {
         assert( isOpen() );
@@ -35,6 +40,11 @@ class SRC_API InputT : public InputBase
 #endif
     }
 
+    ///
+    /// \brief read
+    /// \param t
+    /// \return
+    ///
     template <class T>
     typename std::enable_if<!packable_v<T> && readable_v<T>>::type read( T& t ) {
         assert( isOpen() );
@@ -46,6 +56,11 @@ class SRC_API InputT : public InputBase
 #endif
     }
 
+    ///
+    /// \brief read
+    /// \param t
+    /// \return
+    ///
     template <class T>
     typename std::enable_if<!packable_v<T> && !readable_v<T>>::type read( T& t ) {
         assert( isOpen() );
@@ -57,6 +72,11 @@ class SRC_API InputT : public InputBase
 #endif
     }
 
+    ///
+    /// \brief readAll
+    /// \param t
+    /// \param ts
+    ///
     template <class T, class... Ts>
     void readAll( T& t, Ts&... ts ) {
         m_serializer.unpack( *this, t, ts... );

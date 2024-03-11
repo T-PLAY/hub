@@ -156,6 +156,10 @@ class SRC_API Anyable
     }
 
   public:
+    ///
+    /// \brief supportedTypes
+    /// \return
+    ///
     static std::vector<std::string> supportedTypes() {
         std::vector<std::string> ret;
         for ( const auto& pair : s_anyables ) {
@@ -165,6 +169,9 @@ class SRC_API Anyable
         return ret;
     }
 
+    ///
+    /// \brief registerTypes
+    ///
     template <class... Ts>
     static void registerTypes() {
         insertSupportedTypes<Ts...>();

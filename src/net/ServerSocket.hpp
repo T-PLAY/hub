@@ -11,6 +11,9 @@
 namespace hub {
 namespace net {
 
+///
+/// \brief ServerSocket
+///
 using ServerSocket = system::ServerSocketSystem;
 
 static_assert( std::is_base_of<ServerSocketI, ServerSocket>::value,

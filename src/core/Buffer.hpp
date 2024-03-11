@@ -28,10 +28,28 @@ template <class Type, Size_t Size, BufferOption Option>
 class BufferBase
 {
   public:
+    ///
+    /// \brief data
+    /// \return
+    ///
     virtual Data_t* data()             = 0;
+
+    ///
+    /// \brief data
+    /// \return
+    ///
     virtual const Data_t* data() const = 0;
+
+    ///
+    /// \brief size
+    /// \return
+    ///
     virtual Size_t size() const        = 0;
 
+    ///
+    /// \brief toString
+    /// \return
+    ///
     virtual CONSTEXPR20 std::string toString() const = 0;
 
 #if CPP_VERSION >= 20
@@ -59,6 +77,7 @@ template <class Type,
 class Buffer : public BufferBase<Type, Size, Option>
 {
   public:
+    /// \brief _Option
     BufferOption _Option = Option;
 };
 
@@ -71,14 +90,26 @@ template <class Type, Size_t Size>
 class Buffer<Type, Size, StaticMemory> : public BufferBase<Type, Size, StaticMemory>
 {
   public:
+    ///
+    /// \brief Buffer
+    /// \param args
+    ///
     template <class... Args>
     constexpr Buffer( Args&&... args ) : m_array { std::forward<Type&&>( args )... } {}
 
+    ///
+    /// \brief get
+    /// \return
+    ///
     template <Size_t i>
     constexpr Type get() const {
         return m_array.at( i );
     }
 
+    ///
+    /// \brief toString
+    /// \return
+    ///
     CONSTEXPR20 std::string toString() const override {
         std::string str;
         str += "(static)";
@@ -86,9 +117,22 @@ class Buffer<Type, Size, StaticMemory> : public BufferBase<Type, Size, StaticMem
         return str;
     }
 
+    ///
+    /// \brief data
+    /// \return
+    ///
     Data_t* data() override { return (Data_t*)m_array.data(); }
 
+    ///
+    /// \brief data
+    /// \return
+    ///
     const Data_t* data() const override { return (const Data_t*)m_array.data(); }
+
+    ///
+    /// \brief size
+    /// \return
+    ///
     Size_t size() const override { return m_array.size(); }
 
 #if CPP_VERSION >= 20
@@ -111,9 +155,17 @@ class Buffer<Type, Size, DynamicMemory> : public BufferBase<Type, Size, DynamicM
   public:
     constexpr Buffer() : m_vector( Size ) {}
 
+    ///
+    /// \brief Buffer
+    /// \param args
+    ///
     template <class... Args>
     constexpr Buffer( Args&&... args ) : m_vector { std::forward<Type&&>( args )... } {}
 
+    ///
+    /// \brief toString
+    /// \return
+    ///
     CONSTEXPR20 std::string toString() const override {
         std::string str;
         str += "(dynamic)";
@@ -121,8 +173,22 @@ class Buffer<Type, Size, DynamicMemory> : public BufferBase<Type, Size, DynamicM
         return str;
     }
 
+    ///
+    /// \brief data
+    /// \return
+    ///
     Data_t* data() override { return (Data_t*)m_vector.data(); }
+
+    ///
+    /// \brief data
+    /// \return
+    ///
     const Data_t* data() const override { return (const Data_t*)m_vector.data(); }
+
+    ///
+    /// \brief size
+    /// \return
+    ///
     Size_t size() const override { return m_vector.size(); }
 
 #if CPP_VERSION >= 20

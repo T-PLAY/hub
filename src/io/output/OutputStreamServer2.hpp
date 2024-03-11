@@ -41,6 +41,13 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
     ///
     OutputStreamServer2( const io::Header& header, int streamPort );
 
+    ///
+    /// \brief OutputStreamServer2
+    /// \param header
+    /// \param streamName
+    /// \param port
+    /// \param ipv4
+    ///
     OutputStreamServer2( const hub::io::Header& header,
                          const std::string& streamName,
                          int port                = HUB_SERVICE_PORT,
@@ -53,12 +60,41 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
 
     ~OutputStreamServer2();
 
+    ///
+    /// \brief write
+    /// \param data
+    /// \param size
+    ///
     void write( const Data_t* data, Size_t size ) override;
+
+    ///
+    /// \brief close
+    ///
     void close() override;
+
+
+    ///
+    /// \brief isOpen
+    /// \return
+    ///
     bool isOpen() const override;
+
+    ///
+    /// \brief setRetain
+    /// \param retain
+    ///
     void setRetain( bool retain ) override;
 
+    ///
+    /// \brief getNStreamViewer
+    /// \return
+    ///
     int getNStreamViewer() const;
+
+    ///
+    /// \brief getHeader
+    /// \return
+    ///
     const io::Header& getHeader() const;
 
   private:

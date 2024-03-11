@@ -644,7 +644,10 @@ static std::string pretty_bytes( hub::Size_t bytes ) {
         sprintf( buff, "%d %s", (int)count, suffixes[s].data() );
 #    endif
 #endif
-    } else {
+    }
+    /// \brief else
+    else
+    {
 #ifdef WIN32
         snprintf( buff, buffSize, "%.1f %s", count, suffixes[s].data() );
 #else
@@ -657,6 +660,7 @@ static std::string pretty_bytes( hub::Size_t bytes ) {
     }
 
     // return std::string( buff );
+    /// \brief return
     return buff;
 }
 #define PRETTY_BYTES( t ) hub::pretty_bytes( t )

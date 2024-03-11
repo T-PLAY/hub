@@ -26,6 +26,14 @@ extern "C"
 {
 #endif
 
+    ///
+    /// \brief createViewer
+    /// \param name
+    /// \param viewerHandler
+    /// \param ipv4
+    /// \param port
+    /// \return
+    ///
     SRC_API client::Viewer* createViewer( const char* name,
                                           client::ViewerHandler* viewerHandler,
                                           const char* ipv4 = "127.0.0.1",
@@ -72,8 +80,18 @@ extern "C"
     ///
     SRC_API bool viewer_isConnected( const client::Viewer* viewer );
 
+    ///
+    /// \brief viewer_nStream
+    /// \param viewer
+    /// \return
+    ///
     SRC_API int viewer_nStream( const client::Viewer* viewer );
 
+    ///
+    /// \brief viewer_nStreaming
+    /// \param viewer
+    /// \return
+    ///
     SRC_API int viewer_nStreaming( const client::Viewer* viewer );
 
 #ifdef __cplusplus

@@ -51,6 +51,11 @@ class OutputSensor : public Sensor
 
     // OutputSensor( const SensorSpec& sensorSpec,
 
+        ///
+        /// \brief OutputSensor
+        /// \param sensorSpec
+        /// \param args
+        ///
     template <class OutputT = output::OutputStream,
 #if CPP_VERSION >= 20
               requires std::is_base_of_v<hub::Output, OutputT>
@@ -66,6 +71,11 @@ class OutputSensor : public Sensor
         assert( m_spec.getResolution().nType() > 0 );
     }
 
+    ///
+    /// \brief OutputSensor
+    /// \param sensorSpec
+    /// \param output
+    ///
     template <class OutputT,
 #if CPP_VERSION >= 20
               requires std::is_base_of_v<hub::Output, OutputT>
@@ -86,6 +96,11 @@ class OutputSensor : public Sensor
         assert( m_spec.getResolution().nType() > 0 );
     }
 
+    ///
+    /// \brief OutputSensor
+    /// \param sensorSpec
+    /// \param output
+    ///
     template <class OutputT,
 #if CPP_VERSION >= 20
               requires std::is_base_of_v<hub::Output, OutputT>
@@ -112,6 +127,10 @@ class OutputSensor : public Sensor
         if ( m_outputOwner ) { delete &m_output; }
     }
 
+    ///
+    /// \brief operator <<
+    /// \param acq
+    ///
     void operator<<( const Acquisition& acq ) {
 #ifdef HUB_DEBUG_OUTPUT
         std::cout << HEADER << "write(const Acquisition&) : " << acq << std::endl;
@@ -120,8 +139,16 @@ class OutputSensor : public Sensor
         m_output.write( acq.data(), acq.size() );
     }
 
+    ///
+    /// \brief getOutput
+    /// \return
+    ///
     Output& getOutput() const { return m_output; }
 
+    ///
+    /// \brief fill
+    /// \param ts
+    ///
     template <class Container,
               typename T = std::decay_t<decltype( *begin( std::declval<Container>() ) )>>
     void fill(Container & ts) {
@@ -147,8 +174,17 @@ class OutputSensorT : public Sensor
 {
   public:
     static_assert( std::is_base_of_v<hub::Output, Output> );
+
+    ///
+    /// \brief Acquisition
+    ///
     using Acquisition = AcquisitionT<Resolution>;
 
+    ///
+    /// \brief OutputSensorT
+    /// \param sensorSpec
+    /// \param args
+    ///
     template <class... Args>
     OutputSensorT( const SensorSpec& sensorSpec, const Args&... args ) :
         Sensor( sensorSpec ),
@@ -169,6 +205,10 @@ class OutputSensorT : public Sensor
         if ( m_outputOwner ) { delete &m_output; }
     }
 
+    ///
+    /// \brief operator <<
+    /// \param acq
+    ///
     void operator<<( const Acquisition& acq ) {
 #ifdef HUB_DEBUG_OUTPUT
         std::cout << HEADER << "write(const Acquisition&) : " << acq << std::endl;
@@ -176,8 +216,16 @@ class OutputSensorT : public Sensor
         m_output.write( acq.data(), acq.size() );
     }
 
+    ///
+    /// \brief acqMsg
+    /// \return
+    ///
     Acquisition acqMsg() const { return Acquisition(); }
 
+    ///
+    /// \brief getOutput
+    /// \return
+    ///
     Output& getOutput() const { return m_output; }
 
   private:
@@ -188,11 +236,21 @@ class OutputSensorT : public Sensor
 
 } // namespace sensor
 
+///
+/// \brief make_outputSensor
+/// \param sensorSpec
+/// \param args
+///
 template <class Output = output::OutputStream, class... Args>
 inline auto make_outputSensor( const sensor::SensorSpec& sensorSpec, const Args&... args ) {
     return sensor::OutputSensor( sensorSpec, Output( io::make_header( sensorSpec ), args... ) );
 }
 
+///
+/// \brief make_outputSensorT
+/// \param sensorSpec
+/// \param args
+///
 template <class Resolution, class... Args>
 inline auto make_outputSensorT( const sensor::SensorSpec& sensorSpec, const Args&... args ) {
     return sensor::OutputSensorT<Resolution>( sensorSpec, args... );

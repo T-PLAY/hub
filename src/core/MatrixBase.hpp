@@ -41,6 +41,10 @@ static constexpr bool is_matrix_v = is_matrix<T>::value;
 template <typename T>
 static constexpr bool isMatrix = is_matrix<T>::value;
 
+///
+/// \brief areMatrices_
+/// \return
+///
 template <class T, class... Ts>
 constexpr bool areMatrices_() {
     if constexpr ( sizeof...( Ts ) > 0 ) { return isMatrix<T> && areMatrices_<Ts...>(); }
@@ -49,6 +53,9 @@ constexpr bool areMatrices_() {
     }
 }
 
+///
+/// \brief areMatrices
+///
 template <class... Ts>
 constexpr bool areMatrices = areMatrices_<Ts...>();
 

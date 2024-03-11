@@ -63,31 +63,40 @@ class SRC_API StreamerClient2 : public Client2
     /// \param message
     ///
     void end( io::StreamBase::ServerMessage message ) override;
+
+    ///
+    /// \brief notifyInited
+    ///
     void notifyInited() override;
 
     StreamerClient2( const StreamerClient2& ) = delete;
     StreamerClient2( StreamerClient2&& )      = delete;
 
-    ///
-    /// \brief getStreamName
-    /// \return
-    ///
 
     ///
-    /// \brief isPackedStream
-    /// \return
+    /// \brief m_streamName
     ///
-
-    ///
-    /// \brief getPackedAcqs
-    /// \return
-    ///
-
     const std::string m_streamName;
+
+    ///
+    /// \brief m_streamIpv4
+    ///
     const std::string m_streamIpv4;
+
+    ///
+    /// \brief m_streamPort
+    ///
     const int m_streamPort;
+
+    ///
+    /// \brief m_header
+    ///
     io::Header m_header;
 
+    ///
+    /// \brief getNStreamViewer
+    /// \return
+    ///
     int getNStreamViewer() const;
 
   private:

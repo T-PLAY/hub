@@ -34,7 +34,15 @@ static std::mutex s_mtxIoPrint;
 class SRC_API ios
 {
   public:
+    ///
+    /// \brief close
+    ///
     virtual void close()        = 0;
+
+    ///
+    /// \brief isOpen
+    /// \return
+    ///
     virtual bool isOpen() const = 0;
 };
 
@@ -62,6 +70,9 @@ static constexpr bool has_data_v = has_data<T>::value;
 
 ///////////
 
+///
+/// \brief isPacket
+///
 template <class T>
 constexpr bool isPacket = has_data_v<T>&& has_size_v<T>;
 

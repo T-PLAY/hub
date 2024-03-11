@@ -13,15 +13,38 @@ namespace outputSensor {
 class OutputSensor_3D_Density : public OutputSensor_Instance
 {
   public:
+    /// \brief asyncRun
     using OutputSensor_Instance::asyncRun;
+    /// \brief OutputSensor_Instance
     using OutputSensor_Instance::OutputSensor_Instance;
+    /// \brief run
     using OutputSensor_Instance::run;
+    /// \brief stop
     using OutputSensor_Instance::stop;
 
+    ///
+    /// \brief side
+    ///
     static constexpr int side  = 100;
+
+    ///
+    /// \brief width
+    ///
     static constexpr int width  = side;
+
+    ///
+    /// \brief depth
+    ///
     static constexpr int depth  = side;
+
+    ///
+    /// \brief height
+    ///
     static constexpr int height = side;
+
+    ///
+    /// \brief Resolution
+    ///
     using Resolution            = hub::MatrixXD<hub::format::Density, width, depth, height>;
     // using Resolution            = hub::MatrixXD<hub::format::RGB8, 640, 480>;
 
