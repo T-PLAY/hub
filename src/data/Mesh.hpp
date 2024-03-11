@@ -12,6 +12,7 @@
 #include <cstring>
 
 #include <core/Macros.hpp>
+#include <core/Traits.hpp>
 
 namespace hub {
 namespace data {
@@ -48,6 +49,8 @@ struct Vertex {
         archive( self.px, self.py, self.pz, self.nx, self.ny, self.nz, self.tx, self.ty );
     }
 
+    std::string toString() const;
+
     ///
     /// \brief operator ==
     /// \param other
@@ -57,6 +60,8 @@ struct Vertex {
         return !std::memcmp( this, &other, sizeof( Vertex ) );
     }
 };
+static_assert(sizeof(float) == 4);
+static_assert(sizeof(Vertex) == 4 * 8);
 
 ///
 /// \brief The Shape class
@@ -98,16 +103,23 @@ struct Shape {
         archive( self.vertices, self.hasNormal, self.indices, self.name, self.material );
     }
 
+    auto toString() const {
+        std::string str;
+        str += std::to_string(vertices.size()) + " " +  std::to_string(hasNormal) + " " + std::to_string(indices.size())  + " " + name + " " + std::to_string(material);
+        return str;
+    }
+
     ///
     /// \brief operator ==
     /// \param other
     /// \return
     ///
     bool operator==( const Shape& other ) const {
-        return vertices == other.vertices && hasNormal == other.hasNormal &&
-               indices == other.indices && name == other.name && material == other.material;
+    return vertices == other.vertices && hasNormal == other.hasNormal && indices == other.indices &&
+           name == other.name && material == other.material;
     }
 };
+static_assert(sizeof(unsigned int) == 4);
 
 ///
 /// \brief The Material class
@@ -293,7 +305,16 @@ class SRC_API Mesh
     /// \param other
     /// \return
     ///
-    bool operator==( const Mesh& other ) const;
+    bool operator==( const Mesh& other ) const {
+    return m_name == other.m_name
+           && m_shapes == other.m_shapes &&
+           m_materials == other.m_materials && m_nVertice == other.m_nVertice &&
+           m_nTriangle == other.m_nTriangle && m_nDraw == other.m_nDraw &&
+           m_nMesh == other.m_nMesh && m_mesh_triangles == other.m_mesh_triangles &&
+           m_mesh_vertices == other.m_mesh_vertices &&
+           m_total_triangles == other.m_total_triangles &&
+           m_total_instances == other.m_total_instances && m_total_draws == other.m_total_draws;
+    }
 
 #if CPP_VERSION >= 20
     static constexpr auto serialize( const auto& archive, auto& self ) { return archive(); }

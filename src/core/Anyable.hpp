@@ -13,8 +13,8 @@
 #include "Macros.hpp"
 #include "Serializer.hpp"
 
-#ifndef HUB_NON_BUILD_MESH
-#include "data/Mesh.hpp"
+#ifndef HUB_NON_BUILD_DATA
+#    include "data/Mesh.hpp"
 #endif
 
 #if CPP_VERSION <= 14
@@ -138,9 +138,9 @@ class SRC_API Anyable
                                                                                  const char*,
                                                                                  format::Mat4,
                                                                                  format::Vec4,
-                                                                                 format::Vec3,
-#ifndef HUB_NON_BUILD_MESH
-                                                                                 data::Mesh
+                                                                                 format::Vec3
+#ifndef HUB_NON_BUILD_DATA
+                                                                                 , data::Mesh
 #endif
                                                                                  >();
 

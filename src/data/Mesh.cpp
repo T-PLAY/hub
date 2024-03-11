@@ -311,21 +311,16 @@ void Mesh::printInfo() const {
     }
 }
 
-bool Mesh::operator==( const Mesh& other ) const {
-    return m_name == other.m_name
-           && m_shapes == other.m_shapes &&
-           m_materials == other.m_materials && m_nVertice == other.m_nVertice &&
-           m_nTriangle == other.m_nTriangle && m_nDraw == other.m_nDraw &&
-           m_nMesh == other.m_nMesh && m_mesh_triangles == other.m_mesh_triangles &&
-           m_mesh_vertices == other.m_mesh_vertices &&
-           m_total_triangles == other.m_total_triangles &&
-           m_total_instances == other.m_total_instances && m_total_draws == other.m_total_draws;
-}
 
-// std::ostream& operator<<( std::ostream& os, const Mesh& mesh ) {
-//     os << mesh.to_string();
-//     return os;
-// }
+
+std::string Vertex::toString() const
+{
+    std::string str;
+    str += "x:" + std::to_string(px) + " y:" + std::to_string(py) + " z:" + std::to_string(pz);
+    str += "nx:" + std::to_string(nx) + " ny:" + std::to_string(ny) + " nz:" + std::to_string(nz);
+    str += "tx:" + std::to_string(tx) + " ty:" + std::to_string(ty);
+    return str;
+}
 
 } // namespace data
 } // namespace hub
