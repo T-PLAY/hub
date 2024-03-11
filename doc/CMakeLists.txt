@@ -39,8 +39,10 @@ if(HUB_BUILD_DOC)
 
     add_custom_target(
         hub-doc-sphinx
-        COMMAND make -C ${PROJECT_SOURCE_DIR}/doc/docs_sphinx html
-        COMMAND ${HUB_BROWSER} ${PROJECT_SOURCE_DIR}/doc/docs_sphinx/_build/html/api/index.html
+        # COMMAND make -C ${PROJECT_SOURCE_DIR}/doc/docs_sphinx html
+        COMMAND make -C ${HUB_PROJECT_DIR}/doc/docs_sphinx html
+        # COMMAND ${HUB_BROWSER} ${PROJECT_SOURCE_DIR}/doc/docs_sphinx/_build/html/api/index.html
+        COMMAND ${HUB_BROWSER} ${HUB_PROJECT_DIR}/doc/docs_sphinx/_build/html/api/index.html
         COMMENT "Generating API documentation with Sphinx")
     custom_target_added(doc-sphinx)
 
