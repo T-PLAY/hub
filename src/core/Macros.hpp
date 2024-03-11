@@ -25,11 +25,8 @@
 namespace hub {
 
 // Compiler identification
-#if defined( __clang__ )
-#    define COMPILER_CLANG
-#    define CLANG_VERSION __clang_major__
 
-#elif defined( __GNUC__ )
+#if defined( __GNUC__ )
 #    define COMPILER_GCC
 #    include <features.h>
 #    if __GNUC_PREREQ( 15, 0 )
@@ -48,9 +45,21 @@ namespace hub {
 #        define GCC_VERSION 9
 #    elif __GNUC_PREREQ( 8, 0 )
 #        define GCC_VERSION 8
+#    elif __GNUC_PREREQ( 7, 0 )
+#        define GCC_VERSION 7
+#    elif __GNUC_PREREQ( 6, 0 )
+#        define GCC_VERSION 6
+#    elif __GNUC_PREREQ( 5, 0 )
+#        define GCC_VERSION 5
+#    elif __GNUC_PREREQ( 4, 0 )
+#        define GCC_VERSION 4
 #    else
 #        error "gcc version not supported"
 #    endif
+
+#elif defined( __clang__ )
+#    define COMPILER_CLANG
+#    define CLANG_VERSION __clang_major__
 
 #elif defined( _MSC_VER )
 //#if _MSC_VER >= 1900
@@ -217,9 +226,9 @@ namespace hub {
 
 #        if GCC_VERSION < 12
 #            define FILE_NAME                                                          \
-                std::string( __FILE__ )                                                \
-                    .substr( std::max( std::string( __FILE__ ).find_last_of( '\\' ),   \
-                                       std::string( __FILE__ ).find_last_of( '/' ) ) + \
+                std::string( "/\\" __FILE__ )                                                \
+                    .substr( std::max( std::string( "/\\" __FILE__ ).find_last_of( '\\' ),   \
+                                       std::string("/\\"  __FILE__ ).find_last_of( '/' ) ) + \
                              1 )
 #        else
 #            define FILE_NAME std::string( __FILE_NAME__ )
