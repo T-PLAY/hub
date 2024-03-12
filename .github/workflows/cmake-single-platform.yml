@@ -77,7 +77,7 @@ jobs:
       # with:
         # docs-folder: doc/docs_sphinx
       run: 
-        apt update -y && apt install -y sphinx-doc
+        sudo apt update -y && sudo apt install -y sphinx-doc
         && pip3 install sphinx-rtd-theme breathe sphinx-sitemap
         # && pip3 install breathe
         # && cmake --build ${{github.workspace}}/build --target hub-doc-sphinx
