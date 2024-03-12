@@ -8,9 +8,9 @@ defaults:
 
 on:
   push:
-    branches: [ "main", "gauthier-dev" ]
+    branches: [ '*' ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ '*' ]
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -73,14 +73,13 @@ jobs:
   #       pre-build-command: "apt-get update -y"  # optional
           
     - name: Install Sphinx and Breathe
-      # uses: ammaraskar/sphinx-action@0.4
-      # with:
-        # docs-folder: doc/docs_sphinx
       run: 
         sudo apt update -y && sudo apt install -y sphinx-doc
         && pip3 install sphinx-rtd-theme breathe sphinx-sitemap
-        # && pip3 install breathe
-        # && cmake --build ${{github.workspace}}/build --target hub-doc-sphinx
+
+    - name: Build sphinx doc
+      run:
+        cmake --build ${{github.workspace}}/build --target hub-doc-sphinx
 
   
 
