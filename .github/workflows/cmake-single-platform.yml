@@ -33,14 +33,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - uses: ssciwr/doxygen-install@v1.3.0
+    # - uses: ssciwr/doxygen-install@v1.3.0
     
 
-    - name: Configure CMake
-      # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
-      # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=install -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON
-      # run: mkdir build && cd build && cmake ../src  -GNinja -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }} -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../install -DPONCA_CONFIGURE_EXAMPLES=ON -DPONCA_CONFIGURE_DOC=ON -DPONCA_CONFIGURE_TESTS=ON
+    # - name: Configure CMake
+    #   # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+    #   # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+    #   run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=install -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON
+    #   # run: mkdir build && cd build && cmake ../src  -GNinja -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }} -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../install -DPONCA_CONFIGURE_EXAMPLES=ON -DPONCA_CONFIGURE_DOC=ON -DPONCA_CONFIGURE_TESTS=ON
 
 
     # - name: Build
@@ -60,25 +60,27 @@ jobs:
     # - name: Doc doxygen
     #   run: cmake --build ${{github.workspace}}/build --target hub-doc-doxygen
 
-    - name: Sphinx Build
-  # You may pin to the exact commit or the version.
-  # uses: ammaraskar/sphinx-action@8b4f60114d7fd1faeba1a712269168508d4750d2
-      uses: ammaraskar/sphinx-action@0.4
-      with:
-      # The folder containing your sphinx docs.
-        docs-folder: ${{github.workspace}}/doc/docs_sphinx
-        # The command used to build your documentation.
-        build-command: make html # optional, default is make html
-        # Run before the build command, you can use this to install system level dependencies, for example with "apt-get update -y && apt-get install -y perl"
-        pre-build-command: "apt-get update -y"  # optional
+  #   - name: Sphinx Build
+  # # You may pin to the exact commit or the version.
+  # # uses: ammaraskar/sphinx-action@8b4f60114d7fd1faeba1a712269168508d4750d2
+  #     uses: ammaraskar/sphinx-action@0.4
+  #     with:
+  #     # The folder containing your sphinx docs.
+  #       docs-folder: ${{github.workspace}}/doc/docs_sphinx
+  #       # The command used to build your documentation.
+  #       build-command: make html # optional, default is make html
+  #       # Run before the build command, you can use this to install system level dependencies, for example with "apt-get update -y && apt-get install -y perl"
+  #       pre-build-command: "apt-get update -y"  # optional
           
-    # - name: Doc sphinx
-    #   # uses: ammaraskar/sphinx-action@0.4
-    #   # with:
-    #     # docs-folder: doc/docs_sphinx
-    #   run: 
-    #     apt-get update -y &&
-    #     cmake --build ${{github.workspace}}/build --target hub-doc-sphinx
+    - name: Install Sphinx and Breathe
+      # uses: ammaraskar/sphinx-action@0.4
+      # with:
+        # docs-folder: doc/docs_sphinx
+      run: 
+        apt update -y && apt install -y sphinx-doc
+        && pip3 install sphinx-rtd-theme breathe sphinx-sitemap
+        # && pip3 install breathe
+        # && cmake --build ${{github.workspace}}/build --target hub-doc-sphinx
 
   
 
