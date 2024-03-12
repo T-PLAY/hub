@@ -8,9 +8,9 @@ defaults:
 
 on:
   push:
-    branches: [ "v2.x.x" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "v2.x.x" ]
+    branches: [ "main" ]
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
