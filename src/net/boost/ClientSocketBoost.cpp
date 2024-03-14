@@ -25,7 +25,9 @@ ClientSocketBoost::ClientSocketBoost( const std::string& ipv4, int port, bool au
 #    ifdef HUB_DEBUG_SOCKET
     DEBUG_MSG( getHeader( m_sock ) << "ClientSocketBoost(std::string ipv4, int port)" );
 #    endif
-    if ( autoConnect ) connect();
+    /// if ( autoConnect )
+        /// todo connect
+        /// connect();
 }
 
 ClientSocketBoost::ClientSocketBoost( ::boost::asio::ip::tcp::socket&& fdSock ) :
@@ -49,7 +51,10 @@ ClientSocketBoost::~ClientSocketBoost() {
     DEBUG_MSG( getHeader( m_sock ) << "~ClientSocketBoost()" );
 #    endif
     if ( !m_moved ) {
-        if ( ClientSocketBoost::isConnected() ) { disconnect(); }
+        if ( ClientSocketBoost::isConnected() ) {
+            /// todo disconnect
+            /// disconnect();
+        }
         assert( !ClientSocketBoost::isConnected() );
     }
 }

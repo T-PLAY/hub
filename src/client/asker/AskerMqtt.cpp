@@ -53,7 +53,7 @@ std::list<std::pair<std::string, sensor::SensorSpec>> AskerMqtt::listStreams() {
 
         std::vector<char> buff( sizeof( uint64_t ) + packetSize );
         auto* data             = buff.data();
-        ( (uint64_t*)data )[0] = packetSize;
+        reinterpret_cast<uint64_t*>(data) [0] = packetSize;
 
         m_client->subscribe( activeStreamTopic + "/header/data" );
         m_inputMsgPtr.reset();

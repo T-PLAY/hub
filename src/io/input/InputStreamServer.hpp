@@ -42,7 +42,7 @@ class SRC_API InputStreamServer : public Input, public io::StreamServer
     /// Also occur when stream you want to link is not connected to the server.
     ///
     // InputStreamServer( const std::string& streamName, const std::string & ipv4 = s_defaultIpv4,
-    InputStreamServer( const std::string& streamName,
+    explicit InputStreamServer( const std::string& streamName,
                        int port                = s_defaultPort,
                        const std::string& ipv4 = s_defaultIpv4 );
 

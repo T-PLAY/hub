@@ -60,7 +60,7 @@ inline void OutputStreamMqtt::write( const unsigned char* data, size_t len ) {
     std::cout << DEBUG_OUTPUT_STREAM + m_name + " write(const unsigned char*, size_t) len = " << len
               << ", current topic = " << m_currentTopic << std::endl;
 #    endif
-    m_msgPtr->set_payload( (char*)data, len );
+    m_msgPtr->set_payload( reinterpret_cast<const char*>(data), len );
     assert( m_msgPtr->get_qos() == 2 );
     assert( m_msgPtr->is_retained() );
     m_client->publish( m_msgPtr );

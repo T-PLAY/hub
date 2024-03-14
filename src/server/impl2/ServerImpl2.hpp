@@ -88,7 +88,7 @@ class SRC_API ServerImpl2
 
     void addViewer( ViewerClient2* viewer );
 
-    void delStreamer( StreamerClient2* streamer );
+    void delStreamer( const StreamerClient2* streamer );
     void delViewer( ViewerClient2* viewer );
 
     void removeClient( Client2* client );

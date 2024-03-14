@@ -64,7 +64,7 @@ inline void InputStreamMqtt::read( unsigned char* data, size_t len ) {
     std::cout << "[InputStreamMqtt] read(data, len = " << len << ")" << std::endl;
 #    endif
 #    ifdef DEBUG_INPUT_STREAM
-    std::cout << DEBUG_INPUT_STREAM "read(data, len = " << len << ")" << std::endl;
+    std::cout << DEBUG_INPUT_STREAM + "read(data, len = " << len << ")" << std::endl;
 #    endif
 
     assert( m_client->is_connected() );
