@@ -14,6 +14,7 @@ ClientSocketSystem::ClientSocketSystem( const std::string& ipv4, int port, bool 
 
     initServerAddress();
 
+    /// todo fix
     if ( autoConnect ) connect();
 }
 

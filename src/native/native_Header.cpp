@@ -16,7 +16,8 @@ io::Header* createHeader( Size_t dataSize ) {
 void freeHeader( io::Header* header ) {
     assert( header != nullptr );
     delete header;
-    header = nullptr;
+    // Todo header = nullptr
+    // header = nullptr;
 }
 
 } // namespace native

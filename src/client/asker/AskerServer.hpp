@@ -17,7 +17,7 @@ namespace client {
 class AskerServer : public AskerInterface
 {
   public:
-    AskerServer( const std::string& ipv4 = io::StreamServer::s_defaultIpv4,
+    explicit AskerServer( const std::string& ipv4 = io::StreamServer::s_defaultIpv4,
                  int port                = io::StreamServer::s_defaultPort );
     ~AskerServer();
 

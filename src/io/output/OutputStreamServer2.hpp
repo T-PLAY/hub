@@ -105,7 +105,7 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
     void stopStreaming();
 
     struct SharedData {
-        SharedData( std::unique_ptr<hub::io::InputOutputSocket>&& serverSocket ) :
+        explicit SharedData( std::unique_ptr<hub::io::InputOutputSocket>&& serverSocket ) :
             m_serverSocket { std::move( serverSocket ) } {};
         SharedData() = default;
 

@@ -623,7 +623,7 @@ class SRC_API SerializerT
     typename std::enable_if_t<(!Serializables<T, U>), void>
     read( std::map<T, U>& map ) {
 
-        uint64_t nbEl;
+        uint64_t nbEl = 0;
         read( nbEl );
         map.clear();
 
