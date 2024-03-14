@@ -51,7 +51,7 @@ void ServerImpl2::run() {
         SERVER_MSG( "new client" );
 
         m_mtxClients.lock();
-        Client2* newClient = initClient( std::move( sock ), ++m_iClient );
+        Client2* newClient = initClient( io::InputOutputSocket{std::move( sock )}, ++m_iClient );
         if ( newClient == nullptr ) { --m_nActiveClient; }
         else {
             m_clients.push_back( newClient );
@@ -60,7 +60,6 @@ void ServerImpl2::run() {
         }
         m_mtxClients.unlock();
     }
-    if ( !m_killed ) { SERVER_MSG( "max clients attempt" ); }
     m_running = false;
 }
 
@@ -298,13 +297,13 @@ void ServerImpl2::addViewer( ViewerClient2* viewer ) {
     m_mtxViewers.unlock();
 }
 
-void ServerImpl2::delStreamer( StreamerClient2* streamer ) {
+void ServerImpl2::delStreamer( const StreamerClient2* streamer ) {
 
     const std::string streamName = streamer->m_streamName;
     m_mtxStreamName2streamer.lock();
     assert( !m_streamName2streamer.empty() );
     assert( m_streamName2streamer.find( streamName ) != m_streamName2streamer.end() );
-    const auto nActiveClient = m_nActiveClient;
+    // const auto nActiveClient = m_nActiveClient;
     m_streamName2streamer.erase( streamName );
     m_mtxStreamName2streamer.unlock();
 

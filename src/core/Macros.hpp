@@ -57,7 +57,9 @@ namespace hub {
 #    define COMPILER_MSVC
 #    define _USE_MATH_DEFINES
 #else
+#ifndef CPP_CHECK
 #    error unsupported compiler
+#endif
 #endif
 
 // OS and architecture identification
@@ -82,7 +84,9 @@ namespace hub {
 #elif defined( __linux__ ) || defined( __CYGWIN__ ) // ---------------------- Linux
 #    define OS_LINUX
 #else
+#ifndef CPP_CHECK
 #    error unsupported OS
+#endif
 #endif
 
 // Check arch for macos and linux

@@ -13,7 +13,7 @@ const Any& UserData::getValue() const {
 
 UserData::UserData( const std::string& name, const Any& value ) : m_name( name ), m_value( value ) {
 
-    std::vector<char> buff;
+    // std::vector<char> buff;
 }
 
 std::ostream& operator<<( std::ostream& os, const UserData& userData ) {

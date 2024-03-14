@@ -19,7 +19,8 @@ createOutputStream( const io::Header* header, const char* streamName, int port, 
 void freeOutputStream( output::OutputStream* outputStream ) {
     assert( outputStream != nullptr );
     delete outputStream;
-    outputStream = nullptr;
+    // outputStream = nullptr;
+    // Todo header = nullptr
 }
 
 void outputStream_write_int( output::OutputStream* outputStream, int value ) {

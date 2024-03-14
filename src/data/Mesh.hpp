@@ -187,7 +187,7 @@ struct Material {
     /// \return
     ///
     bool operator==( const Material& other ) const {
-        return name == other.name && !std::memcmp( Ka, other.Ka, sizeof( float ) * 21 ) &&
+        return name == other.name && !std::memcmp( &Ka, &other.Ka, sizeof( float ) * 21 ) &&
                illum == other.illum;
     }
 };

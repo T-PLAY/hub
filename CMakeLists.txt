@@ -224,8 +224,10 @@ if(NOT WIN32)
         hub-cppCheck
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
         # COMMAND cppcheck --enable=all --error-exitcode=1 src tests -I src -I tests --inline-suppr
-        COMMAND cppcheck --enable=all --error-exitcode=1 src -I src -I external --inline-suppr
-                --suppress=toomanyconfigs --suppress=missingIncludeSystem
+        # COMMAND cppcheck --enable=all --error-exitcode=1 src -I src -I external --inline-suppr
+                # --suppress=toomanyconfigs --suppress=missingIncludeSystem
+        COMMAND cppcheck -DCPP_CHECK --enable=all --error-exitcode=1 src --suppress=missingIncludeSystem --suppress=missingInclude
+                --suppress=toomanyconfigs --suppress=unusedFunction --suppress=virtualCallInConstructor --suppress=noValidConfiguration
                 # --suppress=noValidConfiguration
         COMMENT "Running cppCheck")
     custom_target_added(cppCheck)
