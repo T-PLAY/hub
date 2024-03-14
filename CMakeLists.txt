@@ -226,8 +226,10 @@ if(NOT WIN32)
         # COMMAND cppcheck --enable=all --error-exitcode=1 src tests -I src -I tests --inline-suppr
         # COMMAND cppcheck --enable=all --error-exitcode=1 src -I src -I external --inline-suppr
                 # --suppress=toomanyconfigs --suppress=missingIncludeSystem
-        COMMAND cppcheck -DCPP_CHECK --enable=all --error-exitcode=1 src --suppress=missingIncludeSystem --suppress=missingInclude
-                --suppress=toomanyconfigs --suppress=unusedFunction --suppress=virtualCallInConstructor --suppress=noValidConfiguration
+        # COMMAND cppcheck -DCPP_CHECK --enable=all --error-exitcode=1 src --suppress=missingIncludeSystem --suppress=missingInclude
+                # --suppress=toomanyconfigs --suppress=unusedFunction --suppress=virtualCallInConstructor --suppress=noValidConfiguration
+        COMMAND cppcheck -DCPP_CHECK src -I src --error-exitcode=1 --enable=all --suppress=missingIncludeSystem --suppress=missingInclude
+                --suppress=unusedFunction --suppress=virtualCallInConstructor --inline-suppr
                 # --suppress=noValidConfiguration
         COMMENT "Running cppCheck")
     custom_target_added(cppCheck)

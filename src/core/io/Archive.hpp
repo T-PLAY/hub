@@ -31,7 +31,7 @@ class ArchiveT : public InputOutputT
     /// \brief ArchiveT
     /// \param header
     ///
-    ArchiveT(const io::Header & header) : m_header{header} {};
+    explicit ArchiveT(const io::Header & header) : m_header{header} {};
 
     ///
     /// \brief read

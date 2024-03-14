@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <numeric> // reduce
 #include <string>
 #include <type_traits>
 #include <vector>
@@ -36,19 +37,19 @@ class SRC_API Matrix
 
     ///
     /// \brief Matrix
-    /// \param matrix
+    /// \param mat
     ///
-    Matrix( Matrix&& matrix )      = default;
+    Matrix( Matrix&& mat )      = default;
 
-    Matrix( const Matrix& matrix ) = delete;
+    Matrix( const Matrix& mat ) = delete;
 
     ///
     /// \brief operator =
-    /// \param matrix
+    /// \param mat
     /// \return
     ///
-    Matrix& operator=( Matrix&& matrix ) = default;
-    Matrix& operator=( const Matrix& matrix ) = delete;
+    Matrix& operator=( Matrix&& mat ) = default;
+    Matrix& operator=( const Matrix& mat ) = delete;
 
     ///
     /// \brief clone
@@ -180,8 +181,8 @@ class SRC_API Matrix
     ///
     template <int i = 0, class T, class... Ts>
     void fill_reduce( const T& t, const Ts&... ts ) {
-        Data_t* data = getData( i );
-        T& tIn       = reinterpret_cast<T&>( *(T*)data );
+        Data_t* dataPtr = getData( i );
+        T& tIn       = reinterpret_cast<T&>( *(reinterpret_cast<T*>(dataPtr)) );
         tIn          = t;
 
         if constexpr ( sizeof...( ts ) > 0 ) { fill_reduce<i + 1>( ts... ); }
@@ -212,12 +213,14 @@ class SRC_API Matrix
     ///
     /// \brief data
     /// \return
+    /// todo move data -> getData
     ///
     const Data_t* data() const;
 
     ///
     /// \brief data
     /// \return
+    /// todo move data -> getData
     ///
     Data_t* data();
 
@@ -293,7 +296,7 @@ class SRC_API Matrix
     void push_back( const Node& node );
 
 #if CPP_VERSION >= 20
-    static constexpr auto serialize( auto& archive, auto& self ) {
+    static constexpr auto serialize( const auto& archive, auto& self ) {
         return archive( self.m_nodes, self.m_size, self.m_vector );
     }
 #endif
@@ -357,22 +360,22 @@ template <class Type, Size_t N = 1, Size_t... Ns>
 // REQUIRES(, !isMatrix<Type> && N > 0 && ( ( Ns > 1 ) && ... ), Matrix )
 typename std::enable_if_t<(!isMatrix<Type> && N > 0 && ( ( Ns > 1 ) && ... )), Matrix>
 make_matrix() {
-    Matrix matrix;
-    matrix.push_back( make_node<Type, N, Ns...>() );
-    return matrix;
+    Matrix mat;
+    mat.push_back( make_node<Type, N, Ns...>() );
+    return mat;
 }
 
 ///
 /// \brief fill_matrix
-/// \param matrix
+/// \param mat
 ///
 template <class Type, class... Types>
-void fill_matrix( Matrix& matrix ) {
-    if constexpr ( isMatrix<Type> ) { matrix |= Type().getMatrix(); }
+void fill_matrix( Matrix& mat ) {
+    if constexpr ( isMatrix<Type> ) { mat |= Type().getMatrix(); }
     else {
-        matrix |= make_matrix<Type>();
+        mat |= make_matrix<Type>();
     }
-    if constexpr ( sizeof...( Types ) > 0 ) { fill_matrix<Types...>( matrix ); }
+    if constexpr ( sizeof...( Types ) > 0 ) { fill_matrix<Types...>( mat ); }
 }
 
 ///
@@ -383,9 +386,9 @@ template <class... Types>
 // REQUIRES(, sizeof...( Types ) > 1, Matrix )
 typename std::enable_if_t<(sizeof...( Types ) > 1), Matrix>
 make_matrix() {
-    Matrix matrix;
-    fill_matrix<Types...>( matrix );
-    return matrix;
+    Matrix mat;
+    fill_matrix<Types...>( mat );
+    return mat;
 }
 
 ///
@@ -397,9 +400,9 @@ template <class Type, class... Dims>
 // REQUIRES(, !isMatrix<Type> && sizeof...( Dims ) > 0, Matrix )
 typename std::enable_if_t<(!isMatrix<Type> && sizeof...( Dims ) > 0), Matrix>
 make_matrix( const Dims&... dims ) {
-    Matrix matrix;
-    matrix.push_back( make_node<Type>( dims... ) );
-    return matrix;
+    Matrix mat;
+    mat.push_back( make_node<Type>( dims... ) );
+    return mat;
 }
 
 ///
@@ -411,17 +414,17 @@ template <class... Matrices>
 // REQUIRES(, areMatrices<Matrices...> && sizeof...( Matrices ) > 1, Matrix )
 typename std::enable_if_t<(areMatrices<Matrices...> && sizeof...( Matrices ) > 1), Matrix>
 make_matrix( const Matrices&... matrices ) {
-    Matrix matrix;
-    matrix = ( matrices | ... );
-    return matrix;
+    Matrix mat;
+    mat = ( matrices | ... );
+    return mat;
 }
 
 /////////////////////////////////////// INLINE ////////////////////////////////////////////////////
 
 inline Matrix Matrix::clone() const {
-    Matrix matrix;
-    matrix |= *this;
-    return matrix;
+    Matrix mat;
+    mat |= *this;
+    return mat;
 }
 
 inline Matrix& Matrix::operator|=( const Matrix& other ) {
@@ -438,9 +441,9 @@ inline Matrix& Matrix::operator|=( const Matrix& other ) {
 }
 
 inline Matrix Matrix::operator|( const Matrix& other ) const {
-    Matrix matrix = this->clone();
-    matrix |= other;
-    return matrix;
+    Matrix mat = this->clone();
+    mat |= other;
+    return mat;
 }
 
 inline std::string Matrix::toString( bool pretty ) const {
@@ -520,10 +523,11 @@ inline bool Matrix::hasValue() const {
 template <class Type>
 bool Matrix::hasType() const {
     const auto typeId = TYPE_ID( Type );
-    for ( const auto& node : m_nodes ) {
-        if ( node.m_id == typeId ) { return true; }
-    }
-    return false;
+    // for ( const auto& node : m_nodes ) {
+    //     if ( node.m_id == typeId ) { return true; }
+    // }
+    return ! std::none_of(m_nodes.begin(), m_nodes.end(), [&typeId](const auto & node) { return node.m_id == typeId; });
+    // return false;
 }
 
 template <class... Types>
@@ -543,12 +547,20 @@ Matrix::hasSomeType() const {
 template <class Type>
 int Matrix::nType() {
     assert( hasType<Type>() );
-    int ret           = 0;
     const auto typeId = TYPE_ID( Type );
-    for ( const auto& node : m_nodes ) {
-        if ( node.m_id == typeId ) { ++ret; }
-    }
-    return ret;
+    // int ret           = 0;
+    // for ( const auto& node : m_nodes ) {
+        // if ( node.m_id == typeId ) { ++ret; }
+    // }
+    // return ret;
+    // return std::reduce(m_nodes.begin(), m_nodes.end(), 0, [&typeId] (int prev, const Node & node) {
+        // if (node.m_id == typeId) { ++prev; };
+        // return prev;
+    return std::accumulate(m_nodes.begin(), m_nodes.end(), 0, [&typeId](int prev, const Node & node) {
+        // if (node.m_id == typeId) { ++prev; };
+        // return prev;
+        return prev + (( node.m_id == typeId ) ?1 :0);
+    });
 }
 
 inline Dims Matrix::getDims( int i ) const {
@@ -590,11 +602,12 @@ Size_t Matrix::getCapacity() const {
     for ( const auto& node : m_nodes ) {
         if ( node.m_id == typeId ) {
             if ( i == nFound ) {
-                Size_t capacity = 1;
-                for ( auto dim : node.m_dims ) {
-                    capacity *= dim;
-                }
-                return capacity;
+                // Size_t capacity = 1;
+                return std::accumulate(node.m_dims.begin(), node.m_dims.end(), 1, std::multiplies<Size_t>());
+                // for ( auto dim : node.m_dims ) {
+                    // capacity *= dim;
+                // }
+                // return capacity;
             }
             ++nFound;
         }

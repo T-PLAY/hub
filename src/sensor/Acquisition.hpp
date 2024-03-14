@@ -29,8 +29,9 @@ static inline Clock getClock() {
 
 ///
 /// \brief The Acquisition class
-///
+/// todo move to protected
 class SRC_API Acquisition : public Matrix
+// class SRC_API Acquisition : protected Matrix
 {
   public:
     using Matrix::getData;
@@ -60,7 +61,7 @@ class SRC_API Acquisition : public Matrix
     /// \brief clone
     /// \return
     ///
-    Acquisition clone() const {
+    Acquisition copy() const {
         Acquisition acq;
         acq |= *this;
         return acq;
@@ -84,8 +85,8 @@ class SRC_API Acquisition : public Matrix
     /// \return
     ///
     Clock& start() {
-        auto offset  = getOffset<Clock>( 0 );
-        auto offset2 = getOffset<Clock>( 1 );
+        // auto offset  = getOffset<Clock>( 0 );
+        // auto offset2 = getOffset<Clock>( 1 );
         assert( getOffset<Clock>( 0 ) == 0 );
         return get<Clock&>();
     }
@@ -141,9 +142,10 @@ class SRC_API Acquisition : public Matrix
     /// \return
     ///
     Acquisition operator<<( const Acquisition& other ) const {
-        Acquisition matrix = this->clone();
-        matrix << other;
-        return matrix;
+        // Acquisition acq = this->clone();
+        Acquisition acq = this->copy();
+        acq << other;
+        return acq;
     }
 
     ///

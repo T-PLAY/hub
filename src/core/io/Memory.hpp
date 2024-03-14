@@ -55,8 +55,10 @@ class MemoryT : public InputOutputT
         std::copy( m_data.begin(), std::next( m_data.begin(), size ), data );
         m_data.erase( m_data.begin(), std::next( m_data.begin(), size ) );
 
+#ifdef DEBUG_MEMORY
         std::vector<Data_t> vector( data, data + size );
-        // std::cout << "[Memory] read " << vector << std::endl;
+        std::cout << "[Memory] read " << vector << std::endl;
+#endif
 
         // std::cout << "[Memory] data " << m_data << std::endl;
     }
@@ -67,9 +69,11 @@ class MemoryT : public InputOutputT
     /// \param size
     ///
     void write( const hub::Data_t* data, hub::Size_t size ) override {
-        std::vector<Data_t> vector( data, data + size );
         // std::cout << "[Memory] data " << m_data << std::endl;
-        // std::cout << "[Memory] write " << vector << std::endl;
+#ifdef DEBUG_MEMORY
+        std::vector<Data_t> vector( data, data + size );
+        std::cout << "[Memory] write " << vector << std::endl;
+#endif
 
         assert( size > 0 );
         const auto prevSize = m_data.size();

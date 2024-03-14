@@ -69,7 +69,7 @@ class SRC_API Anyable
                         char* val =
                             new char[80]; // leak, please do not use char *, use std::string instead
                         serializer.read( val );
-                        any = (const char*)val;
+                        any = reinterpret_cast<const char*>(val);
                     };
                     compare = []( const std::any& any, const std::any& any2 ) {
                         return strcmp( std::any_cast<const char*>( any ),
@@ -129,6 +129,7 @@ class SRC_API Anyable
         return { makeAnyHelperRow<T>()... };
     }
 
+    /// todo change string to typeId
     static inline std::map<std::string, AnyHelper> s_anyables = makeAnyHelperMap<void,
                                                                                  int,
                                                                                  double,

@@ -171,7 +171,7 @@ static void checkSynchronize( Output& output,
     std::cout << "sync_acqs:" << std::endl;
     while ( !someEnd( inputs... ) && sync_acqs.size() != ref_sync_acqs.size() ) {
         inputSensorSync >> read_acq;
-        sync_acqs.push_back( read_acq.clone() );
+        sync_acqs.push_back( read_acq.copy() );
         std::cout << read_acq << std::endl;
     }
 
@@ -194,7 +194,7 @@ static auto generateRefAcqs( int offset, int nAcq, const hub::sensor::SensorSpec
         }
         acq.start() = offset + iAcq + 1;
         acq.end()   = offset + iAcq + 2;
-        ref_acqs.push_back( acq.clone() );
+        ref_acqs.push_back( acq.copy() );
     }
 
     return ref_acqs;

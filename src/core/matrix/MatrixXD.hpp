@@ -170,12 +170,12 @@ requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
 
     ///
     /// \brief serialize
-    /// \param matrix
+    /// \param mat
     ///
-    void serialize( Matrix& matrix ) const {
-        assert( !matrix.hasValue() );
+    void serialize( Matrix& mat ) const {
+        assert( !mat.hasValue() );
         auto matrix2 = make_matrix<Type, Ns...>();
-        matrix |= matrix2;
+        mat |= matrix2;
     }
 
     ///
@@ -183,18 +183,18 @@ requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
     /// \return
     ///
     Matrix getMatrix() const {
-        Matrix matrix;
-        serialize( matrix );
-        matrix.setData( m_buffer.data(), m_buffer.size() );
-        return matrix;
+        Matrix mat;
+        serialize( mat );
+        mat.setData( m_buffer.data(), m_buffer.size() );
+        return mat;
     }
 
     ///
     /// \brief operator ==
-    /// \param matrix
+    /// \param mat
     /// \return
     ///
-    bool operator==( const Matrix& matrix ) { return getMatrix() == matrix; }
+    bool operator==( const Matrix& mat ) { return getMatrix() == mat; }
 
   private:
     // Buffer<Type, Capacity> m_buffer;
@@ -223,7 +223,7 @@ requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
     /// \return
     ///
     template <int i>
-    static constexpr Size_t n() {
+    static constexpr Size_t nDim() {
         static_assert( 0 <= i && i < MatrixXDBase<Type, Ns...>::nDim() );
         int j = 0;
         for ( const auto& n : { Ns... } ) {
