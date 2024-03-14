@@ -41,7 +41,7 @@ class SRC_API Sensor
     /// \brief acqMsg
     /// \return
     ///
-    Acquisition acqMsg() const { return make_acquisition( m_spec.getResolution() ); }
+    // Acquisition acqMsg() const { return make_acquisition( m_spec.getResolution() ); }
 
   public:
     ///

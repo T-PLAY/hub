@@ -36,7 +36,7 @@ class Node
     /// \param size
     /// \param id
     ///
-    Node( Dims&& dims, std::string typeName, Size_t size, TypeId_t id );
+    Node( Dims&& dims, const std::string & typeName, Size_t size, TypeId_t id );
 
     ///
     /// \brief toString
@@ -99,8 +99,8 @@ class Node
     // HashType m_hashCode;
     Dims m_dims;
     std::string m_typeName;
-    Size_t m_size;
-    TypeId_t m_id;
+    Size_t m_size = 0;
+    TypeId_t m_id = Types::NONE;
     // Data_t * m_data = nullptr;
 };
 
@@ -115,9 +115,10 @@ requires( N > 0 && ( ( Ns > 1 ) && ... ) )
     ) {
     auto size = hub::sizeOf<Type>() * N;
     if constexpr ( sizeof...( Ns ) > 0 ) {
-        for ( auto dim : { Ns... } ) {
-            size *= dim;
-        }
+        size *= (... * Ns);
+        // for ( auto dim : { Ns... } ) {
+            // size *= dim;
+        // }
     }
     return Node( std::move( Dims { N, Ns... } ), TYPE_NAME( Type() ), size, TYPE_ID( Type ) );
 }
@@ -126,16 +127,17 @@ template <class Type, class... Dims>
 static Node make_node(
     // Data_t * data,
     const Dims&... dims ) {
-    auto size = hub::sizeOf<Type>();
-    for ( auto dim : { dims... } ) {
-        size *= dim;
-    }
+    // auto size = hub::sizeOf<Type>();
+    const auto size = hub::sizeOf<Type>() * (... * dims);
+    // for ( auto dim : { dims... } ) {
+        // size *= dim;
+    // }
     return Node( hub::Dims { dims... }, TYPE_NAME( Type() ), size, TYPE_ID( Type ) );
 }
 
 /////////////////////////////////////// INLINE ////////////////////////////////////////////////////
 
-inline Node::Node( Dims&& dims, std::string typeName, Size_t size, TypeId_t id ) :
+inline Node::Node( Dims&& dims, const std::string & typeName, Size_t size, TypeId_t id ) :
     m_dims { std::move( dims ) }, m_typeName { typeName }, m_size { size }, m_id { id } {}
 
 inline std::string Node::toString( bool pretty ) const {
