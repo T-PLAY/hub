@@ -68,14 +68,15 @@ namespace sensor {
         ///
         /// \brief acqMsg
         ///
-        using Sensor::acqMsg;
+        // using Sensor::acqMsg;
+          // using Sensor::getSpec;
 
       ///
       /// \brief InputSensor
       /// \param input
       ///
         template <class InputT>
-        InputSensor(InputT& input)
+        explicit InputSensor(InputT& input)
             : Sensor(SensorSpec {})
             , m_inputs({ &input })
         {
@@ -109,7 +110,7 @@ namespace sensor {
         requires std::is_base_of_v<Input, std::remove_cvref_t<InputT>>
 #endif
         // REQUIRES (std::is_base_of_v<Input, std::remove_cvref_t<InputT>>)
-        InputSensor(InputT&& input)
+        explicit InputSensor(InputT&& input)
             : Sensor(SensorSpec {})
         {
             // std::cout << "[InputSensor] InputSensor(InputT&&)" << std::endl;
@@ -175,7 +176,7 @@ namespace sensor {
 
                 if (leftLastAcqs.empty()) {
                     leftInput.read(leftAcq);
-                    leftLastAcqs.push_back(leftAcq.clone());
+                    leftLastAcqs.push_back(leftAcq.copy());
                 }
 
                 while (rightAcq.getStart() < leftLastAcqs.front().getStart()) {
@@ -190,7 +191,7 @@ namespace sensor {
                 while (leftLastAcqs.back().getStart() < rightAcq.getStart() && !leftInput.isEnd()) {
                     assert(!leftInput.isEnd());
                     leftInput.read(leftAcq);
-                    leftLastAcqs.push_back(leftAcq.clone());
+                    leftLastAcqs.push_back(leftAcq.copy());
                 }
 
                 while (leftLastAcqs.size() > 2) {
@@ -230,7 +231,7 @@ namespace sensor {
             auto acq = acqMsg();
             while (std::none_of(m_inputs.begin(), m_inputs.end(), [](const Input* input) { return input->isEnd(); })) {
                 *this >> acq;
-                acqs.push_back(acq.clone());
+                acqs.push_back(acq.copy());
             }
             return acqs;
         }
@@ -247,7 +248,7 @@ namespace sensor {
             while (std::none_of(m_inputs.begin(), m_inputs.end(), [](const Input* input) { return input->isEnd(); })) {
                 *this >> acq;
                 //            acqs.push_back(acq.clone());
-                ts.push_back(acq.clone());
+                ts.push_back(acq.copy());
             }
         }
 
@@ -256,6 +257,8 @@ namespace sensor {
         /// \return
         ///
         const Input& getInput() const { return *m_inputs.at(0); }
+
+        Acquisition acqMsg() const { return make_acquisition( m_spec.getResolution() ); }
 
         ///
         /// \brief getInput

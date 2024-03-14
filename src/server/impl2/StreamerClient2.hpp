@@ -48,6 +48,7 @@ class SRC_API StreamerClient2 : public Client2
     /// \brief headerMsg
     /// \return
     ///
+    // cppcheck-suppress virtualCallinConstructor
     std::string headerMsg() const override;
 
     ///

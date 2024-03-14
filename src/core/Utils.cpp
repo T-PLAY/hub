@@ -59,6 +59,7 @@ namespace utils {
             delete[] temp;
             temp = 0;
         }
+        (void)temp;
 #endif
         return computerName;
     }
