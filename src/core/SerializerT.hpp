@@ -153,7 +153,8 @@ class SRC_API SerializerT
     ///
     /// \brief BuffSize
     ///
-    static constexpr Size_t BuffSize = 20'000'000; // 20 Mo
+    //static constexpr Size_t BuffSize = 20'000'000; // 20 Mo
+    static constexpr Size_t BuffSize = 1'000'000; // 1 Mo
 
     ///
     /// \brief SerializerT
