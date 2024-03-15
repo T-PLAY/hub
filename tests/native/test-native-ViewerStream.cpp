@@ -132,8 +132,8 @@ TEST_CASE( "Native Viewer stream" ) {
             assert( hub::native::viewer_isConnected( viewer ) );
 
             iTry = 0;
-            while (nServerConnected != 1 && iTry < 10) {
-                std::cout << "[test] waiting for nServerConnected + 1" << std::endl;
+            while (nServerConnected == 0 && iTry < 10) {
+                std::cout << "[test] waiting for nServerConnected == 1" << std::endl;
                 std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                 ++iTry;
             }
@@ -147,6 +147,13 @@ TEST_CASE( "Native Viewer stream" ) {
                 auto* outputStream = hub::native::createOutputStream(
                     &header_ref, FILE_NAME.c_str(), port, "127.0.0.1" );
                 CONSTRUCT_END( "OutputStream" );
+                iTry = 0;
+                while (hub::native::viewer_nStream(viewer) == 0 && iTry < 10) {
+                    std::cout << "[test] waiting for native nStream == 1" << std::endl;
+                    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+                    ++iTry;
+                }
+                assert(iTry < 10);
                 assert( hub::native::viewer_nStream( viewer ) == 1 );
                 assert( hub::native::viewer_nStreaming( viewer ) == 1 );
 
