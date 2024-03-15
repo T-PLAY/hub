@@ -2,7 +2,8 @@
 #include "gltfpack.h"
 
 //#include "../extern/fast_obj.h"
-#include "fast_obj.h"
+//#include "fast_obj.h"
+#include "fast_obj/fast_obj.h"
 //#include "../src/meshoptimizer.h"
 #include "meshoptimizer/meshoptimizer.h"
 
