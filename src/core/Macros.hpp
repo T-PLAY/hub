@@ -26,8 +26,36 @@ namespace hub {
 
 // Compiler identification
 
-#if defined( __GNUC__ )
+// OS and architecture identification
+#if defined( _WIN32 ) || defined( _WIN64 ) // ------------------------------ Windows
+                                           // Shlwapi.h also define this macro
+#    ifndef OS_WINDOWS
+#        define OS_WINDOWS
+#    endif
+#    if defined( _M_X64 ) || defined( __x86_64__ )
+#        define ARCH_X64
+#    elif defined( i386 ) || defined( __i386__ ) || defined( __i386 ) || defined( _M_IX86 )
+#        define ARCH_X86
+#    elif defined( __arm__ ) || defined( __arm ) || defined( _M_ARM )
+#        define ARCH_ARM32
+#    elif defined( __aarch64__ ) || defined( _M_ARM64 )
+#        define ARCH_ARM64
+#    else
+#        error unsupported arch
+#    endif
+#elif defined( __APPLE__ ) || defined( __MACH__ ) // ------------------------ Mac OS
+#    define OS_MACOS
+#elif defined( __linux__ ) || defined( __CYGWIN__ ) // ---------------------- Linux
+#    define OS_LINUX
+#else
+#ifndef CPP_CHECK
+#    error unsupported OS
+#endif
+#endif
+
+#if defined( __GNUC__ ) && ! defined(OS_MACOS)
 #    define COMPILER_GCC
+
 #    include <features.h>
 #    if __GNUC_PREREQ( 15, 0 )
 #        define GCC_VERSION 15
@@ -71,32 +99,6 @@ namespace hub {
 #endif
 #endif
 
-// OS and architecture identification
-#if defined( _WIN32 ) || defined( _WIN64 ) // ------------------------------ Windows
-                                           // Shlwapi.h also define this macro
-#    ifndef OS_WINDOWS
-#        define OS_WINDOWS
-#    endif
-#    if defined( _M_X64 ) || defined( __x86_64__ )
-#        define ARCH_X64
-#    elif defined( i386 ) || defined( __i386__ ) || defined( __i386 ) || defined( _M_IX86 )
-#        define ARCH_X86
-#    elif defined( __arm__ ) || defined( __arm ) || defined( _M_ARM )
-#        define ARCH_ARM32
-#    elif defined( __aarch64__ ) || defined( _M_ARM64 )
-#        define ARCH_ARM64
-#    else
-#        error unsupported arch
-#    endif
-#elif defined( __APPLE__ ) || defined( __MACH__ ) // ------------------------ Mac OS
-#    define OS_MACOS
-#elif defined( __linux__ ) || defined( __CYGWIN__ ) // ---------------------- Linux
-#    define OS_LINUX
-#else
-#ifndef CPP_CHECK
-#    error unsupported OS
-#endif
-#endif
 
 // Check arch for macos and linux
 #if defined( OS_MACOS ) || defined( OS_LINUX )

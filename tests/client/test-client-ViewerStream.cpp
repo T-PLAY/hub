@@ -18,12 +18,12 @@ TEST_CASE( "Viewer stream" ) {
 
         hub::client::ViewerHandler viewerHandler;
 
-        int nNewStreamer                     = 0;
-        int nDelStreamer                     = 0;
+        std::atomic<int> nNewStreamer                     = 0;
+        std::atomic<int> nDelStreamer                     = 0;
         std::atomic<int> nServerNotFound     = 0;
-        int nServerConnected                 = 0;
+        std::atomic<int> nServerConnected                 = 0;
         std::atomic<int> nServerDisconnected = 0;
-        int nNewData                         = 0;
+        std::atomic<int> nNewData                         = 0;
 
         viewerHandler.onServerNotFound = [&]( const std::string& ipv4, int port ) {
             std::cout << "[test-client-Viewer] onServerNotFound : " << ipv4 << " " << port
@@ -108,6 +108,13 @@ TEST_CASE( "Viewer stream" ) {
                 CONSTRUCT_BEGIN( "OutputStream" );
                 hub::output::OutputStream outputStream( header_ref, FILE_NAME, port, "127.0.0.1" );
                 CONSTRUCT_END( "OutputStream" );
+                iTry = 0;
+                while ( viewer.nStream() == 0 && iTry < 20 ) {
+                    std::cout << "[test] waiting for viwer nStream == 1 : " << std::endl;
+                    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+                    ++iTry;
+                }
+                assert( iTry < 20 );
                 assert( viewer.nStream() == 1 );
                 assert( viewer.nStreaming() == 1 );
 
@@ -129,12 +136,12 @@ TEST_CASE( "Viewer stream" ) {
             DESTRUCT_END( "OutputStream" );
 
             iTry = 0;
-            while ( viewer.nStream() != 0 && iTry < 10 ) {
+            while ( (viewer.nStream() != 0 || nDelStreamer == 0) && iTry < 20 ) {
                 std::cout << "[test] waiting for outputStream disconnected" << std::endl;
                 std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                 ++iTry;
             }
-            assert( iTry != 10 );
+            assert( iTry != 20 );
             assert( viewer.nStream() == 0 );
             assert( viewer.nStreaming() == 0 );
             assert( nDelStreamer == 1 );
