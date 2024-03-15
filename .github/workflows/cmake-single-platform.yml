@@ -33,29 +33,31 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - uses: ssciwr/doxygen-install@v1.3.0
-    
+    # - uses: ssciwr/doxygen-install@v1.3.0
 
+    
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=install -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON
+      # run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=install -DHUB_ENABLE_TESTS=ON -DHUB_BUILD_DOC=ON
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=install -DHUB_ENABLE_TESTS=ON
+
       # run: mkdir build && cd build && cmake ../src  -GNinja -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }} -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../install -DPONCA_CONFIGURE_EXAMPLES=ON -DPONCA_CONFIGURE_DOC=ON -DPONCA_CONFIGURE_TESTS=ON
 
+    - name: Build
+      # Build your program with the given configuration
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
-    # - name: Build
-    #   # Build your program with the given configuration
-    #   run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+    - name: Install
+      run: cmake --install ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
-    # - name: Install
-    #   run: cmake --install ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+    - name: Test
+      # working-directory: ${{github.workspace}}/build
+      # Execute tests defined by the CMake configuration.
+      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+      # run: ctest -C ${{env.BUILD_TYPE}}
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target hub-tests-bin
 
-    # - name: Test
-    #   # working-directory: ${{github.workspace}}/build
-    #   # Execute tests defined by the CMake configuration.
-    #   # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-    #   # run: ctest -C ${{env.BUILD_TYPE}}
-    #   run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target hub-tests-bin
 
     # - name: Doc doxygen
     #   run: cmake --build ${{github.workspace}}/build --target hub-doc-doxygen
@@ -72,23 +74,23 @@ jobs:
   #       # Run before the build command, you can use this to install system level dependencies, for example with "apt-get update -y && apt-get install -y perl"
   #       pre-build-command: "apt-get update -y"  # optional
           
-    - name: Install Sphinx and Breathe
-      run: 
-        sudo apt update -y && sudo apt install -y sphinx-doc
-        && pip3 install sphinx-rtd-theme breathe sphinx-sitemap
+    # - name: Install Sphinx and Breathe
+    #   run: 
+    #     sudo apt update -y && sudo apt install -y sphinx-doc
+    #     && pip3 install sphinx-rtd-theme breathe sphinx-sitemap
 
-    - name: Build sphinx doc
-      run:
-        cmake --build ${{github.workspace}}/build --target hub-doc-sphinx
+    # - name: Build sphinx doc
+    #   run:
+    #     cmake --build ${{github.workspace}}/build --target hub-doc-sphinx
 
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      # if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-      with:
-        # publish_branch: gh-pages
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ${{github.workspace}}/doc/docs_sphinx/_build/api/
-        # force_orphan: true
+    # - name: Deploy to GitHub Pages
+    #   uses: peaceiris/actions-gh-pages@v3
+    #   # if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    #   with:
+    #     # publish_branch: gh-pages
+    #     github_token: ${{ secrets.GITHUB_TOKEN }}
+    #     publish_dir: ${{github.workspace}}/doc/docs_sphinx/_build/api/
+    #     # force_orphan: true
 
   
 
