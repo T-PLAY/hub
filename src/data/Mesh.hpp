@@ -12,6 +12,7 @@
 #include <cstring>
 
 #include <core/Macros.hpp>
+#include <core/Traits.hpp>
 
 namespace hub {
 namespace data {
@@ -37,6 +38,12 @@ struct Vertex {
     float tx;
     /// \brief ty
     float ty;
+
+//    auto toString() const {
+//        std::string str;
+//        str += std::to_string(px) + ":" + std::to_string(py) + ":" + std::to_string(pz);
+//        return str;
+//    }
 
     ///
     /// \brief serialize
@@ -98,15 +105,19 @@ struct Shape {
         archive( self.vertices, self.hasNormal, self.indices, self.name, self.material );
     }
 
+    auto toString() const {
+        std::string str;
+        //str += hub::to_string(vertices) + " " +  std::to_string(hasNormal) + " " + hub::to_string(indices)  + " " + name + " " + std::to_string(material);
+        str += std::to_string(vertices.size()) + " " +  std::to_string(hasNormal) + " " + std::to_string(indices.size())  + " " + name + " " + std::to_string(material);
+        return str;
+    }
+
     ///
     /// \brief operator ==
     /// \param other
     /// \return
     ///
-    bool operator==( const Shape& other ) const {
-        return vertices == other.vertices && hasNormal == other.hasNormal &&
-               indices == other.indices && name == other.name && material == other.material;
-    }
+    bool operator==( const Shape& other ) const;
 };
 
 ///

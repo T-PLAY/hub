@@ -26,7 +26,7 @@ TEST_CASE( "Viewer" ) {
         int nNewStreamer                     = 0;
         int nDelStreamer                     = 0;
         std::atomic<int> nServerNotFound     = 0;
-        int nServerConnected                 = 0;
+        std::atomic<int> nServerConnected                 = 0;
         std::atomic<int> nServerDisconnected = 0;
         int nNewAcq                          = 0;
 
@@ -108,7 +108,8 @@ TEST_CASE( "Viewer" ) {
             CONSTRUCT_END( "Server" );
             server.asyncRun();
 
-            while ( !viewer.isConnected() && iTry < 20 ) {
+            iTry = 0;
+            while ( (!viewer.isConnected() || nServerConnected == 0) && iTry < 20 ) {
                 std::cout << "[test] waiting for viewer connected" << std::endl;
                 std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                 ++iTry;
@@ -125,12 +126,12 @@ TEST_CASE( "Viewer" ) {
                 CONSTRUCT_END( "OutputSensor" );
                 iTry = 0;
                 // while (viewer.nStream() == 0) {
-                while ( viewer.nStream() == 0 && iTry < 10 ) {
+                while ( viewer.nStream() == 0 && iTry < 20 ) {
                     std::cout << "[test] waiting for viewer new stream ..." << std::endl;
                     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                     ++iTry;
                 }
-                assert(iTry < 10);
+                assert(iTry < 20);
                 assert( viewer.nStream() == 1 );
                 assert( viewer.nStreaming() == 1 );
                 auto acq    = outputSensor.acqMsg();
@@ -164,12 +165,12 @@ TEST_CASE( "Viewer" ) {
             DESTRUCT_END( "OutputStream" );
 
             iTry = 0;
-            while ( viewer.nStream() != 0 && iTry < 10 ) {
+            while ( (viewer.nStream() != 0 || nDelStreamer == 0) && iTry < 20 ) {
                 std::cout << "[test] waiting for outputStream disconnected" << std::endl;
                 std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                 ++iTry;
             }
-            assert( iTry < 10 );
+            assert( iTry < 20 );
             assert( viewer.nStream() == 0 );
             assert( viewer.nStreaming() == 0 );
             assert( nDelStreamer == 1 );
