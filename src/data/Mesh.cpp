@@ -7,8 +7,9 @@
 #include <sstream>
 #include <thread>
 
-#include <cgltf.h>
-#include <gltf/gltfpack.h>
+//#include <cgltf.h>
+#include <cgltf/cgltf.h>
+#include <meshoptimizer/gltf/gltfpack.h>
 #include <meshoptimizer/meshoptimizer.h>
 
 constexpr int s_materialSize = 4 * 3 * 6 + 4 * 3 + 4;

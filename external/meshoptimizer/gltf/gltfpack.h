@@ -13,7 +13,8 @@
 
 //#include "../extern/cgltf.h"
 //#define CGLTF_IMPLEMENTATION
-#include "cgltf.h"
+//#include "cgltf.h"
+#include "cgltf/cgltf.h"
 //#undef CGLTF_IMPLEMENTATION
 
 #include <assert.h>
