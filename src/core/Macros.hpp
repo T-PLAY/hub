@@ -53,37 +53,42 @@ namespace hub {
 #endif
 #endif
 
-#if defined( __GNUC__ ) && ! defined(OS_MACOS)
+#if defined( __GNUC__ )
 #    define COMPILER_GCC
 
-#    include <features.h>
-#    if __GNUC_PREREQ( 15, 0 )
-#        define GCC_VERSION 15
-#    elif __GNUC_PREREQ( 14, 0 )
-#        define GCC_VERSION 14
-#    elif __GNUC_PREREQ( 13, 0 )
-#        define GCC_VERSION 13
-#    elif __GNUC_PREREQ( 12, 0 )
-#        define GCC_VERSION 12
-#    elif __GNUC_PREREQ( 11, 0 )
-#        define GCC_VERSION 11
-#    elif __GNUC_PREREQ( 10, 0 )
-#        define GCC_VERSION 10
-#    elif __GNUC_PREREQ( 9, 0 )
-#        define GCC_VERSION 9
-#    elif __GNUC_PREREQ( 8, 0 )
-#        define GCC_VERSION 8
-#    elif __GNUC_PREREQ( 7, 0 )
-#        define GCC_VERSION 7
-#    elif __GNUC_PREREQ( 6, 0 )
-#        define GCC_VERSION 6
-#    elif __GNUC_PREREQ( 5, 0 )
-#        define GCC_VERSION 5
-#    elif __GNUC_PREREQ( 4, 0 )
-#        define GCC_VERSION 4
-#    else
-#        error "gcc version not supported"
-#    endif
+// #if defined ( OS_LINUX )
+// #    include <features.h>
+// #    if __GNUC_PREREQ( 15, 0 )
+// #        define GCC_VERSION 15
+// #    elif __GNUC_PREREQ( 14, 0 )
+// #        define GCC_VERSION 14
+// #    elif __GNUC_PREREQ( 13, 0 )
+// #        define GCC_VERSION 13
+// #    elif __GNUC_PREREQ( 12, 0 )
+// #        define GCC_VERSION 12
+// #    elif __GNUC_PREREQ( 11, 0 )
+// #        define GCC_VERSION 11
+// #    elif __GNUC_PREREQ( 10, 0 )
+// #        define GCC_VERSION 10
+// #    elif __GNUC_PREREQ( 9, 0 )
+// #        define GCC_VERSION 9
+// #    elif __GNUC_PREREQ( 8, 0 )
+// #        define GCC_VERSION 8
+// #    elif __GNUC_PREREQ( 7, 0 )
+// #        define GCC_VERSION 7
+// #    elif __GNUC_PREREQ( 6, 0 )
+// #        define GCC_VERSION 6
+// #    elif __GNUC_PREREQ( 5, 0 )
+// #        define GCC_VERSION 5
+// #    elif __GNUC_PREREQ( 4, 0 )
+// #        define GCC_VERSION 4
+// #    else
+// #        error "gcc version not supported"
+// #    endif
+//
+// #else
+#define GCC_VERSION __GNUC__
+//#endif
 
 #elif defined( __clang__ )
 #    define COMPILER_CLANG
