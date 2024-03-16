@@ -38,9 +38,6 @@ set(INCLUDE_LIBRARIES)
 if(HUB_BUILD_CORE)
     find_package(Eigen3 QUIET)
     if(Eigen3_FOUND)
-        # add_definitions(-DHUB_USE_EIGEN3)
-        # link_libraries(Eigen3::Eigen)
-        # include_directories(${EIGEN3_INCLUDE_DIR})
         set(LINK_LIBRARIES ${LINK_LIBRARIES} Eigen3::Eigen)
         set(INCLUDE_LIBRARIES ${INCLUDE_LIBRARIES} ${EIGEN3_INCLUDE_DIR})
         message(STATUS "${HEADER_MSG} Eigen found: ${EIGEN3_INCLUDE_DIR}")
@@ -51,7 +48,6 @@ if(HUB_BUILD_CORE)
     # Fix opencv find_package
     find_package(OpenCV QUIET COMPONENTS core imgproc)
     if(OpenCV_FOUND)
-        # set(LINK_LIBRARIES ${LINK_LIBRARIES} ${OpenCV_LIBS})
         set(LINK_LIBRARIES ${LINK_LIBRARIES} opencv_core opencv_imgproc)
         set(INCLUDE_LIBRARIES ${INCLUDE_LIBRARIES} ${OpenCV_INCLUDE_DIRS}/opencv2)
         message(STATUS "${HEADER_MSG} OpenCV found: ${OpenCV_INCLUDE_DIRS}")
@@ -60,7 +56,6 @@ if(HUB_BUILD_CORE)
     endif()
 
     find_package(OpenImageIO QUIET)
-    # if(OIIO_FOUND)
     if(OpenImageIO_FOUND)
         set(LINK_LIBRARIES ${LINK_LIBRARIES} OpenImageIO)
         set(INCLUDE_LIBRARIES ${INCLUDE_LIBRARIES} ${OpenImageIO_INCLUDE_DIR}/OpenImageIO)
@@ -75,8 +70,6 @@ if(PahoMqttCpp_FOUND)
     set(LINK_LIBRARIES ${LINK_LIBRARIES} PahoMqttCpp::paho-mqttpp3)
 else()
     list(FILTER test_srcs EXCLUDE REGEX ".*Mqtt\\.cpp$")
-    # file(GLOB mqtt_srcs mqtt/*.cpp)
-    # list(REMOVE_ITEM test_srcs ${mqtt_srcs})
 endif()
 
 if(NOT HUB_BUILD_SERVER)
@@ -96,7 +89,6 @@ list(PREPEND test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-start.cpp)
 
 add_executable(hub-test-all ${test_srcs} ${test_headers})
 target_link_libraries(hub-test-all PRIVATE ${LINK_LIBRARIES} test-common)
-# target_include_directories(hub-test-all PRIVATE ${INCLUDE_LIBRARIES} ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(hub-test-all PRIVATE ${INCLUDE_LIBRARIES} ${CMAKE_CURRENT_SOURCE_DIR})
 # CXX_EXTENSIONS OFF)
 if(PahoMqttCpp_FOUND)
@@ -127,7 +119,6 @@ endif()
 enable_testing()
 foreach(testFile ${test_srcs})
 
-    # message(STATUS ${testFile})
     get_filename_component(test ${testFile} NAME_WE)
 
     add_executable(hub-${test} ${testFile})
@@ -203,10 +194,7 @@ add_custom_target(
     COMMENT "Running tests")
 custom_target_added(tests)
 
-
-# if (UNIX)
 add_custom_command(
     TARGET test-common
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy "${HUB_PROJECT_DIR}/scripts/showDurationTest.sh" ${CMAKE_CURRENT_BINARY_DIR})
-# endif()

@@ -1,18 +1,9 @@
-# Copyright (c) 2012 - 2017, Lars Bilke All rights reserved.
-#
-# Redistribution and use in source and binary forms, with or without modification,
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
-# INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
-# AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT SOFTWARE, EVEN IF ADVISED OF THE
-# POSSIBILITY OF SUCH DAMAGE.
-#
-# CHANGES:
-#
-# USAGE:
-#
+# Copyright (c) 2012 - 2017, Lars Bilke All rights reserved. Redistribution and use in source and binary forms, with or
+# IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+# PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+# INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT SOFTWARE,
+# EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. CHANGES: USAGE:
 
 include(CMakeParseArguments)
 
@@ -100,7 +91,6 @@ if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_Fortran_COMPILER_ID STREQUAL "GNU
 endif()
 
 # Defines a target for running and collection code coverage information Builds dependencies, runs the given executable
-#
 function(setup_target_for_coverage_lcov)
 
     set(options NO_DEMANGLE SONARQUBE)
@@ -291,7 +281,6 @@ function(setup_target_for_coverage_lcov)
 endfunction() # setup_target_for_coverage_lcov
 
 # Defines a target for running and collection code coverage information Builds dependencies, runs the given executable
-#
 # The user can set the variable GCOVR_ADDITIONAL_ARGS to supply additional flags to the GCVOR command.
 function(setup_target_for_coverage_gcovr_xml)
 
@@ -372,7 +361,6 @@ function(setup_target_for_coverage_gcovr_xml)
 endfunction() # setup_target_for_coverage_gcovr_xml
 
 # Defines a target for running and collection code coverage information Builds dependencies, runs the given executable
-#
 # The user can set the variable GCOVR_ADDITIONAL_ARGS to supply additional flags to the GCVOR command.
 function(setup_target_for_coverage_gcovr_html)
 
@@ -462,7 +450,6 @@ function(setup_target_for_coverage_gcovr_html)
 endfunction() # setup_target_for_coverage_gcovr_html
 
 # Defines a target for running and collection code coverage information Builds dependencies, runs the given executable
-#
 function(setup_target_for_coverage_fastcov)
 
     set(options NO_DEMANGLE SKIP_HTML)

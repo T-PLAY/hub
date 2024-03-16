@@ -1,4 +1,3 @@
-
 # Check if git is found... if (GIT_FOUND AND VERSION_UPDATE_FROM_GIT)
 if(GIT_FOUND)
     execute_process(

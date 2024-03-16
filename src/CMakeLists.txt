@@ -7,7 +7,7 @@ set(REQUIRED_LIBS ${HUB_TBB_TARGET})
 
 message(STATUS "${HEADER_MSG} Version: ${${PROJECT_NAME}_VERSION}")
 
-if (HUB_ENABLE_TESTS)
+if(HUB_ENABLE_TESTS)
     option(HUB_ENABLE_COVERAGE "Collect coverage from hub library (required tests enable)" OFF)
     if(HUB_ENABLE_COVERAGE)
         include(CodeCoverage)
@@ -28,7 +28,6 @@ if(MINGW)
         set(REQUIRED_LIBS ${REQUIRED_LIBS} Threads::Threads)
 
     elseif(GNU)
-        #message(FATAL_ERROR "GNU not supported")
 
     elseif(GCC)
         set(REQUIRED_LIBS ${REQUIRED_LIBS} ws2_32)
@@ -75,8 +74,8 @@ else()
     message(FATAL_ERROR "unknown system")
 endif()
 
-if (REQUIRED_LIBS)
-        message(STATUS "${HEADER_MSG} Dependencies: ${REQUIRED_LIBS}")
+if(REQUIRED_LIBS)
+    message(STATUS "${HEADER_MSG} Dependencies: ${REQUIRED_LIBS}")
 endif()
 
 file(# GLOB
