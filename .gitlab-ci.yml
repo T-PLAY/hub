@@ -236,23 +236,23 @@ build-windows-cl-UWP_x64-debug:
 #     - !reference [.build_any, script]
 #   only:
 #     - master
-#
-# build-macOs-clang-arm64-debug:
-#   stage: build
-#   tags:
-#     - $MACOS_TAG
-#   script:
-#     - COMPILER_C=clang
-#     - COMPILER_CXX=clang++
-#     - ARCHITECTURE=arm64
-#     - BUILD_TYPE=Debug
-#     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
-#     # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
-#     - !reference [.build_any, script]
-#   only:
-#     - master
-#
-#
+
+build-macOs-clang-arm64-debug:
+  stage: build
+  tags:
+    - $MACOS_TAG
+  script:
+    - COMPILER_C=clang
+    - COMPILER_CXX=clang++
+    - ARCHITECTURE=arm64
+    - BUILD_TYPE=Debug
+    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
+    # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
+    - !reference [.build_any, script]
+  only:
+    - master
+
+
   
 ############################################ TESTS
 
@@ -360,6 +360,19 @@ test-windows-cl-Win32-debug:
 #
 #
 #
+test-macOs-clang-arm64-debug:
+  stage: test
+  tags:
+    - $MACOS_TAG
+  script:
+    - COMPILER_C=clang
+    - ARCHITECTURE=arm64
+    - BUILD_TYPE=Debug
+    - !reference [.test_any, script]
+  # when: manual
+  needs:
+    - job: build-macOs-clang-arm64-debug
+      optional: true
 
 
 
