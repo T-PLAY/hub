@@ -46,7 +46,6 @@ class OutputSensor_3D_Density : public OutputSensor_Instance
     /// \brief Resolution
     ///
     using Resolution            = hub::MatrixXD<hub::format::Density, width, depth, height>;
-    // using Resolution            = hub::MatrixXD<hub::format::RGB8, 640, 480>;
 
     void init() const override {
         hub::MetaData metaData;
@@ -97,7 +96,6 @@ class OutputSensor_3D_Density : public OutputSensor_Instance
             }
             end = hub::sensor::getClock();
             ++dec;
-            // dec += 1000;
 
             if ( onNewAcq ) { onNewAcq( m_streamName, acq ); }
             else { *outputSensor << acq; }

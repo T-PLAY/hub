@@ -9,7 +9,6 @@
 TEST_CASE( "Buffer test" ) {
     TEST_BEGIN()
 
-//#if CPP_VERSION >= 20
     using namespace hub;
 
     constexpr auto dataSize   = 1'000'000l; // 1Mo
@@ -42,7 +41,6 @@ TEST_CASE( "Buffer test" ) {
 #    if CPP_VERSION >= 20
     CHECK( myDynamicData.getSpan() == rawSpan );
 #    endif
-//    CHECK(! memcmp(myDynamicData.data(), rawData, dataSize));
     std::cout << "[dynamic] myDynamicData: " << myDynamicData << std::endl;
     std::cout << "[dynamic] static copy duration: " << dynamicDuration / 1000.0 << " ms"
               << std::endl;
@@ -66,7 +64,6 @@ TEST_CASE( "Buffer test" ) {
 #    if CPP_VERSION >= 20
     CHECK( myStaticData.getSpan() == rawSpan );
 #    endif
-//    CHECK(! memcmp(myDynamicData.data(), rawData, dataSize));
     std::cout << "[static] myStaticData: " << myStaticData << std::endl;
     std::cout << "[static] static copy duration: " << staticDuration / 1000.0 << " ms" << std::endl;
     std::cout << "[static] static copy speed: "
@@ -103,6 +100,5 @@ TEST_CASE( "Buffer test" ) {
                                                                    Random { 2, false } };
     std::cout << "buffer5: " << buffer5 << std::endl;
 
-//#endif
     TEST_END()
 }

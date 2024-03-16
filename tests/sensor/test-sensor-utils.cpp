@@ -53,22 +53,13 @@ TEST_CASE("Sensor utils test")
     std::filesystem::remove_all(rootDir);
     std::filesystem::create_directory(rootDir);
 
-//    hub::sensor::OutputSensorT<Resolution, hub::output::OutputFile> outputSensor(sensorSpec, rootDir + sensorSpec.getSensorName() + "." + HUB_EXTENSION);
-//    hub::sensor::OutputSensor outputSensor(sensorSpec, archive);
     {
         hub::sensor::OutputSensor outputSensor(refSensorSpec, hub::output::OutputFile(hub::io::make_header(refSensorSpec), rootDir + refSensorSpec.getSensorName() + "." + HUB_EXTENSION));
         outputSensor.fill(refAcqs);
         CHECK(outputSensor.getSpec() == refSensorSpec);
-//        for (const auto & acq : refAcqs) {
-//            outputSensor << acq;
-//        }
-    //    hub::sensor::OutputSensor outputSensor2(refSensorSpec2, archive2);
         hub::sensor::OutputSensor outputSensor2(refSensorSpec2, hub::output::OutputFile(hub::io::make_header(refSensorSpec2), rootDir + refSensorSpec2.getSensorName() + "." + HUB_EXTENSION));
         outputSensor2.fill(refAcqs2);
         CHECK(outputSensor2.getSpec() == refSensorSpec2);
-//        for (const auto & acq : refAcqs2) {
-//            outputSensor2 << acq;
-//        }
         hub::sensor::OutputSensor outputSensor3(refSensorSpec3, hub::output::OutputFile(hub::io::make_header(refSensorSpec3), rootDir + refSensorSpec3.getSensorName() + "." + HUB_EXTENSION));
         outputSensor3.fill(refAcqs3);
 
@@ -80,13 +71,8 @@ TEST_CASE("Sensor utils test")
     }
 
 
-//    hub::sensor::InputSensor inputSensor(archive);
-//    CHECK(inputSensor.getSpec() == sensorSpec);
 
-//    hub::sensor::InputSensor inputSensor2(archive2);
-//    CHECK(inputSensor2.getSpec() == refSensorSpec2);
 
-//    std::vector<hub::sensor::InputSensor*> inputSensors{&inputSensor, &inputSensor2};
 
     hub::sensor::utils::synchronizePath(rootDir);
     std::cout << "[test-sensor-utils] synchronization done" << std::endl;
@@ -112,18 +98,7 @@ TEST_CASE("Sensor utils test")
     }
 
 
-//    auto specAcqs = hub::sensor::utils::synchonizeInputs(archive, archive2);
-//    std::cout << "spec acqs : " << specAcqs << std::endl;
-//    for (const auto & specAcq : specAcqs) {
-//        std::cout << specAcq.m_sensorSpec << std::endl;
-//        for (const auto & acq : specAcq.m_acqs) {
-//            std::cout << acq << std::endl;
-//        }
-//        CHECK(specAcq.m_acqs == refSyncAcqs);
-//        CHECK(specAcq.m_sensorSpec == sensorSpec + sensorSpec2);
-//    }
 
-//    test::sensor::checkSynchronize(archive, sensorSpec, refAcqs, archive2, sensorSpec2, refAcqs2, archive, archive2);
 
 
 

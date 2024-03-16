@@ -170,8 +170,6 @@ requires( sizeof...( Types ) > 1 )
     /// \return
     ///
     template <class Type, int i = 0, class RawType = std::remove_pointer_t<Type>>
-//    REQUIRES(, (std::is_pointer_v<Type>&& hasType<RawType>() && i < nType<RawType>()), Type )
-//    typename std::enable_if_t<(std::is_pointer_v<Type>&& hasType<RawType>() && i < nType<RawType>()), Type >
     typename std::enable_if_t<(std::is_pointer_v<Type>), Type >
     get() {
         static_assert(hasType<RawType>() && i < nType<RawType>());
@@ -185,7 +183,6 @@ requires( sizeof...( Types ) > 1 )
     /// \return
     ///
     template <class Type, int i = 0, class RawType = std::remove_pointer_t<Type>>
-//    REQUIRES(, std::is_pointer_v<Type>&& hasType<RawType>() && i < nType<RawType>(), Type )
     // REQUIRES(, std::is_pointer_v<Type>, Type )
     typename std::enable_if_t<std::is_pointer_v<Type>, Type>
     get() const {
@@ -200,10 +197,7 @@ requires( sizeof...( Types ) > 1 )
     /// \return
     ///
     template <class Type, int i = 0, class RawType = std::remove_cvref_t<Type>>
-//    REQUIRES(, (!std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>()), Type )
-//    typename std::enable_if_t<(!std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>()), Type>
     typename std::enable_if_t<(!std::is_pointer_v<Type>), Type>
-//    typename std::enable_if_t<!std::is_pointer_v<Type> && hasType<RawType>(), Type>
     get() {
         static_assert(hasType<RawType>() && i < nType<RawType>());
         const auto offset = getOffset<i, 0, RawType, Types...>();
@@ -216,8 +210,6 @@ requires( sizeof...( Types ) > 1 )
     /// \return
     ///
     template <class Type, int i = 0, class RawType = std::remove_cvref_t<Type>>
-//    REQUIRES(, !std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>(), Type )
-//    REQUIRES(, !std::is_pointer_v<Type> && hasType<RawType>() && i < nType<RawType>(), Type )
     // REQUIRES(, !std::is_pointer_v<Type>, Type )
     typename std::enable_if_t<!std::is_pointer_v<Type>, Type>
     get() const {
@@ -246,7 +238,6 @@ requires( sizeof...( Types ) > 1 )
     // REQUIRES( static constexpr, hasType<Type>() && i < nType<Type>(), Size_t )
             static constexpr typename std::enable_if_t<hasType<Type>() && i < nType<Type>(), Size_t>
     getOffset() {
-        //std::cout << "[MatrixTs] getOffset(" << TYPE_NAME( Type() ) << " " << i << std::endl;
         return getOffset<i, 0, Type, Types...>();
     }
 
@@ -274,7 +265,6 @@ requires( sizeof...( Types ) > 1 )
     ///
     bool operator==( const Matrix& mat ) const { return getMatrix() == mat; }
 
- // private:
     ///
     /// \brief serialize_
     /// \param mat
@@ -330,11 +320,9 @@ requires( sizeof...( Types ) > 1 )
     // REQUIRES( static constexpr, isMatrix<Matrix>, Size_t )
     static constexpr typename std::enable_if_t<isMatrix<Matrix>, Size_t>
     getOffset() {
-        //std::cout << "[MatrixTs] getOffset(Matrix)" << std::endl;
         if constexpr ( Matrix::template hasType<targetType>() ) {
             if ( ith == i ) { 
                 return Matrix::template getOffset<targetType>();
-                //return 0; 
             }
             else {
                 if constexpr ( sizeof...( Types_ ) > 0 ) {
@@ -363,7 +351,6 @@ requires( sizeof...( Types ) > 1 )
     // REQUIRES( static constexpr, !isMatrix<Type_>, Size_t )
     static constexpr typename std::enable_if_t<!isMatrix<Type_>, Size_t>
     getOffset() {
-        //std::cout << "[MatrixTs] getOffset(! Matrix)" << std::endl;
         if constexpr ( std::is_same_v<targetType, Type_> ) {
             if ( ith == i ) { return 0; }
             else {

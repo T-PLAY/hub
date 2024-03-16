@@ -38,8 +38,6 @@ class MemoryT : public InputOutputT
     ///
     MemoryT() = default;
     // MemoryT() {
-        // m_data.reserve(20'000'000);
-    // }
 
     ///
     /// \brief read
@@ -50,7 +48,6 @@ class MemoryT : public InputOutputT
         assert( size > 0 );
         assert( !m_data.empty() );
 
-        // std::cout << "[Memory] data " << m_data << std::endl;
 
         std::copy( m_data.begin(), std::next( m_data.begin(), size ), data );
         m_data.erase( m_data.begin(), std::next( m_data.begin(), size ) );
@@ -60,7 +57,6 @@ class MemoryT : public InputOutputT
         std::cout << "[Memory] read " << vector << std::endl;
 #endif
 
-        // std::cout << "[Memory] data " << m_data << std::endl;
     }
 
     ///
@@ -69,7 +65,6 @@ class MemoryT : public InputOutputT
     /// \param size
     ///
     void write( const hub::Data_t* data, hub::Size_t size ) override {
-        // std::cout << "[Memory] data " << m_data << std::endl;
 #ifdef DEBUG_MEMORY
         std::vector<Data_t> vector( data, data + size );
         std::cout << "[Memory] write " << vector << std::endl;
@@ -78,10 +73,8 @@ class MemoryT : public InputOutputT
         assert( size > 0 );
         const auto prevSize = m_data.size();
         m_data.resize(prevSize + size);
-        // m_data.insert( m_data.end(), data, data + size );
         std::copy(data, data + size, std::next(m_data.begin(), prevSize));
 
-        // std::cout << "[Memory] data " << m_data << std::endl;
     }
 
     ///
@@ -119,12 +112,9 @@ class MemoryT : public InputOutputT
     const Datas_t & getData() const {
         return m_data;
         // Datas_t datas( m_data.begin(), m_data.end() );
-        // return datas;
     }
 
   private:
-    // std::list<hub::Data_t> m_data;
-    // std::vector<hub::Data_t> m_data;
     Datas_t m_data;
 };
 

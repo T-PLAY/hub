@@ -63,7 +63,6 @@ int main( int argc, char* argv[] ) {
         int strLen = 0;
         hub::native::sensorSpec_toString( sensorSpec, buff, &strLen );
         std::cout << HEADER_MSG "onNewSensor : " << streamName << ", "
-                  //<< hub::native::toString( sensorSpec ) << std::endl;
                   << buff << std::endl;
         return true;
     };

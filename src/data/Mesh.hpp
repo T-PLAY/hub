@@ -39,11 +39,6 @@ struct Vertex {
     /// \brief ty
     float ty;
 
-//    auto toString() const {
-//        std::string str;
-//        str += std::to_string(px) + ":" + std::to_string(py) + ":" + std::to_string(pz);
-//        return str;
-//    }
 
     ///
     /// \brief serialize
@@ -112,7 +107,6 @@ struct Shape {
     ///
     auto toString() const {
         std::string str;
-        //str += hub::to_string(vertices) + " " +  std::to_string(hasNormal) + " " + hub::to_string(indices)  + " " + name + " " + std::to_string(material);
         str += std::to_string(vertices.size()) + " " +  std::to_string(hasNormal) + " " + std::to_string(indices.size())  + " " + name + " " + std::to_string(material);
         return str;
     }
@@ -234,7 +228,6 @@ class SRC_API Mesh
     /// \brief Mesh
     /// \param mesh
     ///
-    // explicit Mesh( const Mesh& mesh );
 
     ///
     /// \brief Mesh
@@ -248,15 +241,12 @@ class SRC_API Mesh
     ///
     explicit Mesh( const std::string& filePath );
 
-    // ~Mesh();
 
     ///
     /// \brief to_string
     /// \return
     ///
     std::string toString() const {
-        // if ( m_name == "" ) unpack();
-        // assert( m_name != "" );
 
         std::string str = "";
         str += "'" + m_name + "'";
@@ -272,8 +262,6 @@ class SRC_API Mesh
     /// \return
     ///
     const std::vector<Shape>& getShapes() const {
-        // if ( m_shapes.empty() ) unpack( false );
-        // assert( !m_shapes.empty() );
         return m_shapes;
     }
 
@@ -282,8 +270,6 @@ class SRC_API Mesh
     /// \return
     ///
     const std::vector<Material>& getMaterials() const {
-        // if (m_shapes.empty() ) unpack( false );
-        // assert( !m_shapes.empty() );
         return m_materials;
     }
 
@@ -338,7 +324,6 @@ class SRC_API Mesh
 #endif
 
   private:
-    // void unpack( bool headerOnly = true ) const;
 
     std::string m_name = "";
     std::vector<Shape> m_shapes;

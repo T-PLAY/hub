@@ -10,12 +10,10 @@
 TEST_CASE( "Mesh test" ) {
 
     const std::string meshPath = HUB_PROJECT_DIR "data/assets/";
-    // hub::data::Mesh quadMesh()
     CHECK(std::filesystem::exists(meshPath));
     CHECK(std::filesystem::exists(meshPath + "quad.gltf"));
 
     const hub::data::Mesh quadMesh(meshPath + "quad");
-//    const hub::data::Mesh quadMesh(meshPath + "sensor");
     const auto quadShapes = quadMesh.getShapes();
     CHECK(quadShapes.size() == 1);
     const auto quadShape = quadShapes.at(0);
@@ -24,7 +22,6 @@ TEST_CASE( "Mesh test" ) {
     CHECK(quadShape.material == 0);
     const auto quadMaterials = quadMesh.getMaterials();
 
-    // hub::data::Mesh quadMesh(meshPath + "sensor");
     std::cout << "quadMesh : " << quadMesh << std::endl;
     std::cout << std::endl;
     std::cout << "quadMesh info : " << std::endl;

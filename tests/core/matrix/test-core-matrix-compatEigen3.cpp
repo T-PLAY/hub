@@ -3,7 +3,6 @@
 
 #include <iostream>
 
-// #    include <Eigen/Core>
 #include <Eigen/Core>
 
 TEST_CASE( "Matrix compat Eigen test" ) {

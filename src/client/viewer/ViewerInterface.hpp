@@ -358,7 +358,6 @@ void ViewerInterface<InputStream>::printStatus() const {
         }
     }
     // Todo fix for Hololens, no unicode \u001B
-    //DEBUG_MSG( "\033[7m[Viewer] status : server connected:"
     DEBUG_MSG( "[Viewer] status : server connected:"
                << m_serverConnected << ", nStreamer:" << m_streams.size() << str );
 }

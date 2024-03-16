@@ -17,7 +17,6 @@ void freeHeader( io::Header* header ) {
     assert( header != nullptr );
     delete header;
     // Todo header = nullptr
-    // header = nullptr;
 }
 
 } // namespace native

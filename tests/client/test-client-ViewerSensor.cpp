@@ -125,7 +125,6 @@ TEST_CASE( "Viewer" ) {
                 hub::sensor::OutputSensor outputSensor( sensorSpec_ref, FILE_NAME, port );
                 CONSTRUCT_END( "OutputSensor" );
                 iTry = 0;
-                // while (viewer.nStream() == 0) {
                 while ( viewer.nStream() == 0 && iTry < 20 ) {
                     std::cout << "[test] waiting for viewer new stream ..." << std::endl;
                     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );

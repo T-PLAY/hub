@@ -134,7 +134,6 @@ inline void InputStreamServer2::read( Data_t* data, Size_t size ) {
 }
 
 inline void InputStreamServer2::close() {
-    // assert( false );
 #ifdef HUB_DEBUG_INPUT_STREAM
     std::cout << "[InputStreamServer2] close() started" << std::endl;
 #endif

@@ -12,7 +12,6 @@ int main( int argc, char* argv[] ) {
     std::string filePath = "";
 
     if (argc != 2) {
-//            std::cout << "unrecognized argument: " << arg << std::endl;
             std::cout << argv[0] << " usage: filePath (." << HUB_EXTENSION << ")" << std::endl;
             return 0;
         }

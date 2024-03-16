@@ -7,7 +7,6 @@
 #include <sstream>
 #include <thread>
 
-//#include <cgltf.h>
 #include <cgltf/cgltf.h>
 #include <meshoptimizer/gltf/gltfpack.h>
 #include <meshoptimizer/meshoptimizer.h>
@@ -29,9 +28,7 @@ class MeshImpl
 MeshImpl::~MeshImpl() {}
 
 // Mesh::Mesh( const Mesh& mesh ) :
-//     m_pimpl( mesh.m_pimpl )
 
-// {}
 
 Mesh::Mesh( const std::string& filePath ) : Mesh( { filePath } ) {}
 
@@ -255,21 +252,12 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) : m_pimpl( new MeshIm
     }
     m_nMesh = glbMeshes.size();
 
-    // std::vector<unsigned char> buff;
-    // m_shapes.clear();
-    // m_materials.clear();
 }
 
-// void Mesh::unpack( bool headerOnly ) const {
 
-//     const auto start = std::chrono::high_resolution_clock::now();
 
-//     std::vector<unsigned char> buff;
-// }
 
 void Mesh::printStats() const {
-    // if ( m_name == "" ) unpack();
-    // assert( m_name != "" );
 
     std::cout << "mesh statistics:" << std::endl;
     printf( "%s: %d mesh primitives (%d triangles, %d vertices); %d draw calls (%d instances, %lld "
@@ -285,8 +273,6 @@ void Mesh::printStats() const {
 }
 
 void Mesh::printInfo() const {
-    // if ( m_shapes.empty() ) unpack( false );
-    // assert( !m_shapes.empty() );
 
     const auto& shapes    = getShapes();
     const auto& materials = getMaterials();
@@ -374,22 +360,14 @@ bool Shape::operator==(const Shape &other) const {
                 std::cout << "vertex differ" << std::endl;
             }
         }
-        //            std::cout << vertices << std::endl;
-        //            std::cout << other.vertices << std::endl;
     }
     if (indices != other.indices) {
         std::cout << "indices differ" << std::endl;
-        //            std::cout << indices << std::endl;
-        //           std::cout << other.indices << std::endl;
     }
     return vertices == other.vertices && hasNormal == other.hasNormal &&
            indices == other.indices && name == other.name && material == other.material;
 }
 
-// std::ostream& operator<<( std::ostream& os, const Mesh& mesh ) {
-//     os << mesh.to_string();
-//     return os;
-// }
 
 } // namespace data
 } // namespace hub

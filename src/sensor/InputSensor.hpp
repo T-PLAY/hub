@@ -68,8 +68,6 @@ namespace sensor {
         ///
         /// \brief acqMsg
         ///
-        // using Sensor::acqMsg;
-          // using Sensor::getSpec;
 
       ///
       /// \brief InputSensor
@@ -82,7 +80,6 @@ namespace sensor {
         {
             static_assert(! std::is_same_v<InputSensor, InputT>);
             static_assert(std::is_base_of_v<Input, std::remove_cvref_t<InputT>>);
-            // std::cout << "[InputSensor] InputSensor(InputT&)" << std::endl;
             initSensorSpec(input);
         }
 
@@ -97,7 +94,6 @@ namespace sensor {
             , m_inputs({ &input, &input2 })
         {
             static_assert(std::is_base_of_v<Input, std::remove_cvref_t<InputT>>);
-            // std::cout << "[InputSensor] InputSensor(InputT&, InputT&)" << std::endl;
             initSensorSpec(input, input2);
         }
 
@@ -113,7 +109,6 @@ namespace sensor {
         explicit InputSensor(InputT&& input)
             : Sensor(SensorSpec {})
         {
-            // std::cout << "[InputSensor] InputSensor(InputT&&)" << std::endl;
             static_assert(std::is_base_of_v<Input, std::remove_cvref_t<InputT>>);
             initSensorSpec(input);
             m_inputs.push_back(new std::remove_cvref_t<InputT>(std::move(input)));
@@ -132,7 +127,6 @@ namespace sensor {
         InputSensor(InputT&& input, InputT&& input2)
             : Sensor(SensorSpec {})
         {
-            // std::cout << "[InputSensor] InputSensor(InputT&&, InputT&&)" << std::endl;
             static_assert(std::is_base_of_v<Input, std::remove_cvref_t<InputT>>);
             initSensorSpec(input, input2);
             m_inputs.push_back(new std::remove_cvref_t<InputT>(std::move(input)));
@@ -247,7 +241,6 @@ namespace sensor {
             auto acq = acqMsg();
             while (std::none_of(m_inputs.begin(), m_inputs.end(), [](const Input* input) { return input->isEnd(); })) {
                 *this >> acq;
-                //            acqs.push_back(acq.clone());
                 ts.push_back(acq.copy());
             }
         }

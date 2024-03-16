@@ -27,8 +27,6 @@ std::string Client2::clientMsg() const
 constexpr int g_margin  = 45;
 constexpr int g_margin2 = 20;
 
-// std::string Client2::headerMsg() const {
-// }
 
 void Client2::printStatusMessage( const std::string& message ) const {
     if ( m_server == nullptr ) {

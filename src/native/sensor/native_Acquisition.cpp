@@ -21,7 +21,6 @@ void acquisition_getMeasure( const sensor::Acquisition* acquisition, unsigned ch
     const auto & nodes = acquisition->getNodes();
     assert( iMeasure < nodes.size() - 2 );
     const auto& node = nodes.at( 2 + iMeasure );
-    //const auto& measure = acquisition->getMeasures().at( iMeasure );
     const auto* acqData = acquisition->getData( 2 + iMeasure );
     memcpy( data, acqData, node.getSize());
 }

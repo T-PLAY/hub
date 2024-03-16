@@ -9,7 +9,6 @@
 #include "Serializer.hpp"
 
 // Todo getHeader() = 0
-//#include "io/Header.hpp"
 
 namespace hub {
 
@@ -26,7 +25,6 @@ class SRC_API OutputT : public OutputBase
 
     virtual ~OutputT() = default;
 
-//    virtual const io::Header & getHeader() const = 0;
 
     ///
     /// \brief write

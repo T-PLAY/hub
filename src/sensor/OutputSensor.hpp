@@ -47,7 +47,6 @@ namespace sensor {
 class OutputSensor : public Sensor
 {
   public:
-    // using Sensor::acqMsg;
 
     // OutputSensor( const SensorSpec& sensorSpec,
 

@@ -14,7 +14,6 @@ namespace hub {
 /////////////////////////////////////////// TEMPLATES
 /////////////////////////////////////////////////////
 
-// namespace _ {
 
 ///
 /// \brief The MatrixXDBase class
@@ -202,7 +201,6 @@ requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
 };
 static_assert( isMatrix<MatrixXDBase<int, 2>> );
 
-// } // namespace _
 
 ///
 /// \brief The MatrixXD class

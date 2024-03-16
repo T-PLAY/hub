@@ -81,7 +81,6 @@ class OutputSensor_Instance
         return m_sensorSpec;
     }
 
-    // protected:
     ///
     /// \brief routine
     ///

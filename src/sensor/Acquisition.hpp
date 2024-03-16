@@ -85,8 +85,6 @@ class SRC_API Acquisition : public Matrix
     /// \return
     ///
     Clock& start() {
-        // auto offset  = getOffset<Clock>( 0 );
-        // auto offset2 = getOffset<Clock>( 1 );
         assert( getOffset<Clock>( 0 ) == 0 );
         return get<Clock&>();
     }

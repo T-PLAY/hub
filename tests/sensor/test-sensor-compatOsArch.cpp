@@ -2,18 +2,12 @@
 #include <filesystem>
 
 #include "test_common.hpp"
-// #include "io/test_io_common.hpp"
 #include "test_sensor_common.hpp"
 
 #include <sensor/InputSensor.hpp>
 #include <sensor/OutputSensor.hpp>
 
 TEST_CASE( "sensor compat os and arch test" ) {
-//    int main() {
-    // multi os/platform compatibility
-    // able to load hub file through differents os and platform
-    // test if raw stream data is same using different architectures like x64 x86 arm64,
-    // using different os like linux, windows, macos
     TEST_BEGIN()
 
     // INIT_SERVER
@@ -30,9 +24,7 @@ TEST_CASE( "sensor compat os and arch test" ) {
     refMetadata["parent"] = "Stanford";
 
     using Resolution   = hub::MatrixTs<int, bool, hub::MatrixXD<char, 10>>;
-    // using Resolution   = int;
     using OutputSensor = hub::sensor::OutputSensorT<Resolution, hub::output::OutputFile>;
-    // using OutputSensor = hub::sensor::OutputSensorT<Resolution>;
 
     using Acquisition  = OutputSensor::Acquisition;
     std::vector<Acquisition> refAcqs;
@@ -52,14 +44,12 @@ TEST_CASE( "sensor compat os and arch test" ) {
         end     = i;
         intRef  = i;
         boolRef = i % 2;
-        // intRef2 = i;
         for ( int j = 0; j < 10; ++j ) {
             charPtr[j] = i;
         }
         refAcqs.push_back( acq );
     }
 
-    // std::cout << "-------------------------------- outputSensor -------------------------- " << std::endl;
 
     // OutputSensor
     // Testing unique multi os/arch file
@@ -73,19 +63,14 @@ TEST_CASE( "sensor compat os and arch test" ) {
         }
     }
 
-    // std::cout << std::endl;
-    // std::cout << "-------------------------------- inputSensor -------------------------- " << std::endl;
 
     // InputSensor
     {
         hub::sensor::InputSensor inputSensor(hub::input::InputFile{filePath});
-        // hub::sensor::InputSensor inputSensor(hub::input::InputStream(FILE_NAME, SERVER_PORT));
         const auto & sensorSpec = inputSensor.getSpec();
         std::cout << "ref sensor spec : " << refSensorSpec << std::endl;
         std::cout << "    sensor spec : " << sensorSpec << std::endl;
 
-        //return m_sensorName == other.m_sensorName && m_resolution == other.m_resolution &&
-        //       m_metaData == other.m_metaData;
         CHECK(sensorSpec.getSensorName() == refSensorSpec.getSensorName());
         CHECK(sensorSpec.getResolution() == refSensorSpec.getResolution());
         const auto & metaData = sensorSpec.getMetaData();
@@ -101,14 +86,12 @@ TEST_CASE( "sensor compat os and arch test" ) {
         CHECK(refMesh == meshGet);
         CHECK(refMesh == meshGet2);
         CHECK(meshGet == meshGet2);
-        //CHECK(metaData.at("asset").get<const hub::data::Mesh&>() == refMetadata.at("asset").get<const hub::data::Mesh&>());
         CHECK(metaData.at("asset") == refMetadata.at("asset"));
         CHECK(sensorSpec.getResolution() == refSensorSpec.getResolution());
         CHECK(sensorSpec == refSensorSpec);
 
         auto acqs = inputSensor.getAllAcquisitions();
         for (int i =0; i < acqs.size(); ++i) {
-            // std::cout << refAcqs.at(i) << std::endl;
             CHECK(refAcqs.at(i) == acqs.at(i));
         }
     }

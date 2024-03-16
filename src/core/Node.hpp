@@ -116,9 +116,6 @@ requires( N > 0 && ( ( Ns > 1 ) && ... ) )
     auto size = hub::sizeOf<Type>() * N;
     if constexpr ( sizeof...( Ns ) > 0 ) {
         size *= (... * Ns);
-        // for ( auto dim : { Ns... } ) {
-            // size *= dim;
-        // }
     }
     return Node( std::move( Dims { N, Ns... } ), TYPE_NAME( Type() ), size, TYPE_ID( Type ) );
 }
@@ -127,11 +124,7 @@ template <class Type, class... Dims>
 static Node make_node(
     // Data_t * data,
     const Dims&... dims ) {
-    // auto size = hub::sizeOf<Type>();
     const auto size = hub::sizeOf<Type>() * (... * dims);
-    // for ( auto dim : { dims... } ) {
-        // size *= dim;
-    // }
     return Node( hub::Dims { dims... }, TYPE_NAME( Type() ), size, TYPE_ID( Type ) );
 }
 
@@ -164,9 +157,6 @@ inline std::string Node::toString( bool pretty ) const {
     return str;
 }
 
-// inline Size_t Node::size() const {
-//     return m_size;
-// }
 
 inline bool Node::operator==( const Node& other ) const {
     return m_dims == other.m_dims && m_typeName == other.m_typeName && m_size == other.m_size;

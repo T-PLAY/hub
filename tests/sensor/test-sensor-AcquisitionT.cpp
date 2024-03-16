@@ -4,7 +4,6 @@
 #include <list>
 
 #include <sensor/Acquisition.hpp>
-//#include <core/Format.hpp>
 
 TEST_CASE( "AcquisitionT test" ) {
     TEST_BEGIN()
@@ -45,8 +44,6 @@ TEST_CASE( "AcquisitionT test" ) {
 
     static_assert( hub::isMatrix<Resolution> );
 
-  //  static_assert(
-   //     Acquisition::getOffset<0, 0, hub::format::Dof6, hub::format::Dof6, ResolutionCam>() == 16 );
 
     static_assert( hub::sizeOf<hub::sensor::Clock>() == 8 );
     static_assert( hub::sizeOf<hub::format::Dof6>() == 28 );

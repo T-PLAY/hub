@@ -56,46 +56,13 @@ namespace hub {
 #if defined( __GNUC__ )
 #    define COMPILER_GCC
 
-// #if defined ( OS_LINUX )
-// #    include <features.h>
-// #    if __GNUC_PREREQ( 15, 0 )
-// #        define GCC_VERSION 15
-// #    elif __GNUC_PREREQ( 14, 0 )
-// #        define GCC_VERSION 14
-// #    elif __GNUC_PREREQ( 13, 0 )
-// #        define GCC_VERSION 13
-// #    elif __GNUC_PREREQ( 12, 0 )
-// #        define GCC_VERSION 12
-// #    elif __GNUC_PREREQ( 11, 0 )
-// #        define GCC_VERSION 11
-// #    elif __GNUC_PREREQ( 10, 0 )
-// #        define GCC_VERSION 10
-// #    elif __GNUC_PREREQ( 9, 0 )
-// #        define GCC_VERSION 9
-// #    elif __GNUC_PREREQ( 8, 0 )
-// #        define GCC_VERSION 8
-// #    elif __GNUC_PREREQ( 7, 0 )
-// #        define GCC_VERSION 7
-// #    elif __GNUC_PREREQ( 6, 0 )
-// #        define GCC_VERSION 6
-// #    elif __GNUC_PREREQ( 5, 0 )
-// #        define GCC_VERSION 5
-// #    elif __GNUC_PREREQ( 4, 0 )
-// #        define GCC_VERSION 4
-// #    else
-// #        error "gcc version not supported"
-// #    endif
-//
-// #else
 #define GCC_VERSION __GNUC__
-//#endif
 
 #elif defined( __clang__ )
 #    define COMPILER_CLANG
 #    define CLANG_VERSION __clang_major__
 
 #elif defined( _MSC_VER )
-//#if _MSC_VER >= 1900
 #    define COMPILER_MSVC
 #    define _USE_MATH_DEFINES
 #else
@@ -163,12 +130,14 @@ namespace hub {
         } while ( false )
 #endif
 
-// Dll import/export.
-// You must define SRC_STATIC to force static link for external use (.lib)
 
-//#ifndef SRC_STATIC
-//#define SRC_STATIC
-//#endif
+/// Dll import/export.
+/// You must define SRC_STATIC to force static link for external use (.lib)
+
+/// #ifndef SRC_STATIC
+/// #define SRC_STATIC
+/// #endif
+
 
 #ifdef OS_WINDOWS
 #    if defined SRC_STATIC
@@ -214,7 +183,8 @@ namespace hub {
 #    define CONSTEXPR const
 #endif
 
-// #define HUB_DEBUG_INPUT_OUTPUT
+/// #define HUB_DEBUG_INPUT_OUTPUT
+
 #ifdef HUB_DEBUG_INPUT_OUTPUT
 #    define HUB_DEBUG_INPUT
 #    define HUB_DEBUG_OUTPUT
@@ -335,8 +305,6 @@ template <typename T>
 concept isContainer = !std::is_same<T, std::string>() && requires( T t ) {
     t.begin();
     t.end();
-    // std::begin( t );
-    // std::end( t );
 };
 
 #else
@@ -641,7 +609,6 @@ sizeOf( const T& t, const Ts&... ts ) {
 //// Prints to the provided buffer a nice number of bytes (KB, MB, GB, etc)
 /// \brief pretty_bytes
 static std::string pretty_bytes( hub::Size_t bytes ) {
-    // std::string str;
 
     constexpr auto buffSize = 32;
     char buff[buffSize] { 0 };
@@ -681,7 +648,6 @@ static std::string pretty_bytes( hub::Size_t bytes ) {
 #endif
     }
 
-    // return std::string( buff );
     /// \brief return
     return buff;
 }

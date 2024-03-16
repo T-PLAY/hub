@@ -3,7 +3,6 @@
 
 #include <iostream>
 
-// #    include <opencv2/opencv.hpp>
 #include <opencv2/opencv.hpp>
 
 TEST_CASE( "Matrix compat OpenCV test" ) {

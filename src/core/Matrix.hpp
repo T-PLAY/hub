@@ -523,11 +523,7 @@ inline bool Matrix::hasValue() const {
 template <class Type>
 bool Matrix::hasType() const {
     const auto typeId = TYPE_ID( Type );
-    // for ( const auto& node : m_nodes ) {
-    //     if ( node.m_id == typeId ) { return true; }
-    // }
     return ! std::none_of(m_nodes.begin(), m_nodes.end(), [&typeId](const auto & node) { return node.m_id == typeId; });
-    // return false;
 }
 
 template <class... Types>
@@ -548,17 +544,7 @@ template <class Type>
 int Matrix::nType() {
     assert( hasType<Type>() );
     const auto typeId = TYPE_ID( Type );
-    // int ret           = 0;
-    // for ( const auto& node : m_nodes ) {
-        // if ( node.m_id == typeId ) { ++ret; }
-    // }
-    // return ret;
-    // return std::reduce(m_nodes.begin(), m_nodes.end(), 0, [&typeId] (int prev, const Node & node) {
-        // if (node.m_id == typeId) { ++prev; };
-        // return prev;
     return std::accumulate(m_nodes.begin(), m_nodes.end(), 0, [&typeId](int prev, const Node & node) {
-        // if (node.m_id == typeId) { ++prev; };
-        // return prev;
         return prev + (( node.m_id == typeId ) ?1 :0);
     });
 }
@@ -604,10 +590,7 @@ Size_t Matrix::getCapacity() const {
             if ( i == nFound ) {
                 // Size_t capacity = 1;
                 return std::accumulate(node.m_dims.begin(), node.m_dims.end(), 1, std::multiplies<Size_t>());
-                // for ( auto dim : node.m_dims ) {
                     // capacity *= dim;
-                // }
-                // return capacity;
             }
             ++nFound;
         }

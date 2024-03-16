@@ -111,7 +111,6 @@ extern "C"
     SRC_API void sensorSpec_getMetaDataStr( const sensor::SensorSpec* sensorSpec,
                                             char* metaDataStr );
 
-    //SRC_API void to_string( const sensor::SensorSpec* sensorSpec );
     ///
     /// \brief sensorSpec_toString
     /// \param sensorSpec

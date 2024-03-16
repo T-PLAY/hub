@@ -21,11 +21,8 @@ const int QOS = 1;
 /////////////////////////////////////////////////////////////////////////////
 
 // Example of a simple, in-memory persistence class.
-//
 // This is an extremely silly example, because if you want to use
-//
 // This is just here to show how the persistence API callbacks work. It maps
-//
 class sample_mem_persistence : virtual public mqtt::iclient_persistence
 {
     // Whether the store is open

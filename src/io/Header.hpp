@@ -20,7 +20,6 @@ namespace io {
 class SRC_API Header
 {
   public:
-    // using MagicNumber = std::array<char, 128>;
     ///
     /// \brief MagicNumber
     ///
@@ -130,16 +129,13 @@ class SRC_API Header
 template <class T>
 Header make_header( const T& t ) {
 
-    // std::cout << "[Header] make_header() making header ..." << std::endl;
 
     Memory memory;
     memory.write( t );
 
-    // std::cout << "[Header] make_header() memory : " << memory.getData() << std::endl;
 
     Header header( t.dataSize(), memory.getData() );
 
-    // std::cout << "[Header] make_header() done" << std::endl;
     return header;
 }
 

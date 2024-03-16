@@ -20,7 +20,6 @@ template <class Serializer>
 class SRC_API SerializerT
 {
   public:
-  // protected:
     ///
     /// \brief Base
     ///
@@ -151,11 +150,9 @@ class SRC_API SerializerT
     template <class... Ts>
     static constexpr auto Serializables = ( Serializable<Ts>() && ... );
 
-    // static constexpr Size_t BuffSize = 2'000'000; // 2 Mo
     ///
     /// \brief BuffSize
     ///
-    //static constexpr Size_t BuffSize = 20'000'000; // 20 Mo
     static constexpr Size_t BuffSize = 1'000'000; // 1 Mo
 
     ///
@@ -163,7 +160,6 @@ class SRC_API SerializerT
     ///
     SerializerT() :
         m_serialBuff( BuffSize ),
-        // m_packData( m_serialBuff.data() ),
         m_dataWrote( 0 ),
         m_dataReaded( 0 ),
         m_serializer( m_serialBuff ) {}
@@ -173,7 +169,6 @@ class SRC_API SerializerT
     ///
     SerializerT( const SerializerT& ) :
         m_serialBuff( BuffSize ),
-        // m_packData( m_serialBuff.data() ),
         m_dataWrote( 0 ),
         m_dataReaded( 0 ),
         m_serializer( m_serialBuff ) {}
@@ -183,7 +178,6 @@ class SRC_API SerializerT
     ///
     SerializerT( SerializerT&& ) :
         m_serialBuff( BuffSize ),
-        // m_packData( m_serialBuff.data() ),
         m_dataWrote( 0 ),
         m_dataReaded( 0 ),
         m_serializer( m_serialBuff ) {}
@@ -242,15 +236,11 @@ class SRC_API SerializerT
 
         Size_t m_packSize = m_serializer.outPosition();
         assert( m_packSize == m_dataWrote );
-        // assert(m_serialBuff.size() == m_packSize);
-        // std::cout << "[SerializerT] packing size : " << m_packSize << ", nWrote : " << m_nWrote << std::endl;
         assert( 0 < m_packSize && m_packSize < BuffSize );
         output.write( reinterpret_cast<const Data_t*>( &m_packSize ), sizeof( Size_t ) );
         assert(m_serialBuff.size() == m_packSize);
-        // output.write( m_packData, m_packSize );
         output.write( m_serialBuff.data(), m_serialBuff.size() );
 #ifdef HUB_DEBUG_OUTPUT
-        // std::vector<Data_t> data( m_packData, m_packData + m_packSize );
         std::vector<Data_t> data( m_serialBuff.data(), m_serialBuff.data() + m_packSize );
         DEBUG_MSG( "<---" << HEADER << "packing serial data : " << data )
 #endif
@@ -267,16 +257,13 @@ class SRC_API SerializerT
         assert( !input.isEnd() );
         Size_t m_packSize;
         input.read( reinterpret_cast<Data_t*>( &m_packSize ), sizeof( Size_t ) );
-        // std::cout << "[SerializerT] unpacking size : " << m_packSize << std::endl;
         assert( 0 < m_packSize && m_packSize < BuffSize );
 #ifndef HUB_USE_ZPP_BITS
         m_serialBuff.resize( m_packSize );
 #endif
-        // input.read( m_packData, m_packSize );
         assert(m_serialBuff.size() == m_packSize);
         input.read( m_serialBuff.data(), m_serialBuff.size() );
 #ifdef HUB_DEBUG_INPUT
-        // std::vector<Data_t> data( m_packData, m_packData + m_packSize );
         std::vector<Data_t> data( m_serialBuff.data(), m_serialBuff.data() + m_packSize );
         DEBUG_MSG( "\t--->" << HEADER << "unpacking serial data : " << data );
 #endif
@@ -287,7 +274,6 @@ class SRC_API SerializerT
         assert( m_serializer.inPosition() == 0 );
         readAll( ts... );
 
-        // std::cout << "[SerializerT] unpacking size : " << m_dataReaded << ", nRead : " << m_nReaded << std::endl;
 
         assert( m_dataReaded == m_serializer.inPosition() );
         assert( m_packSize == m_dataReaded );
@@ -362,25 +348,9 @@ class SRC_API SerializerT
 
     /////////////////////////////////// TEMPLATE ////////////////////////////////////
 
-//    template <class T>
-//    REQUIRES(, !Serializable<T>() && packable_v<T>, void )
-//    write( const T& t ) {
-//        // DEBUG_MSG( "<---" << HEADER << "\033[1mwrite\033[0m(packable: " << TYPE_NAME( t )
-//        const auto lastPosition = m_serializer.outPosition();
 
-//        m_serializer.serialize( t );
 
-//        const auto newPosition = m_serializer.outPosition();
-//        m_dataWrote += newPosition - lastPosition;
 
-//#ifdef HUB_DEBUG_OUTPUT
-//        // DEBUG_MSG( "<---" << HEADER << "\033[1mwrite\033[0m(packable: " << TYPE_NAME( t )
-//        const std::vector<Data_t> data( m_serialBuff.data() + lastPosition,
-//                                        m_serialBuff.data() + newPosition );
-//        DEBUG_MSG( "<---" << HEADER << "\033[1mwrite\033[0m(packable: " << TYPE_NAME( t ) << ") = "
-//                          << t << " (" << lastPosition << "->" << newPosition << ")" << data );
-//#endif
-//    }
 
     ///
     /// \brief write
@@ -388,10 +358,8 @@ class SRC_API SerializerT
     /// \return
     ///
     template <class T>
-//    REQUIRES(, !Serializable<T>() && !packable_v<T>, void )
     // REQUIRES(, Writable_v<T>, void )
     typename std::enable_if_t<Writable_v<T>, void>
-//    typename std::enable_if_t<!Serializable<T>() && !packable_v<T>, void>
     write( const T& t ) {
         static_assert( Writable_v<T> );
 #ifdef HUB_DEBUG_OUTPUT
@@ -433,27 +401,8 @@ class SRC_API SerializerT
 
     //////////////////////////////////
 
-//    template <class T>
-//    REQUIRES(, !Serializable<T>() && packable_v<T>, void )
-//    read( T& t ) {
-//#ifdef HUB_DEBUG_INPUT
-//        // DEBUG_MSG( "\t--->" << HEADER << "\033[1mread\033[0m(packable: " << TYPE_NAME( t )
-//        auto serialCopy = m_serialBuff;
-//#endif
-//        const auto lastPosition = m_serializer.inPosition();
 
-//        m_serializer.deserialize( t );
 
-//        const auto newPosition = m_serializer.inPosition();
-//        m_dataReaded += newPosition - lastPosition;
-//#ifdef HUB_DEBUG_INPUT
-//        const std::vector<Data_t> data( serialCopy.data(),
-//                                        serialCopy.data() + newPosition - lastPosition );
-//        DEBUG_MSG( "\t--->" << HEADER << "\033[1mread\033[0m(packable: " << TYPE_NAME( t ) << ") = "
-//                            << t << " (" << lastPosition << "->" << newPosition << ")" << data );
-//        // DEBUG_MSG( "\t--->" << HEADER << "\033[1mread\033[0m(packable: " << TYPE_NAME( t )
-//#endif
-//    }
 
     ///
     /// \brief read
@@ -461,7 +410,6 @@ class SRC_API SerializerT
     /// \return
     ///
     template <class T>
-//    REQUIRES(, (!Serializable<T>() && !packable_v<T>), void )
     // REQUIRES(, Readable_v<T>, void )
     typename std::enable_if_t<Readable_v<T>, void>
     read( T& t ) {

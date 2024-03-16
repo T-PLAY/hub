@@ -39,7 +39,6 @@ static constexpr auto Count = Format_Count;
 
 namespace format {
 
-// static inline int nChannel(Types::Format format) {
 static inline int nChannel(TypeId_t format) {
     switch (format) {
     case Types::Y8:
@@ -76,7 +75,6 @@ struct Mat4 {
     static struct {
     } packable;
 
-    // float data[16];
     ///
     /// \brief m_array
     ///
@@ -123,22 +121,6 @@ struct Mat4 {
     // clang-format on
 
     // constexpr Mat4( float value ) :
-    //     m_array { value,
-    //            value,
-    //            value,
-    //            value,
-    //            value,
-    //            value,
-    //            value,
-    //            value,
-    //            value,
-    //            value,
-    //            value,
-    //            value,
-    //            value,
-    //            value,
-    //            value,
-    //            value } {}
 
     ///
     /// \brief Mat4
@@ -182,7 +164,6 @@ struct Mat4 {
     ///
     bool operator==( const Mat4& other ) const {
         return m_array == other.m_array;
-        // return !memcmp( data, other.data, 64 );
     }
 
     ///
@@ -201,7 +182,6 @@ struct Mat4 {
     ///
     template <typename Archive, typename Self>
     static void serialize( Archive& archive, Self& self ) {
-        // archive( self.data );
         archive(self.m_array);
     }
 #endif
@@ -351,7 +331,6 @@ struct Density {
     /// \brief id
     ///
     static constexpr auto id = Types::Format::DENSITY;
-    // uint32_t value;
     ///
     /// \brief value
     ///

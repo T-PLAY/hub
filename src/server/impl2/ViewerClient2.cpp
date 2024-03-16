@@ -37,7 +37,6 @@ ViewerClient2::ViewerClient2( ServerImpl2* server, int iClient, net::ClientSocke
                 else if ( message ==
                           hub::io::StreamBase::ClientMessage::VIEWER_CLIENT_STREAM_ADDED ) {
                     // Todo fix
-                    //assert( !m_clientStreamAdded );
                     m_clientStreamAdded = true;
                 }
                 else if ( message == hub::io::StreamBase::ClientMessage::VIEWER_CLIENT_CLOSED ) {
@@ -84,7 +83,6 @@ ViewerClient2::~ViewerClient2() {
 }
 
 std::string ViewerClient2::headerMsg() const {
-    // return Client2::headerMsg() + "[Viewer] ";
     return Client2::clientMsg() + "[Viewer] ";
 }
 

@@ -38,7 +38,6 @@ struct UserClass {
 TEST_CASE( "MatrixT test" ) {
     TEST_BEGIN()
 
-    //
 
     static_assert( hub::isMatrix<hub::MatrixXD<int, 640, 480>> );
     static_assert( hub::isMatrix<hub::MatrixTs<int, double>> );

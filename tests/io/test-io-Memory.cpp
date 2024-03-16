@@ -14,15 +14,9 @@ TEST_CASE( "Test io memory" ) {
     const hub::data::Mesh mesh( meshPath + "sensor" );
 
     hub::MetaData metaData;
-    // metaData["asset"] = mesh;
 
-    // using Resolution   = hub::MatrixTs<int, bool, hub::MatrixXD<char, 10>>;
     using Resolution   = int;
-    // using OutputSensor = hub::sensor::OutputSensorT<Resolution, hub::output::OutputFile>;
-    // using OutputSensor = hub::sensor::OutputSensorT<Resolution>;
 
-    // using Acquisition  = OutputSensor::Acquisition;
-    // std::vector<Acquisition> refAcqs;
 
     const hub::sensor::SensorSpec refSensorSpec( "AAA", Resolution(), metaData );
 
@@ -33,7 +27,6 @@ TEST_CASE( "Test io memory" ) {
     std::cout << "memory : " << memory.getData() << std::endl;
 
     // const auto header = hub::io::make_header(refSensorSpec);
-    // std::cout << "header : " << header.getUserDefined() << std::endl;
 
 
 

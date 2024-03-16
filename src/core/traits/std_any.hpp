@@ -8,16 +8,10 @@
 
 #if CPP_VERSION <= 14
 
-//
 // Implementation of N4562 std::experimental::any (merged into C++17) for C++11 compilers.
-//
 // See also:
-//
-//
 // Copyright (c) 2016 Denilson das Mercês Amorim
-//
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
-//
 #    ifndef LINB_ANY_HPP
 #        define LINB_ANY_HPP
 #        include <new>

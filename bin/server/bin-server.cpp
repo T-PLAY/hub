@@ -20,7 +20,6 @@ int main( int argc, char* argv[] ) {
         const auto& arg = *it;
 
         if ( arg == "-h" || arg == "--help" ) {
-//            std::cout << argv[0] << " usage: [--port <int>]" << std::endl;
             std::cout << helperMsg << std::endl;
             return 0;
         }
@@ -35,7 +34,6 @@ int main( int argc, char* argv[] ) {
         }
         else {
             std::cout << "unrecognized argument: " << arg << std::endl;
-//            std::cout << argv[0] << " usage: [--maxClient <int>]" << std::endl;
             std::cout << helperMsg << std::endl;
             return 0;
         }
@@ -48,9 +46,6 @@ int main( int argc, char* argv[] ) {
     else {
 
         server.asyncRun();
-//        const auto helperMsg =
-//            std::string( argv[0] ) +
-//            " info: [.|Esc] -> exit, [F5|' '] -> print stats, h -> print this helper message";
         std::cout << helperMsg << std::endl;
         bool exit = false;
         while ( !exit && server.running() ) {         // ESC to quit
