@@ -28,7 +28,7 @@ if(MINGW)
         set(REQUIRED_LIBS ${REQUIRED_LIBS} Threads::Threads)
 
     elseif(GNU)
-        message(FATAL_ERROR "GNU not supported")
+        #message(FATAL_ERROR "GNU not supported")
 
     elseif(GCC)
         set(REQUIRED_LIBS ${REQUIRED_LIBS} ws2_32)
