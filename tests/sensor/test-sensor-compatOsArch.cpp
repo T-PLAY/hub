@@ -39,7 +39,7 @@ TEST_CASE( "sensor compat os and arch test" ) {
 
     const hub::sensor::SensorSpec refSensorSpec( FILE_NAME, Resolution(), refMetadata );
 
-    const std::string filePath = HUB_PROJECT_DIR "data/files/compatMultiOsArch.hub";
+    const std::string filePath = HUB_PROJECT_DIR "data/compat/sensor.hub";
 
     Acquisition acq;
     auto [start, end] = acq.clocks();
