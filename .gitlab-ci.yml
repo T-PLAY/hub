@@ -7,7 +7,7 @@
 # image: stormirit/radium_dev:latest
 #image: docker-linux
 variables:
-  CACHE_PATH: "cache13"
+  CACHE_PATH: "cache14"
   GIT_STRATEGY: fetch
   LINUX_TAG: "linux"
   WIN_TAG: "windows"
