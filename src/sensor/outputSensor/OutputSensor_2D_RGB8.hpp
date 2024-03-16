@@ -25,7 +25,7 @@ class OutputSensor_2D_RGB8 : public OutputSensor_Instance
     ///
     /// \brief width
     ///
-    static constexpr int width  = 640;
+    static constexpr int width = 640;
 
     ///
     /// \brief height
@@ -35,7 +35,7 @@ class OutputSensor_2D_RGB8 : public OutputSensor_Instance
     ///
     /// \brief Resolution
     ///
-    using Resolution            = hub::MatrixXD<hub::format::RGB8, width, height>;
+    using Resolution = hub::MatrixXD<hub::format::RGB8, width, height>;
 
     ///
     /// \brief init
@@ -53,8 +53,8 @@ class OutputSensor_2D_RGB8 : public OutputSensor_Instance
     /// \brief routine
     ///
     void routine() override {
-    // constexpr int width  = 640;
-    // constexpr int height = 480;
+        // constexpr int width  = 640;
+        // constexpr int height = 480;
 
         std::unique_ptr<OutputSensor> outputSensor;
         if ( onNewAcq == nullptr ) {
@@ -90,14 +90,18 @@ class OutputSensor_2D_RGB8 : public OutputSensor_Instance
                         imgData[idx].g += 128;
                         imgData[idx].b += 128;
                     }
-                    else { imgData[idx].b += 128; }
+                    else {
+                        imgData[idx].b += 128;
+                    }
                 }
             }
             end = hub::sensor::getClock();
             ++dec;
 
             if ( onNewAcq ) { onNewAcq( m_streamName, acq ); }
-            else { *outputSensor << acq; }
+            else {
+                *outputSensor << acq;
+            }
 
             const auto endClock =
                 startClock + std::chrono::microseconds( (int)( 1'000'000 / maxFps ) );

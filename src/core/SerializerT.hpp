@@ -93,14 +93,14 @@ class SRC_API SerializerT
 
 #if defined( COMPILER_GCC )
 
-/// #    if __GNUC_PREREQ( 12, 3 )
-/// // #if GCC_VERSION >= 12
-///     template <class T>
-///     static constexpr auto isMap = has_it_first_v<T>&& has_it_second_v<T>;
-/// #    else
+    /// #    if __GNUC_PREREQ( 12, 3 )
+    /// // #if GCC_VERSION >= 12
+    ///     template <class T>
+    ///     static constexpr auto isMap = has_it_first_v<T>&& has_it_second_v<T>;
+    /// #    else
     template <class T>
     static constexpr bool isMap = has_it_first_v<T>&& has_it_second_v<T>;
-/// #    endif
+    /// #    endif
 
 #elif defined( COMPILER_CLANG )
 #    if CLANG_VERSION >= 14
@@ -125,8 +125,7 @@ class SRC_API SerializerT
     ///
     template <class T>
     // REQUIRES( static constexpr, !isMap<T>, bool )
-    static constexpr typename std::enable_if_t<!isMap<T>, bool>
-    Serializable() {
+    static constexpr typename std::enable_if_t<!isMap<T>, bool> Serializable() {
         return !Readable_v<T> && !Writable_v<T> && !packable_v<T>;
     };
 
@@ -139,8 +138,7 @@ class SRC_API SerializerT
               class T    = std::decay_t<decltype( ( *std::declval<Map>().begin() ).first )>,
               class U    = std::decay_t<decltype( ( *std::declval<Map>().begin() ).second )>>
     // REQUIRES( static constexpr, isMap<Map>, bool )
-    static constexpr typename std::enable_if_t<isMap<Map>, bool>
-    Serializable() {
+    static constexpr typename std::enable_if_t<isMap<Map>, bool> Serializable() {
         return Serializable<T>() && Serializable<U>();
     };
 
@@ -187,7 +185,6 @@ class SRC_API SerializerT
     ///
     using ByteView = std::vector<Data_t>;
 
-
     ///
     /// \brief m_serialBuff
     ///
@@ -230,7 +227,7 @@ class SRC_API SerializerT
         assert( &m_serializer.getBuff() == &m_serialBuff );
         m_serializer.resetOut();
         m_dataWrote = 0;
-        m_nWrote = 0;
+        m_nWrote    = 0;
         assert( m_serializer.outPosition() == 0 );
         writeAll( ts... );
 
@@ -238,7 +235,7 @@ class SRC_API SerializerT
         assert( m_packSize == m_dataWrote );
         assert( 0 < m_packSize && m_packSize < BuffSize );
         output.write( reinterpret_cast<const Data_t*>( &m_packSize ), sizeof( Size_t ) );
-        assert(m_serialBuff.size() == m_packSize);
+        assert( m_serialBuff.size() == m_packSize );
         output.write( m_serialBuff.data(), m_serialBuff.size() );
 #ifdef HUB_DEBUG_OUTPUT
         std::vector<Data_t> data( m_serialBuff.data(), m_serialBuff.data() + m_packSize );
@@ -261,7 +258,7 @@ class SRC_API SerializerT
 #ifndef HUB_USE_ZPP_BITS
         m_serialBuff.resize( m_packSize );
 #endif
-        assert(m_serialBuff.size() == m_packSize);
+        assert( m_serialBuff.size() == m_packSize );
         input.read( m_serialBuff.data(), m_serialBuff.size() );
 #ifdef HUB_DEBUG_INPUT
         std::vector<Data_t> data( m_serialBuff.data(), m_serialBuff.data() + m_packSize );
@@ -270,15 +267,13 @@ class SRC_API SerializerT
 
         m_serializer.resetIn();
         m_dataReaded = 0;
-        m_nReaded = 0;
+        m_nReaded    = 0;
         assert( m_serializer.inPosition() == 0 );
         readAll( ts... );
-
 
         assert( m_dataReaded == m_serializer.inPosition() );
         assert( m_packSize == m_dataReaded );
     }
-
 
     /////////////////////////////////// WRITE ALL ////////////////////////////
 
@@ -289,8 +284,7 @@ class SRC_API SerializerT
     ///
     template <class... Ts>
     // REQUIRES(, Serializables<Ts...>, void )
-    typename std::enable_if_t<Serializables<Ts...>, void>
-    writeAll( const Ts&... ts ) {
+    typename std::enable_if_t<Serializables<Ts...>, void> writeAll( const Ts&... ts ) {
         const auto lastPosition = m_serializer.outPosition();
 
         m_serializer.serialize( ts... );
@@ -307,8 +301,8 @@ class SRC_API SerializerT
     ///
     template <class T, class... Ts>
     // REQUIRES(, (!Serializables<T, Ts...>), void )
-    typename std::enable_if_t<(!Serializables<T, Ts...>), void>
-    writeAll( const T& t, const Ts&... ts ) {
+    typename std::enable_if_t<(!Serializables<T, Ts...>), void> writeAll( const T& t,
+                                                                          const Ts&... ts ) {
         write( t );
         if constexpr ( sizeof...( Ts ) > 0 ) { writeAll( ts... ); }
     }
@@ -322,8 +316,7 @@ class SRC_API SerializerT
     ///
     template <class... Ts>
     // REQUIRES(, Serializables<Ts...>, void )
-    typename std::enable_if_t<Serializables<Ts...>, void>
-    readAll( Ts&... ts ) {
+    typename std::enable_if_t<Serializables<Ts...>, void> readAll( Ts&... ts ) {
         const auto lastPosition = m_serializer.inPosition();
 
         m_serializer.deserialize( ts... );
@@ -340,17 +333,12 @@ class SRC_API SerializerT
     ///
     template <class T, class... Ts>
     // REQUIRES(, (!Serializables<T, Ts...>), void )
-    typename std::enable_if_t<(!Serializables<T, Ts...>), void>
-    readAll( T& t, Ts&... ts ) {
+    typename std::enable_if_t<(!Serializables<T, Ts...>), void> readAll( T& t, Ts&... ts ) {
         read( t );
         if constexpr ( sizeof...( Ts ) > 0 ) { readAll( ts... ); }
     }
 
     /////////////////////////////////// TEMPLATE ////////////////////////////////////
-
-
-
-
 
     ///
     /// \brief write
@@ -359,8 +347,7 @@ class SRC_API SerializerT
     ///
     template <class T>
     // REQUIRES(, Writable_v<T>, void )
-    typename std::enable_if_t<Writable_v<T>, void>
-    write( const T& t ) {
+    typename std::enable_if_t<Writable_v<T>, void> write( const T& t ) {
         static_assert( Writable_v<T> );
 #ifdef HUB_DEBUG_OUTPUT
         DEBUG_MSG( "<---" << HEADER << "\033[1mwrite\033[0m(writable: " << TYPE_NAME( t )
@@ -380,8 +367,7 @@ class SRC_API SerializerT
     ///
     template <class T>
     // REQUIRES(, ! Writable_v<T>, void )
-    typename std::enable_if_t<! Writable_v<T>, void>
-    write( const T& t ) {
+    typename std::enable_if_t<!Writable_v<T>, void> write( const T& t ) {
 
         const auto lastPosition = m_serializer.outPosition();
 
@@ -401,9 +387,6 @@ class SRC_API SerializerT
 
     //////////////////////////////////
 
-
-
-
     ///
     /// \brief read
     /// \param t
@@ -411,8 +394,7 @@ class SRC_API SerializerT
     ///
     template <class T>
     // REQUIRES(, Readable_v<T>, void )
-    typename std::enable_if_t<Readable_v<T>, void>
-    read( T& t ) {
+    typename std::enable_if_t<Readable_v<T>, void> read( T& t ) {
         static_assert( Readable_v<T> );
 #ifdef HUB_DEBUG_INPUT
         DEBUG_MSG( "\t--->" << HEADER << "\033[1mread\033[0m(readable: " << TYPE_NAME( t )
@@ -432,8 +414,7 @@ class SRC_API SerializerT
     ///
     template <class T>
     // REQUIRES(, ! Readable_v<T>, void )
-    typename std::enable_if_t<! Readable_v<T>, void>
-    read( T& t ) {
+    typename std::enable_if_t<!Readable_v<T>, void> read( T& t ) {
 #ifdef HUB_DEBUG_INPUT
         // DEBUG_MSG( "\t--->" << HEADER << "\033[1;36mread\033[0m(serial: " << TYPE_NAME( t )
         auto serialCopy = m_serialBuff;
@@ -505,8 +486,7 @@ class SRC_API SerializerT
     ///
     template <class T, class U>
     // REQUIRES(, (!Serializables<T, U>), void )
-    typename std::enable_if_t<(!Serializables<T, U>), void>
-    write( const std::pair<T, U>& pair ) {
+    typename std::enable_if_t<(!Serializables<T, U>), void> write( const std::pair<T, U>& pair ) {
 
 #ifdef HUB_DEBUG_OUTPUT
         DEBUG_MSG( "<---" << HEADER << "write(std::pair<" << TYPE_NAME( T() ) << ", "
@@ -525,8 +505,7 @@ class SRC_API SerializerT
     ///
     template <class T, class U>
     // REQUIRES(, (!Serializables<T, U>), void )
-    typename std::enable_if_t<(!Serializables<T, U>), void>
-    read( std::pair<T, U>& pair ) {
+    typename std::enable_if_t<(!Serializables<T, U>), void> read( std::pair<T, U>& pair ) {
 
         T first;
         read( first );
@@ -548,8 +527,7 @@ class SRC_API SerializerT
     ///
     template <class T, class U>
     // REQUIRES(, (!Serializables<T, U>), void )
-    typename std::enable_if_t<(!Serializables<T, U>), void>
-    write( const std::map<T, U>& map ) {
+    typename std::enable_if_t<(!Serializables<T, U>), void> write( const std::map<T, U>& map ) {
 
 #ifdef HUB_DEBUG_OUTPUT
         DEBUG_MSG( "<---" << HEADER << "write(std::map<" << TYPE_NAME( T() ) << ", "
@@ -571,8 +549,7 @@ class SRC_API SerializerT
     ///
     template <class T, class U>
     // REQUIRES(, (!Serializables<T, U>), void )
-    typename std::enable_if_t<(!Serializables<T, U>), void>
-    read( std::map<T, U>& map ) {
+    typename std::enable_if_t<(!Serializables<T, U>), void> read( std::map<T, U>& map ) {
 
         uint64_t nbEl = 0;
         read( nbEl );

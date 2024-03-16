@@ -29,12 +29,12 @@ class SRC_API InputBase : public ios
     /// \brief isEnd
     /// \return
     ///
-    virtual bool isEnd() const                    = 0;
+    virtual bool isEnd() const = 0;
 
     ///
     /// \brief clear
     ///
-    virtual void clear()                          = 0;
+    virtual void clear() = 0;
 };
 
 ///

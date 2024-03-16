@@ -59,7 +59,7 @@ void OutputStreamMqtt::write( const sensor::Acquisition& acq ) {
     m_currentTopic = s_topicStream + m_name + "/acqs/data" + std::to_string( m_iAcq );
     m_msgPtr->set_topic( m_currentTopic );
 
-    write( reinterpret_cast<unsigned char*>(buff.data()), m_acqSize );
+    write( reinterpret_cast<unsigned char*>( buff.data() ), m_acqSize );
 }
 
 void OutputStreamMqtt::write( const sensor::SensorSpec& sensorSpec ) {

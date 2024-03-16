@@ -27,7 +27,6 @@ class InputOutputSocket : public InputOutput<>, public net::ClientSocket
     static struct {
     } not_endable;
 
-
     ///
     /// \brief InputOutputSocket
     /// \param clientSocket
@@ -38,7 +37,7 @@ class InputOutputSocket : public InputOutput<>, public net::ClientSocket
     ///
     /// \brief InputOutputSocket
     ///
-    InputOutputSocket( InputOutputSocket&& )      = default;
+    InputOutputSocket( InputOutputSocket&& ) = default;
 
     InputOutputSocket( const InputOutputSocket& ) = delete;
 

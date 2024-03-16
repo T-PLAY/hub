@@ -9,15 +9,6 @@ namespace outputSensor {
 
 // class OutputSensor_Dof6_RGB8 : protected OutputSensor_Instance
 
-
-
-
-
-
-
-
-
-
 } // namespace outputSensor
 } // namespace sensor
 } // namespace hub

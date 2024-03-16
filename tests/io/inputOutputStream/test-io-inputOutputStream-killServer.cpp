@@ -17,7 +17,8 @@ TEST_CASE( "InputOutputStream kill server test" ) {
 
     {
 
-        hub::output::OutputStream outputStream( hub::io::Header{ sizeof( int ) }, FILE_NAME, port );
+        hub::output::OutputStream outputStream(
+            hub::io::Header { sizeof( int ) }, FILE_NAME, port );
 
         hub::input::InputStream inputStream( FILE_NAME, port );
 

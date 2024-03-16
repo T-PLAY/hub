@@ -173,7 +173,6 @@ class ViewerInterface
     ///
     std::set<std::string> getActiveStreams() const;
 
-
   private:
   protected:
     ///
@@ -358,8 +357,8 @@ void ViewerInterface<InputStream>::printStatus() const {
         }
     }
     // Todo fix for Hololens, no unicode \u001B
-    DEBUG_MSG( "[Viewer] status : server connected:"
-               << m_serverConnected << ", nStreamer:" << m_streams.size() << str );
+    DEBUG_MSG( "[Viewer] status : server connected:" << m_serverConnected
+                                                     << ", nStreamer:" << m_streams.size() << str );
 }
 
 template <class InputStream>
@@ -375,8 +374,6 @@ std::set<std::string> ViewerInterface<InputStream>::getActiveStreams() const {
     }
     return streamNames;
 }
-
-
 
 template <class InputStream>
 void ViewerInterface<InputStream>::setIpv4( const std::string& ipv4 ) {

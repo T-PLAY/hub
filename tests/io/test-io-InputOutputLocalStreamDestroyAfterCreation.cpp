@@ -13,7 +13,7 @@ TEST_CASE( "InputOutputStream short destroy both test" ) {
     const auto port = GET_RANDOM_PORT;
 
     {
-        hub::output::OutputStream outputStream( hub::io::Header{}, port );
+        hub::output::OutputStream outputStream( hub::io::Header {}, port );
         hub::input::InputStream inputStream( port );
     }
 

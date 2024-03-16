@@ -31,7 +31,7 @@ class ArchiveT : public InputOutputT
     /// \brief ArchiveT
     /// \param header
     ///
-    explicit ArchiveT(const io::Header & header) : m_header{header} {};
+    explicit ArchiveT( const io::Header& header ) : m_header { header } {};
 
     ///
     /// \brief read
@@ -111,10 +111,7 @@ class ArchiveT : public InputOutputT
     /// \brief getHeader
     /// \return
     ///
-    const Header& getHeader() const {
-        return
-     m_header;
-    }
+    const Header& getHeader() const { return m_header; }
 
 #ifdef DEBUG
     ///

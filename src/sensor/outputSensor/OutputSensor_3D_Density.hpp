@@ -25,17 +25,17 @@ class OutputSensor_3D_Density : public OutputSensor_Instance
     ///
     /// \brief side
     ///
-    static constexpr int side  = 100;
+    static constexpr int side = 100;
 
     ///
     /// \brief width
     ///
-    static constexpr int width  = side;
+    static constexpr int width = side;
 
     ///
     /// \brief depth
     ///
-    static constexpr int depth  = side;
+    static constexpr int depth = side;
 
     ///
     /// \brief height
@@ -45,7 +45,7 @@ class OutputSensor_3D_Density : public OutputSensor_Instance
     ///
     /// \brief Resolution
     ///
-    using Resolution            = hub::MatrixXD<hub::format::Density, width, depth, height>;
+    using Resolution = hub::MatrixXD<hub::format::Density, width, depth, height>;
 
     void init() const override {
         hub::MetaData metaData;
@@ -63,13 +63,13 @@ class OutputSensor_3D_Density : public OutputSensor_Instance
                 std::make_unique<OutputSensor>( m_sensorSpec, getName(), m_port, m_ipv4 );
         }
 
-        auto acq                  = hub::sensor::make_acquisition( Resolution().getMatrix() );
-        auto& start               = acq.start();
-        auto& end                 = acq.end();
-        auto* density             = acq.get<hub::format::Density*>();
+        auto acq            = hub::sensor::make_acquisition( Resolution().getMatrix() );
+        auto& start         = acq.start();
+        auto& end           = acq.end();
+        auto* density       = acq.get<hub::format::Density*>();
         const auto capacity = acq.getCapacity<hub::format::Density>();
         // constexpr size_t capacity = width * depth * height;
-        assert(capacity == width * depth * height);
+        assert( capacity == width * depth * height );
 
         constexpr auto maxFps = 40.0;
 
@@ -87,9 +87,9 @@ class OutputSensor_3D_Density : public OutputSensor_Instance
                         assert( idx < capacity );
                         // const auto value = ((i + dec) % width) / (float)width ;
                         // const auto value = ((i * j * k + dec) % capacity)  / (float)capacity;
-                        const auto value = ((i + dec) % width) / (float)width;
+                        const auto value = ( ( i + dec ) % width ) / (float)width;
                         // const auto value = ((i * j * k + dec) % capacity) / (float)capacity;
-                        assert(0.0 <= value && value <= 1.0);
+                        assert( 0.0 <= value && value <= 1.0 );
                         density[idx].value = value;
                     }
                 }
@@ -98,7 +98,9 @@ class OutputSensor_3D_Density : public OutputSensor_Instance
             ++dec;
 
             if ( onNewAcq ) { onNewAcq( m_streamName, acq ); }
-            else { *outputSensor << acq; }
+            else {
+                *outputSensor << acq;
+            }
 
             const auto endClock =
                 startClock + std::chrono::microseconds( (int)( 1'000'000 / maxFps ) );

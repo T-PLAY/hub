@@ -29,7 +29,6 @@ MeshImpl::~MeshImpl() {}
 
 // Mesh::Mesh( const Mesh& mesh ) :
 
-
 Mesh::Mesh( const std::string& filePath ) : Mesh( { filePath } ) {}
 
 // Mesh::~Mesh() = default;
@@ -251,11 +250,7 @@ Mesh::Mesh( std::initializer_list<std::string> filePaths ) : m_pimpl( new MeshIm
         m_total_draws += std::max( size_t( 1 ), mesh.nodes.size() );
     }
     m_nMesh = glbMeshes.size();
-
 }
-
-
-
 
 void Mesh::printStats() const {
 
@@ -298,50 +293,26 @@ void Mesh::printInfo() const {
 }
 
 bool Mesh::operator==( const Mesh& other ) const {
-    if (m_name != other.m_name) {
-        std::cout << "name differ" << std::endl;
-    }
-    if (m_shapes != other.m_shapes) {
-        std::cout << "shapes differ" << std::endl;
-    }
-    if (
-        m_materials != other.m_materials) {
-        std::cout << "materials differ" << std::endl;
-    }
-    if (
-        m_nVertice != other.m_nVertice) {
-        std::cout << "nVertice differ" << std::endl;
-    }
-    if (
-        m_nTriangle != other.m_nTriangle) {
-        std::cout << "nTrinagle differ" << std::endl;
-    }
-    if (m_nDraw != other.m_nDraw) {
-        std::cout << "nDraw differ" << std::endl;
-    }
-    if (
-        m_nMesh != other.m_nMesh) {
-        std::cout << "nMesh differ" << std::endl;
-    }
-    if (m_mesh_triangles != other.m_mesh_triangles) {
+    if ( m_name != other.m_name ) { std::cout << "name differ" << std::endl; }
+    if ( m_shapes != other.m_shapes ) { std::cout << "shapes differ" << std::endl; }
+    if ( m_materials != other.m_materials ) { std::cout << "materials differ" << std::endl; }
+    if ( m_nVertice != other.m_nVertice ) { std::cout << "nVertice differ" << std::endl; }
+    if ( m_nTriangle != other.m_nTriangle ) { std::cout << "nTrinagle differ" << std::endl; }
+    if ( m_nDraw != other.m_nDraw ) { std::cout << "nDraw differ" << std::endl; }
+    if ( m_nMesh != other.m_nMesh ) { std::cout << "nMesh differ" << std::endl; }
+    if ( m_mesh_triangles != other.m_mesh_triangles ) {
         std::cout << "mesh_triangles differ" << std::endl;
     }
-    if (      m_mesh_vertices != other.m_mesh_vertices) {
-        std::cout << "vertices differ" << std::endl;
-    }
-    if (
-        m_total_triangles != other.m_total_triangles) {
+    if ( m_mesh_vertices != other.m_mesh_vertices ) { std::cout << "vertices differ" << std::endl; }
+    if ( m_total_triangles != other.m_total_triangles ) {
         std::cout << "total_triangles differ" << std::endl;
     }
-    if (      m_total_instances != other.m_total_instances) {
+    if ( m_total_instances != other.m_total_instances ) {
         std::cout << "total_instances differ" << std::endl;
     }
-    if (m_total_draws != other.m_total_draws) {
-        std::cout << "total_draws differ" << std::endl;
-    }
+    if ( m_total_draws != other.m_total_draws ) { std::cout << "total_draws differ" << std::endl; }
 
-    return m_name == other.m_name
-           && m_shapes == other.m_shapes &&
+    return m_name == other.m_name && m_shapes == other.m_shapes &&
            m_materials == other.m_materials && m_nVertice == other.m_nVertice &&
            m_nTriangle == other.m_nTriangle && m_nDraw == other.m_nDraw &&
            m_nMesh == other.m_nMesh && m_mesh_triangles == other.m_mesh_triangles &&
@@ -350,24 +321,19 @@ bool Mesh::operator==( const Mesh& other ) const {
            m_total_instances == other.m_total_instances && m_total_draws == other.m_total_draws;
 }
 
-bool Shape::operator==(const Shape &other) const {
-    if (vertices != other.vertices) {
+bool Shape::operator==( const Shape& other ) const {
+    if ( vertices != other.vertices ) {
         std::cout << "vertices differ" << std::endl;
-        for (int i = 0; i < vertices.size(); ++i) {
-            const auto & vertex = vertices.at(i);
-            const auto & vertex2 = other.vertices.at(i);
-            if (! (vertex == vertex2)) {
-                std::cout << "vertex differ" << std::endl;
-            }
+        for ( int i = 0; i < vertices.size(); ++i ) {
+            const auto& vertex  = vertices.at( i );
+            const auto& vertex2 = other.vertices.at( i );
+            if ( !( vertex == vertex2 ) ) { std::cout << "vertex differ" << std::endl; }
         }
     }
-    if (indices != other.indices) {
-        std::cout << "indices differ" << std::endl;
-    }
-    return vertices == other.vertices && hasNormal == other.hasNormal &&
-           indices == other.indices && name == other.name && material == other.material;
+    if ( indices != other.indices ) { std::cout << "indices differ" << std::endl; }
+    return vertices == other.vertices && hasNormal == other.hasNormal && indices == other.indices &&
+           name == other.name && material == other.material;
 }
-
 
 } // namespace data
 } // namespace hub

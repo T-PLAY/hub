@@ -17,9 +17,7 @@ ViewerServer::ViewerServer( const std::string& name,
                             int port ) :
 
     ViewerInterface( name, std::move( viewerHandler ), ipv4, port ),
-    m_sock( net::ClientSocket( ipv4, port, false ) ) {
-
-}
+    m_sock( net::ClientSocket( ipv4, port, false ) ) {}
 
 ViewerServer::~ViewerServer() {
     DEBUG_MSG( "[ViewerServer] ~ViewerServer()" );

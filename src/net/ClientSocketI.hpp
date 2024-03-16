@@ -25,7 +25,7 @@ class SRC_API ClientSocketI
     /// \brief getIpv4
     /// \return
     ///
-    virtual const std::string& getIpv4() const         = 0;
+    virtual const std::string& getIpv4() const = 0;
 
     ///
     /// \brief setPort
@@ -37,12 +37,12 @@ class SRC_API ClientSocketI
     /// \brief getPort
     /// \return
     ///
-    virtual int getPort() const         = 0;
+    virtual int getPort() const = 0;
 
     ///
     /// \brief connect
     ///
-    virtual void connect()           = 0;
+    virtual void connect() = 0;
 
     ///
     /// \brief isConnected
@@ -53,7 +53,7 @@ class SRC_API ClientSocketI
     ///
     /// \brief disconnect
     ///
-    virtual void disconnect()        = 0;
+    virtual void disconnect() = 0;
 
     ///
     /// \brief write
@@ -67,7 +67,7 @@ class SRC_API ClientSocketI
     /// \param data
     /// \param len
     ///
-    virtual void read( unsigned char* data, size_t len )        = 0;
+    virtual void read( unsigned char* data, size_t len ) = 0;
 };
 
 } // namespace net

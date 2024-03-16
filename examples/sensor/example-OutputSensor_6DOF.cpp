@@ -3,10 +3,10 @@
 
 #include <sensor/outputSensor/OutputSensor_1D_Dof6.hpp>
 
-int main(int argc, char* argv[]) {
+int main( int argc, char* argv[] ) {
     std::vector<std::string> args( argv + 1, argv + argc );
 
-    int port                = HUB_SERVICE_PORT;
+    int port         = HUB_SERVICE_PORT;
     std::string ipv4 = "127.0.0.1";
 
     auto it = args.begin();
@@ -26,7 +26,7 @@ int main(int argc, char* argv[]) {
         else if ( arg == "--ipv4" ) {
             assert( it + 1 != args.end() );
             const auto& nextArg = *( it + 1 );
-            ipv4 = nextArg;
+            ipv4                = nextArg;
             ++it;
         }
         else {
@@ -37,8 +37,7 @@ int main(int argc, char* argv[]) {
         ++it;
     }
 
-
-    hub::sensor::outputSensor::OutputSensor_1D_Dof6 outputSensorDof6(port, ipv4);
+    hub::sensor::outputSensor::OutputSensor_1D_Dof6 outputSensorDof6( port, ipv4 );
     outputSensorDof6.run();
 
     return 0;

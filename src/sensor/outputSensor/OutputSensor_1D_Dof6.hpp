@@ -69,7 +69,9 @@ class OutputSensor_1D_Dof6 : public OutputSensor_Instance
             ++dec;
 
             if ( onNewAcq ) { onNewAcq( m_streamName, acq ); }
-            else { *outputSensor << acq; }
+            else {
+                *outputSensor << acq;
+            }
 
             const auto endClock =
                 startClock + std::chrono::microseconds( (int)( 1'000'000 / maxFps ) );

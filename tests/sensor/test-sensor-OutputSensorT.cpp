@@ -38,7 +38,5 @@ TEST_CASE( "OutputSensorT test" ) {
 
     // Todo fix native
 
-
-
     TEST_END()
 }

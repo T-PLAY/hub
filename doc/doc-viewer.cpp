@@ -42,7 +42,6 @@ int main() {
 
     std::string ipServer = "192.168.2.1";
 
-
     while ( true ) {
         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
     }

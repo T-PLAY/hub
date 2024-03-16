@@ -48,7 +48,6 @@ class MemoryT : public InputOutputT
         assert( size > 0 );
         assert( !m_data.empty() );
 
-
         std::copy( m_data.begin(), std::next( m_data.begin(), size ), data );
         m_data.erase( m_data.begin(), std::next( m_data.begin(), size ) );
 
@@ -56,7 +55,6 @@ class MemoryT : public InputOutputT
         std::vector<Data_t> vector( data, data + size );
         std::cout << "[Memory] read " << vector << std::endl;
 #endif
-
     }
 
     ///
@@ -72,9 +70,8 @@ class MemoryT : public InputOutputT
 
         assert( size > 0 );
         const auto prevSize = m_data.size();
-        m_data.resize(prevSize + size);
-        std::copy(data, data + size, std::next(m_data.begin(), prevSize));
-
+        m_data.resize( prevSize + size );
+        std::copy( data, data + size, std::next( m_data.begin(), prevSize ) );
     }
 
     ///
@@ -109,7 +106,7 @@ class MemoryT : public InputOutputT
     /// \brief getData
     /// \return
     ///
-    const Datas_t & getData() const {
+    const Datas_t& getData() const {
         return m_data;
         // Datas_t datas( m_data.begin(), m_data.end() );
     }

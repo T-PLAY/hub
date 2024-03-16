@@ -25,7 +25,7 @@ class SpecAcqs
     ///
     /// \brief SpecAcqs
     ///
-    SpecAcqs( SpecAcqs&& )      = default;
+    SpecAcqs( SpecAcqs&& ) = default;
 
     ///
     /// \brief SpecAcqs
@@ -43,10 +43,6 @@ class SpecAcqs
     ///
     std::vector<hub::sensor::Acquisition> m_acqs;
 };
-
-
-
-
 
 template <class Input>
 std::vector<SpecAcqs> synchonizeInputs( std::vector<Input>& inputs ) {
@@ -119,22 +115,15 @@ static void synchronizePath( const std::string& dir ) {
         outputSensor.fill( acqs );
     }
 
-
     // const auto& sensorName = pair.first;
-
 
     // const char* parent = metaData.at( "parent" ).getConstCharPtr();
     // const char* parent = metaData.at( "parent" ).get<const char*>();
-
 
     // const auto& parentSensorSpec = parentInputSensor.getSpec();
     // const auto& parentSensorName = parentSensorSpec.getSensorName();
 
     // HUB_EXTENSION,
-
-
-
-
 }
 
 } // namespace utils

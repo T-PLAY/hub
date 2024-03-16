@@ -24,7 +24,6 @@ extern "C"
 {
 #endif
 
-
     ///
     /// \brief createOutputStream
     /// \param header

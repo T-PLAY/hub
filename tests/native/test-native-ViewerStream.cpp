@@ -16,10 +16,10 @@ TEST_CASE( "Native Viewer stream" ) {
 
     {
 
-        static std::atomic<int> nNewStreamer                     = 0;
-        static std::atomic<int> nDelStreamer                     = 0;
+        static std::atomic<int> nNewStreamer        = 0;
+        static std::atomic<int> nDelStreamer        = 0;
         static std::atomic<int> nServerNotFound     = 0;
-        static std::atomic<int> nServerConnected                 = 0;
+        static std::atomic<int> nServerConnected    = 0;
         static std::atomic<int> nServerDisconnected = 0;
         static int nNewData                         = 0;
 
@@ -132,12 +132,12 @@ TEST_CASE( "Native Viewer stream" ) {
             CHECK( hub::native::viewer_isConnected( viewer ) );
 
             iTry = 0;
-            while (nServerConnected == 0 && iTry < 10) {
+            while ( nServerConnected == 0 && iTry < 10 ) {
                 std::cout << "[test] waiting for nServerConnected == 1" << std::endl;
                 std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                 ++iTry;
             }
-            CHECK(iTry < 10);
+            CHECK( iTry < 10 );
             CHECK( nServerConnected == 1 );
 
             {
@@ -148,12 +148,12 @@ TEST_CASE( "Native Viewer stream" ) {
                     &header_ref, FILE_NAME.c_str(), port, "127.0.0.1" );
                 CONSTRUCT_END( "OutputStream" );
                 iTry = 0;
-                while (hub::native::viewer_nStream(viewer) == 0 && iTry < 10) {
+                while ( hub::native::viewer_nStream( viewer ) == 0 && iTry < 10 ) {
                     std::cout << "[test] waiting for native nStream == 1" << std::endl;
                     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                     ++iTry;
                 }
-                CHECK(iTry < 10);
+                CHECK( iTry < 10 );
                 CHECK( hub::native::viewer_nStream( viewer ) == 1 );
                 CHECK( hub::native::viewer_nStreaming( viewer ) == 1 );
 
@@ -177,7 +177,8 @@ TEST_CASE( "Native Viewer stream" ) {
             DESTRUCT_END( "OutputStream" );
 
             iTry = 0;
-            while ( (hub::native::viewer_nStream( viewer ) != 0 || nDelStreamer == 0) && iTry < 20 ) {
+            while ( ( hub::native::viewer_nStream( viewer ) != 0 || nDelStreamer == 0 ) &&
+                    iTry < 20 ) {
                 std::cout << "[test] waiting for outputStream disconnected" << std::endl;
                 std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                 ++iTry;

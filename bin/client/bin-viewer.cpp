@@ -14,10 +14,11 @@ int main( int argc, char* argv[] ) {
 
     bool exitWhenServerLost = false;
     int port                = HUB_SERVICE_PORT;
-    std::string ipv4 = "127.0.0.1";
+    std::string ipv4        = "127.0.0.1";
 
-    const auto helperMsg = "bin-viewer usage: [--port <int>] [--ipv4 <string>] [--exitWhenServerLost]\n"
-                           "info: [.|Esc] -> exit, [F5|' '] -> print stats, h -> print this helper message";
+    const auto helperMsg =
+        "bin-viewer usage: [--port <int>] [--ipv4 <string>] [--exitWhenServerLost]\n"
+        "info: [.|Esc] -> exit, [F5|' '] -> print stats, h -> print this helper message";
 
     auto it = args.begin();
     while ( it != args.end() ) {
@@ -27,7 +28,9 @@ int main( int argc, char* argv[] ) {
             std::cout << argv[0] << helperMsg << std::endl;
             return 0;
         }
-        else if ( arg == "--exitWhenServerLost" ) { exitWhenServerLost = true; }
+        else if ( arg == "--exitWhenServerLost" ) {
+            exitWhenServerLost = true;
+        }
         else if ( arg == "--port" ) {
             assert( it + 1 != args.end() );
             const auto& nextArg = *( it + 1 );
@@ -37,7 +40,7 @@ int main( int argc, char* argv[] ) {
         else if ( arg == "--ipv4" ) {
             assert( it + 1 != args.end() );
             const auto& nextArg = *( it + 1 );
-            ipv4 = nextArg;
+            ipv4                = nextArg;
             ++it;
         }
         else {
@@ -70,7 +73,8 @@ int main( int argc, char* argv[] ) {
                 const auto bytePerSecond = ( 1000.0 * m_counterAcq * m_dataSize ) / period;
                 const auto acqPerSecond  = ( 1000.0 * m_counterAcq ) / period;
                 std::cout << HEADER_MSG << "onNewData : '" << m_streamName << "' "
-                          << std::setprecision(3) << acqPerSecond << " Hz, " << PRETTY_BYTES( bytePerSecond ) << "/s" << std::endl;
+                          << std::setprecision( 3 ) << acqPerSecond << " Hz, "
+                          << PRETTY_BYTES( bytePerSecond ) << "/s" << std::endl;
                 m_lastUpdateClock = now;
                 m_counterAcq      = 0;
             }

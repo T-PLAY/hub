@@ -45,8 +45,8 @@ class NetManager
         std::cout << "[net] all socket closed" << std::endl;
 #endif
         // Todo fix
-#if defined( OS_LINUX ) || defined(OS_MACOS)
-		assert( m_sockets.empty() );
+#if defined( OS_LINUX ) || defined( OS_MACOS )
+        assert( m_sockets.empty() );
 #endif
     }
 #ifdef HUB_DEBUG_NET

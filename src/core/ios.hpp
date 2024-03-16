@@ -39,7 +39,7 @@ class SRC_API ios
     ///
     /// \brief close
     ///
-    virtual void close()        = 0;
+    virtual void close() = 0;
 
     ///
     /// \brief isOpen

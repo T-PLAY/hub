@@ -12,8 +12,9 @@ int main( int argc, char* argv[] ) {
 
     std::vector<std::string> args( argv + 1, argv + argc );
 
-    const auto helperMsg = "bin-server usage: [--port <int>]\n"
-                           "info: [.|Esc] -> exit, [F5|' '] -> print stats, h -> print this helper message";
+    const auto helperMsg =
+        "bin-server usage: [--port <int>]\n"
+        "info: [.|Esc] -> exit, [F5|' '] -> print stats, h -> print this helper message";
 
     auto it = args.begin();
     while ( it != args.end() ) {

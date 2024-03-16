@@ -5,7 +5,6 @@
 
 #include <sensor/SensorSpec.hpp>
 
-
 TEST_CASE( "Test io memory" ) {
     TEST_BEGIN()
 
@@ -15,20 +14,17 @@ TEST_CASE( "Test io memory" ) {
 
     hub::MetaData metaData;
 
-    using Resolution   = int;
-
+    using Resolution = int;
 
     const hub::sensor::SensorSpec refSensorSpec( "AAA", Resolution(), metaData );
 
     hub::io::Memory memory;
-    const auto & datas = memory.getData();
-    CHECK(datas.size() == 0);
-    memory.write(refSensorSpec);
+    const auto& datas = memory.getData();
+    CHECK( datas.size() == 0 );
+    memory.write( refSensorSpec );
     std::cout << "memory : " << memory.getData() << std::endl;
 
     // const auto header = hub::io::make_header(refSensorSpec);
-
-
 
     TEST_END()
 }

@@ -18,7 +18,7 @@ class AskerServer : public AskerInterface
 {
   public:
     explicit AskerServer( const std::string& ipv4 = io::StreamServer::s_defaultIpv4,
-                 int port                = io::StreamServer::s_defaultPort );
+                          int port                = io::StreamServer::s_defaultPort );
     ~AskerServer();
 
     std::list<std::pair<std::string, sensor::SensorSpec>> listStreams() override;

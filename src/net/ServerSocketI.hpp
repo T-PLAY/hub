@@ -21,7 +21,6 @@ class SRC_API ServerSocketI
     /// \return
     ///
     virtual int getPort() const = 0;
-
 };
 
 } // namespace net

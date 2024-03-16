@@ -14,7 +14,6 @@ namespace hub {
 /////////////////////////////////////////// TEMPLATES
 /////////////////////////////////////////////////////
 
-
 ///
 /// \brief The MatrixXDBase class
 /// defined basic features of nd array
@@ -42,7 +41,7 @@ requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
     ///
     /// \brief Size
     ///
-    static constexpr auto Size     = sizeOf<Type>() * Capacity;
+    static constexpr auto Size = sizeOf<Type>() * Capacity;
 
     ///
     /// \brief capacity
@@ -101,8 +100,7 @@ requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
     ///
     template <class... Types>
     // REQUIRES( static constexpr, sizeof...( Types ) > 1, bool )
-    static constexpr typename std::enable_if_t<(sizeof...( Types ) > 1), bool>
-    hasType() {
+    static constexpr typename std::enable_if_t<( sizeof...( Types ) > 1 ), bool> hasType() {
         return ( hasType<Types>() && ... );
     }
 
@@ -120,9 +118,9 @@ requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
     /// \return
     ///
     template <class Type_, int i = 0>
-    // REQUIRES( static constexpr, hasType<Type_>() && i < nType<Type_>(), Size_t )
-            static constexpr typename std::enable_if_t<hasType<Type_>() && i < nType<Type_>(), Size_t>
-    getOffset() {
+            // REQUIRES( static constexpr, hasType<Type_>() && i < nType<Type_>(), Size_t )
+            static constexpr typename std::enable_if_t < hasType<Type_>() &&
+        i<nType<Type_>(), Size_t> getOffset() {
         return 0;
     }
 
@@ -201,7 +199,6 @@ requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
 };
 static_assert( isMatrix<MatrixXDBase<int, 2>> );
 
-
 ///
 /// \brief The MatrixXD class
 /// represent nd array basic features
@@ -215,7 +212,6 @@ requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
     static_assert( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) );
 
   public:
-
     ///
     /// \brief n
     /// \return

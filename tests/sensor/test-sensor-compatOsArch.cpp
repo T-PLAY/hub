@@ -15,18 +15,18 @@ TEST_CASE( "sensor compat os and arch test" ) {
     const std::string meshPath = HUB_PROJECT_DIR "data/assets/";
     // const hub::data::Mesh mesh( meshPath + "Bunny" );
     const hub::data::Mesh refMesh( meshPath + "sensor" );
-    CHECK(refMesh == refMesh);
+    CHECK( refMesh == refMesh );
     const hub::data::Mesh mesh2( meshPath + "sensor" );
-    CHECK(refMesh == mesh2);
+    CHECK( refMesh == mesh2 );
 
     hub::MetaData refMetadata;
-    refMetadata["asset"] = refMesh;
+    refMetadata["asset"]  = refMesh;
     refMetadata["parent"] = "Stanford";
 
     using Resolution   = hub::MatrixTs<int, bool, hub::MatrixXD<char, 10>>;
     using OutputSensor = hub::sensor::OutputSensorT<Resolution, hub::output::OutputFile>;
 
-    using Acquisition  = OutputSensor::Acquisition;
+    using Acquisition = OutputSensor::Acquisition;
     std::vector<Acquisition> refAcqs;
 
     const hub::sensor::SensorSpec refSensorSpec( FILE_NAME, Resolution(), refMetadata );
@@ -37,7 +37,7 @@ TEST_CASE( "sensor compat os and arch test" ) {
     auto [start, end] = acq.clocks();
     auto& intRef      = acq.get<int&>();
     auto& boolRef     = acq.get<bool&>();
-    auto* charPtr      = acq.get<char*>();
+    auto* charPtr     = acq.get<char*>();
 
     for ( int i = 0; i < 10; ++i ) {
         start   = i;
@@ -50,49 +50,46 @@ TEST_CASE( "sensor compat os and arch test" ) {
         refAcqs.push_back( acq );
     }
 
-
     // OutputSensor
     // Testing unique multi os/arch file
-    if (! std::filesystem::exists(filePath))
-    {
+    if ( !std::filesystem::exists( filePath ) ) {
         std::cout << "--------------> generating ref file <----------------------" << std::endl;
         OutputSensor outputSensor( refSensorSpec, filePath );
         // OutputSensor outputSensor( refSensorSpec, FILE_NAME, SERVER_PORT );
-        for (const auto & acq : refAcqs) {
+        for ( const auto& acq : refAcqs ) {
             outputSensor << acq;
         }
     }
 
-
     // InputSensor
     {
-        hub::sensor::InputSensor inputSensor(hub::input::InputFile{filePath});
-        const auto & sensorSpec = inputSensor.getSpec();
+        hub::sensor::InputSensor inputSensor( hub::input::InputFile { filePath } );
+        const auto& sensorSpec = inputSensor.getSpec();
         std::cout << "ref sensor spec : " << refSensorSpec << std::endl;
         std::cout << "    sensor spec : " << sensorSpec << std::endl;
 
-        CHECK(sensorSpec.getSensorName() == refSensorSpec.getSensorName());
-        CHECK(sensorSpec.getResolution() == refSensorSpec.getResolution());
-        const auto & metaData = sensorSpec.getMetaData();
-        CHECK(metaData.at("parent") == refMetadata.at("parent"));
+        CHECK( sensorSpec.getSensorName() == refSensorSpec.getSensorName() );
+        CHECK( sensorSpec.getResolution() == refSensorSpec.getResolution() );
+        const auto& metaData = sensorSpec.getMetaData();
+        CHECK( metaData.at( "parent" ) == refMetadata.at( "parent" ) );
         refMesh.printInfo();
-        const auto & meshGet = refMetadata.at("asset").get<const hub::data::Mesh&>();
-        const auto & meshGet2 = metaData.at("asset").get<const hub::data::Mesh&>();
-        const auto & shapeGet = meshGet.getShapes();
-        const auto & shapeGet2 = meshGet2.getShapes();
+        const auto& meshGet   = refMetadata.at( "asset" ).get<const hub::data::Mesh&>();
+        const auto& meshGet2  = metaData.at( "asset" ).get<const hub::data::Mesh&>();
+        const auto& shapeGet  = meshGet.getShapes();
+        const auto& shapeGet2 = meshGet2.getShapes();
         std::cout << shapeGet << std::endl;
         std::cout << shapeGet2 << std::endl;
-        CHECK(shapeGet == shapeGet2);
-        CHECK(refMesh == meshGet);
-        CHECK(refMesh == meshGet2);
-        CHECK(meshGet == meshGet2);
-        CHECK(metaData.at("asset") == refMetadata.at("asset"));
-        CHECK(sensorSpec.getResolution() == refSensorSpec.getResolution());
-        CHECK(sensorSpec == refSensorSpec);
+        CHECK( shapeGet == shapeGet2 );
+        CHECK( refMesh == meshGet );
+        CHECK( refMesh == meshGet2 );
+        CHECK( meshGet == meshGet2 );
+        CHECK( metaData.at( "asset" ) == refMetadata.at( "asset" ) );
+        CHECK( sensorSpec.getResolution() == refSensorSpec.getResolution() );
+        CHECK( sensorSpec == refSensorSpec );
 
         auto acqs = inputSensor.getAllAcquisitions();
-        for (int i =0; i < acqs.size(); ++i) {
-            CHECK(refAcqs.at(i) == acqs.at(i));
+        for ( int i = 0; i < acqs.size(); ++i ) {
+            CHECK( refAcqs.at( i ) == acqs.at( i ) );
         }
     }
 

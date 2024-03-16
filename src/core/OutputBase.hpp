@@ -29,7 +29,7 @@ class SRC_API OutputBase : public ios
     /// \brief setRetain
     /// \param retain
     ///
-    virtual void setRetain( bool retain )                = 0;
+    virtual void setRetain( bool retain ) = 0;
 };
 
 ///

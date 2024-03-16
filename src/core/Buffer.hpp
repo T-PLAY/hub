@@ -33,7 +33,7 @@ class BufferBase
     /// \brief data
     /// \return
     ///
-    virtual Data_t* data()             = 0;
+    virtual Data_t* data() = 0;
 
     ///
     /// \brief data
@@ -45,7 +45,7 @@ class BufferBase
     /// \brief size
     /// \return
     ///
-    virtual Size_t size() const        = 0;
+    virtual Size_t size() const = 0;
 
     ///
     /// \brief toString

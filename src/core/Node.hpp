@@ -36,7 +36,7 @@ class Node
     /// \param size
     /// \param id
     ///
-    Node( Dims&& dims, const std::string & typeName, Size_t size, TypeId_t id );
+    Node( Dims&& dims, const std::string& typeName, Size_t size, TypeId_t id );
 
     ///
     /// \brief toString
@@ -114,9 +114,7 @@ requires( N > 0 && ( ( Ns > 1 ) && ... ) )
         // Data_t * data
     ) {
     auto size = hub::sizeOf<Type>() * N;
-    if constexpr ( sizeof...( Ns ) > 0 ) {
-        size *= (... * Ns);
-    }
+    if constexpr ( sizeof...( Ns ) > 0 ) { size *= ( ... * Ns ); }
     return Node( std::move( Dims { N, Ns... } ), TYPE_NAME( Type() ), size, TYPE_ID( Type ) );
 }
 
@@ -124,13 +122,13 @@ template <class Type, class... Dims>
 static Node make_node(
     // Data_t * data,
     const Dims&... dims ) {
-    const auto size = hub::sizeOf<Type>() * (... * dims);
+    const auto size = hub::sizeOf<Type>() * ( ... * dims );
     return Node( hub::Dims { dims... }, TYPE_NAME( Type() ), size, TYPE_ID( Type ) );
 }
 
 /////////////////////////////////////// INLINE ////////////////////////////////////////////////////
 
-inline Node::Node( Dims&& dims, const std::string & typeName, Size_t size, TypeId_t id ) :
+inline Node::Node( Dims&& dims, const std::string& typeName, Size_t size, TypeId_t id ) :
     m_dims { std::move( dims ) }, m_typeName { typeName }, m_size { size }, m_id { id } {}
 
 inline std::string Node::toString( bool pretty ) const {
@@ -156,7 +154,6 @@ inline std::string Node::toString( bool pretty ) const {
     }
     return str;
 }
-
 
 inline bool Node::operator==( const Node& other ) const {
     return m_dims == other.m_dims && m_typeName == other.m_typeName && m_size == other.m_size;

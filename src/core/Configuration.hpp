@@ -15,7 +15,7 @@ extern const std::string s_extension;
 #else
 static const int s_servicePort         = 4042;
 static const std::string s_serviceIpv4 = "127.0.0.1";
-static const std::string s_extension = "hub";
+static const std::string s_extension   = "hub";
 #endif
 
 } // namespace hub

@@ -17,7 +17,7 @@ class AskerMqtt : public AskerInterface
 {
   public:
     explicit AskerMqtt( const std::string& ipv4 = io::StreamMqtt::s_defaultIpv4,
-               int port                = io::StreamMqtt::s_defaultPort );
+                        int port                = io::StreamMqtt::s_defaultPort );
     ~AskerMqtt();
 
     std::list<std::pair<std::string, sensor::SensorSpec>> listStreams() override;

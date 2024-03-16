@@ -16,20 +16,20 @@ namespace hub {
 namespace Types {
 enum Format : TypeId_t {
     MAT4 = Cpp_Count, // 3
-    DENSITY, // 4
-    DISTANCE, // 5
-    RGB8, // 6
-    RGBA8, // 7
-    BGR8, // 8
-    Y8, // 9
-    Y16, // 10
-    Z16, // 11
-    POSITION, // 12
-    ORIENTATION, // 13
-    DOF6, // 14
-    XYZ32F, // 15
-    VEC3, // 16
-    VEC4, // 17
+    DENSITY,          // 4
+    DISTANCE,         // 5
+    RGB8,             // 6
+    RGBA8,            // 7
+    BGR8,             // 8
+    Y8,               // 9
+    Y16,              // 10
+    Z16,              // 11
+    POSITION,         // 12
+    ORIENTATION,      // 13
+    DOF6,             // 14
+    XYZ32F,           // 15
+    VEC3,             // 16
+    VEC4,             // 17
 
     Format_Count // 18
 };
@@ -39,8 +39,8 @@ static constexpr auto Count = Format_Count;
 
 namespace format {
 
-static inline int nChannel(TypeId_t format) {
-    switch (format) {
+static inline int nChannel( TypeId_t format ) {
+    switch ( format ) {
     case Types::Y8:
         return 1;
     case Types::Y16:
@@ -162,17 +162,13 @@ struct Mat4 {
     /// \param other
     /// \return
     ///
-    bool operator==( const Mat4& other ) const {
-        return m_array == other.m_array;
-    }
+    bool operator==( const Mat4& other ) const { return m_array == other.m_array; }
 
     ///
     /// \brief data
     /// \return
     ///
-    const float * data() const {
-        return m_array.data();
-    }
+    const float* data() const { return m_array.data(); }
 
 #if CPP_VERSION <= 17
     ///
@@ -182,7 +178,7 @@ struct Mat4 {
     ///
     template <typename Archive, typename Self>
     static void serialize( Archive& archive, Self& self ) {
-        archive(self.m_array);
+        archive( self.m_array );
     }
 #endif
 };
@@ -277,7 +273,8 @@ struct Vec4 {
     /// \brief Vec4
     /// \param value
     ///
-    explicit constexpr Vec4( float value = 0.0f ) : x { value }, y { value }, z { value }, w { value } {};
+    explicit constexpr Vec4( float value = 0.0f ) :
+        x { value }, y { value }, z { value }, w { value } {};
     ///
     /// \brief Vec4
     /// \param x_
@@ -377,7 +374,7 @@ struct RGB8 {
     ///
     /// \brief RGB8
     ///
-    RGB8()                   = default;
+    RGB8() = default;
     ///
     /// \brief RGB8
     /// \param _r
@@ -634,12 +631,12 @@ struct Dof6 {
     /// \param _w3
     ///
     explicit constexpr Dof6( float _x  = 0.0,
-                    float _y  = 0.0,
-                    float _z  = 0.0,
-                    float _w0 = 1.0,
-                    float _w1 = 0.0,
-                    float _w2 = 0.0,
-                    float _w3 = 0.0 ) :
+                             float _y  = 0.0,
+                             float _z  = 0.0,
+                             float _w0 = 1.0,
+                             float _w1 = 0.0,
+                             float _w2 = 0.0,
+                             float _w3 = 0.0 ) :
         x { _x }, y { _y }, z { _z }, w0 { _w0 }, w1 { _w1 }, w2 { _w2 }, w3 { _w3 } {}
 
     ///

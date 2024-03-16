@@ -80,7 +80,6 @@ class SRC_API SensorSpec
                m_metaData == other.m_metaData;
     }
 
-
     SensorSpec() = default;
 
     ///
@@ -161,7 +160,7 @@ class SRC_API SensorSpec
     /// \brief getSensorName
     /// \return
     ///
-    const std::string & getSensorName() const { return m_sensorName; }
+    const std::string& getSensorName() const { return m_sensorName; }
 
     ///
     /// \brief getResolution

@@ -47,14 +47,13 @@ namespace sensor {
 class OutputSensor : public Sensor
 {
   public:
-
     // OutputSensor( const SensorSpec& sensorSpec,
 
-        ///
-        /// \brief OutputSensor
-        /// \param sensorSpec
-        /// \param args
-        ///
+    ///
+    /// \brief OutputSensor
+    /// \param sensorSpec
+    /// \param args
+    ///
     template <class OutputT = output::OutputStream,
 #if CPP_VERSION >= 20
               requires std::is_base_of_v<hub::Output, OutputT>
@@ -156,12 +155,11 @@ class OutputSensor : public Sensor
     ///
     template <class Container,
               typename T = std::decay_t<decltype( *begin( std::declval<Container>() ) )>>
-    void fill(Container & ts) {
-        static_assert(std::is_same_v<T, Acquisition>);
-        for (const auto & t : ts) {
-            m_output.write(t.data(), t.size());
+    void fill( Container& ts ) {
+        static_assert( std::is_same_v<T, Acquisition> );
+        for ( const auto& t : ts ) {
+            m_output.write( t.data(), t.size() );
         }
-
     }
 
   private:

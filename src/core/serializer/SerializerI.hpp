@@ -30,7 +30,7 @@ class SRC_API SerializerI
     /// \brief inPosition
     /// \return
     ///
-    virtual Size_t inPosition() const  = 0;
+    virtual Size_t inPosition() const = 0;
 
     ///
     /// \brief outPosition
@@ -41,7 +41,7 @@ class SRC_API SerializerI
     ///
     /// \brief resetIn
     ///
-    virtual void resetIn()  = 0;
+    virtual void resetIn() = 0;
 
     ///
     /// \brief resetOut

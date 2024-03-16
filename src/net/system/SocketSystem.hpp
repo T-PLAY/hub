@@ -94,7 +94,7 @@ class SRC_API SocketSystem
     ///
     /// \brief m_moved
     ///
-    bool m_moved      = false;
+    bool m_moved = false;
 };
 
 } // namespace system

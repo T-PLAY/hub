@@ -193,7 +193,7 @@ void ClientSocketSystem::read( unsigned char* data, const size_t size ) {
 
     size_t downloadSize = 0;
     do {
-        assert(size > downloadSize);
+        assert( size > downloadSize );
         int64_t byteRead = utils::recv(
             m_fdSock, reinterpret_cast<char*>( data ) + downloadSize, size - downloadSize, 0 );
         assert( (int64_t)size > 0 );
@@ -222,7 +222,6 @@ void ClientSocketSystem::read( unsigned char* data, const size_t size ) {
                                << ")" );
 #endif
     } while ( size != downloadSize );
-
 }
 
 ////////////////////////////////////////////////////////////////

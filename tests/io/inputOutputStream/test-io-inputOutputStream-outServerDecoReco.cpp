@@ -16,7 +16,7 @@ TEST_CASE( "OutputStream server deco reco test" ) {
     CHECK( server.nStreamer() == 0 );
 
     {
-        hub::output::OutputStream outputStream( hub::io::Header{}, FILE_NAME, port );
+        hub::output::OutputStream outputStream( hub::io::Header {}, FILE_NAME, port );
         CHECK( server.nClient() == 1 );
         CHECK( server.nStreamer() == 1 );
 

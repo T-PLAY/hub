@@ -10,9 +10,8 @@
 namespace hub {
 namespace native {
 
-sensor::SensorSpec* createSensorSpec(const char* sensorName) {
+sensor::SensorSpec* createSensorSpec( const char* sensorName ) {
     return new hub::sensor::SensorSpec( sensorName, {} );
-
 }
 
 int sensorSpec_getResolutionSize( const sensor::SensorSpec* sensorSpec, int iResolution ) {
@@ -41,15 +40,15 @@ int sensorSpec_getDimensionsSize( const sensor::SensorSpec* sensorSpec, int iRes
     return nodes.at( iResolution ).getDims().size();
 }
 
-int sensorSpec_getDimension( const sensor::SensorSpec* sensorSpec, int iResolution, int iDimension ) {
+int sensorSpec_getDimension( const sensor::SensorSpec* sensorSpec,
+                             int iResolution,
+                             int iDimension ) {
     const auto& nodes = sensorSpec->getResolution().getNodes();
     assert( iResolution < nodes.size() );
     const auto& dims = nodes.at( iResolution ).getDims();
     assert( iDimension < dims.size() );
     return dims.at( iDimension );
 }
-
-
 
 void sensorSpec_getSensorName( const sensor::SensorSpec* sensorSpec,
                                char* sensorName,
@@ -95,8 +94,7 @@ const MetaData* sensorSpec_getMetaData( const sensor::SensorSpec* sensorSpec ) {
     return &sensorSpec->getMetaData();
 }
 
-
-void sensorSpec_toString( const sensor::SensorSpec* sensorSpec, char* output, int * strLen ) {
+void sensorSpec_toString( const sensor::SensorSpec* sensorSpec, char* output, int* strLen ) {
     const auto& str = sensorSpec->toString();
     *strLen         = str.size();
     memcpy( output, str.data(), *strLen + 1 );

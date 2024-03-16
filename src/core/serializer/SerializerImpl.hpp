@@ -49,7 +49,6 @@ class SerializerImpl : public SerializerI
     bool m_reading                   = false;
 
   public:
-
     ///
     /// \brief pack
     /// \param output

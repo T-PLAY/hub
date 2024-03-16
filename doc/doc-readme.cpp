@@ -39,7 +39,7 @@ int main() {
         constexpr auto width  = 640;
         constexpr auto height = 480;
 
-        using Format = hub::format::BGR8;
+        using Format     = hub::format::BGR8;
         using Resolution = hub::MatrixXD<Format, width, height>;
         // const hub::Resolution imageResolution { { width, height }, hub::format::BGR8 };
         hub::MetaData metaData;
@@ -48,11 +48,10 @@ int main() {
         metaData["date"] = "now";
         const hub::sensor::SensorSpec sensorSpec( "sensorName", Resolution(), metaData );
 
-        hub::sensor::OutputSensorT<Resolution> outputSensor {
-                                                              sensorSpec, "streamName"};
-        auto acq = outputSensor.acqMsg();
+        hub::sensor::OutputSensorT<Resolution> outputSensor { sensorSpec, "streamName" };
+        auto acq          = outputSensor.acqMsg();
         auto [start, end] = acq.clocks();
-        auto * const bgr8s = acq.get<Format*>();
+        auto* const bgr8s = acq.get<Format*>();
 
         while ( 1 ) {
             auto [start, end] = sensorAPI::getTimestamp();
@@ -61,11 +60,6 @@ int main() {
             outputSensor << acq;
         }
     }
-
-
-
-
-
 
     return 0;
 }

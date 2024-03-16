@@ -75,7 +75,6 @@ class SRC_API StreamerClient2 : public Client2
     StreamerClient2( const StreamerClient2& ) = delete;
     StreamerClient2( StreamerClient2&& )      = delete;
 
-
     ///
     /// \brief m_streamName
     ///

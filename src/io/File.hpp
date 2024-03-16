@@ -33,7 +33,7 @@ class SRC_API File
     /// \brief getFilePath
     /// \return
     ///
-    const std::string & getFilePath() const;
+    const std::string& getFilePath() const;
 
   protected:
     ///

@@ -92,14 +92,13 @@ class SRC_API Any
 #ifdef HUB_DEBUG_ANY
         std::cout << "[Any] Any(T&&) " << TYPE_NAME( t ) << std::endl;
 #endif
-        const auto & type_name = TYPE_NAME(std::any_cast<T>(m_any));
+        const auto& type_name = TYPE_NAME( std::any_cast<T>( m_any ) );
 
         if ( Anyable::s_anyables.find( type_name ) == Anyable::s_anyables.end() ) {
             Anyable::registerTypes<std::remove_cvref_t<T>>();
         }
         assert( Anyable::s_anyables.find( type_name ) != Anyable::s_anyables.end() );
-        m_anyHelper =
-            std::make_unique<Anyable::AnyHelper>( Anyable::s_anyables.at( type_name ) );
+        m_anyHelper = std::make_unique<Anyable::AnyHelper>( Anyable::s_anyables.at( type_name ) );
     }
 
     ///

@@ -11,6 +11,5 @@ TEST_CASE( "InputOutputSensorStream test" ) {
 
     INIT_SERVER
 
-
     TEST_END()
 }

@@ -28,7 +28,6 @@ extern "C"
     ///
     io::Header* createHeader( Size_t dataSize );
 
-
     ///
     /// \brief freeHeader
     /// \param header

@@ -31,7 +31,6 @@ class SRC_API InputStreamServer2 : public Input, public io::StreamServer2
     static struct {
     } not_endable;
 
-
     ///
     /// \brief InputStreamServer2
     /// \param streamPort
@@ -56,8 +55,8 @@ class SRC_API InputStreamServer2 : public Input, public io::StreamServer2
     /// Also occur when stream you want to link is not connected to the server.
     ///
     explicit InputStreamServer2( const std::string& streamName,
-                        int serverPort                = HUB_SERVICE_PORT,
-                        const std::string& serverIpv4 = HUB_SERVICE_IPV4 );
+                                 int serverPort                = HUB_SERVICE_PORT,
+                                 const std::string& serverIpv4 = HUB_SERVICE_IPV4 );
 
     ///
     /// \brief InputStreamServer2
@@ -69,7 +68,7 @@ class SRC_API InputStreamServer2 : public Input, public io::StreamServer2
     ///
     /// \brief InputStreamServer2
     ///
-    InputStreamServer2( InputStreamServer2&& )      = default;
+    InputStreamServer2( InputStreamServer2&& ) = default;
 
     ///
     /// \brief startStream

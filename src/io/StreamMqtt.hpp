@@ -17,7 +17,6 @@ namespace io {
 class StreamMqtt : public StreamBase
 {
   public:
-
     ///
     /// \brief s_defaultIpv4
     ///

@@ -51,7 +51,7 @@ void ServerImpl2::run() {
         SERVER_MSG( "new client" );
 
         m_mtxClients.lock();
-        Client2* newClient = initClient( io::InputOutputSocket{std::move( sock )}, ++m_iClient );
+        Client2* newClient = initClient( io::InputOutputSocket { std::move( sock ) }, ++m_iClient );
         if ( newClient == nullptr ) { --m_nActiveClient; }
         else {
             m_clients.push_back( newClient );

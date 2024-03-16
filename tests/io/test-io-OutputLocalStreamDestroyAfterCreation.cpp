@@ -11,7 +11,7 @@ TEST_CASE( "InputOutputStream local stream destroy after creation test" ) {
 
     const auto port = GET_RANDOM_PORT;
 
-    { hub::output::OutputStream outputStream( hub::io::Header{}, port ); }
+    { hub::output::OutputStream outputStream( hub::io::Header {}, port ); }
 
     TEST_END()
 }

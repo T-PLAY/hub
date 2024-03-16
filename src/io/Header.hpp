@@ -13,7 +13,8 @@
 namespace hub {
 namespace io {
 
-// Todo move to core input/output ios class, all stream data need versioning to be aware of compatibility
+// Todo move to core input/output ios class, all stream data need versioning to be aware of
+// compatibility
 ///
 /// \brief The Header class
 ///
@@ -65,11 +66,12 @@ class SRC_API Header
     ///
     auto toString() const {
         std::string str;
-        for (const auto & number : m_magicNumber) {
+        for ( const auto& number : m_magicNumber ) {
             str += number;
         }
-        return str + "header size: " + std::to_string( m_headerSize ) + "\ndata size: " + std::to_string( m_dataSize ) + "\nuser defined: " +
-               hub::to_string( m_userDefined );
+        return str + "header size: " + std::to_string( m_headerSize ) +
+               "\ndata size: " + std::to_string( m_dataSize ) +
+               "\nuser defined: " + hub::to_string( m_userDefined );
     }
 
     ///
@@ -78,7 +80,7 @@ class SRC_API Header
     ///
     template <class Output>
     void write( Output& output ) {
-        output.write( reinterpret_cast<Data_t*>(m_magicNumber.data()), m_magicNumber.size() );
+        output.write( reinterpret_cast<Data_t*>( m_magicNumber.data() ), m_magicNumber.size() );
         output.writeAll( m_headerSize, m_dataSize, m_userDefined );
     }
 
@@ -88,7 +90,7 @@ class SRC_API Header
     ///
     template <class Input>
     void read( Input& input ) {
-        input.read( reinterpret_cast<Data_t*>(m_magicNumber.data()), m_magicNumber.size() );
+        input.read( reinterpret_cast<Data_t*>( m_magicNumber.data() ), m_magicNumber.size() );
 
         checkMagicNumber();
 
@@ -129,10 +131,8 @@ class SRC_API Header
 template <class T>
 Header make_header( const T& t ) {
 
-
     Memory memory;
     memory.write( t );
-
 
     Header header( t.dataSize(), memory.getData() );
 

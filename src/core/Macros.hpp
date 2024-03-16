@@ -10,11 +10,11 @@
 #include <iostream>
 #include <map>
 #include <set>
+#include <stdio.h>
+#include <string_view>
 #include <tuple>
 #include <type_traits>
 #include <vector>
-#include <string_view>
-#include <stdio.h>
 
 #include "Configuration.hpp"
 
@@ -48,15 +48,15 @@ namespace hub {
 #elif defined( __linux__ ) || defined( __CYGWIN__ ) // ---------------------- Linux
 #    define OS_LINUX
 #else
-#ifndef CPP_CHECK
-#    error unsupported OS
-#endif
+#    ifndef CPP_CHECK
+#        error unsupported OS
+#    endif
 #endif
 
 #if defined( __GNUC__ )
 #    define COMPILER_GCC
 
-#define GCC_VERSION __GNUC__
+#    define GCC_VERSION __GNUC__
 
 #elif defined( __clang__ )
 #    define COMPILER_CLANG
@@ -66,11 +66,10 @@ namespace hub {
 #    define COMPILER_MSVC
 #    define _USE_MATH_DEFINES
 #else
-#ifndef CPP_CHECK
-#    error unsupported compiler
+#    ifndef CPP_CHECK
+#        error unsupported compiler
+#    endif
 #endif
-#endif
-
 
 // Check arch for macos and linux
 #if defined( OS_MACOS ) || defined( OS_LINUX )
@@ -130,14 +129,12 @@ namespace hub {
         } while ( false )
 #endif
 
-
 /// Dll import/export.
 /// You must define SRC_STATIC to force static link for external use (.lib)
 
 /// #ifndef SRC_STATIC
 /// #define SRC_STATIC
 /// #endif
-
 
 #ifdef OS_WINDOWS
 #    if defined SRC_STATIC
@@ -192,7 +189,7 @@ namespace hub {
 #endif
 
 #ifdef WIN32
-#    define FILE_NAME                                                          \
+#    define FILE_NAME                                                                \
         std::string( "/\\" __FILE__ )                                                \
             .substr( std::max( std::string( "/\\" __FILE__ ).find_last_of( '\\' ),   \
                                std::string( "/\\" __FILE__ ).find_last_of( '/' ) ) + \
@@ -202,10 +199,10 @@ namespace hub {
 #    ifdef COMPILER_GCC
 
 #        if GCC_VERSION < 12
-#            define FILE_NAME                                                          \
+#            define FILE_NAME                                                                \
                 std::string( "/\\" __FILE__ )                                                \
                     .substr( std::max( std::string( "/\\" __FILE__ ).find_last_of( '\\' ),   \
-                                       std::string("/\\"  __FILE__ ).find_last_of( '/' ) ) + \
+                                       std::string( "/\\" __FILE__ ).find_last_of( '/' ) ) + \
                              1 )
 #        else
 #            define FILE_NAME std::string( __FILE_NAME__ )
@@ -373,7 +370,7 @@ static constexpr bool nameable_v = nameable<T>::value;
 
 template <class T>
 static typename std::enable_if_t<!nameable_v<T> && !has_name_v<T>, std::string>
-typeName( const T&  ) {
+typeName( const T& ) {
 #ifdef HUB_USE_BOOST
     return boost::typeindex::type_id<typeof( T )>().pretty_name();
 #else
@@ -383,7 +380,7 @@ typeName( const T&  ) {
 
 template <class T>
 static typename std::enable_if_t<!nameable_v<T> && has_name_v<T>, std::string>
-typeName( const T&  ) {
+typeName( const T& ) {
     return T::name();
 }
 
@@ -492,7 +489,7 @@ enum Cpp : TypeId_t { NONE = 0, INT /* 1 */, BOOL /* 2 */, Cpp_Count /* 3 */ };
 static_assert( Types::Cpp_Count == 3 );
 
 template <class T>
-static constexpr typename std::enable_if_t<has_id_v<T>, TypeId_t> getTypeId( const T&  ) {
+static constexpr typename std::enable_if_t<has_id_v<T>, TypeId_t> getTypeId( const T& ) {
     return T::id;
 }
 
@@ -635,8 +632,7 @@ static std::string pretty_bytes( hub::Size_t bytes ) {
 #endif
     }
     /// \brief else
-    else
-    {
+    else {
 #ifdef WIN32
         snprintf( buff, buffSize, "%.1f %s", count, suffixes[s].data() );
 #else

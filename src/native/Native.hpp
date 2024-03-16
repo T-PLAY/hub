@@ -4,7 +4,6 @@
 
 #pragma once
 
-
 #include "native_Any.hpp"
 #include "native_MetaData.hpp"
 #include "native_OutputStream.hpp"

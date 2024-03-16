@@ -16,8 +16,7 @@ Client2::~Client2() {
     if ( m_server != nullptr ) m_server->removeClient( this );
 }
 
-std::string Client2::clientMsg() const
-{
+std::string Client2::clientMsg() const {
     const std::string str = "\t\033[" + std::to_string( 31 + m_iClient % 7 ) + "m" +
                             "[Client:" + std::to_string( m_iClient ) + "/" +
                             std::to_string( m_server->m_nActiveClient ) + "]\033[0m";
@@ -26,7 +25,6 @@ std::string Client2::clientMsg() const
 
 constexpr int g_margin  = 45;
 constexpr int g_margin2 = 20;
-
 
 void Client2::printStatusMessage( const std::string& message ) const {
     if ( m_server == nullptr ) {

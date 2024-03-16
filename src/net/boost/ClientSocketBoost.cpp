@@ -26,8 +26,8 @@ ClientSocketBoost::ClientSocketBoost( const std::string& ipv4, int port, bool au
     DEBUG_MSG( getHeader( m_sock ) << "ClientSocketBoost(std::string ipv4, int port)" );
 #    endif
     /// if ( autoConnect )
-        /// todo connect
-        /// connect();
+    /// todo connect
+    /// connect();
 }
 
 ClientSocketBoost::ClientSocketBoost( ::boost::asio::ip::tcp::socket&& fdSock ) :

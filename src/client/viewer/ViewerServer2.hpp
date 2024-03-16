@@ -35,7 +35,7 @@ class ViewerServer2 : public hub::client::ViewerInterface<input::InputStreamServ
                                     ViewerHandler&& viewerHandler,
                                     const std::string& serverIpv4 = HUB_SERVICE_IPV4,
                                     int serverPort                = HUB_SERVICE_PORT,
-                                    bool autoConnect        = true );
+                                    bool autoConnect              = true );
 
     SRC_API ~ViewerServer2();
 

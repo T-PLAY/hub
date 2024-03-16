@@ -94,7 +94,9 @@ extern "C"
     /// \param iDimension
     /// \return
     ///
-    SRC_API int sensorSpec_getDimension( const sensor::SensorSpec* sensorSpec, int iResolution, int iDimension);
+    SRC_API int sensorSpec_getDimension( const sensor::SensorSpec* sensorSpec,
+                                         int iResolution,
+                                         int iDimension );
 
     ///
     /// \brief sensorSpec_getAcquisitionSize
@@ -117,7 +119,8 @@ extern "C"
     /// \param output
     /// \param strLen
     ///
-    SRC_API void sensorSpec_toString( const sensor::SensorSpec* sensorSpec, char* output, int* strLen );
+    SRC_API void
+    sensorSpec_toString( const sensor::SensorSpec* sensorSpec, char* output, int* strLen );
 
     ///
     /// \brief sensorSpec_copy

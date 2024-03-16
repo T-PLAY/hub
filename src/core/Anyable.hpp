@@ -14,7 +14,7 @@
 #include "Serializer.hpp"
 
 #ifndef HUB_NON_BUILD_MESH
-#include "data/Mesh.hpp"
+#    include "data/Mesh.hpp"
 #endif
 
 #if CPP_VERSION <= 14
@@ -69,7 +69,7 @@ class SRC_API Anyable
                         char* val =
                             new char[80]; // leak, please do not use char *, use std::string instead
                         serializer.read( val );
-                        any = reinterpret_cast<const char*>(val);
+                        any = reinterpret_cast<const char*>( val );
                     };
                     compare = []( const std::any& any, const std::any& any2 ) {
                         return strcmp( std::any_cast<const char*>( any ),

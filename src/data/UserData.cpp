@@ -11,9 +11,8 @@ const Any& UserData::getValue() const {
     return m_value;
 }
 
-UserData::UserData( const std::string& name, const Any& value ) : m_name( name ), m_value( value ) {
-
-}
+UserData::UserData( const std::string& name, const Any& value ) :
+    m_name( name ), m_value( value ) {}
 
 std::ostream& operator<<( std::ostream& os, const UserData& userData ) {
     return os;

@@ -4,12 +4,12 @@
 
 #pragma once
 
+#include <cstring>
 #include <initializer_list>
+#include <iostream>
 #include <memory>
 #include <string>
 #include <vector>
-#include <iostream>
-#include <cstring>
 
 #include <core/Macros.hpp>
 #include <core/Traits.hpp>
@@ -39,7 +39,6 @@ struct Vertex {
     /// \brief ty
     float ty;
 
-
     ///
     /// \brief serialize
     /// \param archive
@@ -59,8 +58,8 @@ struct Vertex {
         return !std::memcmp( this, &other, sizeof( Vertex ) );
     }
 };
-static_assert(sizeof(float) == 4);
-static_assert(sizeof(Vertex) == 4 * 8);
+static_assert( sizeof( float ) == 4 );
+static_assert( sizeof( Vertex ) == 4 * 8 );
 
 ///
 /// \brief The Shape class
@@ -107,7 +106,8 @@ struct Shape {
     ///
     auto toString() const {
         std::string str;
-        str += std::to_string(vertices.size()) + " " +  std::to_string(hasNormal) + " " + std::to_string(indices.size())  + " " + name + " " + std::to_string(material);
+        str += std::to_string( vertices.size() ) + " " + std::to_string( hasNormal ) + " " +
+               std::to_string( indices.size() ) + " " + name + " " + std::to_string( material );
         return str;
     }
 
@@ -118,7 +118,7 @@ struct Shape {
     ///
     bool operator==( const Shape& other ) const;
 };
-static_assert(sizeof(unsigned int) == 4);
+static_assert( sizeof( unsigned int ) == 4 );
 
 ///
 /// \brief The Material class
@@ -154,11 +154,11 @@ struct Material {
     ///
     /// \brief Ns
     ///
-    float Ns;    /* Shininess */
+    float Ns; /* Shininess */
     ///
     /// \brief Ni
     ///
-    float Ni;    /* Index of refraction */
+    float Ni; /* Index of refraction */
     ///
     /// \brief Tf
     ///
@@ -166,11 +166,11 @@ struct Material {
     ///
     /// \brief d
     ///
-    float d;     /* Disolve (alpha) */
+    float d; /* Disolve (alpha) */
     ///
     /// \brief illum
     ///
-    int illum;   /* Illumination model */
+    int illum; /* Illumination model */
 
     ///
     /// \brief serialize
@@ -241,7 +241,6 @@ class SRC_API Mesh
     ///
     explicit Mesh( const std::string& filePath );
 
-
     ///
     /// \brief to_string
     /// \return
@@ -261,17 +260,13 @@ class SRC_API Mesh
     /// \brief getShapes
     /// \return
     ///
-    const std::vector<Shape>& getShapes() const {
-        return m_shapes;
-    }
+    const std::vector<Shape>& getShapes() const { return m_shapes; }
 
     ///
     /// \brief getMaterials
     /// \return
     ///
-    const std::vector<Material>& getMaterials() const {
-        return m_materials;
-    }
+    const std::vector<Material>& getMaterials() const { return m_materials; }
 
     ///
     /// \brief operator <<
@@ -324,7 +319,6 @@ class SRC_API Mesh
 #endif
 
   private:
-
     std::string m_name = "";
     std::vector<Shape> m_shapes;
     std::vector<Material> m_materials;

@@ -6,7 +6,6 @@
 
 #include <string>
 
-
 namespace hub {
 
 /// \brief s_contributionStart

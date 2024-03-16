@@ -24,34 +24,12 @@ int main() {
     // const hub::sensor::SensorSpec ref_sensorSpec( "sensorName", { ref_resolution } );
     // const int ref_dataSize = hub::sensor::resolution::computeAcquisitionSize( ref_resolution );
 
-
-
     // const hub::Resolution ref_resolution2( { { 1 }, hub::format::Dof6 } );
     // const hub::sensor::SensorSpec ref_sensorSpec2( "sensorName2", { ref_resolution2 } );
     // const int ref_dataSize2 = hub::sensor::resolution::computeAcquisitionSize( ref_resolution2 );
 
-
-
-
-
-
-
-
-
-
-
-
     // const std::string ipv4 = "127.0.0.1";
     // const int port         = GET_RANDOM_PORT;
-
-
-
-
-
-
-
-
-
 
     //// bin/server is running locally on port 4042
     //// the stream id name 'myStream' is streaming to the server
