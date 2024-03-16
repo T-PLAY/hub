@@ -63,7 +63,7 @@ TEST_CASE( "sensor compat os and arch test" ) {
 
     // OutputSensor
     // Testing unique multi os/arch file
-    //if (! std::filesystem::exists(filePath))
+    if (! std::filesystem::exists(filePath))
     {
         std::cout << "--------------> generating ref file <----------------------" << std::endl;
         OutputSensor outputSensor( refSensorSpec, filePath );
