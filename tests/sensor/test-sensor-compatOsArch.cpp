@@ -21,9 +21,9 @@ TEST_CASE( "sensor compat os and arch test" ) {
     const std::string meshPath = HUB_PROJECT_DIR "data/assets/";
     // const hub::data::Mesh mesh( meshPath + "Bunny" );
     const hub::data::Mesh refMesh( meshPath + "sensor" );
-    assert(refMesh == refMesh);
+    CHECK(refMesh == refMesh);
     const hub::data::Mesh mesh2( meshPath + "sensor" );
-    assert(refMesh == mesh2);
+    CHECK(refMesh == mesh2);
 
     hub::MetaData refMetadata;
     refMetadata["asset"] = refMesh;
@@ -86,10 +86,10 @@ TEST_CASE( "sensor compat os and arch test" ) {
 
         //return m_sensorName == other.m_sensorName && m_resolution == other.m_resolution &&
         //       m_metaData == other.m_metaData;
-        assert(sensorSpec.getSensorName() == refSensorSpec.getSensorName());
-        assert(sensorSpec.getResolution() == refSensorSpec.getResolution());
+        CHECK(sensorSpec.getSensorName() == refSensorSpec.getSensorName());
+        CHECK(sensorSpec.getResolution() == refSensorSpec.getResolution());
         const auto & metaData = sensorSpec.getMetaData();
-        assert(metaData.at("parent") == refMetadata.at("parent"));
+        CHECK(metaData.at("parent") == refMetadata.at("parent"));
         refMesh.printInfo();
         const auto & meshGet = refMetadata.at("asset").get<const hub::data::Mesh&>();
         const auto & meshGet2 = metaData.at("asset").get<const hub::data::Mesh&>();
@@ -97,19 +97,19 @@ TEST_CASE( "sensor compat os and arch test" ) {
         const auto & shapeGet2 = meshGet2.getShapes();
         std::cout << shapeGet << std::endl;
         std::cout << shapeGet2 << std::endl;
-        assert(shapeGet == shapeGet2);
-        assert(refMesh == meshGet);
-        assert(refMesh == meshGet2);
-        assert(meshGet == meshGet2);
-        //assert(metaData.at("asset").get<const hub::data::Mesh&>() == refMetadata.at("asset").get<const hub::data::Mesh&>());
-        assert(metaData.at("asset") == refMetadata.at("asset"));
-        assert(sensorSpec.getResolution() == refSensorSpec.getResolution());
-        assert(sensorSpec == refSensorSpec);
+        CHECK(shapeGet == shapeGet2);
+        CHECK(refMesh == meshGet);
+        CHECK(refMesh == meshGet2);
+        CHECK(meshGet == meshGet2);
+        //CHECK(metaData.at("asset").get<const hub::data::Mesh&>() == refMetadata.at("asset").get<const hub::data::Mesh&>());
+        CHECK(metaData.at("asset") == refMetadata.at("asset"));
+        CHECK(sensorSpec.getResolution() == refSensorSpec.getResolution());
+        CHECK(sensorSpec == refSensorSpec);
 
         auto acqs = inputSensor.getAllAcquisitions();
         for (int i =0; i < acqs.size(); ++i) {
             // std::cout << refAcqs.at(i) << std::endl;
-            assert(refAcqs.at(i) == acqs.at(i));
+            CHECK(refAcqs.at(i) == acqs.at(i));
         }
     }
 

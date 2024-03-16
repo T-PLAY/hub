@@ -18,7 +18,7 @@ using namespace testCoreIoCommon;
 
 template <class Archive>
 void process( Archive& archive ) {
-    assert( archive.isEnd() );
+    CHECK( archive.isEnd() );
 
 #ifndef HUB_DEBUG_OUTPUT
     for ( int i = 0; i < 1'000; ++i ) {

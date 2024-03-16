@@ -17,7 +17,7 @@ TEST_CASE( "Matrix compat OIIO test" ) {
         data[i] = 65 + i;
     }
 
-    ////            assert( eigenMat.coeff( i, j ) == cvMat.data[i * height + j] );
+    ////            CHECK( eigenMat.coeff( i, j ) == cvMat.data[i * height + j] );
        // OIIO::image_view imageView()
     OIIO::ImageBuf buff;
 

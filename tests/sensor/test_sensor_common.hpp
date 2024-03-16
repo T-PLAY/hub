@@ -71,8 +71,8 @@ computeSyncAcqs( const std::vector<hub::sensor::Acquisition>& leftAcqs,
 
             auto& syncAcq = syncAcqs.back();
 
-            assert( syncAcq.getStart() == rightAcq.getStart() );
-            assert( syncAcq.getEnd() == rightAcq.getEnd() );
+            CHECK( syncAcq.getStart() == rightAcq.getStart() );
+            CHECK( syncAcq.getEnd() == rightAcq.getEnd() );
         }
     }
 
@@ -132,17 +132,17 @@ static void checkSynchronize( Output& output,
                               const std::vector<hub::sensor::Acquisition>& ref_acqs2,
                               Inputs&... inputs ) {
 
-    assert( anyEnd( inputs... ) );
+    CHECK( anyEnd( inputs... ) );
 
     std::cout << "--------------------------------------------------" << std::endl;
     std::cout << "ref_sync_acqs: " << std::endl;
     for ( const auto& ref_acq : ref_acqs ) {
-        assert( ref_acq.getResolution() == ref_sensorSpec.getResolution() );
+        CHECK( ref_acq.getResolution() == ref_sensorSpec.getResolution() );
         std::cout << ref_acq << std::endl;
     }
     std::cout << "ref_sync_acqs2: " << std::endl;
     for ( const auto& ref_acq2 : ref_acqs2 ) {
-        assert( ref_acq2.getResolution() == ref_sensorSpec2.getResolution() );
+        CHECK( ref_acq2.getResolution() == ref_sensorSpec2.getResolution() );
         std::cout << ref_acq2 << std::endl;
     }
 
@@ -153,9 +153,9 @@ static void checkSynchronize( Output& output,
     }
 
     hub::sensor::OutputSensor outputSensor( ref_sensorSpec, output );
-    assert( outputSensor.getSpec() == ref_sensorSpec );
+    CHECK( outputSensor.getSpec() == ref_sensorSpec );
     hub::sensor::OutputSensor outputSensor2( ref_sensorSpec2, output2 );
-    assert( outputSensor2.getSpec() == ref_sensorSpec2 );
+    CHECK( outputSensor2.getSpec() == ref_sensorSpec2 );
 
     for ( const auto& acq : ref_acqs ) {
         outputSensor << acq;
@@ -178,7 +178,7 @@ static void checkSynchronize( Output& output,
     clearAll( inputs... );
 
     CHECK( ref_sync_acqs == sync_acqs );
-    assert( anyEnd( inputs... ) );
+    CHECK( anyEnd( inputs... ) );
 }
 
 static auto generateRefAcqs( int offset, int nAcq, const hub::sensor::SensorSpec& sensorSpec ) {
@@ -217,7 +217,7 @@ static void inputOutputSensorAsyncBench( const Args&... args ) {
     hub::MetaData metaData;
     metaData["name"] = "gauthier";
     const hub::sensor::SensorSpec sensorSpec( "sensorName", UserResolution(), metaData );
-    assert( sensorSpec.getResolution() == userResolution );
+    CHECK( sensorSpec.getResolution() == userResolution );
 
     hub::sensor::AcquisitionT<UserResolution> acq;
     acq.start()    = 4;
@@ -237,14 +237,14 @@ static void inputOutputSensorAsyncBench( const Args&... args ) {
         CHECK( sensorSpec == inputSensor.getSpec() );
 
         auto acq_read = inputSensor.acqMsg();
-        assert( acq_read.getResolution() == userResolution );
+        CHECK( acq_read.getResolution() == userResolution );
         inputSensor >> acq_read;
 
         std::cout << "acq: " << acq << std::endl;
         std::cout << "acq matrix: " << acq.getMatrix() << std::endl;
         std::cout << "acq_read: " << acq_read << std::endl;
 
-        assert( acq == acq_read );
+        CHECK( acq == acq_read );
         CHECK( acq == acq_read );
     }
 }
