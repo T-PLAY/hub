@@ -3,6 +3,9 @@
 
 #include <iostream>
 
+#include <OpenImageIO/image_view.h>
+#include <OpenImageIO/imagebuf.h>
+
 TEST_CASE( "Matrix compat OIIO test" ) {
     TEST_BEGIN()
 
@@ -15,7 +18,8 @@ TEST_CASE( "Matrix compat OIIO test" ) {
     }
 
     ////            assert( eigenMat.coeff( i, j ) == cvMat.data[i * height + j] );
-    ////    OIIO::image_view imageView()
+       // OIIO::image_view imageView()
+    OIIO::ImageBuf buff;
 
     TEST_END()
 }
