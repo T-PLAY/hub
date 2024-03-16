@@ -4,7 +4,7 @@
 #include <iostream>
 
 // #    include <Eigen/Core>
-#include <eigen3/Eigen/Core>
+#include <Eigen/Core>
 
 TEST_CASE( "Matrix compat Eigen test" ) {
     TEST_BEGIN()
