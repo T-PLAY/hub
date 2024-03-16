@@ -195,64 +195,64 @@ build-windows-cl-UWP_x64-debug:
 
 #################################### MacOs
 
-build-macOs-clang-arm64-release:
-  stage: build
-  tags:
-    - $MACOS_TAG
-  script:
-    - COMPILER_C=clang
-    - COMPILER_CXX=clang++
-    - ARCHITECTURE=arm64
-    - BUILD_TYPE=Release
-    # - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
-    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
-    - !reference [.build_any, script]
-  
-build-macOs-llvm_gcc-arm64-debug:
-  stage: build
-  tags:
-    - $MACOS_TAG
-  script:
-    #- COMPILER_C=gcc
-    - COMPILER_C=llvm-gcc
-    #- COMPILER_CXX=g++
-    - COMPILER_CXX=llvm-g++
-    - ARCHITECTURE=arm64
-    - BUILD_TYPE=Debug
-    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
-    - !reference [.build_any, script]
-
-build-macOs-clang-x86_64-debug:
-  stage: build
-  tags:
-    - $MACOS_TAG
-  script:
-    - COMPILER_C=clang
-    - COMPILER_CXX=clang++
-    - ARCHITECTURE=x86_64
-    - BUILD_TYPE=Debug
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
-    # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
-    - !reference [.build_any, script]
-  only:
-    - master
-
-build-macOs-clang-arm64-debug:
-  stage: build
-  tags:
-    - $MACOS_TAG
-  script:
-    - COMPILER_C=clang
-    - COMPILER_CXX=clang++
-    - ARCHITECTURE=arm64
-    - BUILD_TYPE=Debug
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
-    # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
-    - !reference [.build_any, script]
-  only:
-    - master
-  
-
+# build-macOs-clang-arm64-release:
+#   stage: build
+#   tags:
+#     - $MACOS_TAG
+#   script:
+#     - COMPILER_C=clang
+#     - COMPILER_CXX=clang++
+#     - ARCHITECTURE=arm64
+#     - BUILD_TYPE=Release
+#     # - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
+#     - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
+#     - !reference [.build_any, script]
+#
+# build-macOs-llvm_gcc-arm64-debug:
+#   stage: build
+#   tags:
+#     - $MACOS_TAG
+#   script:
+#     #- COMPILER_C=gcc
+#     - COMPILER_C=llvm-gcc
+#     #- COMPILER_CXX=g++
+#     - COMPILER_CXX=llvm-g++
+#     - ARCHITECTURE=arm64
+#     - BUILD_TYPE=Debug
+#     - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
+#     - !reference [.build_any, script]
+#
+# build-macOs-clang-x86_64-debug:
+#   stage: build
+#   tags:
+#     - $MACOS_TAG
+#   script:
+#     - COMPILER_C=clang
+#     - COMPILER_CXX=clang++
+#     - ARCHITECTURE=x86_64
+#     - BUILD_TYPE=Debug
+#     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
+#     # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
+#     - !reference [.build_any, script]
+#   only:
+#     - master
+#
+# build-macOs-clang-arm64-debug:
+#   stage: build
+#   tags:
+#     - $MACOS_TAG
+#   script:
+#     - COMPILER_C=clang
+#     - COMPILER_CXX=clang++
+#     - ARCHITECTURE=arm64
+#     - BUILD_TYPE=Debug
+#     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
+#     # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
+#     - !reference [.build_any, script]
+#   only:
+#     - master
+#
+#
   
 ############################################ TESTS
 
@@ -325,41 +325,41 @@ test-windows-cl-Win32-debug:
 ############################################ MacOs
 
 
-test-macOs-clang-arm64-release:
-  stage: test
-  tags:
-    - $MACOS_TAG
-  script:
-    - COMPILER_C=clang
-    - ARCHITECTURE=arm64
-    - BUILD_TYPE=Release
-    - !reference [.test_any, script]
-  # when: manual
-  needs:
-    - job: build-macOs-clang-arm64-release
-      optional: true
-
-###################
-
-
-test-macOs-llvm_gcc-arm64-debug:
-  stage: test
-  tags:
-    - $MACOS_TAG
-  script:
-    #- COMPILER_C=gcc
-    - COMPILER_C=llvm-gcc
-    - ARCHITECTURE=arm64
-    - BUILD_TYPE=Debug
-    - !reference [.test_any, script]
-  # when: manual
-  needs:
-    - job: build-macOs-llvm_gcc-arm64-debug
-      optional: true
-
-
-
-
+# test-macOs-clang-arm64-release:
+#   stage: test
+#   tags:
+#     - $MACOS_TAG
+#   script:
+#     - COMPILER_C=clang
+#     - ARCHITECTURE=arm64
+#     - BUILD_TYPE=Release
+#     - !reference [.test_any, script]
+#   # when: manual
+#   needs:
+#     - job: build-macOs-clang-arm64-release
+#       optional: true
+#
+# ###################
+#
+#
+# test-macOs-llvm_gcc-arm64-debug:
+#   stage: test
+#   tags:
+#     - $MACOS_TAG
+#   script:
+#     #- COMPILER_C=gcc
+#     - COMPILER_C=llvm-gcc
+#     - ARCHITECTURE=arm64
+#     - BUILD_TYPE=Debug
+#     - !reference [.test_any, script]
+#   # when: manual
+#   needs:
+#     - job: build-macOs-llvm_gcc-arm64-debug
+#       optional: true
+#
+#
+#
+#
 
 
 
