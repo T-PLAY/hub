@@ -34,16 +34,16 @@ TEST_CASE( "Serializer test" ) {
     double b;
     bool c;
     archive.readAll( a, b, c );
-    assert( a == 1 );
-    assert( b == 2.0 );
-    assert( c );
+    CHECK( a == 1 );
+    CHECK( b == 2.0 );
+    CHECK( c );
 
     hub::io::Archive archive2 { std::move( archive ) };
     archive2.writeAll( 1, 2.0, true );
     archive2.readAll( a, b, c );
-    assert( a == 1 );
-    assert( b == 2.0 );
-    assert( c );
+    CHECK( a == 1 );
+    CHECK( b == 2.0 );
+    CHECK( c );
 
     static_assert( std::is_arithmetic_v<double> );
     static_assert( !std::is_arithmetic_v<std::string> );
