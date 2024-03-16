@@ -8,8 +8,8 @@
 #include <sensor/InputSensor.hpp>
 #include <sensor/OutputSensor.hpp>
 
-//TEST_CASE( "sensor compat os and arch test" ) {
-    int main() {
+TEST_CASE( "sensor compat os and arch test" ) {
+//    int main() {
     // multi os/platform compatibility
     // able to load hub file through differents os and platform
     // test if raw stream data is same using different architectures like x64 x86 arm64,
