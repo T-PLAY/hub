@@ -93,7 +93,8 @@ class SRC_API SerializerT
     static constexpr bool has_it_second_v = has_it_second<T>::value;
 
 #if defined( COMPILER_GCC )
-#    if __GNUC_PREREQ( 12, 3 )
+//#    if __GNUC_PREREQ( 12, 3 )
+#if GCC_VERSION >= 12
     template <class T>
     static constexpr auto isMap = has_it_first_v<T>&& has_it_second_v<T>;
 #    else
