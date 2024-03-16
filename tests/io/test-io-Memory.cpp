@@ -28,7 +28,7 @@ TEST_CASE( "Test io memory" ) {
 
     hub::io::Memory memory;
     const auto & datas = memory.getData();
-    assert(datas.size() == 0);
+    CHECK(datas.size() == 0);
     memory.write(refSensorSpec);
     std::cout << "memory : " << memory.getData() << std::endl;
 

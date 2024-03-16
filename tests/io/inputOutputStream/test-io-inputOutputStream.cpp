@@ -15,7 +15,7 @@ TEST_CASE( "InputOutputStream test" ) {
         hub::output::OutputStream outputStream( TEST_IO_HEADER, FILE_NAME, SERVER_PORT );
 
         hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
-        assert( inputStream.getHeader() == TEST_IO_HEADER );
+        CHECK( inputStream.getHeader() == TEST_IO_HEADER );
 
         const auto& [durationInMillisecond, gigaBytePerSecond] =
             inputOutputBench( inputStream, outputStream, "InputOutputStream" );

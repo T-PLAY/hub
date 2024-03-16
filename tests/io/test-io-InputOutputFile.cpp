@@ -47,17 +47,17 @@ TEST_CASE( "File test" ) {
     int a_read;
     {
         hub::input::InputFile inputFile( filename );
-        assert( inputFile.getHeader() == header_ref );
+        CHECK( inputFile.getHeader() == header_ref );
         inputFile.read( a_read );
 
-        assert( a_ref == a_read );
+        CHECK( a_ref == a_read );
 
         hub::io::Memory memory( inputFile.getHeader().getUserDefined() );
         UserDefined userDefined_read;
         memory.read( userDefined_read );
-        assert( userDefined == userDefined_read );
+        CHECK( userDefined == userDefined_read );
 
-        assert( inputFile.isEnd() );
+        CHECK( inputFile.isEnd() );
     }
 
     ////        hub::output::OutputFile outputFile(filename);

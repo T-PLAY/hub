@@ -16,10 +16,10 @@ TEST_CASE( "InputOutputSocket test" ) {
     hub::net::ServerSocket serverSocket( port );
     hub::net::ClientSocket clientSocket( ipv4, port );
 
-    assert( clientSocket.isConnected() );
+    CHECK( clientSocket.isConnected() );
     std::cout << "clientSocket: " << clientSocket << std::endl;
     auto clientServerSocket = serverSocket.waitNewClient();
-    assert( clientServerSocket.isConnected() );
+    CHECK( clientServerSocket.isConnected() );
     std::cout << "clientServerSocket: " << clientServerSocket << std::endl;
 
     const auto& [durationInMillisecondClientSocket, gigaBytePerSecondClientSocket] =
@@ -32,7 +32,7 @@ TEST_CASE( "InputOutputSocket test" ) {
     inputOutputSocket.write( str );
     std::string str_read;
     inputOutputSocket2.read( str_read );
-    assert( str == str_read );
+    CHECK( str == str_read );
 
     const auto& [durationInMillisecondInputOutputSocket, gigaBytePerSecondInputOutputSocket] =
         inputOutputBench( inputOutputSocket, inputOutputSocket2, "InputOutputSocket" );

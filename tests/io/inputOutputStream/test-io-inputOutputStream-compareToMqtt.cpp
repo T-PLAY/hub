@@ -48,7 +48,7 @@ TEST_CASE( "Server test : InputOutputStream_vs_Mqtt" ) {
             for ( int i = 0; i < nIteration; ++i ) {
                 inputStream.read( data_read, size );
 #ifdef DEBUG
-                assert( memcmp( data, data_read, size ) == 0 );
+                CHECK( memcmp( data, data_read, size ) == 0 );
 #endif
             }
             thread.join();
@@ -103,7 +103,7 @@ TEST_CASE( "Server test : InputOutputStream_vs_Mqtt" ) {
             const auto* inputData = payload.data();
 
 #    ifdef DEBUG
-            assert( memcmp( data, inputData, size ) == 0 );
+            CHECK( memcmp( data, inputData, size ) == 0 );
 #    endif
         }
         thread.join();

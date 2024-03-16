@@ -21,9 +21,9 @@ TEST_CASE( "InputOutputStream compare with InputOutputSocket" ) {
     {
         hub::net::ServerSocket serverSocket( port );
         hub::net::ClientSocket clientSocket( ipv4, port );
-        assert( clientSocket.isConnected() );
+        CHECK( clientSocket.isConnected() );
         auto clientServerSocket = serverSocket.waitNewClient();
-        assert( clientServerSocket.isConnected() );
+        CHECK( clientServerSocket.isConnected() );
 
         hub::io::InputOutputSocket inputOutputSocket( std::move( clientSocket ) );
         hub::io::InputOutputSocket inputOutputSocket2( std::move( clientServerSocket ) );
@@ -41,7 +41,7 @@ TEST_CASE( "InputOutputStream compare with InputOutputSocket" ) {
         hub::output::OutputStream outputStream( TEST_IO_HEADER, FILE_NAME, port2 );
 
         hub::input::InputStream inputStream( FILE_NAME, port2 );
-        assert( inputStream.getHeader() == TEST_IO_HEADER );
+        CHECK( inputStream.getHeader() == TEST_IO_HEADER );
 
         const auto& [durationInMillisecond, gigaBytePerSecond] =
             inputOutputBench( inputStream, outputStream );

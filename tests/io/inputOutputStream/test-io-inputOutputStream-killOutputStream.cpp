@@ -21,14 +21,14 @@ TEST_CASE( "InputOutputStream kill output stream test" ) {
         outputStream->write( a );
         int a_read;
         inputStream.read( a_read );
-        assert( a == a_read );
+        CHECK( a == a_read );
 
         delete outputStream;
         std::cout << "[test] outputStream ended" << std::endl;
 
         try {
             inputStream.read( a_read );
-            assert( false );
+            CHECK( false );
         }
         catch ( hub::net::system::SocketSystem::exception& ex ) {
             CHECK( true );

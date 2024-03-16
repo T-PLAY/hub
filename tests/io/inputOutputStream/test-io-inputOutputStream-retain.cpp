@@ -18,7 +18,7 @@ TEST_CASE( "InputOutputStream retain test" ) {
 
         {
             hub::input::InputStream inputStream( FILE_NAME, SERVER_PORT );
-            assert( inputStream.isOpen() );
+            CHECK( inputStream.isOpen() );
 
             int a = 5;
             outputStream.write( a );
@@ -26,17 +26,17 @@ TEST_CASE( "InputOutputStream retain test" ) {
             int a_read;
             inputStream.read( a_read );
             std::cout << "[test] read done" << std::endl;
-            assert( a == a_read );
+            CHECK( a == a_read );
 
             hub::input::InputStream inputStream2( FILE_NAME, SERVER_PORT );
-            assert( inputStream2.isOpen() );
+            CHECK( inputStream2.isOpen() );
 
             a = 6;
             outputStream.write( a );
             inputStream.read( a_read );
-            assert( a == a_read );
+            CHECK( a == a_read );
             inputStream2.read( a_read );
-            assert( a == a_read );
+            CHECK( a == a_read );
 
             a = 7;
             outputStream.setRetain( true );
@@ -44,13 +44,13 @@ TEST_CASE( "InputOutputStream retain test" ) {
             outputStream.setRetain( false );
 
             hub::input::InputStream inputStream3( FILE_NAME, SERVER_PORT );
-            assert( inputStream3.isOpen() );
+            CHECK( inputStream3.isOpen() );
             inputStream.read( a_read );
-            assert( a == a_read );
+            CHECK( a == a_read );
             inputStream2.read( a_read );
-            assert( a == a_read );
+            CHECK( a == a_read );
             inputStream3.read( a_read );
-            assert( a == a_read );
+            CHECK( a == a_read );
         }
         std::cout << "[test] inputStream ended" << std::endl;
     }
