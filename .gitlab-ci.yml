@@ -205,8 +205,8 @@ build-macOs-clang-arm64-debug:
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
     # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
     - !reference [.build_any, script]
-  only:
-    - master
+  # only:
+    # - master
 
 #################################### MacOs
 
