@@ -1,8 +1,9 @@
-src/
-tests/
-examples/
-CMakeLists.txt
-doc/
-wrapper/
-bin/
-cmake/
+* src/
+* tests/
+* examples/
+* CMakeLists.txt
+* doc/
+* wrapper/
+* bin/
+* cmake/
+scripts/test/
