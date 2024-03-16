@@ -22,25 +22,25 @@ TEST_CASE( "Acquisition test" ) {
 
     auto* bgr8Ptr = acq.get<hub::format::BGR8*>();
     std::cout << "bgr8Ptr : " << (uintptr_t)bgr8Ptr << std::endl;
-    assert( (const hub::Data_t*)bgr8Ptr == dataPtr + 16 );
+    CHECK( (const hub::Data_t*)bgr8Ptr == dataPtr + 16 );
 
     const auto* bgr8CstPtr = acq.get<const hub::format::BGR8*>();
     std::cout << "bgr8CstPtr : " << (uintptr_t)bgr8CstPtr << std::endl;
-    assert( (const hub::Data_t*)bgr8CstPtr == dataPtr + 16 );
+    CHECK( (const hub::Data_t*)bgr8CstPtr == dataPtr + 16 );
 
     const auto& bgr8Ref = acq.get<const hub::format::BGR8&>();
     std::cout << "bgr8Ref : " << (uintptr_t)&bgr8Ref << std::endl;
     CHECK( &bgr8Ref.b == dataPtr + 16 );
     CHECK( &bgr8Ref.g == dataPtr + 17 );
     CHECK( &bgr8Ref.r == dataPtr + 18 );
-    assert( (const hub::Data_t*)&bgr8Ref == dataPtr + 16 );
+    CHECK( (const hub::Data_t*)&bgr8Ref == dataPtr + 16 );
 
     const auto& acqCstRef = acq;
-    assert( acq.data() == acqCstRef.data() );
+    CHECK( acq.data() == acqCstRef.data() );
     const auto& bgr8CstRef = acqCstRef.get<const hub::format::BGR8&>();
     std::cout << "bgr8CstRef : " << (uintptr_t)&bgr8CstRef << std::endl;
-    assert( &bgr8Ref == &bgr8CstRef );
-    assert( (const hub::Data_t*)&bgr8CstRef == dataPtr + 16 );
+    CHECK( &bgr8Ref == &bgr8CstRef );
+    CHECK( (const hub::Data_t*)&bgr8CstRef == dataPtr + 16 );
 
     TEST_END()
 }

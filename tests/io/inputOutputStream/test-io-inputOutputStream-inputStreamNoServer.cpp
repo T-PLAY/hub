@@ -12,7 +12,7 @@ TEST_CASE( "InputStream no server test" ) {
     {
         try {
             hub::input::InputStream inputStream( FILE_NAME, port );
-            assert( false );
+            CHECK( false );
         }
         catch ( hub::net::system::SocketSystem::exception& ex ) {
             CHECK( true );

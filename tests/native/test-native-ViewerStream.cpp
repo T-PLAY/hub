@@ -41,39 +41,39 @@ TEST_CASE( "Native Viewer stream" ) {
         auto onNewStream = []( const char* streamName, const hub::io::Header* header ) {
             std::cout << "[test-client-NativeViewer] onNewStream : " << streamName << ", " << header
                       << std::endl;
-            assert( streamName == FILE_NAME );
-            assert( header_ref == *header );
+            CHECK( streamName == FILE_NAME );
+            CHECK( header_ref == *header );
             ++nNewStreamer;
             return true;
         };
 #ifndef HUB_NON_BUILD_SENSOR
         auto onNewSensor = []( const char* streamName, const hub::sensor::SensorSpec* sensorSpec ) {
-            assert( false );
+            CHECK( false );
             std::cout << "[test-client-NativeViewer] onNewStream : " << streamName << ", "
                       << sensorSpec << std::endl;
-            assert( streamName == FILE_NAME );
+            CHECK( streamName == FILE_NAME );
             ++nNewStreamer;
             return true;
         };
 #endif
 
         auto onNewData = []( const char* streamName, const hub::Datas_t* datas ) {
-            assert( streamName == FILE_NAME );
+            CHECK( streamName == FILE_NAME );
             int a;
             memcpy( &a, datas->data(), datas->size() );
-            assert( a == nNewData );
+            CHECK( a == nNewData );
             std::cout << "[test-client-NativeViewer] onNewData : " << *datas << std::endl;
             ++nNewData;
         };
 
 #ifndef HUB_NON_BUILD_SENSOR
         auto onNewAcq = []( const char* streamName, const hub::sensor::Acquisition* acq ) {
-            assert( false );
+            CHECK( false );
         };
 #endif
 
         auto onDelStream = []( const char* streamName ) {
-            assert( streamName == FILE_NAME );
+            CHECK( streamName == FILE_NAME );
             std::cout << "[test-client-NativeViewer] onDelStream : " << streamName << std::endl;
             ++nDelStreamer;
         };
@@ -81,7 +81,7 @@ TEST_CASE( "Native Viewer stream" ) {
                                  const char* objectName,
                                  int property,
                                  const hub::Any* value ) {
-            assert( streamName == FILE_NAME );
+            CHECK( streamName == FILE_NAME );
             std::cout << "[test-client-NativeViewer] onSetProperty " << streamName << std::endl;
         };
         auto onLogMessage = []( const char* logMessage ) {
@@ -109,8 +109,8 @@ TEST_CASE( "Native Viewer stream" ) {
             hub::native::createViewer( FILE_NAME.c_str(), viewerHandler, "127.0.0.1", port );
         CONSTRUCT_END( "NativeViewer" );
 
-        assert( nServerDisconnected == 0 );
-        assert( !hub::native::viewer_isConnected( viewer ) );
+        CHECK( nServerDisconnected == 0 );
+        CHECK( !hub::native::viewer_isConnected( viewer ) );
         while ( nServerNotFound == 0 ) {
             std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
             std::cout << "[test] waiting for server not found" << std::endl;
@@ -128,8 +128,8 @@ TEST_CASE( "Native Viewer stream" ) {
                 std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                 ++iTry;
             }
-            assert( iTry != 20 );
-            assert( hub::native::viewer_isConnected( viewer ) );
+            CHECK( iTry != 20 );
+            CHECK( hub::native::viewer_isConnected( viewer ) );
 
             iTry = 0;
             while (nServerConnected == 0 && iTry < 10) {
@@ -137,12 +137,12 @@ TEST_CASE( "Native Viewer stream" ) {
                 std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                 ++iTry;
             }
-            assert(iTry < 10);
-            assert( nServerConnected == 1 );
+            CHECK(iTry < 10);
+            CHECK( nServerConnected == 1 );
 
             {
-                assert( hub::native::viewer_nStream( viewer ) == 0 );
-                assert( hub::native::viewer_nStreaming( viewer ) == 0 );
+                CHECK( hub::native::viewer_nStream( viewer ) == 0 );
+                CHECK( hub::native::viewer_nStreaming( viewer ) == 0 );
                 CONSTRUCT_BEGIN( "OutputStream" );
                 auto* outputStream = hub::native::createOutputStream(
                     &header_ref, FILE_NAME.c_str(), port, "127.0.0.1" );
@@ -153,9 +153,9 @@ TEST_CASE( "Native Viewer stream" ) {
                     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                     ++iTry;
                 }
-                assert(iTry < 10);
-                assert( hub::native::viewer_nStream( viewer ) == 1 );
-                assert( hub::native::viewer_nStreaming( viewer ) == 1 );
+                CHECK(iTry < 10);
+                CHECK( hub::native::viewer_nStream( viewer ) == 1 );
+                CHECK( hub::native::viewer_nStreaming( viewer ) == 1 );
 
                 for ( int i = 0; i < 10; ++i ) {
                     hub::native::outputStream_write_int( outputStream, i );
@@ -167,8 +167,8 @@ TEST_CASE( "Native Viewer stream" ) {
                     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                     ++iTry;
                 }
-                assert( iTry != 10 );
-                assert( nNewData == 10 );
+                CHECK( iTry != 10 );
+                CHECK( nNewData == 10 );
 
                 hub::native::freeOutputStream( outputStream );
 
@@ -182,11 +182,11 @@ TEST_CASE( "Native Viewer stream" ) {
                 std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                 ++iTry;
             }
-            assert( iTry < 20 );
-            assert( hub::native::viewer_nStream( viewer ) == 0 );
-            assert( hub::native::viewer_nStreaming( viewer ) == 0 );
-            assert( nDelStreamer == 1 );
-            assert( nServerDisconnected == 0 );
+            CHECK( iTry < 20 );
+            CHECK( hub::native::viewer_nStream( viewer ) == 0 );
+            CHECK( hub::native::viewer_nStreaming( viewer ) == 0 );
+            CHECK( nDelStreamer == 1 );
+            CHECK( nServerDisconnected == 0 );
 
             DESTRUCT_BEGIN( "Server" );
         } // end server
@@ -198,10 +198,10 @@ TEST_CASE( "Native Viewer stream" ) {
             std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
             ++iTry;
         }
-        assert( iTry != 20 );
-        assert( !hub::native::viewer_isConnected( viewer ) );
+        CHECK( iTry != 20 );
+        CHECK( !hub::native::viewer_isConnected( viewer ) );
         std::cout << "[test] nServerDisconnected : " << nServerDisconnected << std::endl;
-        assert( nServerDisconnected == 1 );
+        CHECK( nServerDisconnected == 1 );
 
         hub::native::freeViewer( viewer );
 

@@ -7,6 +7,9 @@
 #include <type_traits>
 #include <vector>
 
+// #include "test_common.hpp"
+#include <catch2/catch_test_macros.hpp>
+
 #include <core/Serializer.hpp>
 #include <core/Traits.hpp>
 #include <core/io/Archive.hpp>
@@ -72,14 +75,14 @@ static auto toString( UserEnum2 ue ) -> std::string {
 
 template <class T>
 void checkType( hub::io::Archive& archive, const T& t ) {
-    assert( archive.isEnd() );
+    CHECK( archive.isEnd() );
 
     archive.write( t );
     T t_read;
     archive.read( t_read );
-    assert( t == t_read );
+    CHECK( t == t_read );
 
-    assert( archive.isEnd() );
+    CHECK( archive.isEnd() );
 #ifdef DEBUG_CHECK_TYPE
     std::cout << "<" << TYPE_NAME( t ) << ">: " << t << std::endl;
 #endif
@@ -201,7 +204,7 @@ ReadWriteStat readWriteData( ReadInputFunc& readInputFunc,
         writeOutputFunc( data_write );
         readInputFunc( data_read );
 
-        assert( data_read == data_write );
+        CHECK( data_read == data_write );
 
         ++iReadWrite;
     }

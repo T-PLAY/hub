@@ -55,8 +55,8 @@ TEST_CASE( "OutputSensor sending acq with disconnect test" ) {
                 hub::input::InputStream( FILE_NAME, SERVER_PORT ) );
             std::cout << "[test] inputSensor inited" << std::endl;
 
-            assert( outputSensor.getSpec() == inputSensor.getSpec() );
-            assert( inputSensor.getSpec().getResolution().hasType<hub::format::BGR8>() );
+            CHECK( outputSensor.getSpec() == inputSensor.getSpec() );
+            CHECK( inputSensor.getSpec().getResolution().hasType<hub::format::BGR8>() );
 
             auto acq_read    = inputSensor.acqMsg();
             auto& start_read = acq_read.start();

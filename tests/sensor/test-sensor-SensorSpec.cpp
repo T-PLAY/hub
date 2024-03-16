@@ -19,7 +19,7 @@ TEST_CASE( "SensorSpec test" ) {
     archive.write( sensorSpec );
     hub::sensor::SensorSpec sensorSpec_read;
     archive.read( sensorSpec_read );
-    assert( sensorSpec == sensorSpec_read );
+    CHECK( sensorSpec == sensorSpec_read );
     static_assert( !hub::Serializer::Serializable<hub::sensor::SensorSpec>() );
     static_assert( !hub::Serializer::Serializable<hub::Any>() );
     static_assert( !hub::Serializer::Serializable<hub::MetaData>() );

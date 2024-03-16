@@ -15,7 +15,7 @@ TEST_CASE("Sensor utils test")
     TEST_BEGIN()
 
     const std::string filename = FILE_NAME + "." + HUB_EXTENSION;
-    assert(FILE_NAME == "test-sensor-utils.cpp");
+    CHECK(FILE_NAME == "test-sensor-utils.cpp");
 
 
     hub::MetaData metaData;
@@ -58,14 +58,14 @@ TEST_CASE("Sensor utils test")
     {
         hub::sensor::OutputSensor outputSensor(refSensorSpec, hub::output::OutputFile(hub::io::make_header(refSensorSpec), rootDir + refSensorSpec.getSensorName() + "." + HUB_EXTENSION));
         outputSensor.fill(refAcqs);
-        assert(outputSensor.getSpec() == refSensorSpec);
+        CHECK(outputSensor.getSpec() == refSensorSpec);
 //        for (const auto & acq : refAcqs) {
 //            outputSensor << acq;
 //        }
     //    hub::sensor::OutputSensor outputSensor2(refSensorSpec2, archive2);
         hub::sensor::OutputSensor outputSensor2(refSensorSpec2, hub::output::OutputFile(hub::io::make_header(refSensorSpec2), rootDir + refSensorSpec2.getSensorName() + "." + HUB_EXTENSION));
         outputSensor2.fill(refAcqs2);
-        assert(outputSensor2.getSpec() == refSensorSpec2);
+        CHECK(outputSensor2.getSpec() == refSensorSpec2);
 //        for (const auto & acq : refAcqs2) {
 //            outputSensor2 << acq;
 //        }
@@ -81,10 +81,10 @@ TEST_CASE("Sensor utils test")
 
 
 //    hub::sensor::InputSensor inputSensor(archive);
-//    assert(inputSensor.getSpec() == sensorSpec);
+//    CHECK(inputSensor.getSpec() == sensorSpec);
 
 //    hub::sensor::InputSensor inputSensor2(archive2);
-//    assert(inputSensor2.getSpec() == refSensorSpec2);
+//    CHECK(inputSensor2.getSpec() == refSensorSpec2);
 
 //    std::vector<hub::sensor::InputSensor*> inputSensors{&inputSensor, &inputSensor2};
 
@@ -119,8 +119,8 @@ TEST_CASE("Sensor utils test")
 //        for (const auto & acq : specAcq.m_acqs) {
 //            std::cout << acq << std::endl;
 //        }
-//        assert(specAcq.m_acqs == refSyncAcqs);
-//        assert(specAcq.m_sensorSpec == sensorSpec + sensorSpec2);
+//        CHECK(specAcq.m_acqs == refSyncAcqs);
+//        CHECK(specAcq.m_sensorSpec == sensorSpec + sensorSpec2);
 //    }
 
 //    test::sensor::checkSynchronize(archive, sensorSpec, refAcqs, archive2, sensorSpec2, refAcqs2, archive, archive2);

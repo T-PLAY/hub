@@ -49,33 +49,33 @@ TEST_CASE( "Viewer" ) {
                                          const hub::sensor::SensorSpec& sensorSpec ) {
             std::cout << "[test-client-Viewer] onNewStream : " << streamName << ", " << sensorSpec
                       << std::endl;
-            assert( streamName == FILE_NAME );
-            assert( sensorSpec_ref == sensorSpec );
+            CHECK( streamName == FILE_NAME );
+            CHECK( sensorSpec_ref == sensorSpec );
             ++nNewStreamer;
             return true;
         };
         hub::io::Memory memory;
         viewerHandler.onNewAcq = [&]( const std::string& streamName,
                                       const hub::sensor::Acquisition& acq ) {
-            assert( streamName == FILE_NAME );
-            assert( acq.getResolution() == hub::make_matrix<Resolution>() );
+            CHECK( streamName == FILE_NAME );
+            CHECK( acq.getResolution() == hub::make_matrix<Resolution>() );
 
-            assert( acq.getOffset<hub::format::BGR8>( 0 ) == 16 );
+            CHECK( acq.getOffset<hub::format::BGR8>( 0 ) == 16 );
             const auto& bgr8  = acq.get<const hub::format::BGR8&>();
             const auto& start = acq.getStart();
             const auto& end   = acq.getEnd();
-            assert( start == nNewAcq );
-            assert( end == nNewAcq );
-            assert( bgr8.b == nNewAcq );
-            assert( bgr8.g == nNewAcq );
-            assert( bgr8.r == nNewAcq );
+            CHECK( start == nNewAcq );
+            CHECK( end == nNewAcq );
+            CHECK( bgr8.b == nNewAcq );
+            CHECK( bgr8.g == nNewAcq );
+            CHECK( bgr8.r == nNewAcq );
             mtxPrint.lock();
             std::cout << "[test-client-Viewer] onNewAcq : " << acq << std::endl;
             mtxPrint.unlock();
             ++nNewAcq;
         };
         viewerHandler.onDelStream = [&]( const std::string& streamName ) {
-            assert( streamName == FILE_NAME );
+            CHECK( streamName == FILE_NAME );
             std::cout << "[test-client-Viewer] onDelStream : " << streamName << std::endl;
             ++nDelStreamer;
         };
@@ -83,7 +83,7 @@ TEST_CASE( "Viewer" ) {
                                           const std::string& objectName,
                                           int property,
                                           const hub::Any& value ) {
-            assert( streamName == FILE_NAME );
+            CHECK( streamName == FILE_NAME );
             std::cout << "[test-client-Viewer] onSetProperty " << streamName << std::endl;
         };
         viewerHandler.onLogMessage = []( const std::string& logMessage ) {
@@ -94,8 +94,8 @@ TEST_CASE( "Viewer" ) {
         hub::client::Viewer viewer { FILE_NAME, std::move( viewerHandler ), "127.0.0.1", port };
         CONSTRUCT_END( "Viewer" );
 
-        assert( nServerDisconnected == 0 );
-        assert( !viewer.isConnected() );
+        CHECK( nServerDisconnected == 0 );
+        CHECK( !viewer.isConnected() );
         while ( nServerNotFound == 0 ) {
             std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
             std::cout << "[test] waiting for server not found" << std::endl;
@@ -114,13 +114,13 @@ TEST_CASE( "Viewer" ) {
                 std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                 ++iTry;
             }
-            assert( iTry < 20 );
-            assert( viewer.isConnected() );
-            assert( nServerConnected == 1 );
+            CHECK( iTry < 20 );
+            CHECK( viewer.isConnected() );
+            CHECK( nServerConnected == 1 );
 
             {
-                assert( viewer.nStream() == 0 );
-                assert( viewer.nStreaming() == 0 );
+                CHECK( viewer.nStream() == 0 );
+                CHECK( viewer.nStreaming() == 0 );
                 CONSTRUCT_BEGIN( "OutputSensor" );
                 hub::sensor::OutputSensor outputSensor( sensorSpec_ref, FILE_NAME, port );
                 CONSTRUCT_END( "OutputSensor" );
@@ -131,9 +131,9 @@ TEST_CASE( "Viewer" ) {
                     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                     ++iTry;
                 }
-                assert(iTry < 20);
-                assert( viewer.nStream() == 1 );
-                assert( viewer.nStreaming() == 1 );
+                CHECK(iTry < 20);
+                CHECK( viewer.nStream() == 1 );
+                CHECK( viewer.nStreaming() == 1 );
                 auto acq    = outputSensor.acqMsg();
                 auto& bgr8  = acq.get<hub::format::BGR8&>();
                 auto& start = acq.start();
@@ -157,8 +157,8 @@ TEST_CASE( "Viewer" ) {
                     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                     ++iTry;
                 }
-                assert( iTry < 10 );
-                assert( nNewAcq == 10 );
+                CHECK( iTry < 10 );
+                CHECK( nNewAcq == 10 );
 
                 DESTRUCT_BEGIN( "OutputStream" );
             } // end outputStream
@@ -170,11 +170,11 @@ TEST_CASE( "Viewer" ) {
                 std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                 ++iTry;
             }
-            assert( iTry < 20 );
-            assert( viewer.nStream() == 0 );
-            assert( viewer.nStreaming() == 0 );
-            assert( nDelStreamer == 1 );
-            assert( nServerDisconnected == 0 );
+            CHECK( iTry < 20 );
+            CHECK( viewer.nStream() == 0 );
+            CHECK( viewer.nStreaming() == 0 );
+            CHECK( nDelStreamer == 1 );
+            CHECK( nServerDisconnected == 0 );
 
             DESTRUCT_BEGIN( "Server" );
         } // end server
@@ -186,10 +186,10 @@ TEST_CASE( "Viewer" ) {
             std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
             ++iTry;
         }
-        assert( iTry < 20 );
-        assert( !viewer.isConnected() );
+        CHECK( iTry < 20 );
+        CHECK( !viewer.isConnected() );
         std::cout << "[test] nServerDisconnected : " << nServerDisconnected << std::endl;
-        assert( nServerDisconnected == 1 );
+        CHECK( nServerDisconnected == 1 );
 
         DESTRUCT_BEGIN( "Viewer" );
     } // end viewer

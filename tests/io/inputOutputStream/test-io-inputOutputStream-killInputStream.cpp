@@ -25,7 +25,7 @@ TEST_CASE( "InputOutputStream kill input stream test" ) {
                 int a_read;
                 inputStream.read( a_read );
                 std::cout << "[test] read done" << std::endl;
-                assert( a == a_read );
+                CHECK( a == a_read );
             }
             std::cout << "[test] inputStream ended" << std::endl;
 
