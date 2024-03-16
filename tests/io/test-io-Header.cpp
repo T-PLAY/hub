@@ -25,7 +25,7 @@ TEST_CASE( "Test io header" ) {
 
     archive.read(header_read);
 
-    assert(header == header_read);
+    CHECK(header == header_read);
 
 
     TEST_END()

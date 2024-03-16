@@ -46,8 +46,8 @@ TEST_CASE( "Test io sensorSpec" ) {
     archive.read(sensorSpec_read);
 
 
-    // assert(header == header_read);
-    assert(sensorSpec_read == refSensorSpec);
+    // CHECK(header == header_read);
+    CHECK(sensorSpec_read == refSensorSpec);
 
 
     TEST_END()

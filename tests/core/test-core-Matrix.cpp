@@ -50,12 +50,12 @@ void checkMatrix( const T& t ) {
     CHECK( std::is_same_v<T, char> == matrix.template hasType<char>() );
     CHECK( !matrix.hasValue() );
 
-    assert( s_archive.isEnd() );
+    CHECK( s_archive.isEnd() );
     s_archive.write( matrix );
     hub::Matrix matrix_read;
     s_archive.read( matrix_read );
-    assert( matrix == matrix_read );
-    assert( s_archive.isEnd() );
+    CHECK( matrix == matrix_read );
+    CHECK( s_archive.isEnd() );
     std::cout << "<" << TYPE_NAME( T() ) << ">: " << matrix_read << std::endl;
 
     matrix.init();
@@ -63,11 +63,11 @@ void checkMatrix( const T& t ) {
     data       = t;
     CHECK( matrix.hasValue() );
 
-    assert( s_archive.isEnd() );
+    CHECK( s_archive.isEnd() );
     s_archive.write( matrix );
     s_archive.read( matrix_read );
-    assert( matrix == matrix_read );
-    assert( s_archive.isEnd() );
+    CHECK( matrix == matrix_read );
+    CHECK( s_archive.isEnd() );
     std::cout << "<" << TYPE_NAME( T() ) << ">: " << matrix_read << std::endl;
 }
 
@@ -82,23 +82,23 @@ checkMatrix( const Ts&... ts ) {
     CHECK( matrix.size() == hub::sizeOf<Ts...>() );
     CHECK( !matrix.hasValue() );
 
-    assert( s_archive.isEnd() );
+    CHECK( s_archive.isEnd() );
     s_archive.write( matrix );
     hub::Matrix matrix_read;
     s_archive.read( matrix_read );
-    assert( matrix == matrix_read );
-    assert( s_archive.isEnd() );
+    CHECK( matrix == matrix_read );
+    CHECK( s_archive.isEnd() );
     std::cout << "<" << hub::typeName<Ts...>() << ">: " << matrix_read << std::endl;
 
     matrix.init();
     matrix.fill( ts... );
     CHECK( matrix.hasValue() );
 
-    assert( s_archive.isEnd() );
+    CHECK( s_archive.isEnd() );
     s_archive.write( matrix );
     s_archive.read( matrix_read );
-    assert( matrix == matrix_read );
-    assert( s_archive.isEnd() );
+    CHECK( matrix == matrix_read );
+    CHECK( s_archive.isEnd() );
     std::cout << "<" << hub::typeName<Ts...>() << ">: " << matrix_read << std::endl;
 }
 
@@ -113,12 +113,12 @@ checkMatrix( const Matrices&... matrices ) {
     CHECK( matrix.size() == hub::sizeOf( matrices... ) );
     // CHECK( !matrix.hasValue() );
 
-    assert( s_archive.isEnd() );
+    CHECK( s_archive.isEnd() );
     s_archive.write( matrix );
     hub::Matrix matrix_read;
     s_archive.read( matrix_read );
-    assert( matrix == matrix_read );
-    assert( s_archive.isEnd() );
+    CHECK( matrix == matrix_read );
+    CHECK( s_archive.isEnd() );
 
     std::cout << "<" << hub::typeName<Matrices...>() << ">: " << matrix_read << std::endl;
 }

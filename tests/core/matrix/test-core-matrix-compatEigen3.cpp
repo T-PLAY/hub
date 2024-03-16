@@ -17,7 +17,7 @@ TEST_CASE( "Matrix compat Eigen test" ) {
         data[i] = 65 + i;
     }
 
-    ////            assert( eigenMat.coeff( i, j ) == cvMat.data[i * height + j] );
+    ////            CHECK( eigenMat.coeff( i, j ) == cvMat.data[i * height + j] );
 
     Eigen::Matrix<unsigned char, height, width, Eigen::RowMajor> eigenMat( data );
     for ( int j = 0; j < height; ++j ) {

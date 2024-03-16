@@ -36,19 +36,19 @@ TEST_CASE( "InputOutputStream local header test" ) {
         hub::output::OutputStream outputStream( header_ref, port );
 
         hub::input::InputStream inputStream( port );
-        assert( inputStream.getHeader() == header_ref );
+        CHECK( inputStream.getHeader() == header_ref );
 
         const int a_ref = 5;
         static_assert( sizeof( int ) == 4 );
         outputStream.write( 5 );
         int a_read;
         inputStream.read( a_read );
-        assert( a_ref == a_read );
+        CHECK( a_ref == a_read );
 
         hub::io::Memory memory( inputStream.getHeader().getUserDefined() );
         UserDefined userDefined_read;
         memory.read( userDefined_read );
-        assert( userDefined == userDefined_read );
+        CHECK( userDefined == userDefined_read );
     }
 
     TEST_END()

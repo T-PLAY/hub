@@ -51,10 +51,10 @@ void checkMetaData( const T& t, const T& t2 ) {
     s_metaData_read[TYPE_NAME( t )] = t2;
     CHECK( s_metaData != s_metaData_read );
 
-    assert( s_archive.isEnd() );
+    CHECK( s_archive.isEnd() );
     s_archive.write( s_metaData );
     s_archive.read( s_metaData_read );
-    assert( s_archive.isEnd() );
+    CHECK( s_archive.isEnd() );
     CHECK( s_metaData == s_metaData_read );
 }
 
@@ -63,7 +63,7 @@ TEST_CASE( "MetaData test" ) {
 
     std::cout << "any supported types : " << hub::Anyable::supportedTypes() << std::endl;
 
-    assert( s_metaData == s_metaData_read );
+    CHECK( s_metaData == s_metaData_read );
     std::cout << s_metaData << std::endl;
 
     static_assert( !hub::Serializer::Serializable<hub::MetaData>() );
