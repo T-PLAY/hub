@@ -363,24 +363,18 @@ bool Mesh::operator==( const Mesh& other ) const {
            m_total_instances == other.m_total_instances && m_total_draws == other.m_total_draws;
 }
 
-bool Shape::operator==(const Shape &other) const {
-    if (vertices != other.vertices) {
-        std::cout << "vertices differ" << std::endl;
-        for ( int i = 0; i < vertices.size(); ++i ) {
-            const auto& vertex  = vertices.at( i );
-            const auto& vertex2 = other.vertices.at( i );
-            if ( !( vertex == vertex2 ) ) { std::cout << "vertex differ " << vertex << " != " << vertex2 << std::endl; }
-        }
-        //            std::cout << vertices << std::endl;
-        //            std::cout << other.vertices << std::endl;
-    }
-    if (indices != other.indices) {
-        std::cout << "indices differ" << std::endl;
-        //            std::cout << indices << std::endl;
-        //           std::cout << other.indices << std::endl;
-    }
-    return vertices == other.vertices && hasNormal == other.hasNormal &&
-           indices == other.indices && name == other.name && material == other.material;
+bool Shape::operator==( const Shape& other ) const {
+    // if ( vertices != other.vertices ) {
+        // std::cout << "vertices differ" << std::endl;
+        // for ( int i = 0; i < vertices.size(); ++i ) {
+        //     const auto& vertex  = vertices.at( i );
+        //     const auto& vertex2 = other.vertices.at( i );
+        //     if ( !( vertex == vertex2 ) ) { std::cout << "vertex differ " << vertex << " != " << vertex2 << std::endl; }
+        // }
+    // }
+    // if ( indices != other.indices ) { std::cout << "indices differ" << std::endl; }
+    return vertices == other.vertices && hasNormal == other.hasNormal && indices == other.indices &&
+           name == other.name && material == other.material;
 }
 
 std::string Vertex::toString() const
