@@ -149,12 +149,26 @@ build-macOs-clang-arm64-debug:
     - ARCHITECTURE=arm64
     - BUILD_TYPE=Debug
     # - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
-    # - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
+    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE -j 7" # max thread failed, mac mini m2 stressed
     # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
-    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
+    # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
   # only:
     # - master
+    
+build-macOs-llvm_gcc-arm64-debug:
+  stage: build
+  tags:
+    - $MACOS_TAG
+  script:
+    #- COMPILER_C=gcc
+    - COMPILER_C=llvm-gcc
+    #- COMPILER_CXX=g++
+    - COMPILER_CXX=llvm-g++
+    - ARCHITECTURE=arm64
+    - BUILD_TYPE=Debug
+    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON -j 7"
+    - !reference [.build_any, script]
 
 # build-windows-cl-UWP_x64-release:
 #   stage: build
@@ -256,19 +270,6 @@ build-macOs-clang-arm64-debug:
 #     - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
 #     - !reference [.build_any, script]
 #
-# build-macOs-llvm_gcc-arm64-debug:
-#   stage: build
-#   tags:
-#     - $MACOS_TAG
-#   script:
-#     #- COMPILER_C=gcc
-#     - COMPILER_C=llvm-gcc
-#     #- COMPILER_CXX=g++
-#     - COMPILER_CXX=llvm-g++
-#     - ARCHITECTURE=arm64
-#     - BUILD_TYPE=Debug
-#     - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
-#     - !reference [.build_any, script]
 #
 # build-macOs-clang-x86_64-debug:
 #   stage: build
@@ -367,6 +368,21 @@ test-macOs-clang-arm64-debug:
     - job: build-macOs-clang-arm64-debug
       optional: true
 
+test-macOs-llvm_gcc-arm64-debug:
+  stage: test
+  tags:
+    - $MACOS_TAG
+  script:
+    #- COMPILER_C=gcc
+    - COMPILER_C=llvm-gcc
+    - ARCHITECTURE=arm64
+    - BUILD_TYPE=Debug
+    - !reference [.test_any, script]
+  # when: manual
+  needs:
+    - job: build-macOs-llvm_gcc-arm64-debug
+      optional: true
+
 
 
 # test-windows-cl-UWP_x64-release:
@@ -416,21 +432,6 @@ test-macOs-clang-arm64-debug:
 #
 # ###################
 #
-#
-# test-macOs-llvm_gcc-arm64-debug:
-#   stage: test
-#   tags:
-#     - $MACOS_TAG
-#   script:
-#     #- COMPILER_C=gcc
-#     - COMPILER_C=llvm-gcc
-#     - ARCHITECTURE=arm64
-#     - BUILD_TYPE=Debug
-#     - !reference [.test_any, script]
-#   # when: manual
-#   needs:
-#     - job: build-macOs-llvm_gcc-arm64-debug
-#       optional: true
 #
 #
 #
