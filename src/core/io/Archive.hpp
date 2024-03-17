@@ -11,7 +11,7 @@
 #include "InputOutput.hpp"
 
 #ifndef HUB_NON_BUILD_IO
-#include "io/Header.hpp"
+#    include "io/Header.hpp"
 #endif
 
 namespace hub {

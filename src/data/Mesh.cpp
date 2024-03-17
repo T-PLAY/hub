@@ -322,25 +322,17 @@ bool Mesh::operator==( const Mesh& other ) const {
 }
 
 bool Shape::operator==( const Shape& other ) const {
-    // if ( vertices != other.vertices ) {
-        // std::cout << "vertices differ" << std::endl;
-        // for ( int i = 0; i < vertices.size(); ++i ) {
-        //     const auto& vertex  = vertices.at( i );
-        //     const auto& vertex2 = other.vertices.at( i );
-        //     if ( !( vertex == vertex2 ) ) { std::cout << "vertex differ " << vertex << " != " << vertex2 << std::endl; }
-        // }
-    // }
-    // if ( indices != other.indices ) { std::cout << "indices differ" << std::endl; }
     return vertices == other.vertices && hasNormal == other.hasNormal && indices == other.indices &&
            name == other.name && material == other.material;
 }
 
-std::string Vertex::toString() const
-{
+std::string Vertex::toString() const {
     std::string str;
-    str += "x:" + std::to_string(px) + " y:" + std::to_string(py) + " z:" + std::to_string(pz);
-    str += "nx:" + std::to_string(nx) + " ny:" + std::to_string(ny) + " nz:" + std::to_string(nz);
-    str += "tx:" + std::to_string(tx) + " ty:" + std::to_string(ty);
+    str +=
+        "x:" + std::to_string( px ) + " y:" + std::to_string( py ) + " z:" + std::to_string( pz );
+    str += "nx:" + std::to_string( nx ) + " ny:" + std::to_string( ny ) +
+           " nz:" + std::to_string( nz );
+    str += "tx:" + std::to_string( tx ) + " ty:" + std::to_string( ty );
 
     return str;
 }

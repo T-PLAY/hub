@@ -87,9 +87,9 @@ static std::map<int, Key> s_input2key {
 };
 
 Key key_press() {
-#ifndef HUB_BUILD_UWP
-/// Todo fix this
-/// #    if WINAPI_FAMILY_PARTITION( WINAPI_PARTITION_DESKTOP )
+#    ifndef HUB_BUILD_UWP
+    /// Todo fix this
+    /// #    if WINAPI_FAMILY_PARTITION( WINAPI_PARTITION_DESKTOP )
 
     if ( !g_mainWindow ) { g_mainWindow = GetForegroundWindow(); }
 

@@ -140,7 +140,8 @@ class SRC_API Anyable
                                                                                  format::Vec4,
                                                                                  format::Vec3
 #ifndef HUB_NON_BUILD_DATA
-                                                                                 , data::Mesh
+                                                                                 ,
+                                                                                 data::Mesh
 #endif
                                                                                  >();
 

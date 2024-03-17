@@ -202,10 +202,10 @@ static double StandardDeviation( const T& first, const T& last ) {
 } // namespace algo
 
 static void _checkValue( double value,
-                  const std::string& name,
-                  const std::string& unit,
-                  const std::string& filename,
-                  int line ) {
+                         const std::string& name,
+                         const std::string& unit,
+                         const std::string& filename,
+                         int line ) {
 
     std::string filename2 = filename;
     filename2             = ReplaceAll( filename, ".", "_" );
