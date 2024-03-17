@@ -1,5 +1,6 @@
 #! /bin/bash -e
 
+cd $(git rev-parse --show-toplevel)
 
 projectBeginDate=$(git log --full-history --reverse --format=%as . | head -1)
 projectEndDate=$(git log --full-history --format="%as" . | head -1)
@@ -11,7 +12,6 @@ projectEndYear=$(echo $projectEndDate | awk -F- '{print $1}')
 # sed -i "1s/^/$header/" ios.hpp
 # echo -e "$header\n$(cat $file)" > $file
 
-cd $(git rev-parse --show-toplevel)
 
 # file=src/core/ios.hpp
 # for file in $(find $(cat scripts/source_dirs.txt) -type f \( -name "*.hpp" \)); do
@@ -35,10 +35,16 @@ for file in $(find src/ -type f \( -name "*.hpp" \)); do
 	cat /tmp/tmp.txt > $file
 
 
-	header="/// © $projectBeginYear-$projectEndYear Hub, All Rights Reserved
-/// @author $authorName <$authorEmail>
-/// @date $authorDate
-	"
+	header="/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright © $projectBeginYear-$projectEndYear Hub. All Rights Reserved.
+ * @author $authorName <$authorEmail>
+ * @date $authorDate
+ */
+"
 
 	echo "$header"
 	# echo -e "$header\n$(cat $file)" > $file
