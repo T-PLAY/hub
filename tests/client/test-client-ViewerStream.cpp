@@ -93,12 +93,12 @@ TEST_CASE( "Viewer stream" ) {
             CONSTRUCT_END( "Server" );
             server.asyncRun();
 
-            while ( !viewer.isConnected() && iTry < 20 ) {
+            while ( (!viewer.isConnected() || nServerConnected == 0) && iTry < 20 ) {
                 std::cout << "[test] waiting for viewer connected" << std::endl;
                 std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
                 ++iTry;
             }
-            CHECK( iTry != 20 );
+            CHECK( iTry < 20 );
             CHECK( viewer.isConnected() );
             CHECK( nServerConnected == 1 );
 
