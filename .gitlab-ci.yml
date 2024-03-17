@@ -60,6 +60,21 @@ cache:
     # - cmake -B $CACHE_PATH/build-release -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
     - cmake --build $buildDir --config $BUILD_TYPE --parallel
     - cmake --install $buildDir --config $BUILD_TYPE
+
+.build_mac:
+  script:
+    # - pwd -P
+    - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-$ARCHITECTURE-$COMPILER_C-$BUILD_TYPE
+    - installDir=$CACHE_PATH/$CI_COMMIT_BRANCH/install-$ARCHITECTURE-$COMPILER_C-$BUILD_TYPE
+    # - buildDir=build-$COMPILER_C-$BUILD_TYPE
+    # - cmake -B $CACHE_PATH/build-cl-release -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
+    - mkdir -p $buildDir
+    # - cmake -B $buildDir -DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=$installDir $CMAKE_CONFIGURE_ARGS
+    - cmake -B $buildDir -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=$installDir $CMAKE_CONFIGURE_ARGS
+    # - !reference [.build_any, script]
+    # - cmake -B $CACHE_PATH/build-release -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
+    - cmake --build $buildDir --config $BUILD_TYPE --parallel -j 7
+    - cmake --install $buildDir --config $BUILD_TYPE
     
 
 .test_any:
@@ -149,10 +164,10 @@ build-macOs-clang-arm64-debug:
     - ARCHITECTURE=arm64
     - BUILD_TYPE=Debug
     # - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE -j 7" # max thread failed, mac mini m2 stressed
+    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE" # max thread failed, mac mini m2 stressed
     # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
     # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
-    - !reference [.build_any, script]
+    - !reference [.build_mac, script]
   # only:
     # - master
     
@@ -167,8 +182,8 @@ build-macOs-llvm_gcc-arm64-debug:
     - COMPILER_CXX=llvm-g++
     - ARCHITECTURE=arm64
     - BUILD_TYPE=Debug
-    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON -j 7"
-    - !reference [.build_any, script]
+    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
+    - !reference [.build_mac, script]
 
 # build-windows-cl-UWP_x64-release:
 #   stage: build
