@@ -13,11 +13,17 @@ fi
 
 CI_CLANG_FORMAT_VERSION="14.0.0"
 
-CLANG_FORMAT_VERSION=$($CLANG_FORMAT_EXE --version | awk -F' ' '{print $3'})
+TMP=$($CLANG_FORMAT_EXE --version | awk -F' ' '{print $NF}')
+CLANG_FORMAT_VERSION_MAJOR=$(echo $TMP | awk -F'[.-]' '{print $1}')
+CLANG_FORMAT_VERSION_MINOR=$(echo $TMP | awk -F'[.-]' '{print $2}')
+CLANG_FORMAT_VERSION_PATCH=$(echo $TMP | awk -F'[.-]' '{print $3}')
+CLANG_FORMAT_VERSION=$CLANG_FORMAT_VERSION_MAJOR.$CLANG_FORMAT_VERSION_MINOR.$CLANG_FORMAT_VERSION_PATCH
+# echo $CLANG_FORMAT_VERSION
 if [ "$CLANG_FORMAT_VERSION" != "$CI_CLANG_FORMAT_VERSION" ]; then
 	echo "clang-format need to be compatible with CI version : $CI_CLANG_FORMAT_VERSION"
 	exit 1
 fi
+
 
 cd $(git rev-parse --show-toplevel)
 
