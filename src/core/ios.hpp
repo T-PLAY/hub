@@ -82,7 +82,7 @@ static constexpr bool has_data_v = has_data<T>::value;
 /// \brief isPacket
 ///
 template <class T>
-constexpr bool isPacket = has_data_v<T> && has_size_v<T>;
+constexpr bool isPacket = has_data_v<T>&& has_size_v<T>;
 
 #endif
 

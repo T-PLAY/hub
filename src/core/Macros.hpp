@@ -535,8 +535,7 @@ constexpr auto sizeOf() {
 }
 
 template <class... Ts>
-    requires( sizeof...( Ts ) > 1 )
-constexpr auto sizeOf() {
+requires( sizeof...( Ts ) > 1 ) constexpr auto sizeOf() {
     return ( sizeOf<Ts>() + ... );
 }
 

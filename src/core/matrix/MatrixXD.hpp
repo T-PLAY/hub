@@ -26,9 +26,9 @@ namespace hub {
 ///
 template <class Type, Size_t... Ns>
 #if CPP_VERSION >= 20
-    requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
+requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
 #endif
-class MatrixXDBase
+    class MatrixXDBase
 {
     static_assert( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) );
 
@@ -74,9 +74,9 @@ class MatrixXDBase
     ///
     template <Size_t i>
 #if CPP_VERSION >= 20
-        requires( 0 <= i && i < nDim() )
+    requires( 0 <= i && i < nDim() )
 #endif
-    static constexpr auto getDim() {
+        static constexpr auto getDim() {
         static_assert( 0 <= i && i < nDim() );
         auto j = 0;
         for ( auto dim : { Ns... } ) {
@@ -90,7 +90,9 @@ class MatrixXDBase
     /// \brief data
     /// \return
     ///
-    const Data_t* data() const { return m_buffer.data(); }
+    const Data_t* data() const {
+        return m_buffer.data();
+    }
 
     ///
     /// \brief hasType
@@ -132,9 +134,9 @@ class MatrixXDBase
 
     template <Size_t ith>
 #if CPP_VERSION >= 20
-        requires( ith == 0 )
+    requires( ith == 0 )
 #endif
-    using getType = Type;
+        using getType = Type;
 
   public:
     template <class... Args>
@@ -160,7 +162,9 @@ class MatrixXDBase
     ///
     /// \brief toString
     ///
-    constexpr auto toString() const { return name() + " = " + m_buffer.toString(); }
+    constexpr auto toString() const {
+        return name() + " = " + m_buffer.toString();
+    }
 
     ///
     /// \brief get
@@ -198,7 +202,9 @@ class MatrixXDBase
     /// \param mat
     /// \return
     ///
-    bool operator==( const Matrix& mat ) { return getMatrix() == mat; }
+    bool operator==( const Matrix& mat ) {
+        return getMatrix() == mat;
+    }
 
   private:
     // Buffer<Type, Capacity> m_buffer;
@@ -212,9 +218,9 @@ static_assert( isMatrix<MatrixXDBase<int, 2>> );
 ///
 template <class Type, Size_t... Ns>
 #if CPP_VERSION >= 20
-    requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
+requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
 #endif
-class MatrixXD : public MatrixXDBase<Type, Ns...>
+    class MatrixXD : public MatrixXDBase<Type, Ns...>
 {
     static_assert( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) );
 
@@ -242,9 +248,9 @@ class MatrixXD : public MatrixXDBase<Type, Ns...>
 ///
 template <class Type, Size_t N>
 #if CPP_VERSION >= 20
-    requires( N > 1 )
+requires( N > 1 )
 #endif
-class MatrixXD<Type, N> : public MatrixXDBase<Type, N>
+    class MatrixXD<Type, N> : public MatrixXDBase<Type, N>
 {
     static_assert( N > 1 );
 

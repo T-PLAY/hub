@@ -105,16 +105,16 @@ class SRC_API SerializerT
     ///     static constexpr auto isMap = has_it_first_v<T>&& has_it_second_v<T>;
     /// #    else
     template <class T>
-    static constexpr bool isMap = has_it_first_v<T> && has_it_second_v<T>;
+    static constexpr bool isMap = has_it_first_v<T>&& has_it_second_v<T>;
     /// #    endif
 
 #elif defined( COMPILER_CLANG )
 #    if CLANG_VERSION >= 14
     template <class T>
-    static constexpr auto isMap = has_it_first_v<T> && has_it_second_v<T>;
+    static constexpr auto isMap = has_it_first_v<T>&& has_it_second_v<T>;
 #    else
     template <class T>
-    static constexpr auto isMap = has_it_first_v<T> && has_it_second_v<T>;
+    static constexpr auto isMap = has_it_first_v<T>&& has_it_second_v<T>;
 #    endif
 
 #else
@@ -122,7 +122,7 @@ class SRC_API SerializerT
     /// \brief isMap
     ///
     template <class T>
-    static constexpr auto isMap = has_it_first_v<T> && has_it_second_v<T>;
+    static constexpr auto isMap = has_it_first_v<T>&& has_it_second_v<T>;
 #endif
 
     ///
@@ -473,7 +473,7 @@ class SRC_API SerializerT
 #ifdef ARCH_X86
     void read( size_t size ) = delete; // non compatible format 32/64 bit
 #else
-    void read( uint32_t size ) = delete; // non compatible format 32/64 bit
+    void read( uint32_t size )  = delete; // non compatible format 32/64 bit
 #endif
 
     ///

@@ -21,10 +21,14 @@ namespace hub {
 
 #if CPLUSPLUSVERSION >= 20
 template <class T>
-concept isMatrix = requires { T::matrix; };
+concept isMatrix = requires {
+    T::matrix;
+};
 
 template <class... Ts>
-concept areMatrices = requires { requires( isMatrix<Ts> && ... ); };
+concept areMatrices = requires {
+    requires( isMatrix<Ts> && ... );
+};
 
 #else
 

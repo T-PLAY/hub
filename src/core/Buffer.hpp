@@ -147,7 +147,9 @@ class Buffer<Type, Size, StaticMemory> : public BufferBase<Type, Size, StaticMem
 
 #if CPP_VERSION >= 20
     using Span = typename BufferBase<Type, Size, StaticMemory>::Span;
-    Span getSpan() override { return Span { m_array.begin(), m_array.end() }; }
+    Span getSpan() override {
+        return Span { m_array.begin(), m_array.end() };
+    }
 #endif
 
   private:
@@ -204,7 +206,9 @@ class Buffer<Type, Size, DynamicMemory> : public BufferBase<Type, Size, DynamicM
 
 #if CPP_VERSION >= 20
     using Span = typename BufferBase<Type, Size, DynamicMemory>::Span;
-    Span getSpan() override { return std::span<Type, Size> { m_vector.begin(), m_vector.end() }; }
+    Span getSpan() override {
+        return std::span<Type, Size> { m_vector.begin(), m_vector.end() };
+    }
 #endif
 
   private:

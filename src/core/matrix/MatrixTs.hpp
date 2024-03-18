@@ -27,9 +27,9 @@ namespace hub {
 ///
 template <class... Types>
 #if CPP_VERSION >= 20
-    requires( sizeof...( Types ) > 1 )
+requires( sizeof...( Types ) > 1 )
 #endif
-class MatrixTs
+    class MatrixTs
 {
     static_assert( sizeof...( Types ) > 1 );
 
@@ -75,9 +75,9 @@ class MatrixTs
     ///
     template <Size_t i>
 #if CPP_VERSION >= 20
-        requires( i == 0 )
+    requires( i == 0 )
 #endif
-    static constexpr auto getDim() {
+        static constexpr auto getDim() {
         static_assert( i == 0 );
         return 1;
     }
@@ -90,13 +90,17 @@ class MatrixTs
     /// \brief data
     /// \return
     ///
-    const Data_t* data() const { return m_buffer.data(); }
+    const Data_t* data() const {
+        return m_buffer.data();
+    }
 
     ///
     /// \brief data
     /// \return
     ///
-    Data_t* data() { return m_buffer.data(); };
+    Data_t* data() {
+        return m_buffer.data();
+    };
 
     ///
     /// \brief hasType
@@ -219,12 +223,16 @@ class MatrixTs
     /// \brief name
     /// \return
     ///
-    static CONSTEXPR20 std::string name() { return printName<Types...>(); }
+    static CONSTEXPR20 std::string name() {
+        return printName<Types...>();
+    }
 
     ///
     /// \brief toString
     ///
-    constexpr auto toString() const { return name() + " = " + m_buffer.toString(); }
+    constexpr auto toString() const {
+        return name() + " = " + m_buffer.toString();
+    }
 
     ///
     /// \brief getOffset
@@ -241,7 +249,9 @@ class MatrixTs
     /// \brief serialize
     /// \param mat
     ///
-    void serialize( Matrix& mat ) const { serialize_<Types...>( mat ); }
+    void serialize( Matrix& mat ) const {
+        serialize_<Types...>( mat );
+    }
 
     ///
     /// \brief getMatrix
@@ -259,7 +269,9 @@ class MatrixTs
     /// \param mat
     /// \return
     ///
-    bool operator==( const Matrix& mat ) const { return getMatrix() == mat; }
+    bool operator==( const Matrix& mat ) const {
+        return getMatrix() == mat;
+    }
 
     ///
     /// \brief serialize_

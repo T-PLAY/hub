@@ -104,7 +104,7 @@ class InputSensor : public Sensor
     ///
     template <class InputT>
 #if CPP_VERSION >= 20
-        requires std::is_base_of_v<Input, std::remove_cvref_t<InputT>>
+    requires std::is_base_of_v<Input, std::remove_cvref_t<InputT>>
 #endif
     // REQUIRES (std::is_base_of_v<Input, std::remove_cvref_t<InputT>>)
     explicit InputSensor( InputT&& input ) : Sensor( SensorSpec {} ) {
@@ -121,7 +121,7 @@ class InputSensor : public Sensor
     ///
     template <class InputT>
 #if CPP_VERSION >= 20
-        requires std::is_base_of_v<Input, std::remove_cvref_t<InputT>>
+    requires std::is_base_of_v<Input, std::remove_cvref_t<InputT>>
 #endif
     InputSensor( InputT&& input, InputT&& input2 ) : Sensor( SensorSpec {} ) {
         static_assert( std::is_base_of_v<Input, std::remove_cvref_t<InputT>> );
@@ -249,19 +249,25 @@ class InputSensor : public Sensor
     /// \brief getInput
     /// \return
     ///
-    const Input& getInput() const { return *m_inputs.at( 0 ); }
+    const Input& getInput() const {
+        return *m_inputs.at( 0 );
+    }
 
     ///
     /// \brief acqMsg
     /// \return
     ///
-    Acquisition acqMsg() const { return make_acquisition( m_spec.getResolution() ); }
+    Acquisition acqMsg() const {
+        return make_acquisition( m_spec.getResolution() );
+    }
 
     ///
     /// \brief getInput
     /// \return
     ///
-    Input& getInput() { return *m_inputs.at( 0 ); }
+    Input& getInput() {
+        return *m_inputs.at( 0 );
+    }
 
   private:
     std::vector<Input*> m_inputs;
