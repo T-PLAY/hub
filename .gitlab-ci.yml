@@ -3,34 +3,24 @@
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/C++.gitlab-ci.yml
 
-# using Radium development dedicated image
-# image: stormirit/radium_dev:latest
-#image: docker-linux
 variables:
   CACHE_PATH: "cache15"
   GIT_STRATEGY: fetch
   LINUX_TAG: "linux"
   WIN_TAG: "windows"
   MACOS_TAG: "macOs"
-  # GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_CONCURRENT_ID/$CI_PROJECT_PATH
 
-#https://docs.gitlab.com/ee/ci/yaml/#extends
 # .branches_with_ci:
   # only:
     # - master
 
-
 stages: 
-  # - dep
-  # - fetch
   - build
-  # - build-debug
-  # - build-release
-  - test
+  # - test
   # - coverage
-  # - code-analysis
-  # - format
-  # - doc
+  - code-analysis
+  - format
+  - doc
 
 # cache:
 #     key: ${CI_COMMIT_REF_SLUG}
@@ -83,21 +73,8 @@ cache:
     - cmake --build $buildDir --config $BUILD_TYPE --target hub-tests-bin
     # - cmake --build build-$COMPILER_C-$BUILD_TYPE --config $BUILD_TYPE --target tests
 
-#############################################
 
-# fetch-win10:
-#   stage: fetch
-#   tags:
-#     - win10
-#   script:
-#     - git fetch
-#
-# fetch-linux:
-#   stage: fetch
-#   tags:
-#     - linux
-#   script:
-#     - git fetch
+############################################# Build ############################################
 
 ############################################# Linux
 
@@ -110,347 +87,224 @@ build-linux-clang-x64-release:
     - COMPILER_CXX=clang++
     - ARCHITECTURE=x64
     - BUILD_TYPE=Release
-    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
+    # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
+    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_BUILD_DOC=ON -DHUB_ENABLE_COVERAGE=ON -DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
-  
-build-linux-gcc-x64-debug:
-  stage: build
+
+cppCheck:
+  stage: code-analysis
   tags:
     - $LINUX_TAG
   script:
-    - COMPILER_C=gcc
-    - COMPILER_CXX=g++
-    - ARCHITECTURE=x64
-    - BUILD_TYPE=Debug
-    # - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
-    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
-    - !reference [.build_any, script]
-  
-############################################# Windows
-
-build-windows-cl-x64-release:
-  stage: build
-  tags:
-    - $WIN_TAG
-  script:
-    - COMPILER_C=cl
-    - COMPILER_CXX=cl
+    - COMPILER_C=clang
     - ARCHITECTURE=x64
     - BUILD_TYPE=Release
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
-    - !reference [.build_any, script]
-
-build-windows-cl-Win32-debug:
-  stage: build
-  tags:
-    - $WIN_TAG
-  script:
-    - COMPILER_C=cl
-    - COMPILER_CXX=cl
-    - ARCHITECTURE=Win32
-    - BUILD_TYPE=Debug
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
-    - !reference [.build_any, script]
-
-############################################# MacOS
-
-build-macOs-clang-arm64-debug:
-  stage: build
-  tags:
-    - $MACOS_TAG
-  script:
-    - COMPILER_C=clang
-    - COMPILER_CXX=clang++
-    - ARCHITECTURE=arm64
-    - BUILD_TYPE=Debug
-    # - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE" # max thread failed, mac mini m2 stressed
-    # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
-    # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
-    - !reference [.build_mac, script]
-  # only:
-    # - master
+    - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-$ARCHITECTURE-$COMPILER_C-$BUILD_TYPE
+    - cmake --build $buildDir --target hub-cppCheck
+    # - apt update
+    # - apt install -y cppcheck
+    # - cppcheck --enable=all --error-exitcode=1 src tests server -I src -I server/libServer/ --inline-suppr --suppress=toomanyconfigs --suppress=missingIncludeSystem --suppress=noValidConfiguration
+    # - cppcheck --enable=all src server --error-exitcode=1 --suppress=unusedFunction --suppress=missingInclude
+    # - cmake --build ${CACHE_PATH}/build-clang-release --target cppCheck
     
-build-macOs-llvm_gcc-arm64-debug:
-  stage: build
+format:
+  stage: format
   tags:
-    - $MACOS_TAG
+    - $LINUX_TAG
   script:
-    #- COMPILER_C=gcc
-    - COMPILER_C=llvm-gcc
-    #- COMPILER_CXX=g++
-    - COMPILER_CXX=llvm-g++
-    - ARCHITECTURE=arm64
-    - BUILD_TYPE=Debug
-    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
-    - !reference [.build_mac, script]
+    - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-x64-clang-Release
+    - cmake --build $buildDir --target hub-cleanup
+    - git diff --exit-code
 
-# build-windows-cl-UWP_x64-release:
-#   stage: build
-#   tags:
-#     - $WIN_TAG
-#   script:
-#     - COMPILER_C=cl
-#     - COMPILER_CXX=cl
-#     - ARCHITECTURE=x64
-#     - BUILD_TYPE=Release
-#     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0"
-#     - !reference [.build_any, script]
-#
-
-# build-windows-cl-UWP_ARM64-debug:
-#   stage: build
-#   tags:
-#     - $WIN_TAG
-#   script:
-#     - COMPILER_C=cl
-#     - COMPILER_CXX=cl
-#     - ARCHITECTURE=ARM64
-#     - BUILD_TYPE=Debug
-#     - CMAKE_CONFIGURE_ARGS="-A $ARCHITECTURE -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0"
-#     - !reference [.build_any, script]
-#   # only:
-#     # - master
+doc-doxygen:
+  stage: doc
+  tags:
+    - $LINUX_TAG
+  script:
+    - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-x64-clang-Release
+    - cmake --build $buildDir --target hub-doc-doxygen
   
-# build-windows-cl-x64-debug:
+doc-sphinx:
+  stage: doc
+  tags:
+    - $LINUX_TAG
+  script:
+    - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-x64-clang-Release
+    - cmake --build $buildDir --target hub-doc-sphinx
+
+
+# build-linux-gcc-x64-debug:
 #   stage: build
 #   tags:
-#     - $WIN_TAG
+#     - $LINUX_TAG
 #   script:
-#     - COMPILER_C=cl
-#     - COMPILER_CXX=cl
+#     - COMPILER_C=gcc
+#     - COMPILER_CXX=g++
 #     - ARCHITECTURE=x64
 #     - BUILD_TYPE=Debug
-#     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
-#     - !reference [.build_any, script]
-#   only:
-#     - master
-#
-# build-windows-cl-ARM64-debug:
-#   stage: build
-#   tags:
-#     - $WIN_TAG
-#   script:
-#     - COMPILER_C=cl
-#     - COMPILER_CXX=cl
-#     - ARCHITECTURE=ARM64
-#     - BUILD_TYPE=Debug
-#     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
-#     - !reference [.build_any, script]
-#   only:
-#     - master
-#
-# build-windows-cl-ARM-debug:
-#   stage: build
-#   tags:
-#     - $WIN_TAG
-#   script:
-#     - COMPILER_C=cl
-#     - COMPILER_CXX=cl
-#     - ARCHITECTURE=ARM
-#     - BUILD_TYPE=Debug
-#     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
-#     - !reference [.build_any, script]
-#   only:
-#     - master
-#
-# build-windows-cl-UWP_x64-debug:
-#   stage: build
-#   tags:
-#     - $WIN_TAG
-#   script:
-#     - COMPILER_C=cl
-#     - COMPILER_CXX=cl
-#     - ARCHITECTURE=UWP-x64
-#     - BUILD_TYPE=Debug
-#     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A x64 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0"
-#     - !reference [.build_any, script]
-#   only:
-#     - master
-#
-
-
-#################################### MacOs
-
-# build-macOs-clang-arm64-release:
-#   stage: build
-#   tags:
-#     - $MACOS_TAG
-#   script:
-#     - COMPILER_C=clang
-#     - COMPILER_CXX=clang++
-#     - ARCHITECTURE=arm64
-#     - BUILD_TYPE=Release
 #     # - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
 #     - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
 #     - !reference [.build_any, script]
 #
+# ############################################# Windows
 #
-# build-macOs-clang-x86_64-debug:
+# build-windows-cl-x64-release:
+#   stage: build
+#   tags:
+#     - $WIN_TAG
+#   script:
+#     - COMPILER_C=cl
+#     - COMPILER_CXX=cl
+#     - ARCHITECTURE=x64
+#     - BUILD_TYPE=Release
+#     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
+#     - !reference [.build_any, script]
+#
+# build-windows-cl-Win32-debug:
+#   stage: build
+#   tags:
+#     - $WIN_TAG
+#   script:
+#     - COMPILER_C=cl
+#     - COMPILER_CXX=cl
+#     - ARCHITECTURE=Win32
+#     - BUILD_TYPE=Debug
+#     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
+#     - !reference [.build_any, script]
+#
+# ############################################# MacOS
+#
+# build-macOs-clang-arm64-debug:
 #   stage: build
 #   tags:
 #     - $MACOS_TAG
 #   script:
 #     - COMPILER_C=clang
 #     - COMPILER_CXX=clang++
-#     - ARCHITECTURE=x86_64
+#     - ARCHITECTURE=arm64
 #     - BUILD_TYPE=Debug
-#     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
+#     # - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
+#     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE" # max thread failed, mac mini m2 stressed
 #     # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
-#     - !reference [.build_any, script]
-#   only:
-#     - master
-
-
-
-  
-############################################ TESTS
-
-test-linux-clang-x64-release:
-  stage: test
-  tags:
-    - $LINUX_TAG
-  script:
-    - COMPILER_C=clang
-    - ARCHITECTURE=x64
-    - BUILD_TYPE=Release
-    - !reference [.test_any, script]
-  # when: manual
-  needs:
-    - job: build-linux-clang-x64-release
-      optional: true
-
-###################
-
-
-test-linux-gcc-x64-debug:
-  stage: test
-  tags:
-    - $LINUX_TAG
-  script:
-    - COMPILER_C=gcc
-    - ARCHITECTURE=x64
-    - BUILD_TYPE=Debug
-    - !reference [.test_any, script]
-  # when: manual
-  needs:
-    - job: build-linux-gcc-x64-debug
-      optional: true
-
-############################################ DOS
-
-test-windows-cl-x64-release:
-  stage: test
-  tags:
-    - $WIN_TAG
-  script:
-    - COMPILER_C=cl
-    - ARCHITECTURE=x64
-    - BUILD_TYPE=Release
-    - !reference [.test_any, script]
-  # when: manual
-  needs:
-    - job: build-windows-cl-x64-release
-      optional: true
-
-test-windows-cl-Win32-debug:
-  stage: test
-  tags:
-    - $WIN_TAG
-  script:
-    - COMPILER_C=cl
-    - ARCHITECTURE=Win32
-    - BUILD_TYPE=Debug
-    - !reference [.test_any, script]
-  # when: manual
-  needs:
-    - job: build-windows-cl-Win32-debug
-      optional: true
-
-############################################ MacOs
-
-test-macOs-clang-arm64-debug:
-  stage: test
-  tags:
-    - $MACOS_TAG
-  script:
-    - COMPILER_C=clang
-    - ARCHITECTURE=arm64
-    - BUILD_TYPE=Debug
-    - !reference [.test_any, script]
-  # when: manual
-  needs:
-    - job: build-macOs-clang-arm64-debug
-      optional: true
-
-test-macOs-llvm_gcc-arm64-debug:
-  stage: test
-  tags:
-    - $MACOS_TAG
-  script:
-    #- COMPILER_C=gcc
-    - COMPILER_C=llvm-gcc
-    - ARCHITECTURE=arm64
-    - BUILD_TYPE=Debug
-    - !reference [.test_any, script]
-  # when: manual
-  needs:
-    - job: build-macOs-llvm_gcc-arm64-debug
-      optional: true
-
-
-
-# test-windows-cl-UWP_x64-release:
+#     # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
+#     - !reference [.build_mac, script]
+#   # only:
+#     # - master
+#
+# build-macOs-llvm_gcc-arm64-debug:
+#   stage: build
+#   tags:
+#     - $MACOS_TAG
+#   script:
+#     #- COMPILER_C=gcc
+#     - COMPILER_C=llvm-gcc
+#     #- COMPILER_CXX=g++
+#     - COMPILER_CXX=llvm-g++
+#     - ARCHITECTURE=arm64
+#     - BUILD_TYPE=Debug
+#     - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
+#     - !reference [.build_mac, script]
+#
+#
+#
+# ############################################ TESTS ##############################################
+#
+# ############################################# Linux
+#
+# test-linux-clang-x64-release:
 #   stage: test
 #   tags:
-#     - $WIN_TAG
+#     - $LINUX_TAG
 #   script:
-#     - COMPILER_C=cl
+#     - COMPILER_C=clang
 #     - ARCHITECTURE=x64
 #     - BUILD_TYPE=Release
 #     - !reference [.test_any, script]
 #   # when: manual
 #   needs:
-#     - job: build-windows-cl-UWP_x64-release
-#       optional: true
-
-
-
-# test-windows-cl-UWP_ARM64-debug:
-#   stage: test
-#   tags:
-#     - $WIN_TAG
-#   script:
-#     - COMPILER_C=cl
-#     - ARCHITECTURE=ARM64
-#     - BUILD_TYPE=Debug
-#     - !reference [.test_any, script]
-#   # when: manual
-#   needs:
-#     - job: build-windows-cl-UWP_ARM64-debug
-#       optional: true
-
-
-# test-macOs-clang-arm64-release:
-#   stage: test
-#   tags:
-#     - $MACOS_TAG
-#   script:
-#     - COMPILER_C=clang
-#     - ARCHITECTURE=arm64
-#     - BUILD_TYPE=Release
-#     - !reference [.test_any, script]
-#   # when: manual
-#   needs:
-#     - job: build-macOs-clang-arm64-release
+#     - job: build-linux-clang-x64-release
 #       optional: true
 #
 # ###################
 #
 #
+# test-linux-gcc-x64-debug:
+#   stage: test
+#   tags:
+#     - $LINUX_TAG
+#   script:
+#     - COMPILER_C=gcc
+#     - ARCHITECTURE=x64
+#     - BUILD_TYPE=Debug
+#     - !reference [.test_any, script]
+#   # when: manual
+#   needs:
+#     - job: build-linux-gcc-x64-debug
+#       optional: true
 #
+# ############################################ DOS
 #
+# test-windows-cl-x64-release:
+#   stage: test
+#   tags:
+#     - $WIN_TAG
+#   script:
+#     - COMPILER_C=cl
+#     - ARCHITECTURE=x64
+#     - BUILD_TYPE=Release
+#     - !reference [.test_any, script]
+#   # when: manual
+#   needs:
+#     - job: build-windows-cl-x64-release
+#       optional: true
 #
+# test-windows-cl-Win32-debug:
+#   stage: test
+#   tags:
+#     - $WIN_TAG
+#   script:
+#     - COMPILER_C=cl
+#     - ARCHITECTURE=Win32
+#     - BUILD_TYPE=Debug
+#     - !reference [.test_any, script]
+#   # when: manual
+#   needs:
+#     - job: build-windows-cl-Win32-debug
+#       optional: true
+#
+# ############################################ MacOs
+#
+# test-macOs-clang-arm64-debug:
+#   stage: test
+#   tags:
+#     - $MACOS_TAG
+#   script:
+#     - COMPILER_C=clang
+#     - ARCHITECTURE=arm64
+#     - BUILD_TYPE=Debug
+#     - !reference [.test_any, script]
+#   # when: manual
+#   needs:
+#     - job: build-macOs-clang-arm64-debug
+#       optional: true
+#
+# test-macOs-llvm_gcc-arm64-debug:
+#   stage: test
+#   tags:
+#     - $MACOS_TAG
+#   script:
+#     #- COMPILER_C=gcc
+#     - COMPILER_C=llvm-gcc
+#     - ARCHITECTURE=arm64
+#     - BUILD_TYPE=Debug
+#     - !reference [.test_any, script]
+#   # when: manual
+#   needs:
+#     - job: build-macOs-llvm_gcc-arm64-debug
+#       optional: true
+#
+
+
 
 
 
