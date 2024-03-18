@@ -54,11 +54,14 @@ jobs:
     - name: CppCheck
       run: 
         sudo apt install -y cppcheck
-        && cmake --build ${{github.workspace}}/build --target hub-cppCheck
+        cppcheck --version
+        cmake --build ${{github.workspace}}/build --target hub-cppCheck
 
     - name: Format
       run: 
         sudo apt install -y clang-format cmake-format
+        clang-format --version
+        echo "cmake-format version $(cmake-format --version)"
         cmake --build ${{github.workspace}}/build --target hub-format
         git diff --exit-code
 
