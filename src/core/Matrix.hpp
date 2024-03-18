@@ -255,7 +255,7 @@ class SRC_API Matrix
         assert( m_vector.size() == m_size );
 
         const auto offset = getOffset( i );
-        assert( 0 <= offset && offset < m_size );
+        assert( offset < m_size );
         return m_vector.data() + offset;
     }
 
@@ -269,7 +269,7 @@ class SRC_API Matrix
         assert( m_vector.size() == m_size );
 
         const auto offset = getOffset( i );
-        assert( 0 <= offset && offset < m_size );
+        assert( offset < m_size );
         return m_vector.data() + offset;
     }
 

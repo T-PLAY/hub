@@ -223,26 +223,28 @@ if(NOT WIN32)
         # # COMMAND cppcheck -DCPP_CHECK --enable=all --error-exitcode=1 src --suppress=missingIncludeSystem
         # # --suppress=toomanyconfigs --suppress=unusedFunction --suppress=virtualCallInConstructor
         COMMAND
-            cppcheck -DCPP_CHECK src -I src --error-exitcode=1 --enable=all --suppress=missingIncludeSystem
+#            cppcheck -DCPP_CHECK src -I src --error-exitcode=1 --enable=all --suppress=missingIncludeSystem
+#            --suppress=missingInclude --suppress=unusedFunction --suppress=virtualCallInConstructor --inline-suppr
+            cppcheck -DCPP_CHECK src -I src --error-exitcode=1 --enable=all
             --suppress=missingInclude --suppress=unusedFunction --suppress=virtualCallInConstructor --inline-suppr
             # # --suppress=noValidConfiguration
         COMMENT "Running cppCheck")
     custom_target_added(cppCheck)
 endif()
 
+#add_custom_target(
+#    hub-format
+#    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+#    COMMAND scripts/format-all.sh
+#    COMMENT "Format sources")
+#custom_target_added(format)
+
 add_custom_target(
     hub-format
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-    COMMAND scripts/format-all.sh
-    COMMENT "Format sources")
+    COMMAND scripts/format-project.sh
+    COMMENT "Format project")
 custom_target_added(format)
-
-add_custom_target(
-    hub-cleanup
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-    COMMAND scripts/cleanup-project.sh
-    COMMENT "Cleanup project")
-custom_target_added(cleanup)
 
 option(HUB_ENABLE_WRAPPER "Enable wrapper" OFF)
 if(HUB_ENABLE_WRAPPER)
