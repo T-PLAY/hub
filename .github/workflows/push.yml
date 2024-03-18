@@ -7,7 +7,7 @@ defaults:
 
 on:
   push:
-    branches: [ '*', '!${{ github.event.repository.default_branch }}' ]
+    branches: [ '*', "!${{ github.event.repository.default_branch }}" ]
 
 env:
   BUILD_TYPE: Debug
