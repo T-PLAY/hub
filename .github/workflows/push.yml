@@ -52,10 +52,13 @@ jobs:
       # run: cmake --build ${{github.workspace}}/build --target hub-coverage
 
     - name: CppCheck
-      run: cmake --build ${{github.workspace}}/build --target hub-cppCheck
+      run: 
+        sudo apt install -y cppcheck
+        && cmake --build ${{github.workspace}}/build --target hub-cppCheck
 
     - name: Format
       run: 
+        sudo apt install -y clang-format cmake-format
         cmake --build ${{github.workspace}}/build --target hub-format
         git diff --exit-code
 
@@ -64,7 +67,7 @@ jobs:
 
     - name: Install Sphinx and Breathe
       run:
-        sudo apt update -y && sudo apt install -y sphinx-doc
+        sudo apt install -y sphinx-doc
         && pip3 install sphinx-rtd-theme breathe sphinx-sitemap
 
     - name: Build sphinx doc
