@@ -88,18 +88,24 @@ build-linux-clang-x64-release:
     - ARCHITECTURE=x64
     - BUILD_TYPE=Release
     # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
-    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_BUILD_DOC=ON -DHUB_ENABLE_COVERAGE=ON -DHUB_ENABLE_TESTS=ON"
+    # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_BUILD_DOC=ON -DHUB_ENABLE_COVERAGE=ON -DHUB_ENABLE_TESTS=ON"
+    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_BUILD_DOC=ON -DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
+
+# coverage:
+#   stage: coverage
+#   tags:
+#     - $LINUX_TAG
+#   script:
+#     - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-x64-clang-Release
+#     - cmake --build $buildDir --target hub-coverage
 
 cppCheck:
   stage: code-analysis
   tags:
     - $LINUX_TAG
   script:
-    - COMPILER_C=clang
-    - ARCHITECTURE=x64
-    - BUILD_TYPE=Release
-    - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-$ARCHITECTURE-$COMPILER_C-$BUILD_TYPE
+    - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-x64-clang-Release
     - cmake --build $buildDir --target hub-cppCheck
     # - apt update
     # - apt install -y cppcheck
