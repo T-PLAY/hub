@@ -1,0 +1,53 @@
+
+name: Pull request
+
+defaults:
+  run:
+    shell: bash
+
+on:
+  push:
+    branches: [ !$default-branch ]
+
+env:
+  BUILD_TYPE: Debug
+
+jobs:
+  build:
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      # fail-fast: false
+      matrix:
+        config:
+          - { name: "Windows MSVC", os: windows-latest, cc: "cl.exe", cxx: "cl.exe", icon: "Windows"}
+          - { name: "Ubuntu gcc", os: ubuntu-latest, cc: "gcc", cxx: "g++", icon: "Linux" }
+          - { name: "MacOS clang", os: macos-latest, cc: "clang", cxx: "clang++", icon: "Apple" }
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Configure CMake
+      # run: cmake -B "${{github.workspace}}/build" -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_DOC=ON
+      run: cmake -B "${{github.workspace}}/build" -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=install -DHUB_ENABLE_TESTS=ON
+
+    - name: Build
+      run: cmake --build "${{github.workspace}}/build" --config ${{env.BUILD_TYPE}}
+
+    - name: Install
+      run: cmake --install "${{github.workspace}}/build" --config ${{env.BUILD_TYPE}}
+
+    - name: Test
+      run: cmake --build "${{github.workspace}}/build" --config ${{env.BUILD_TYPE}} --target hub-tests-bin # tests with C++ and native C viewers and only one instance of server for all tests
+      # run: cmake --build "${{github.workspace}}/build" --config ${{env.BUILD_TYPE}} --target hub-tests # tests only
+
+        ################################################################################################
+
+    # runs-on: ubuntu-latest
+    #
+    # - name: CppCheck
+    #   run: cmake --build ${{github.workspace}}/build --target hub-cppCheck
+    #
+    # - name: Cleanup project
+    #   run: cmake --build ${{github.workspace}}/build --target hub-cleanup
+    #
+
