@@ -166,7 +166,7 @@ requires( sizeof...( Types ) > 1 )
     /// \param args
     ///
     template <class... Args>
-    constexpr MatrixTs( Args&&... args ) : m_buffer { std::forward<Data_t&&>( args )... } {}
+    constexpr explicit MatrixTs( Args&&... args ) : m_buffer { std::forward<Data_t&&>( args )... } {}
 
     ///
     /// \brief get

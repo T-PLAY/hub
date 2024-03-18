@@ -11,6 +11,7 @@
 #pragma once
 
 #include <array>
+#include <numeric>
 
 #include "core/Macros.hpp"
 #include "core/Traits.hpp"
@@ -72,6 +73,7 @@ class SRC_API Header
     ///
     auto toString() const {
         std::string str;
+        // cppcheck-suppress useStlAlgorithm
         for ( const auto& number : m_magicNumber ) {
             str += number;
         }
