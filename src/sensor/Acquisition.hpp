@@ -60,7 +60,7 @@ class SRC_API Acquisition : public Matrix
     /// \brief operator =
     /// \return
     ///
-    Acquisition& operator=( Acquisition&& ) = default;
+    Acquisition& operator=( Acquisition&& )      = default;
     Acquisition& operator=( const Acquisition& ) = delete;
 
     ///

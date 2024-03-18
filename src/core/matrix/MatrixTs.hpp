@@ -27,9 +27,9 @@ namespace hub {
 ///
 template <class... Types>
 #if CPP_VERSION >= 20
-requires( sizeof...( Types ) > 1 )
+    requires( sizeof...( Types ) > 1 )
 #endif
-    class MatrixTs
+class MatrixTs
 {
     static_assert( sizeof...( Types ) > 1 );
 
@@ -75,9 +75,9 @@ requires( sizeof...( Types ) > 1 )
     ///
     template <Size_t i>
 #if CPP_VERSION >= 20
-    requires( i == 0 )
+        requires( i == 0 )
 #endif
-        static constexpr auto getDim() {
+    static constexpr auto getDim() {
         static_assert( i == 0 );
         return 1;
     }
@@ -135,9 +135,7 @@ requires( sizeof...( Types ) > 1 )
         if constexpr ( sizeof...( Types_ ) > 0 ) {
             return Matrix::template nType<Type>() + ( nType<Type, Types_>() + ... );
         }
-        else {
-            return Matrix::template nType<Type>();
-        }
+        else { return Matrix::template nType<Type>(); }
     }
 
     ///
@@ -150,9 +148,7 @@ requires( sizeof...( Types ) > 1 )
         if constexpr ( sizeof...( Types_ ) ) {
             return std::is_same_v<Type, Type2> + nType<Type, Types_...>();
         }
-        else {
-            return std::is_same_v<Type, Type2>;
-        }
+        else { return std::is_same_v<Type, Type2>; }
     }
 
     ///
@@ -166,7 +162,8 @@ requires( sizeof...( Types ) > 1 )
     /// \param args
     ///
     template <class... Args>
-    constexpr explicit MatrixTs( Args&&... args ) : m_buffer { std::forward<Data_t&&>( args )... } {}
+    constexpr explicit MatrixTs( Args&&... args ) :
+        m_buffer { std::forward<Data_t&&>( args )... } {}
 
     ///
     /// \brief get
@@ -177,7 +174,7 @@ requires( sizeof...( Types ) > 1 )
         static_assert( hasType<RawType>() && i < nType<RawType>() );
         const auto offset = getOffset<i, 0, RawType, Types...>();
         static_assert( 0 <= offset && offset < Size );
-        return ( Type )( m_buffer.data() + offset );
+        return (Type)( m_buffer.data() + offset );
     }
 
     ///
@@ -190,7 +187,7 @@ requires( sizeof...( Types ) > 1 )
         static_assert( hasType<RawType>() && i < nType<RawType>() );
         const auto offset = getOffset<i, 0, RawType, Types...>();
         static_assert( 0 <= offset && offset < Size );
-        return ( Type )( m_buffer.data() + offset );
+        return (Type)( m_buffer.data() + offset );
     }
 
     ///
@@ -272,9 +269,7 @@ requires( sizeof...( Types ) > 1 )
     void serialize_( Matrix& mat ) const {
         // Matrix::serialize_( mat );
         if constexpr ( isMatrix<Type_> ) { mat |= Type_().getMatrix(); }
-        else {
-            mat |= make_matrix<Type_>();
-        }
+        else { mat |= make_matrix<Type_>(); }
 
         if constexpr ( sizeof...( Types_ ) > 0 ) { serialize_<Types_...>( mat ); }
     }
@@ -289,9 +284,7 @@ requires( sizeof...( Types ) > 1 )
         if constexpr ( sizeof...( Types_ ) > 0 ) {
             return Matrix::template hasType<Type>() || isSame<Type, Types_...>();
         }
-        else {
-            return Matrix::template hasType<Type>();
-        }
+        else { return Matrix::template hasType<Type>(); }
     }
 
     ///
@@ -304,9 +297,7 @@ requires( sizeof...( Types ) > 1 )
         if constexpr ( sizeof...( Types_ ) > 0 ) {
             return std::is_same<Type, Type_>() || isSame<Type, Types_...>();
         }
-        else {
-            return std::is_same<Type, Type_>();
-        }
+        else { return std::is_same<Type, Type_>(); }
     }
 
     ///
@@ -322,18 +313,14 @@ requires( sizeof...( Types ) > 1 )
                 if constexpr ( sizeof...( Types_ ) > 0 ) {
                     return Matrix::Size + getOffset<ith, i + 1, targetType, Types_...>();
                 }
-                else {
-                    return Matrix::Size;
-                }
+                else { return Matrix::Size; }
             }
         }
         else {
             if constexpr ( sizeof...( Types_ ) > 0 ) {
                 return Matrix::Size + getOffset<ith, i, targetType, Types_...>();
             }
-            else {
-                return Matrix::Size;
-            }
+            else { return Matrix::Size; }
         }
     }
 
@@ -350,18 +337,14 @@ requires( sizeof...( Types ) > 1 )
                 if constexpr ( sizeof...( Types_ ) > 0 ) {
                     return sizeOf<Type_>() + getOffset<ith, i + 1, targetType, Types_...>();
                 }
-                else {
-                    return sizeOf<Type_>();
-                }
+                else { return sizeOf<Type_>(); }
             }
         }
         else {
             if constexpr ( sizeof...( Types_ ) > 0 ) {
                 return sizeOf<Type_>() + getOffset<ith, i, targetType, Types_...>();
             }
-            else {
-                return sizeOf<Type_>();
-            }
+            else { return sizeOf<Type_>(); }
         }
     }
 
@@ -375,9 +358,7 @@ requires( sizeof...( Types ) > 1 )
         str.erase( std::remove( str.begin(), str.end(), ' ' ), str.end() );
 
         if constexpr ( sizeof...( Types_ ) > 0 ) { return str + "_" + printName<Types_...>(); }
-        else {
-            return str;
-        }
+        else { return str; }
     }
 };
 static_assert( isMatrix<MatrixTs<int, double>> );

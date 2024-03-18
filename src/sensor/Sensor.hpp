@@ -38,10 +38,10 @@ class SRC_API Sensor
     ///
     explicit Sensor( const SensorSpec& sensorSpec ) : m_spec { sensorSpec } {}
 
-    Sensor( const Sensor& ) = delete;
-    Sensor( Sensor& )       = delete;
+    Sensor( const Sensor& )            = delete;
+    Sensor( Sensor& )                  = delete;
     Sensor& operator=( const Sensor& ) = delete;
-    Sensor& operator=( Sensor& ) = delete;
+    Sensor& operator=( Sensor& )       = delete;
 
     ///
     /// \brief acqMsg

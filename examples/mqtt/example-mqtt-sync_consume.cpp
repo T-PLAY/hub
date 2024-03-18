@@ -49,9 +49,7 @@ int main( int argc, char* argv[] ) {
             cli.subscribe( TOPICS, QOS );
             std::cout << "OK" << std::endl;
         }
-        else {
-            cout << "Session already present. Skipping subscribe." << std::endl;
-        }
+        else { cout << "Session already present. Skipping subscribe." << std::endl; }
 
         // Consume messages
 

@@ -29,16 +29,14 @@
 #    ifdef DEBUG_MSG
 #        undef DEBUG_MSG
 #    endif
-#    define DEBUG_MSG( _params )                                         \
-        do {                                                             \
-            if ( m_viewerHandler.onLogMessage ) {                        \
-                std::stringstream _sstr;                                 \
-                _sstr << m_iStreamer << ":" << _params;                  \
-                m_viewerHandler.onLogMessage( _sstr.str().c_str() );     \
-            }                                                            \
-            else {                                                       \
-                std::cout << m_iStreamer << ":" << _params << std::endl; \
-            }                                                            \
+#    define DEBUG_MSG( _params )                                              \
+        do {                                                                  \
+            if ( m_viewerHandler.onLogMessage ) {                             \
+                std::stringstream _sstr;                                      \
+                _sstr << m_iStreamer << ":" << _params;                       \
+                m_viewerHandler.onLogMessage( _sstr.str().c_str() );          \
+            }                                                                 \
+            else { std::cout << m_iStreamer << ":" << _params << std::endl; } \
         } while ( false );
 #endif
 
@@ -73,7 +71,7 @@ class ViewerStream
     ViewerStream( const ViewerStream& ) = delete;
 
     ViewerStream& operator=( const ViewerStream& ) = delete;
-    ViewerStream& operator=( ViewerStream&& ) = delete;
+    ViewerStream& operator=( ViewerStream&& )      = delete;
 
     ~ViewerStream();
 

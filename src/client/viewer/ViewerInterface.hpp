@@ -31,9 +31,7 @@
             _sstr << m_nStreamer << "/" << m_streams.size() << ":" << _params; \
             m_viewerHandler.onLogMessage( _sstr.str().c_str() );               \
         }                                                                      \
-        else {                                                                 \
-            std::cout << m_nStreamer << ":" << _params << std::endl;           \
-        }                                                                      \
+        else { std::cout << m_nStreamer << ":" << _params << std::endl; }      \
     } while ( false );
 
 namespace hub {
@@ -358,9 +356,7 @@ void ViewerInterface<InputStream>::printStatus() const {
 
         const auto& stream = pair.second;
         if ( stream == nullptr ) { str += " (" + streamName + ",null)"; }
-        else {
-            str += " (" + streamName + "," + std::to_string( stream->isStreaming() ) + ")";
-        }
+        else { str += " (" + streamName + "," + std::to_string( stream->isStreaming() ) + ")"; }
     }
     // Todo fix for Hololens, no unicode \u001B
     DEBUG_MSG( "[Viewer] status : server connected:" << m_serverConnected

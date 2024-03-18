@@ -114,11 +114,11 @@ class Node
 
 template <class Type, Size_t N = 1, Size_t... Ns>
 #if CPLUSPLUSVERSION >= 20
-requires( N > 0 && ( ( Ns > 1 ) && ... ) )
+    requires( N > 0 && ( ( Ns > 1 ) && ... ) )
 #endif
-    static Node make_node(
-        // Data_t * data
-    ) {
+static Node make_node(
+    // Data_t * data
+) {
     auto size = hub::sizeOf<Type>() * N;
     if constexpr ( sizeof...( Ns ) > 0 ) { size *= ( ... * Ns ); }
     return Node( std::move( Dims { N, Ns... } ), TYPE_NAME( Type() ), size, TYPE_ID( Type ) );

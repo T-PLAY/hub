@@ -84,7 +84,7 @@ class SRC_API SocketSystem
     SocketSystem( SocketSystem&& socket );
 
     SocketSystem& operator=( const SocketSystem& socket ) = delete;
-    SocketSystem&& operator=( SocketSystem&& socket ) = delete;
+    SocketSystem&& operator=( SocketSystem&& socket )     = delete;
 
   protected:
     ///

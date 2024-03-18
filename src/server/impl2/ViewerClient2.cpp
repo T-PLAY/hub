@@ -42,9 +42,7 @@ ViewerClient2::ViewerClient2( ServerImpl2* server, int iClient, net::ClientSocke
                 else if ( message == hub::io::StreamBase::ClientMessage::VIEWER_CLIENT_CLOSED ) {
                     m_viewerClosed = true;
                 }
-                else {
-                    assert( false );
-                }
+                else { assert( false ); }
             }
 
             if ( m_socket.isOpen() )

@@ -125,9 +125,7 @@ class SRC_API Anyable
         if constexpr ( std::is_same_v<T, void> ) {
             return std::make_pair( "void", make_anyHelper<T>() );
         }
-        else {
-            return std::make_pair( TYPE_NAME( T() ), make_anyHelper<T>() );
-        }
+        else { return std::make_pair( TYPE_NAME( T() ), make_anyHelper<T>() ); }
     }
 
     template <class... T>

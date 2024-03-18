@@ -76,9 +76,7 @@ StreamerClient2::StreamerClient2( ServerImpl2* server,
                     m_server->delStreamViewer( this );
                 }
 
-                else {
-                    assert( false );
-                }
+                else { assert( false ); }
             }
         }
         catch ( net::system::SocketSystem::exception& ex ) {

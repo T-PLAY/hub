@@ -57,7 +57,7 @@ class SRC_API ClientSocketSystem : public ClientSocketI, public SocketSystem
     ClientSocketSystem( ClientSocketSystem&& sock ) = default;
 
     ClientSocketSystem& operator=( const ClientSocketSystem& sock ) = delete;
-    ClientSocketSystem&& operator=( ClientSocketSystem&& sock ) = delete;
+    ClientSocketSystem&& operator=( ClientSocketSystem&& sock )     = delete;
 
   public:
     ///

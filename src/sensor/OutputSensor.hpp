@@ -62,11 +62,11 @@ class OutputSensor : public Sensor
     ///
     template <class OutputT = output::OutputStream,
 #if CPP_VERSION >= 20
-              requires std::is_base_of_v<hub::Output, OutputT>
+                  requires std::is_base_of_v<hub::Output, OutputT>
 #endif
               typename = typename std::enable_if_t<std::is_base_of_v<hub::Output, OutputT>>,
               class... Args>
-    OutputSensor( const SensorSpec& sensorSpec, const Args&... args ) :
+              OutputSensor( const SensorSpec& sensorSpec, const Args&... args ) :
         Sensor( sensorSpec ),
         m_output( *( new OutputT( io::make_header( sensorSpec ), args... ) ) ),
         m_outputOwner( true ) {
@@ -82,10 +82,10 @@ class OutputSensor : public Sensor
     ///
     template <class OutputT,
 #if CPP_VERSION >= 20
-              requires std::is_base_of_v<hub::Output, OutputT>
+                  requires std::is_base_of_v<hub::Output, OutputT>
 #endif
               typename = typename std::enable_if_t<std::is_base_of_v<hub::Output, OutputT>>>
-    OutputSensor( const SensorSpec& sensorSpec, OutputT& output ) :
+              OutputSensor( const SensorSpec& sensorSpec, OutputT& output ) :
         Sensor( sensorSpec ), m_output( output ) {
         static_assert( std::is_base_of_v<hub::Output, OutputT> );
 
@@ -107,10 +107,10 @@ class OutputSensor : public Sensor
     ///
     template <class OutputT,
 #if CPP_VERSION >= 20
-              requires std::is_base_of_v<hub::Output, OutputT>
+                  requires std::is_base_of_v<hub::Output, OutputT>
 #endif
               typename = typename std::enable_if_t<std::is_base_of_v<hub::Output, OutputT>>>
-    OutputSensor( const SensorSpec& sensorSpec, OutputT&& output ) :
+              OutputSensor( const SensorSpec& sensorSpec, OutputT&& output ) :
         Sensor( sensorSpec ),
         m_output( *( new OutputT( std::move( output ) ) ) ),
         m_outputOwner( true ) {
@@ -206,9 +206,7 @@ class OutputSensorT : protected Sensor
         if constexpr ( isMatrix<Resolution> ) {
             assert( Resolution().getMatrix() == m_spec.getResolution() );
         }
-        else {
-            assert( make_matrix<Resolution>() == m_spec.getResolution() );
-        }
+        else { assert( make_matrix<Resolution>() == m_spec.getResolution() ); }
 #endif
     }
 

@@ -99,18 +99,14 @@ class OutputSensor_2D_RGB8 : public OutputSensor_Instance
                         imgData[idx].g += 128;
                         imgData[idx].b += 128;
                     }
-                    else {
-                        imgData[idx].b += 128;
-                    }
+                    else { imgData[idx].b += 128; }
                 }
             }
             end = hub::sensor::getClock();
             ++dec;
 
             if ( onNewAcq ) { onNewAcq( m_streamName, acq ); }
-            else {
-                *outputSensor << acq;
-            }
+            else { *outputSensor << acq; }
 
             const auto endClock =
                 startClock + std::chrono::microseconds( (int)( 1'000'000 / maxFps ) );

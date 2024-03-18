@@ -86,9 +86,7 @@ OutputStreamServer2::OutputStreamServer2( const io::Header& header,
 #endif
                     data->m_streamerInited = true;
                 }
-                else {
-                    assert( false );
-                }
+                else { assert( false ); }
             }
             catch ( net::system::SocketSystem::exception& ex ) {
                 std::cout << "[OutputStream] catch exception : " << ex.what() << std::endl;
@@ -245,14 +243,9 @@ void OutputStreamServer2::startStreaming() {
                 data->m_mtxClientSockets.unlock();
             }
             else if ( clientType == hub::io::StreamBase::ClientType::KILLER ) {
-//                if ( data->m_killed ) {}
-//                else {
-                    data->m_killed = true;
-//                }
+                data->m_killed = true;
             }
-            else {
-                assert( false );
-            }
+            else { assert( false ); }
         }
         data->m_isStreaming = false;
 

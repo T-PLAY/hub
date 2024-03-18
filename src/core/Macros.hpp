@@ -531,13 +531,12 @@ using Size_t  = uint64_t; // max = 18'446'744'073'709'551'616 ~= 18 exa
 template <class T>
 constexpr auto sizeOf() {
     if constexpr ( requires { T::Size; } ) { return T::Size; }
-    else {
-        return sizeof( T );
-    }
+    else { return sizeof( T ); }
 }
 
 template <class... Ts>
-requires( sizeof...( Ts ) > 1 ) constexpr auto sizeOf() {
+    requires( sizeof...( Ts ) > 1 )
+constexpr auto sizeOf() {
     return ( sizeOf<Ts>() + ... );
 }
 
@@ -598,9 +597,7 @@ REQUIRES( constexpr, sizeof...( Ts ) > 0, decltype( sizeof( int ) ) )
 sizeOf( const T& t, const Ts&... ts ) {
 
     if constexpr ( sizeof...( Ts ) > 0 ) { return sizeOf( t ) + sizeOf( ts... ); }
-    else {
-        return sizeOf( t );
-    }
+    else { return sizeOf( t ); }
 }
 
 #endif

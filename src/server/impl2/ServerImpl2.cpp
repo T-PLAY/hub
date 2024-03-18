@@ -286,7 +286,7 @@ void ServerImpl2::addViewer( ViewerClient2* viewer ) {
 #else
     for ( const auto& pair : m_streamName2streamer ) {
         const auto& streamName = pair.first;
-        const auto& streamer   = pair.second;
+        const auto& streamer = pair.second;
 #endif
 
         viewer->notifyNewStreamer( streamer );

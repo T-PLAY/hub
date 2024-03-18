@@ -30,9 +30,7 @@ namespace hub {
 #if CPP_VERSION >= 20
 
 template <class T>
-concept StringAddable = requires( std::string str, const T& t ) {
-    str += t;
-};
+concept StringAddable = requires( std::string str, const T& t ) { str += t; };
 
 #else
 
@@ -70,9 +68,7 @@ static_assert( !StringAddable<std::vector<unsigned char>> );
 
 #if CPP_VERSION >= 20
 template <class T>
-concept hasToString = requires( std::ostream& os, const T& t ) {
-    os << t.toString();
-};
+concept hasToString = requires( std::ostream& os, const T& t ) { os << t.toString(); };
 
 #else
 
@@ -96,18 +92,14 @@ static constexpr auto hasToString = has_toString_v<T>;
 
 #endif
 
-    ///////////////////////////////
+///////////////////////////////
 
 #if CPP_VERSION >= 20
 template <class T>
-concept StdToStringable = requires( std::ostream& os, const T& t ) {
-    std::to_string( t );
-};
+concept StdToStringable = requires( std::ostream& os, const T& t ) { std::to_string( t ); };
 
 template <class T>
-concept toStringable_v = requires( std::ostream& os, const T& t ) {
-    toString( t );
-};
+concept toStringable_v = requires( std::ostream& os, const T& t ) { toString( t ); };
 
 #else
 
@@ -313,9 +305,7 @@ static void to_string_reduce( std::string& str, const T& t, const Ts&... ts ) {
     str += to_string( t );
     if constexpr ( sizeof...( Ts ) > 0 ) {
         if constexpr ( delimiter == ' ' ) { str += delimiter; }
-        else {
-            str += std::string( " " ) + delimiter + " ";
-        }
+        else { str += std::string( " " ) + delimiter + " "; }
         to_string_reduce<delimiter>( str, ts... );
     }
 }

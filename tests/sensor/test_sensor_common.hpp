@@ -82,33 +82,25 @@ computeSyncAcqs( const std::vector<hub::sensor::Acquisition>& leftAcqs,
 template <typename T>
 bool someEnd( const T& t ) {
     if constexpr ( hub::Endable<T> ) { return t.isEnd(); }
-    else {
-        return false;
-    }
+    else { return false; }
 }
 
 template <typename T, typename... Inputs>
 bool someEnd( const T& t, const Inputs&... args ) {
     if constexpr ( hub::Endable<T> ) { return t.isEnd() || someEnd( args... ); }
-    else {
-        return someEnd( args... );
-    }
+    else { return someEnd( args... ); }
 }
 
 template <typename T>
 bool anyEnd( const T& t ) {
     if constexpr ( hub::Endable<T> ) { return t.isEnd(); }
-    else {
-        return true;
-    }
+    else { return true; }
 }
 
 template <typename T, typename... Inputs>
 bool anyEnd( const T& t, const Inputs&... args ) {
     if constexpr ( hub::Endable<T> ) { return t.isEnd() && anyEnd( args... ); }
-    else {
-        return anyEnd( args... );
-    }
+    else { return anyEnd( args... ); }
 }
 
 template <class Input>

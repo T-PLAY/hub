@@ -54,7 +54,7 @@ class SRC_API Matrix
     /// \param mat
     /// \return
     ///
-    Matrix& operator=( Matrix&& mat ) = default;
+    Matrix& operator=( Matrix&& mat )      = default;
     Matrix& operator=( const Matrix& mat ) = delete;
 
     ///
@@ -372,9 +372,7 @@ make_matrix() {
 template <class Type, class... Types>
 void fill_matrix( Matrix& mat ) {
     if constexpr ( isMatrix<Type> ) { mat |= Type().getMatrix(); }
-    else {
-        mat |= make_matrix<Type>();
-    }
+    else { mat |= make_matrix<Type>(); }
     if constexpr ( sizeof...( Types ) > 0 ) { fill_matrix<Types...>( mat ); }
 }
 
@@ -499,9 +497,7 @@ inline bool Matrix::operator==( const Matrix& other ) const {
     if ( hasValue() && other.hasValue() ) {
         return m_nodes == other.m_nodes && m_size == other.m_size && m_vector == other.m_vector;
     }
-    else {
-        return m_nodes == other.m_nodes && m_size == other.m_size;
-    }
+    else { return m_nodes == other.m_nodes && m_size == other.m_size; }
 }
 
 #if CPP_VERSION < 20

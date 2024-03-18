@@ -43,9 +43,7 @@ class SRC_API OutputT : public OutputBase
 #endif
         assert( isOpen() );
         if constexpr ( isPacket<T> ) { write( t.data(), t.size() ); }
-        else {
-            write( reinterpret_cast<const Data_t*>( &t ), sizeof( T ) );
-        }
+        else { write( reinterpret_cast<const Data_t*>( &t ), sizeof( T ) ); }
     }
 
     ///

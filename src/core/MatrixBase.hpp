@@ -21,14 +21,10 @@ namespace hub {
 
 #if CPLUSPLUSVERSION >= 20
 template <class T>
-concept isMatrix = requires {
-    T::matrix;
-};
+concept isMatrix = requires { T::matrix; };
 
 template <class... Ts>
-concept areMatrices = requires {
-    requires( isMatrix<Ts> && ... );
-};
+concept areMatrices = requires { requires( isMatrix<Ts> && ... ); };
 
 #else
 
@@ -54,9 +50,7 @@ static constexpr bool isMatrix = is_matrix<T>::value;
 template <class T, class... Ts>
 constexpr bool areMatrices_() {
     if constexpr ( sizeof...( Ts ) > 0 ) { return isMatrix<T> && areMatrices_<Ts...>(); }
-    else {
-        return isMatrix<T>;
-    }
+    else { return isMatrix<T>; }
 }
 
 ///

@@ -28,9 +28,7 @@ int main( int argc, char* argv[] ) {
             std::cout << argv[0] << helperMsg << std::endl;
             return 0;
         }
-        else if ( arg == "--exitWhenServerLost" ) {
-            exitWhenServerLost = true;
-        }
+        else if ( arg == "--exitWhenServerLost" ) { exitWhenServerLost = true; }
         else if ( arg == "--port" ) {
             assert( it + 1 != args.end() );
             const auto& nextArg = *( it + 1 );

@@ -79,9 +79,7 @@ void InputStreamServer::read( sensor::Acquisition& acq ) {
 
         m_clientSocket.read( acq );
     }
-    else {
-        assert( false );
-    }
+    else { assert( false ); }
 
     m_readAcqWaiting = false;
 }

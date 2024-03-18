@@ -18,7 +18,8 @@ namespace hub {
 #if CPP_VERSION >= 20
 
 template <class... Types>
-requires( sizeof...( Types ) > 1 ) static inline constexpr auto MatrixT() {
+    requires( sizeof...( Types ) > 1 )
+static inline constexpr auto MatrixT() {
     return MatrixTs<Types...>();
 }
 
@@ -37,7 +38,8 @@ static inline constexpr auto MatrixT() {
     return Volume<Type, N, N2, N3>();
 }
 template <class Type, Size_t... Ns>
-requires( sizeof...( Ns ) > 3 ) static inline constexpr auto MatrixT() {
+    requires( sizeof...( Ns ) > 3 )
+static inline constexpr auto MatrixT() {
     return MatrixXD<Type, Ns...>();
 }
 
@@ -48,7 +50,8 @@ static inline constexpr auto MatrixT() {
     return Vector<Type, N>();
 }
 template <Size_t N, class... Types>
-requires( sizeof...( Types ) > 1 ) static inline constexpr auto MatrixT() {
+    requires( sizeof...( Types ) > 1 )
+static inline constexpr auto MatrixT() {
     return Vector<MatrixTs<Types...>, N>();
 }
 
@@ -57,7 +60,8 @@ static inline constexpr auto MatrixT() {
     return Image<Type, N, N2>();
 }
 template <Size_t N, Size_t N2, class... Types>
-requires( sizeof...( Types ) > 1 ) static inline constexpr auto MatrixT() {
+    requires( sizeof...( Types ) > 1 )
+static inline constexpr auto MatrixT() {
     return Image<MatrixTs<Types...>, N, N2>();
 }
 
@@ -66,7 +70,8 @@ static inline constexpr auto MatrixT() {
     return Volume<Type, N, N2, N3>();
 }
 template <Size_t N, Size_t N2, Size_t N3, class... Types>
-requires( sizeof...( Types ) > 1 ) static inline constexpr auto MatrixT() {
+    requires( sizeof...( Types ) > 1 )
+static inline constexpr auto MatrixT() {
     return Volume<MatrixTs<Types...>, N, N2, N3>();
 }
 
@@ -75,7 +80,8 @@ static inline constexpr auto MatrixT() {
     return MatrixXD<Type, N, N2, N3, N4>();
 }
 template <Size_t N, Size_t N2, Size_t N3, Size_t N4, class... Types>
-requires( sizeof...( Types ) > 1 ) static inline constexpr auto MatrixT() {
+    requires( sizeof...( Types ) > 1 )
+static inline constexpr auto MatrixT() {
     return MatrixXD<MatrixTs<Types...>, N, N2, N3, N4>();
 }
 
@@ -84,7 +90,8 @@ static inline constexpr auto MatrixT() {
     return MatrixXD<Type, N, N2, N3, N4, N5>();
 }
 template <Size_t N, Size_t N2, Size_t N3, Size_t N4, Size_t N5, class... Types>
-requires( sizeof...( Types ) > 1 ) static inline constexpr auto MatrixT() {
+    requires( sizeof...( Types ) > 1 )
+static inline constexpr auto MatrixT() {
     return MatrixXD<MatrixTs<Types...>, N, N2, N3, N4, N5>();
 }
 

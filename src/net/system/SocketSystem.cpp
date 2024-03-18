@@ -11,16 +11,12 @@ namespace system {
 std::string SocketSystem::getHeader() const {
     std::string str;
     if ( m_serverSide ) { str += "\t\033[1m[Server]\033[0m"; }
-    else {
-        str += "[Client]";
-    }
+    else { str += "[Client]"; }
     if ( utils::isValid( m_fdSock ) ) {
         str += "\033[" + std::to_string( 31 + m_fdSock % 7 ) +
                "m[socket:" + std::to_string( m_fdSock ) + "]\033[0m ";
     }
-    else {
-        str += "\033[31m[socket:invalid]\033[0m";
-    }
+    else { str += "\033[31m[socket:invalid]\033[0m"; }
     return str;
 }
 #endif

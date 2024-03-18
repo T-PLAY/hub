@@ -38,10 +38,10 @@ class SRC_API ServerSocketSystem : public ServerSocketI, public SocketSystem
     ///
     explicit ServerSocketSystem( int port );
 
-    ServerSocketSystem( const ServerSocketSystem& sock ) = delete;
-    ServerSocketSystem( ServerSocketSystem&& sock )      = delete;
+    ServerSocketSystem( const ServerSocketSystem& sock )            = delete;
+    ServerSocketSystem( ServerSocketSystem&& sock )                 = delete;
     ServerSocketSystem& operator=( const ServerSocketSystem& sock ) = delete;
-    ServerSocketSystem&& operator=( ServerSocketSystem&& sock ) = delete;
+    ServerSocketSystem&& operator=( ServerSocketSystem&& sock )     = delete;
 
     ///
     /// \brief waitNewClient

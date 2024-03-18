@@ -56,7 +56,7 @@ class SRC_API ClientSocketBoost : public ClientSocketI
     ClientSocketBoost( ClientSocketBoost&& sock );
 
     ClientSocketBoost& operator=( const ClientSocketBoost& sock ) = delete;
-    ClientSocketBoost&& operator=( ClientSocketBoost&& sock ) = delete;
+    ClientSocketBoost&& operator=( ClientSocketBoost&& sock )     = delete;
 
     ~ClientSocketBoost();
 

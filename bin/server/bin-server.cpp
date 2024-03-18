@@ -30,9 +30,7 @@ int main( int argc, char* argv[] ) {
             port                = std::atoi( nextArg.c_str() );
             ++it;
         }
-        else if ( arg == "--daemon" ) {
-            daemon = true;
-        }
+        else if ( arg == "--daemon" ) { daemon = true; }
         else {
             std::cout << "unrecognized argument: " << arg << std::endl;
             std::cout << helperMsg << std::endl;

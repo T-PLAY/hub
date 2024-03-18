@@ -63,9 +63,7 @@ class SRC_API SensorSpec
                 const MetaData& metaData = {} ) :
         m_sensorName { sensorName }, m_metaData { metaData } {
         if constexpr ( isMatrix<Resolution> ) { m_resolution = Resolution().getMatrix(); }
-        else {
-            m_resolution = make_matrix<Resolution>();
-        }
+        else { m_resolution = make_matrix<Resolution>(); }
     }
 
     ///
@@ -156,9 +154,7 @@ class SRC_API SensorSpec
     ///
     SensorSpec& operator+=( const SensorSpec& other ) {
         if ( m_sensorName == "" ) { *this = other; }
-        else {
-            *this = *this + other;
-        }
+        else { *this = *this + other; }
         return *this;
     }
 

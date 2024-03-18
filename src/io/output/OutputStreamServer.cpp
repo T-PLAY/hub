@@ -49,9 +49,7 @@ OutputStreamServer::OutputStreamServer( const std::string& streamName,
             std::cout << "[OutputStreamServer] streamer closed" << std::endl;
             *streamerClosed = true;
         }
-        else {
-            assert( false );
-        }
+        else { assert( false ); }
 
         if ( clientSocket->isOpen() )
             clientSocket->write( io::StreamBase::ClientMessage::STREAMER_CLIENT_CLOSED );

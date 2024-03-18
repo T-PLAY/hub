@@ -220,46 +220,37 @@ if(NOT WIN32)
         OUTPUT_VARIABLE CPP_CHECK_OUTPUT
         ERROR_VARIABLE CPP_CHECK_ERROR)
 
-    if (NOT CPP_CHECK_FOUND)
+    if(NOT CPP_CHECK_FOUND)
         string(REGEX MATCHALL "-.*$|[0-9]+" CPP_CHECK_VERSION_LIST ${CPP_CHECK_OUTPUT})
         list(GET CPP_CHECK_VERSION_LIST 0 CPP_CHECK_VERSION_MAJOR)
         list(GET CPP_CHECK_VERSION_LIST 1 CPP_CHECK_VERSION_MINOR)
-        # list(GET CPP_CHECK_VERSION_LIST 2 CPP_CHECK_VERSION_PATCH)
 
-        # message(STATUS "${HEADER_MSG} Cppcheck ${CPP_CHECK_VERSION_MAJOR}.${CPP_CHECK_VERSION_MINOR}.${CPP_CHECK_VERSION_PATCH} found")
         message(STATUS "${HEADER_MSG} Cppcheck ${CPP_CHECK_VERSION_MAJOR}.${CPP_CHECK_VERSION_MINOR} found")
 
         if(NOT ${CPP_CHECK_VERSION_MAJOR} EQUAL 2)
             message(FATAL_ERROR "${CPP_CHECK_OUTPUT} unsupported")
         endif()
 
-        if (${CPP_CHECK_VERSION_MINOR} GREATER 10)
+        if(${CPP_CHECK_VERSION_MINOR} GREATER 10)
             add_custom_target(
                 hub-cppCheck
                 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                 COMMAND
                     cppcheck -DCPP_CHECK src -I src --error-exitcode=1 --enable=all --suppress=missingIncludeSystem
-                    --suppress=missingInclude --suppress=unusedFunction --suppress=virtualCallInConstructor --inline-suppr
+                    --suppress=missingInclude --suppress=unusedFunction --suppress=virtualCallInConstructor
+                    --inline-suppr
                 COMMENT "Running cppCheck")
         else()
             add_custom_target(
                 hub-cppCheck
                 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-                COMMAND
-                    cppcheck -DCPP_CHECK src -I src --error-exitcode=1 --enable=all
-                    --suppress=missingInclude --suppress=unusedFunction --suppress=virtualCallInConstructor --inline-suppr
+                COMMAND cppcheck -DCPP_CHECK src -I src --error-exitcode=1 --enable=all --suppress=missingInclude
+                        --suppress=unusedFunction --suppress=virtualCallInConstructor --inline-suppr
                 COMMENT "Running cppCheck")
         endif()
         custom_target_added(cppCheck)
     endif()
 endif()
-
-#add_custom_target(
-#    hub-format
-#    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-#    COMMAND scripts/format-all.sh
-#    COMMENT "Format sources")
-#custom_target_added(format)
 
 add_custom_target(
     hub-format

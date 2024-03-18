@@ -219,9 +219,7 @@ ReadWriteStat readWriteData( ReadInputFunc& readInputFunc,
 
 #if CPP_VERSION >= 20 // concept
 template <class T>
-concept getableNCall_v = requires( const T a ) {
-    a.getNCall();
-};
+concept getableNCall_v = requires( const T a ) { a.getNCall(); };
 
 #else
 template <typename T>

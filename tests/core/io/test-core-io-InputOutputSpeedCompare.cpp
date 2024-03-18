@@ -23,9 +23,9 @@ TEST_CASE( "InputOutput speed compare test" ) {
     static constexpr size_t s_nReadWrite = 1;
 #else
 #    ifdef DEBUG
-    static constexpr size_t s_nReadWrite        = 10'000;
+    static constexpr size_t s_nReadWrite = 10'000;
 #    else
-    static constexpr size_t s_nReadWrite        = 1'000'000;
+    static constexpr size_t s_nReadWrite = 1'000'000;
 #    endif
 #endif
 
