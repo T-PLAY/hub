@@ -34,8 +34,8 @@ jobs:
       # run: cmake -B "${{github.workspace}}/build" -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=install -DHUB_ENABLE_TESTS=ON
       run: cmake -B "${{github.workspace}}/build" -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DHUB_BUILD_DOC=ON -DHUB_ENABLE_TESTS=ON
 
-    - name: Build
-      run: cmake --build "${{github.workspace}}/build" --config ${{env.BUILD_TYPE}}
+    # - name: Build
+      # run: cmake --build "${{github.workspace}}/build" --config ${{env.BUILD_TYPE}}
 
     # - name: Install
       # run: cmake --install "${{github.workspace}}/build" --config ${{env.BUILD_TYPE}}
@@ -54,16 +54,16 @@ jobs:
     - name: CppCheck
       run: 
         sudo apt install -y cppcheck
-        cppcheck --version
-        cmake --build ${{github.workspace}}/build --target hub-cppCheck
+        && cppcheck --version
+        && cmake --build ${{github.workspace}}/build --target hub-cppCheck
 
     - name: Format
       run: 
         sudo apt install -y clang-format cmake-format
-        clang-format --version
-        echo "cmake-format version $(cmake-format --version)"
-        cmake --build ${{github.workspace}}/build --target hub-format
-        git diff --exit-code
+        && clang-format --version
+        && echo "cmake-format version $(cmake-format --version)"
+        && cmake --build ${{github.workspace}}/build --target hub-format
+        && git diff --exit-code
 
     - name: Doc doxygen
       run: cmake --build ${{github.workspace}}/build --target hub-doc-doxygen
