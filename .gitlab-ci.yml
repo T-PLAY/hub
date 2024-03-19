@@ -119,7 +119,7 @@ format:
     - $LINUX_TAG
   script:
     - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-x64-clang-Release
-    - cmake --build $buildDir --target hub-cleanup
+    - cmake --build $buildDir --target hub-format
     - git diff --exit-code
 
 doc-doxygen:
