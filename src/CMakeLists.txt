@@ -393,6 +393,7 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_INCLUDE_DIR}/*.cpp)
 
     foreach(file ${src_headers})
+        message(STATUS "file : ${file}")
         get_filename_component(basename ${file} NAME)
         get_filename_component(parentDir ${file} DIRECTORY)
         get_filename_component(parentName ${parentDir} NAME)
@@ -411,6 +412,8 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
 
         set(sourcesTmp ${SOURCE_FILES})
         list(FILTER sourcesTmp EXCLUDE REGEX ".*/${name}\\.cpp$")
+
+        message(STATUS "lcov target : ${name}")
 
         setup_target_for_coverage_lcov(
             NAME
