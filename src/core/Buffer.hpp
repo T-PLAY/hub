@@ -165,7 +165,7 @@ class Buffer<Type, Size, DynamicMemory> : public BufferBase<Type, Size, DynamicM
     /// \param args
     ///
     template <class... Args>
-    constexpr Buffer( Args&&... args ) : m_vector { std::forward<Type&&>( args )... } {}
+    constexpr explicit Buffer( Args&&... args ) : m_vector { std::forward<Type&&>( args )... } {}
 
     ///
     /// \brief toString
