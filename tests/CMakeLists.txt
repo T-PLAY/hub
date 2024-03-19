@@ -52,8 +52,8 @@ if(PahoMqttCpp_FOUND)
 else()
     list(FILTER test_srcs EXCLUDE REGEX ".*Mqtt\\.cpp$")
 
-    file(GLOB mqtt_srcs mqtt/*.cpp)
-    list(REMOVE_ITEM test_srcs ${mqtt_srcs})
+    # file(GLOB mqtt_srcs mqtt/*.cpp)
+    # list(REMOVE_ITEM test_srcs ${mqtt_srcs})
 endif()
 
 if(NOT HUB_BUILD_SERVER)
