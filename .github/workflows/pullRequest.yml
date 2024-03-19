@@ -1,0 +1,87 @@
+
+name: Pull request
+
+defaults:
+  run:
+    shell: bash
+
+on:
+  pull_request:
+    branches: [ $default-branch ]
+
+env:
+  BUILD_TYPE: Debug
+
+jobs:
+  build:
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      # fail-fast: false
+      matrix:
+        config:
+          - { name: "Windows MSVC", os: windows-latest, cc: "cl.exe", cxx: "cl.exe", icon: "Windows"}
+          - { name: "Ubuntu gcc", os: ubuntu-latest, cc: "gcc", cxx: "g++", icon: "Linux" }
+          - { name: "MacOS clang", os: macos-latest, cc: "clang", cxx: "clang++", icon: "Apple" }
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Configure CMake
+      run: cmake -B "${{github.workspace}}/build" -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_DOC=ON
+      # run: cmake -B "${{github.workspace}}/build" -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=install -DHUB_ENABLE_TESTS=ON
+
+    # - name: Build
+    #   run: cmake --build "${{github.workspace}}/build" --config ${{env.BUILD_TYPE}}
+    #
+    # - name: Install
+    #   run: cmake --install "${{github.workspace}}/build" --config ${{env.BUILD_TYPE}}
+    #
+    # - name: Test
+    #   run: cmake --build "${{github.workspace}}/build" --config ${{env.BUILD_TYPE}} --target hub-tests-bin # tests with C++ and native C viewers and only one instance of server for all tests
+    #   # run: cmake --build "${{github.workspace}}/build" --config ${{env.BUILD_TYPE}} --target hub-tests # tests only
+
+        ################################################################################################
+
+    runs-on: ubuntu-latest
+
+    - name: CppCheck
+      run: cmake --build ${{github.workspace}}/build --target hub-cppCheck
+
+  # Documentation : 
+  #
+  #   - name: Sphinx Build
+  # # You may pin to the exact commit or the version.
+  # # uses: ammaraskar/sphinx-action@8b4f60114d7fd1faeba1a712269168508d4750d2
+  #     uses: ammaraskar/sphinx-action@0.4
+  #     with:
+  #     # The folder containing your sphinx docs.
+  #       docs-folder: ${{github.workspace}}/doc/docs_sphinx
+  #       # The command used to build your documentation.
+  #       build-command: make html # optional, default is make html
+  #       # Run before the build command, you can use this to install system level dependencies, for example with "apt-get update -y && apt-get install -y perl"
+  #       pre-build-command: "apt-get update -y"  # optional
+  #
+    - uses: ssciwr/doxygen-install@v1.3.0
+    - name: Doc doxygen
+      run: cmake --build ${{github.workspace}}/build --target hub-doc-doxygen
+
+    - name: Install Sphinx and Breathe
+      run:
+        sudo apt update -y && sudo apt install -y sphinx-doc
+        && pip3 install sphinx-rtd-theme breathe sphinx-sitemap
+
+    - name: Build sphinx doc
+      run:
+        cmake --build ${{github.workspace}}/build --target hub-doc-sphinx
+
+    # - name: Deploy to GitHub Pages
+    #   uses: peaceiris/actions-gh-pages@v3
+    #   # if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    #   with:
+    #     # publish_branch: gh-pages
+    #     github_token: ${{ secrets.GITHUB_TOKEN }}
+    #     publish_dir: ${{github.workspace}}/doc/docs_sphinx/_build/api/
+    #     # force_orphan: true
+
+  
+
