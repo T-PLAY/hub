@@ -49,6 +49,12 @@ struct Vertex {
     }
 
     ///
+    /// \brief toString
+    /// \return
+    ///
+    std::string toString() const;
+
+    ///
     /// \brief operator ==
     /// \param other
     /// \return
