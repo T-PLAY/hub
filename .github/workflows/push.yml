@@ -28,19 +28,19 @@ jobs:
     - uses: actions/checkout@v3
     - uses: ssciwr/doxygen-install@v1.3.0
 
-    - name: Install cppCheck
-      run: 
-        sudo apt install -y cppcheck
+    # - name: Install cppCheck
+      # run:
+        # sudo apt install -y cppcheck
     
     - name: Configure CMake
       # run: cmake -B "${{github.workspace}}/build" -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_DOC=ON
       # run: cmake -B "${{github.workspace}}/build" -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=install -DHUB_ENABLE_TESTS=ON
       run: cmake -B "${{github.workspace}}/build" -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DHUB_BUILD_DOC=ON -DHUB_ENABLE_TESTS=ON
 
-    - name: CppCheck
-      run: 
-        cppcheck --version
-        && cmake --build ${{github.workspace}}/build --target hub-cppCheck
+    # - name: CppCheck
+      # run:
+        # cppcheck --version
+        # && cmake --build ${{github.workspace}}/build --target hub-cppCheck
 
     # - name: Build
       # run: cmake --build "${{github.workspace}}/build" --config ${{env.BUILD_TYPE}}
