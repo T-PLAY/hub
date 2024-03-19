@@ -26,7 +26,7 @@ ViewerServer2::ViewerServer2( const std::string& name,
 }
 
 ViewerServer2::~ViewerServer2() {
-    DEBUG_MSG( "[Viewer] ~Viewer()" );
+    // DEBUG_MSG( "[Viewer] ~Viewer()" );
     m_stopThread = true;
 
     if ( m_sock.isOpen() ) {
@@ -39,7 +39,7 @@ ViewerServer2::~ViewerServer2() {
     }
 
     m_streams.clear();
-    DEBUG_MSG( "[Viewer] ~Viewer() done" );
+    // DEBUG_MSG( "[Viewer] ~Viewer() done" );
 }
 
 void ViewerServer2::setIpv4( const std::string& serverIpv4 ) {

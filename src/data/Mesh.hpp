@@ -64,6 +64,8 @@ struct Vertex {
         return !std::memcmp( this, &other, sizeof( Vertex ) );
     }
 };
+static_assert(sizeof(float) == 4);
+static_assert(sizeof(Vertex) == 4 * 8);
 
 ///
 /// \brief The Shape class
@@ -119,6 +121,7 @@ struct Shape {
     ///
     bool operator==( const Shape& other ) const;
 };
+static_assert(sizeof(unsigned int) == 4);
 
 ///
 /// \brief The Material class
