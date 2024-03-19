@@ -264,6 +264,10 @@ namespace sensor {
         ///
         const Input& getInput() const { return *m_inputs.at(0); }
 
+        ///
+        /// \brief acqMsg
+        /// \return
+        ///
         Acquisition acqMsg() const { return make_acquisition( m_spec.getResolution() ); }
 
         ///
