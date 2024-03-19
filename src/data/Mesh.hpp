@@ -223,7 +223,7 @@ class SRC_API Mesh
     /// \brief Mesh
     /// \param filePaths
     ///
-    Mesh( std::initializer_list<std::string> filePaths );
+    explicit Mesh( std::initializer_list<std::string> filePaths );
 
     ///
     /// \brief Mesh

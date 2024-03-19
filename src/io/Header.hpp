@@ -5,6 +5,7 @@
 #pragma once
 
 #include <array>
+#include <numeric>
 
 #include "core/Macros.hpp"
 #include "core/Traits.hpp"
@@ -66,7 +67,8 @@ class SRC_API Header
     ///
     auto toString() const {
         std::string str;
-        for (const auto & number : m_magicNumber) {
+        // cppcheck-suppress useStlAlgorithm
+        for ( const auto& number : m_magicNumber ) {
             str += number;
         }
         return str + "header size: " + std::to_string( m_headerSize ) + "\ndata size: " + std::to_string( m_dataSize ) + "\nuser defined: " +

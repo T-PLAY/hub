@@ -99,7 +99,7 @@ class Buffer<Type, Size, StaticMemory> : public BufferBase<Type, Size, StaticMem
     /// \param args
     ///
     template <class... Args>
-    constexpr Buffer( Args&&... args ) : m_array { std::forward<Type&&>( args )... } {}
+    constexpr explicit Buffer( Args&&... args ) : m_array { std::forward<Type&&>( args )... } {}
 
     ///
     /// \brief get

@@ -301,6 +301,7 @@ class SRC_API SerializerT
     template <class... Ts>
     // REQUIRES(, Serializables<Ts...>, void )
     typename std::enable_if_t<Serializables<Ts...>, void>
+    // cppcheck-suppress missingReturn
     writeAll( const Ts&... ts ) {
         const auto lastPosition = m_serializer.outPosition();
 
@@ -319,7 +320,9 @@ class SRC_API SerializerT
     template <class T, class... Ts>
     // REQUIRES(, (!Serializables<T, Ts...>), void )
     typename std::enable_if_t<(!Serializables<T, Ts...>), void>
-    writeAll( const T& t, const Ts&... ts ) {
+    // cppcheck-suppress missingReturn
+    writeAll( const T& t,
+                                                                          const Ts&... ts ) {
         write( t );
         if constexpr ( sizeof...( Ts ) > 0 ) { writeAll( ts... ); }
     }
@@ -334,6 +337,7 @@ class SRC_API SerializerT
     template <class... Ts>
     // REQUIRES(, Serializables<Ts...>, void )
     typename std::enable_if_t<Serializables<Ts...>, void>
+    // cppcheck-suppress missingReturn
     readAll( Ts&... ts ) {
         const auto lastPosition = m_serializer.inPosition();
 
@@ -352,6 +356,7 @@ class SRC_API SerializerT
     template <class T, class... Ts>
     // REQUIRES(, (!Serializables<T, Ts...>), void )
     typename std::enable_if_t<(!Serializables<T, Ts...>), void>
+    // cppcheck-suppress missingReturn
     readAll( T& t, Ts&... ts ) {
         read( t );
         if constexpr ( sizeof...( Ts ) > 0 ) { readAll( ts... ); }
@@ -409,7 +414,8 @@ class SRC_API SerializerT
     ///
     template <class T>
     // REQUIRES(, ! Writable_v<T>, void )
-    typename std::enable_if_t<! Writable_v<T>, void>
+    typename std::enable_if_t<!Writable_v<T>, void>
+    // cppcheck-suppress missingReturn
     write( const T& t ) {
 
         const auto lastPosition = m_serializer.outPosition();
@@ -481,7 +487,8 @@ class SRC_API SerializerT
     ///
     template <class T>
     // REQUIRES(, ! Readable_v<T>, void )
-    typename std::enable_if_t<! Readable_v<T>, void>
+    typename std::enable_if_t<!Readable_v<T>, void>
+    // cppcheck-suppress missingReturn
     read( T& t ) {
 #ifdef HUB_DEBUG_INPUT
         // DEBUG_MSG( "\t--->" << HEADER << "\033[1;36mread\033[0m(serial: " << TYPE_NAME( t )

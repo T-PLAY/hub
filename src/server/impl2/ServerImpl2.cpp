@@ -282,7 +282,7 @@ void ServerImpl2::delStreamViewer( StreamerClient2* streamer ) {
 void ServerImpl2::addViewer( ViewerClient2* viewer ) {
 
 #if ( __cplusplus >= 201703L )
-    for ( const auto& [streamName, streamer] : m_streamName2streamer ) {
+    for ( const auto& [_, streamer] : m_streamName2streamer ) {
 #else
     for ( const auto& pair : m_streamName2streamer ) {
         const auto& streamName = pair.first;
