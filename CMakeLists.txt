@@ -229,7 +229,7 @@ if(NOT WIN32)
         # # COMMAND cppcheck -DCPP_CHECK --enable=all --error-exitcode=1 src --suppress=missingIncludeSystem
         # # --suppress=toomanyconfigs --suppress=unusedFunction --suppress=virtualCallInConstructor
         COMMAND
-            cppcheck --version
+            # cppcheck --version
 #            cppcheck -DCPP_CHECK src -I src --error-exitcode=1 --enable=all --suppress=missingIncludeSystem
 #            --suppress=missingInclude --suppress=unusedFunction --suppress=virtualCallInConstructor --inline-suppr
             cppcheck -DCPP_CHECK src -I src --error-exitcode=1 --enable=all
