@@ -50,7 +50,7 @@
 #include "traits/Vector.hpp"
 #include "traits/std_any.hpp"
 
-//#include "sensor/OutputSensor.hpp"
+#include "sensor/OutputSensor.hpp"
 
 namespace hub {
 

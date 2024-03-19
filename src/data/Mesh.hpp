@@ -115,6 +115,9 @@ struct Shape {
         archive( self.vertices, self.hasNormal, self.indices, self.name, self.material );
     }
 
+    ///
+    /// \brief toString
+    ///
     auto toString() const {
         std::string str;
         //str += hub::to_string(vertices) + " " +  std::to_string(hasNormal) + " " + hub::to_string(indices)  + " " + name + " " + std::to_string(material);
