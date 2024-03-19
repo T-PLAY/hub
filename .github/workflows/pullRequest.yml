@@ -47,6 +47,9 @@ jobs:
     - name: CppCheck
       run: cmake --build ${{github.workspace}}/build --target hub-cppCheck
 
+    - name: Cleanup project
+      run: cmake --build ${{github.workspace}}/build --target hub-cleanup
+
   # Documentation : 
   #
   #   - name: Sphinx Build
