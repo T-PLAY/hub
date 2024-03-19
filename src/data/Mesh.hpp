@@ -52,6 +52,12 @@ struct Vertex {
     std::string toString() const;
 
     ///
+    /// \brief toString
+    /// \return
+    ///
+    std::string toString() const;
+
+    ///
     /// \brief operator ==
     /// \param other
     /// \return
