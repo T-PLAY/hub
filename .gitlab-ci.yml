@@ -125,18 +125,6 @@ build-windows-cl-x64-release:
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
     - !reference [.build_any, script]
 
-# build-windows-cl-UWP_x64-release:
-#   stage: build
-#   tags:
-#     - $WIN_TAG
-#   script:
-#     - COMPILER_C=cl
-#     - COMPILER_CXX=cl
-#     - ARCHITECTURE=x64
-#     - BUILD_TYPE=Release
-#     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0"
-#     - !reference [.build_any, script]
-#
 build-windows-cl-Win32-debug:
   stage: build
   tags:
@@ -149,92 +137,110 @@ build-windows-cl-Win32-debug:
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
     - !reference [.build_any, script]
 
-build-windows-cl-UWP_ARM64-debug:
+############################################# MacOS
+
+build-macOs-clang-arm64-debug:
   stage: build
   tags:
-    - $WIN_TAG
+    - $MACOS_TAG
   script:
-    - COMPILER_C=cl
-    - COMPILER_CXX=cl
-    - ARCHITECTURE=ARM64
+    - COMPILER_C=clang
+    - COMPILER_CXX=clang++
+    - ARCHITECTURE=arm64
     - BUILD_TYPE=Debug
-    - CMAKE_CONFIGURE_ARGS="-A $ARCHITECTURE -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0"
+    # - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
+    # - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
+    # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
+    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
     - !reference [.build_any, script]
   # only:
     # - master
-  
-build-windows-cl-x64-debug:
-  stage: build
-  tags:
-    - $WIN_TAG
-  script:
-    - COMPILER_C=cl
-    - COMPILER_CXX=cl
-    - ARCHITECTURE=x64
-    - BUILD_TYPE=Debug
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
-    - !reference [.build_any, script]
-  only:
-    - master
-  
-build-windows-cl-ARM64-debug:
-  stage: build
-  tags:
-    - $WIN_TAG
-  script:
-    - COMPILER_C=cl
-    - COMPILER_CXX=cl
-    - ARCHITECTURE=ARM64
-    - BUILD_TYPE=Debug
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
-    - !reference [.build_any, script]
-  only:
-    - master
-  
-build-windows-cl-ARM-debug:
-  stage: build
-  tags:
-    - $WIN_TAG
-  script:
-    - COMPILER_C=cl
-    - COMPILER_CXX=cl
-    - ARCHITECTURE=ARM
-    - BUILD_TYPE=Debug
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
-    - !reference [.build_any, script]
-  only:
-    - master
 
-build-windows-cl-UWP_x64-debug:
-  stage: build
-  tags:
-    - $WIN_TAG
-  script:
-    - COMPILER_C=cl
-    - COMPILER_CXX=cl
-    - ARCHITECTURE=UWP-x64
-    - BUILD_TYPE=Debug
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A x64 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0"
-    - !reference [.build_any, script]
-  only:
-    - master
-
-
-# build-macOs-clang-arm64-debug:
+# build-windows-cl-UWP_x64-release:
 #   stage: build
 #   tags:
-#     - $MACOS_TAG
+#     - $WIN_TAG
 #   script:
-#     - COMPILER_C=clang
-#     - COMPILER_CXX=clang++
-#     - ARCHITECTURE=arm64
+#     - COMPILER_C=cl
+#     - COMPILER_CXX=cl
+#     - ARCHITECTURE=x64
+#     - BUILD_TYPE=Release
+#     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0"
+#     - !reference [.build_any, script]
+#
+
+# build-windows-cl-UWP_ARM64-debug:
+#   stage: build
+#   tags:
+#     - $WIN_TAG
+#   script:
+#     - COMPILER_C=cl
+#     - COMPILER_CXX=cl
+#     - ARCHITECTURE=ARM64
 #     - BUILD_TYPE=Debug
-#     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
-#     # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
+#     - CMAKE_CONFIGURE_ARGS="-A $ARCHITECTURE -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0"
 #     - !reference [.build_any, script]
 #   # only:
 #     # - master
+  
+# build-windows-cl-x64-debug:
+#   stage: build
+#   tags:
+#     - $WIN_TAG
+#   script:
+#     - COMPILER_C=cl
+#     - COMPILER_CXX=cl
+#     - ARCHITECTURE=x64
+#     - BUILD_TYPE=Debug
+#     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
+#     - !reference [.build_any, script]
+#   only:
+#     - master
 #
+# build-windows-cl-ARM64-debug:
+#   stage: build
+#   tags:
+#     - $WIN_TAG
+#   script:
+#     - COMPILER_C=cl
+#     - COMPILER_CXX=cl
+#     - ARCHITECTURE=ARM64
+#     - BUILD_TYPE=Debug
+#     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
+#     - !reference [.build_any, script]
+#   only:
+#     - master
+#
+# build-windows-cl-ARM-debug:
+#   stage: build
+#   tags:
+#     - $WIN_TAG
+#   script:
+#     - COMPILER_C=cl
+#     - COMPILER_CXX=cl
+#     - ARCHITECTURE=ARM
+#     - BUILD_TYPE=Debug
+#     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
+#     - !reference [.build_any, script]
+#   only:
+#     - master
+#
+# build-windows-cl-UWP_x64-debug:
+#   stage: build
+#   tags:
+#     - $WIN_TAG
+#   script:
+#     - COMPILER_C=cl
+#     - COMPILER_CXX=cl
+#     - ARCHITECTURE=UWP-x64
+#     - BUILD_TYPE=Debug
+#     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A x64 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0"
+#     - !reference [.build_any, script]
+#   only:
+#     - master
+#
+
+
 #################################### MacOs
 
 # build-macOs-clang-arm64-release:
@@ -331,6 +337,37 @@ test-windows-cl-x64-release:
     - job: build-windows-cl-x64-release
       optional: true
 
+test-windows-cl-Win32-debug:
+  stage: test
+  tags:
+    - $WIN_TAG
+  script:
+    - COMPILER_C=cl
+    - ARCHITECTURE=Win32
+    - BUILD_TYPE=Debug
+    - !reference [.test_any, script]
+  # when: manual
+  needs:
+    - job: build-windows-cl-Win32-debug
+      optional: true
+
+############################################ MacOs
+
+test-macOs-clang-arm64-debug:
+  stage: test
+  tags:
+    - $MACOS_TAG
+  script:
+    - COMPILER_C=clang
+    - ARCHITECTURE=arm64
+    - BUILD_TYPE=Debug
+    - !reference [.test_any, script]
+  # when: manual
+  needs:
+    - job: build-macOs-clang-arm64-debug
+      optional: true
+
+
 
 # test-windows-cl-UWP_x64-release:
 #   stage: test
@@ -347,19 +384,6 @@ test-windows-cl-x64-release:
 #       optional: true
 
 
-test-windows-cl-Win32-debug:
-  stage: test
-  tags:
-    - $WIN_TAG
-  script:
-    - COMPILER_C=cl
-    - ARCHITECTURE=Win32
-    - BUILD_TYPE=Debug
-    - !reference [.test_any, script]
-  # when: manual
-  needs:
-    - job: build-windows-cl-Win32-debug
-      optional: true
 
 # test-windows-cl-UWP_ARM64-debug:
 #   stage: test
@@ -375,22 +399,6 @@ test-windows-cl-Win32-debug:
 #     - job: build-windows-cl-UWP_ARM64-debug
 #       optional: true
 
-############################################ MacOs
-
-# test-macOs-clang-arm64-debug:
-#   stage: test
-#   tags:
-#     - $MACOS_TAG
-#   script:
-#     - COMPILER_C=clang
-#     - ARCHITECTURE=arm64
-#     - BUILD_TYPE=Debug
-#     - !reference [.test_any, script]
-#   # when: manual
-#   needs:
-#     - job: build-macOs-clang-arm64-debug
-#       optional: true
-#
 
 # test-macOs-clang-arm64-release:
 #   stage: test
