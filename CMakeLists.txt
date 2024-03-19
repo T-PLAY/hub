@@ -220,22 +220,39 @@ endif()
 add_subdirectory(bin)
 
 if(NOT WIN32)
-    add_custom_target(
-        hub-cppCheck
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-        # # COMMAND cppcheck --enable=all --error-exitcode=1 src tests -I src -I tests --inline-suppr
-        # # COMMAND cppcheck --enable=all --error-exitcode=1 src -I src -I external --inline-suppr
-        # # --suppress=toomanyconfigs --suppress=missingIncludeSystem
-        # # COMMAND cppcheck -DCPP_CHECK --enable=all --error-exitcode=1 src --suppress=missingIncludeSystem
-        # # --suppress=toomanyconfigs --suppress=unusedFunction --suppress=virtualCallInConstructor
-        COMMAND
-            # cppcheck --version
-#            cppcheck -DCPP_CHECK src -I src --error-exitcode=1 --enable=all --suppress=missingIncludeSystem
-#            --suppress=missingInclude --suppress=unusedFunction --suppress=virtualCallInConstructor --inline-suppr
-            cppcheck -DCPP_CHECK src -I src --error-exitcode=1 --enable=all
-            --suppress=missingInclude --suppress=unusedFunction --suppress=virtualCallInConstructor --inline-suppr
-            # # --suppress=noValidConfiguration
-        COMMENT "Running cppCheck")
+    execute_process(
+        COMMAND cppcheck --version
+        RESULT_VARIABLE CPP_CHECK_RESULT
+        OUTPUT_VARIABLE CPP_CHECK_OUTPUT
+        ERROR_VARIABLE CPP_CHECK_ERROR)
+    string(REGEX MATCHALL "-.*$|[0-9]+" CPP_CHECK_VERSION_LIST ${CPP_CHECK_OUTPUT})
+    list(GET CPP_CHECK_VERSION_LIST 0 CPP_CHECK_VERSION_MAJOR)
+    list(GET CPP_CHECK_VERSION_LIST 1 CPP_CHECK_VERSION_MINOR)
+    list(GET CPP_CHECK_VERSION_LIST 2 CPP_CHECK_VERSION_PATCH)
+
+    message(STATUS "${HEADER_MSG} Cppcheck ${CPP_CHECK_VERSION_MAJOR}.${CPP_CHECK_VERSION_MINOR}.${CPP_CHECK_VERSION_PATCH} found")
+
+    if(NOT ${CPP_CHECK_VERSION_MAJOR} EQUAL 2)
+        message(FATAL_ERROR "${CPP_CHECK_OUTPUT} unsupported")
+    endif()
+
+    if (${CPP_CHECK_VERSION_MINOR} GREATER 10)
+        add_custom_target(
+            hub-cppCheck
+            WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+            COMMAND
+                cppcheck -DCPP_CHECK src -I src --error-exitcode=1 --enable=all --suppress=missingIncludeSystem
+                --suppress=missingInclude --suppress=unusedFunction --suppress=virtualCallInConstructor --inline-suppr
+            COMMENT "Running cppCheck")
+    else()
+        add_custom_target(
+            hub-cppCheck
+            WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+            COMMAND
+                cppcheck -DCPP_CHECK src -I src --error-exitcode=1 --enable=all
+                --suppress=missingInclude --suppress=unusedFunction --suppress=virtualCallInConstructor --inline-suppr
+            COMMENT "Running cppCheck")
+    endif()
     custom_target_added(cppCheck)
 endif()
 

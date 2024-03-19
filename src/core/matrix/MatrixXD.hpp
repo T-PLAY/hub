@@ -135,6 +135,7 @@ requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
 
   public:
     template <class... Args>
+    // cppcheck-suppress noExplicitConstructor
     constexpr MatrixXDBase( Args&&... args ) : m_buffer { std::forward<Type&&>( args )... } {}
 
     static CONSTEXPR20 auto name() {
