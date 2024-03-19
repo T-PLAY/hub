@@ -366,12 +366,10 @@ bool Mesh::operator==( const Mesh& other ) const {
 bool Shape::operator==(const Shape &other) const {
     if (vertices != other.vertices) {
         std::cout << "vertices differ" << std::endl;
-        for (int i = 0; i < vertices.size(); ++i) {
-            const auto & vertex = vertices.at(i);
-            const auto & vertex2 = other.vertices.at(i);
-            if (! (vertex == vertex2)) {
-                std::cout << "vertex differ" << std::endl;
-            }
+        for ( int i = 0; i < vertices.size(); ++i ) {
+            const auto& vertex  = vertices.at( i );
+            const auto& vertex2 = other.vertices.at( i );
+            if ( !( vertex == vertex2 ) ) { std::cout << "vertex differ " << vertex << " != " << vertex2 << std::endl; }
         }
         //            std::cout << vertices << std::endl;
         //            std::cout << other.vertices << std::endl;
@@ -385,10 +383,15 @@ bool Shape::operator==(const Shape &other) const {
            indices == other.indices && name == other.name && material == other.material;
 }
 
-// std::ostream& operator<<( std::ostream& os, const Mesh& mesh ) {
-//     os << mesh.to_string();
-//     return os;
-// }
+std::string Vertex::toString() const
+{
+    std::string str;
+    str += "x:" + std::to_string(px) + " y:" + std::to_string(py) + " z:" + std::to_string(pz);
+    str += "nx:" + std::to_string(nx) + " ny:" + std::to_string(ny) + " nz:" + std::to_string(nz);
+    str += "tx:" + std::to_string(tx) + " ty:" + std::to_string(ty);
+
+    return str;
+}
 
 } // namespace data
 } // namespace hub

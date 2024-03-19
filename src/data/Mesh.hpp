@@ -55,6 +55,8 @@ struct Vertex {
         archive( self.px, self.py, self.pz, self.nx, self.ny, self.nz, self.tx, self.ty );
     }
 
+    std::string toString() const;
+
     ///
     /// \brief operator ==
     /// \param other
