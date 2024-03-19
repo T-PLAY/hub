@@ -44,6 +44,7 @@ endif()
 
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
     set(ARCHITECTURE "UWP-${ARCHITECTURE}")
+    add_definitions(-DHUB_BUILD_UWP)
 endif()
 message(STATUS "${HEADER_MSG} Architecture: ${ARCHITECTURE}")
 
