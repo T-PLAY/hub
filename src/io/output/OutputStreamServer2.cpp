@@ -217,6 +217,7 @@ void OutputStreamServer2::startStreaming() {
                     data->m_serverSocket->write( (int)data->m_streamViewerSocks.size() + 1 );
 
                     data->m_streamViewerInited = false;
+                    // cppcheck-suppress knownConditionTrueFalse
                     while ( !data->m_streamViewerInited ) {
 #ifdef DEBUG_OUTPUT_STREAM
                         std::cout << "[OutputStream][Stream] waiting for stream viewer inited ..."
@@ -245,10 +246,10 @@ void OutputStreamServer2::startStreaming() {
                 data->m_mtxClientSockets.unlock();
             }
             else if ( clientType == hub::io::StreamBase::ClientType::KILLER ) {
-                if ( data->m_killed ) {}
-                else {
+//                if ( data->m_killed ) {}
+//                else {
                     data->m_killed = true;
-                }
+//                }
             }
             else {
                 assert( false );
