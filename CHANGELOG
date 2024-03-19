@@ -2,12 +2,106 @@
 ---
 Current head v.2.1 rc
 =====================
-  - Community
-    - Add CHANGELOG file (#14)
-
+- Community
+  * Add CHANGELOG file (#14)
 
 ---
-v.2.0
+v.2.0.0
 =====================
-Initial version 
+- API
+  * C++14 -> C++17 (std::any, if constexpr)
+- Core
+  * New data representation (automatically serialized at the declaration)
+  * Optimized network communicattions, only sensor data are sended, no condition test are performed
+  * Neo server implementation (no mutex, fully parallelised)
+  * Accept custom user sensor data
+  * Accept custom user metadata
+- Net
+  * Added boost implement
+- IO
+  * Added Mqtt stream implement
+- Client
+  * Added Mqtt viewer
+- CMake
+  * Split source code into modules (core, net, io, server, client, native, sensor, data, external)
+- Test
+  * Added stressful tests for server
+  * Added non regression tests for non decline performance
+  * Server, viewer and native viewer binaries are running during the test
+- CI
+  * Make full gitlab pipelines on Debian, Windows and MacOs
+- Dependency
+  * Zpp_bits (C++20 metadata serialization)
+  * Serializer (C++14 metadata serialization)
 
+---
+v.1.2.0
+=====================
+- API
+  * Added basic python wrapper
+- Data
+  * Added mesh class using glb compression (meshoptimizer)
+- CMake
+  * Get version from latest git tag
+- Dependency
+  * meshoptimizer
+
+---
+v.1.1.0
+=====================
+- API
+  * Added basic octave and matlab wrappers
+- Core
+  * Change Winsock to Winsock2 for UWP security restrictions
+- Application
+  * Added native C viewer to be compatible with C# Unity apps
+  * Added recorder to binary file
+  * Added player from binary file
+- Test
+  * Added server tests
+- Documentation
+  * Added full doxygen documentation
+  * Added full sphinx documentation
+- CMake
+  * Cleanup compilation on linux, windows and macos
+  * Added lcov compilation for coverage
+  * Added cppCheck target
+- Script
+  * Added cleanup script (format with clang-format and cmake-format)
+- CI
+  * Make full gitlab pipelines on Debian only (build, install, coverage, cppCheck, format, documentation)
+
+---
+v.1.0
+=====================
+- API
+  * C++17 -> C++14
+- Core
+  * Fix 32/64 bits inter compatibility
+  * Synchronization between acquisitions
+- Net
+  * Communication using WinSock (Windows)
+  * Communication using arpa/inet and sys/socket (Unix)
+- Application
+  * Separate server, streamer and viewer apps
+- CMake
+  * Cleanup compilation on linux and windows
+- Dependency
+  * Removed all Qt dependencies
+  * Removed Toojpeg
+
+---
+v.0.0
+=====================
+- API
+  * C++17 
+- Core
+  * Communication using QUdpSocket (UDP)
+  * Communication using QTcpSocket (TCP)
+- IO
+  * File loader using QFile and QDir
+- Application
+  * Qt applications
+- Dependency
+  * Qt (Core Network Gui Widgets)
+  * Toojpeg
