@@ -113,17 +113,17 @@ build-linux-gcc-x64-debug:
   
 ############################################# Windows
 
-build-windows-cl-x64-release:
-  stage: build
-  tags:
-    - $WIN_TAG
-  script:
-    - COMPILER_C=cl
-    - COMPILER_CXX=cl
-    - ARCHITECTURE=x64
-    - BUILD_TYPE=Release
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
-    - !reference [.build_any, script]
+# build-windows-cl-x64-release:
+#   stage: build
+#   tags:
+#     - $WIN_TAG
+#   script:
+#     - COMPILER_C=cl
+#     - COMPILER_CXX=cl
+#     - ARCHITECTURE=x64
+#     - BUILD_TYPE=Release
+#     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
+#     - !reference [.build_any, script]
 
 build-windows-cl-Win32-debug:
   stage: build
@@ -136,6 +136,20 @@ build-windows-cl-Win32-debug:
     - BUILD_TYPE=Debug
     - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
     - !reference [.build_any, script]
+
+build-windows-cl-UWP_ARM64-debug:
+  stage: build
+  tags:
+    - $WIN_TAG
+  script:
+    - COMPILER_C=cl
+    - COMPILER_CXX=cl
+    - ARCHITECTURE=ARM64
+    - BUILD_TYPE=Debug
+    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0"
+    - !reference [.build_any, script]
+  # only:
+    # - master
   
 build-windows-cl-x64-debug:
   stage: build
@@ -192,6 +206,7 @@ build-windows-cl-UWP_x64-debug:
     - !reference [.build_any, script]
   only:
     - master
+
 
 # build-macOs-clang-arm64-debug:
 #   stage: build
@@ -292,19 +307,19 @@ test-linux-gcc-x64-debug:
 
 
 
-test-windows-cl-x64-release:
-  stage: test
-  tags:
-    - $WIN_TAG
-  script:
-    - COMPILER_C=cl
-    - ARCHITECTURE=x64
-    - BUILD_TYPE=Release
-    - !reference [.test_any, script]
-  # when: manual
-  needs:
-    - job: build-windows-cl-x64-release
-      optional: true
+# test-windows-cl-x64-release:
+#   stage: test
+#   tags:
+#     - $WIN_TAG
+#   script:
+#     - COMPILER_C=cl
+#     - ARCHITECTURE=x64
+#     - BUILD_TYPE=Release
+#     - !reference [.test_any, script]
+#   # when: manual
+#   needs:
+#     - job: build-windows-cl-x64-release
+#       optional: true
 
 ###################
 
@@ -321,6 +336,20 @@ test-windows-cl-Win32-debug:
   # when: manual
   needs:
     - job: build-windows-cl-Win32-debug
+      optional: true
+
+test-windows-cl-UWP_ARM64-debug:
+  stage: test
+  tags:
+    - $WIN_TAG
+  script:
+    - COMPILER_C=cl
+    - ARCHITECTURE=ARM64
+    - BUILD_TYPE=Debug
+    - !reference [.test_any, script]
+  # when: manual
+  needs:
+    - job: build-windows-cl-UWP_ARM64-debug
       optional: true
 
 ############################################ MacOs
