@@ -28,11 +28,11 @@ class SRC_API ServerSocketI
     ///
     virtual int getPort() const = 0;
 
-    ///
-    /// \brief waitNewClient
-    /// \return
-    ///
-    ClientSocketI waitNewClient();
+//    ///
+//    /// \brief waitNewClient
+//    /// \return
+//    ///
+//    std::unique_ptr<ClientSocketI> waitNewClient();
 };
 
 } // namespace net
