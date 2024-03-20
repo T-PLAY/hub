@@ -16,5 +16,11 @@ for file in $(find $(cat scripts/source_dirs.txt | grep -v '^*') -type f \( -nam
 	echo "$file"
 
 	# clang-format-11 -i --style=file $file
-	clang-format -i --style=file $file
+
+	# clang-format on ubuntu ci is on version 14.0.0
+	if [ -e "/opt/clang-format-static/clang-format-14" ]; then
+		clang-format-14 -i --style=file $file
+	else
+		clang-format -i --style=file $file
+	fi
 done
