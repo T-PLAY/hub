@@ -8,7 +8,7 @@
 
 cd $(git rev-parse --show-toplevel)
 
-for file in $(find $(cat scripts/source_dirs.txt) -type f \( -name "CMakeLists.txt" -o -name "*.cmake" \)); do
+for file in $(find $(cat scripts/source_dirs.txt | grep -v '^*') -type f \( -name "CMakeLists.txt" -o -name "*.cmake" \)); do
 	echo "$file"
 
 	# sed -i '/^ *#[^ ].*$/d' $file
