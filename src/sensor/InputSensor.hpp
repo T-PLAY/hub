@@ -27,213 +27,215 @@
 namespace hub {
 namespace sensor {
 
-    ///
-    /// \brief The InputSensorT class
-    /// represents the remote sensor.
-    /// From any communication bus (file, RAM, socket) you have access to all the information specific
-    /// to the sensors as well as the acquisition flow coming from the physical sensor.
-    /// This class allows client applications to completely abstract from the notion
-    /// of sensor and to be interested only in the carried data.
-    /// This enables several applications to work simultaneously on the same data in real time.
-    /// This also avoids the need to manage the drivers of each of the manufacturers of the sensors you
-    /// wish to use.
-    ///
-    /// todo: template class
-    ///
-    class InputSensor : public Sensor {
-        template <class Input, class... Inputs>
-        void initSensorSpec(const Input& input, const Inputs&... inputs)
-        {
-            const auto& header = input.getHeader();
-            hub::io::Memory memory(input.getHeader().getUserDefined());
+///
+/// \brief The InputSensorT class
+/// represents the remote sensor.
+/// From any communication bus (file, RAM, socket) you have access to all the information specific
+/// to the sensors as well as the acquisition flow coming from the physical sensor.
+/// This class allows client applications to completely abstract from the notion
+/// of sensor and to be interested only in the carried data.
+/// This enables several applications to work simultaneously on the same data in real time.
+/// This also avoids the need to manage the drivers of each of the manufacturers of the sensors you
+/// wish to use.
+///
+/// todo: template class
+///
+class InputSensor : public Sensor
+{
+    template <class Input, class... Inputs>
+    void initSensorSpec( const Input& input, const Inputs&... inputs ) {
+        const auto& header = input.getHeader();
+        hub::io::Memory memory( input.getHeader().getUserDefined() );
 
-            SensorSpec sensorSpec;
-            const auto start = std::chrono::high_resolution_clock::now();
-            memory.read(sensorSpec);
-            const auto end = std::chrono::high_resolution_clock::now();
-            const auto period = std::chrono::duration_cast<std::chrono::microseconds>(end - start)
-                                    .count();
-            const auto nBytes = header.getSize();
-            const auto bytesPerSecond = (1'000'000.0 * nBytes) / period;
-            std::cout << "\033[35m[InputSensor] unpacked sensor spec speedup : " << period / 1000.0 << " ms, " << PRETTY_BYTES(bytesPerSecond) << "/s (" << PRETTY_BYTES(nBytes) << ") " << sensorSpec << "\033[0m" << std::endl;
-            m_spec += sensorSpec;
-            m_specs.push_back(std::move(sensorSpec));
+        SensorSpec sensorSpec;
+        const auto start = std::chrono::high_resolution_clock::now();
+        memory.read( sensorSpec );
+        const auto end = std::chrono::high_resolution_clock::now();
+        const auto period =
+            std::chrono::duration_cast<std::chrono::microseconds>( end - start ).count();
+        const auto nBytes         = header.getSize();
+        const auto bytesPerSecond = ( 1'000'000.0 * nBytes ) / period;
+        std::cout << "\033[35m[InputSensor] unpacked sensor spec speedup : " << period / 1000.0
+                  << " ms, " << PRETTY_BYTES( bytesPerSecond ) << "/s (" << PRETTY_BYTES( nBytes )
+                  << ") " << sensorSpec << "\033[0m" << std::endl;
+        m_spec += sensorSpec;
+        m_specs.push_back( std::move( sensorSpec ) );
 
-            if constexpr (sizeof...(inputs) > 0) {
-                initSensorSpec(inputs...);
+        if constexpr ( sizeof...( inputs ) > 0 ) { initSensorSpec( inputs... ); }
+    }
+
+  public:
+    ///
+    /// \brief acqMsg
+    ///
+
+    ///
+    /// \brief InputSensor
+    /// \param input
+    ///
+    template <class InputT>
+    explicit InputSensor( InputT& input ) : Sensor( SensorSpec {} ), m_inputs( { &input } ) {
+        static_assert( !std::is_same_v<InputSensor, InputT> );
+        static_assert( std::is_base_of_v<Input, std::remove_cvref_t<InputT>> );
+        initSensorSpec( input );
+    }
+
+    ///
+    /// \brief InputSensor
+    /// \param input
+    /// \param input2
+    ///
+    template <class InputT>
+    InputSensor( InputT& input, InputT& input2 ) :
+        Sensor( SensorSpec {} ), m_inputs( { &input, &input2 } ) {
+        static_assert( std::is_base_of_v<Input, std::remove_cvref_t<InputT>> );
+        initSensorSpec( input, input2 );
+    }
+
+    ///
+    /// \brief InputSensor
+    /// \param input
+    ///
+    template <class InputT>
+#if CPP_VERSION >= 20
+    requires std::is_base_of_v<Input, std::remove_cvref_t<InputT>>
+#endif
+    // REQUIRES (std::is_base_of_v<Input, std::remove_cvref_t<InputT>>)
+    explicit InputSensor( InputT&& input ) : Sensor( SensorSpec {} ) {
+        static_assert( std::is_base_of_v<Input, std::remove_cvref_t<InputT>> );
+        initSensorSpec( input );
+        m_inputs.push_back( new std::remove_cvref_t<InputT>( std::move( input ) ) );
+        m_inputOwner = true;
+    }
+
+    ///
+    /// \brief InputSensor
+    /// \param input
+    /// \param input2
+    ///
+    template <class InputT>
+#if CPP_VERSION >= 20
+    requires std::is_base_of_v<Input, std::remove_cvref_t<InputT>>
+#endif
+    InputSensor( InputT&& input, InputT&& input2 ) : Sensor( SensorSpec {} ) {
+        static_assert( std::is_base_of_v<Input, std::remove_cvref_t<InputT>> );
+        initSensorSpec( input, input2 );
+        m_inputs.push_back( new std::remove_cvref_t<InputT>( std::move( input ) ) );
+        m_inputs.push_back( new std::remove_cvref_t<InputT>( std::move( input2 ) ) );
+        m_inputOwner = true;
+    }
+
+    ~InputSensor() {
+        if ( m_inputOwner ) {
+            auto it = m_inputs.begin();
+            while ( it != m_inputs.end() ) {
+                auto cur = it;
+                it++;
+                delete ( *cur );
             }
         }
+    }
 
-    public:
-        ///
-        /// \brief acqMsg
-        ///
-        // using Sensor::acqMsg;
-          // using Sensor::getSpec;
+    ///
+    /// \brief operator >>
+    /// \param acq
+    ///
+    void operator>>( Acquisition& acq ) {
+        assert( m_spec.getResolution() == acq.getResolution() );
 
-      ///
-      /// \brief InputSensor
-      /// \param input
-      ///
-        template <class InputT>
-        explicit InputSensor(InputT& input)
-            : Sensor(SensorSpec {})
-            , m_inputs({ &input })
-        {
-            static_assert(! std::is_same_v<InputSensor, InputT>);
-            static_assert(std::is_base_of_v<Input, std::remove_cvref_t<InputT>>);
-            // std::cout << "[InputSensor] InputSensor(InputT&)" << std::endl;
-            initSensorSpec(input);
+        if ( m_inputs.size() == 1 ) {
+            Input& input = *m_inputs.at( 0 );
+            input.read( acq );
         }
+        else {
+            Input& leftInput  = *m_inputs.at( 0 );
+            Input& rightInput = *m_inputs.at( 1 );
 
-        ///
-        /// \brief InputSensor
-        /// \param input
-        /// \param input2
-        ///
-        template <class InputT>
-        InputSensor(InputT& input, InputT& input2)
-            : Sensor(SensorSpec {})
-            , m_inputs({ &input, &input2 })
-        {
-            static_assert(std::is_base_of_v<Input, std::remove_cvref_t<InputT>>);
-            // std::cout << "[InputSensor] InputSensor(InputT&, InputT&)" << std::endl;
-            initSensorSpec(input, input2);
-        }
+            Acquisition rightAcq = make_acquisition( m_specs.at( 1 ).getResolution() );
+            rightInput.read( rightAcq );
 
-        ///
-        /// \brief InputSensor
-        /// \param input
-        ///
-        template <class InputT>
-#if CPP_VERSION >= 20
-        requires std::is_base_of_v<Input, std::remove_cvref_t<InputT>>
-#endif
-        // REQUIRES (std::is_base_of_v<Input, std::remove_cvref_t<InputT>>)
-        explicit InputSensor(InputT&& input)
-            : Sensor(SensorSpec {})
-        {
-            // std::cout << "[InputSensor] InputSensor(InputT&&)" << std::endl;
-            static_assert(std::is_base_of_v<Input, std::remove_cvref_t<InputT>>);
-            initSensorSpec(input);
-            m_inputs.push_back(new std::remove_cvref_t<InputT>(std::move(input)));
-            m_inputOwner = true;
-        }
+            auto& leftLastAcqs = m_lastAcqs;
+            assert( leftLastAcqs.size() < 20 );
+            Acquisition leftAcq = make_acquisition( m_specs.at( 0 ).getResolution() );
 
-        ///
-        /// \brief InputSensor
-        /// \param input
-        /// \param input2
-        ///
-        template <class InputT>
-#if CPP_VERSION >= 20
-        requires std::is_base_of_v<Input, std::remove_cvref_t<InputT>>
-#endif
-        InputSensor(InputT&& input, InputT&& input2)
-            : Sensor(SensorSpec {})
-        {
-            // std::cout << "[InputSensor] InputSensor(InputT&&, InputT&&)" << std::endl;
-            static_assert(std::is_base_of_v<Input, std::remove_cvref_t<InputT>>);
-            initSensorSpec(input, input2);
-            m_inputs.push_back(new std::remove_cvref_t<InputT>(std::move(input)));
-            m_inputs.push_back(new std::remove_cvref_t<InputT>(std::move(input2)));
-            m_inputOwner = true;
-        }
-
-        ~InputSensor()
-        {
-            if (m_inputOwner) {
-                auto it = m_inputs.begin();
-                while (it != m_inputs.end()) {
-                    auto cur = it;
-                    it++;
-                    delete (*cur);
-                }
+            if ( leftLastAcqs.empty() ) {
+                leftInput.read( leftAcq );
+                leftLastAcqs.push_back( leftAcq.copy() );
             }
-        }
 
-        ///
-        /// \brief operator >>
-        /// \param acq
-        ///
-        void operator>>(Acquisition& acq)
-        {
-            assert(m_spec.getResolution() == acq.getResolution());
-
-            if (m_inputs.size() == 1) {
-                Input& input = *m_inputs.at(0);
-                input.read(acq);
-            } else {
-                Input& leftInput = *m_inputs.at(0);
-                Input& rightInput = *m_inputs.at(1);
-
-                Acquisition rightAcq = make_acquisition(m_specs.at(1).getResolution());
-                rightInput.read(rightAcq);
-
-                auto& leftLastAcqs = m_lastAcqs;
-                assert(leftLastAcqs.size() < 20);
-                Acquisition leftAcq = make_acquisition(m_specs.at(0).getResolution());
-
-                if (leftLastAcqs.empty()) {
-                    leftInput.read(leftAcq);
-                    leftLastAcqs.push_back(leftAcq.copy());
-                }
-
-                while (rightAcq.getStart() < leftLastAcqs.front().getStart()) {
+            while ( rightAcq.getStart() < leftLastAcqs.front().getStart() ) {
 #ifdef HUB_DEBUG_INPUT
-                    std::cout << "[InputSensor] operator>>(InputSensor&) shift rightAcq : " << rightAcq
-                              << std::endl;
+                std::cout << "[InputSensor] operator>>(InputSensor&) shift rightAcq : " << rightAcq
+                          << std::endl;
 #endif
-                    assert(!rightInput.isEnd());
-                    rightInput.read(rightAcq);
-                }
-
-                while (leftLastAcqs.back().getStart() < rightAcq.getStart() && !leftInput.isEnd()) {
-                    assert(!leftInput.isEnd());
-                    leftInput.read(leftAcq);
-                    leftLastAcqs.push_back(leftAcq.copy());
-                }
-
-                while (leftLastAcqs.size() > 2) {
-                    leftLastAcqs.pop_front();
-                }
-
-                const auto& leftBeforeRightAcq = leftLastAcqs.front();
-                const auto& leftAfterRightAcq = leftLastAcqs.back();
-
-                assert(leftInput.isEnd() || leftBeforeRightAcq.getStart() <= rightAcq.getStart());
-                assert(leftInput.isEnd() || rightAcq.getStart() <= leftAfterRightAcq.getStart());
-
-                const auto& closestAcq = (std::abs(leftBeforeRightAcq.getStart() - rightAcq.getStart()) > std::abs(leftAfterRightAcq.getStart() - rightAcq.getStart()))
-                    ? (leftAfterRightAcq)
-                    : (leftBeforeRightAcq);
-
-                auto sync_acq = closestAcq << rightAcq;
-                sync_acq.start() = rightAcq.getStart();
-                sync_acq.end() = rightAcq.getEnd();
-                assert(sync_acq.getResolution() == acq.getResolution());
-
-                acq = std::move(sync_acq);
+                assert( !rightInput.isEnd() );
+                rightInput.read( rightAcq );
             }
+
+            while ( leftLastAcqs.back().getStart() < rightAcq.getStart() && !leftInput.isEnd() ) {
+                assert( !leftInput.isEnd() );
+                leftInput.read( leftAcq );
+                leftLastAcqs.push_back( leftAcq.copy() );
+            }
+
+            while ( leftLastAcqs.size() > 2 ) {
+                leftLastAcqs.pop_front();
+            }
+
+            const auto& leftBeforeRightAcq = leftLastAcqs.front();
+            const auto& leftAfterRightAcq  = leftLastAcqs.back();
+
+            assert( leftInput.isEnd() || leftBeforeRightAcq.getStart() <= rightAcq.getStart() );
+            assert( leftInput.isEnd() || rightAcq.getStart() <= leftAfterRightAcq.getStart() );
+
+            const auto& closestAcq =
+                ( std::abs( leftBeforeRightAcq.getStart() - rightAcq.getStart() ) >
+                  std::abs( leftAfterRightAcq.getStart() - rightAcq.getStart() ) )
+                    ? ( leftAfterRightAcq )
+                    : ( leftBeforeRightAcq );
+
+            auto sync_acq    = closestAcq << rightAcq;
+            sync_acq.start() = rightAcq.getStart();
+            sync_acq.end()   = rightAcq.getEnd();
+            assert( sync_acq.getResolution() == acq.getResolution() );
+
+            acq = std::move( sync_acq );
+        }
 
 #ifdef HUB_DEBUG_INPUT
-            std::cout << HEADER << "read(Acquisition&) : " << acq << std::endl;
+        std::cout << HEADER << "read(Acquisition&) : " << acq << std::endl;
 #endif
-        }
+    }
 
-        ///
-        /// \brief getAllAcquisitions
-        /// \return
-        ///
-        std::vector<Acquisition> getAllAcquisitions()
-        {
-            std::vector<Acquisition> acqs;
-            auto acq = acqMsg();
-            while (std::none_of(m_inputs.begin(), m_inputs.end(), [](const Input* input) { return input->isEnd(); })) {
-                *this >> acq;
-                acqs.push_back(acq.copy());
-            }
-            return acqs;
+    ///
+    /// \brief getAllAcquisitions
+    /// \return
+    ///
+    std::vector<Acquisition> getAllAcquisitions() {
+        std::vector<Acquisition> acqs;
+        auto acq = acqMsg();
+        while ( std::none_of( m_inputs.begin(), m_inputs.end(), []( const Input* input ) {
+            return input->isEnd();
+        } ) ) {
+            *this >> acq;
+            acqs.push_back( acq.copy() );
+        }
+        return acqs;
+    }
+
+    ///
+    /// \brief fillAllAcquisitions
+    /// \param ts
+    ///
+    template <class Container,
+              typename T = std::decay_t<decltype( *begin( std::declval<Container>() ) )>>
+    void fillAllAcquisitions( Container& ts ) {
+        auto acq = acqMsg();
+        while ( std::none_of( m_inputs.begin(), m_inputs.end(), []( const Input* input ) {
+            return input->isEnd();
+        } ) ) {
+            *this >> acq;
+            ts.push_back( acq.copy() );
         }
     }
 
