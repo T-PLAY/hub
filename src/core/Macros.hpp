@@ -1,6 +1,12 @@
-/// © 2021-2024 Hub, All Rights Reserved
-/// @author gauthier <gauthierbouyjou@aol.com>
-/// @date 2023/10/01
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright © 2021-2024 Hub. All Rights Reserved.
+ * @author Gauthier Bouyjou <gauthierbouyjou@aol.com>
+ * @date 2023/10/01
+ */
 
 #pragma once
 
@@ -25,40 +31,6 @@
 namespace hub {
 
 // Compiler identification
-#if defined( __clang__ )
-#    define COMPILER_CLANG
-#    define CLANG_VERSION __clang_major__
-
-#elif defined( __GNUC__ )
-#    define COMPILER_GCC
-#    include <features.h>
-#    if __GNUC_PREREQ( 15, 0 )
-#        define GCC_VERSION 15
-#    elif __GNUC_PREREQ( 14, 0 )
-#        define GCC_VERSION 14
-#    elif __GNUC_PREREQ( 13, 0 )
-#        define GCC_VERSION 13
-#    elif __GNUC_PREREQ( 12, 0 )
-#        define GCC_VERSION 12
-#    elif __GNUC_PREREQ( 11, 0 )
-#        define GCC_VERSION 11
-#    elif __GNUC_PREREQ( 10, 0 )
-#        define GCC_VERSION 10
-#    elif __GNUC_PREREQ( 9, 0 )
-#        define GCC_VERSION 9
-#    elif __GNUC_PREREQ( 8, 0 )
-#        define GCC_VERSION 8
-#    else
-#        error "gcc version not supported"
-#    endif
-
-#elif defined( _MSC_VER )
-//#if _MSC_VER >= 1900
-#    define COMPILER_MSVC
-#    define _USE_MATH_DEFINES
-#else
-#    error unsupported compiler
-#endif
 
 // OS and architecture identification
 #if defined( _WIN32 ) || defined( _WIN64 ) // ------------------------------ Windows
@@ -82,8 +54,62 @@ namespace hub {
 #elif defined( __linux__ ) || defined( __CYGWIN__ ) // ---------------------- Linux
 #    define OS_LINUX
 #else
+#ifndef CPP_CHECK
 #    error unsupported OS
 #endif
+#endif
+
+#if defined( __GNUC__ )
+#    define COMPILER_GCC
+
+// #if defined ( OS_LINUX )
+// #    include <features.h>
+// #    if __GNUC_PREREQ( 15, 0 )
+// #        define GCC_VERSION 15
+// #    elif __GNUC_PREREQ( 14, 0 )
+// #        define GCC_VERSION 14
+// #    elif __GNUC_PREREQ( 13, 0 )
+// #        define GCC_VERSION 13
+// #    elif __GNUC_PREREQ( 12, 0 )
+// #        define GCC_VERSION 12
+// #    elif __GNUC_PREREQ( 11, 0 )
+// #        define GCC_VERSION 11
+// #    elif __GNUC_PREREQ( 10, 0 )
+// #        define GCC_VERSION 10
+// #    elif __GNUC_PREREQ( 9, 0 )
+// #        define GCC_VERSION 9
+// #    elif __GNUC_PREREQ( 8, 0 )
+// #        define GCC_VERSION 8
+// #    elif __GNUC_PREREQ( 7, 0 )
+// #        define GCC_VERSION 7
+// #    elif __GNUC_PREREQ( 6, 0 )
+// #        define GCC_VERSION 6
+// #    elif __GNUC_PREREQ( 5, 0 )
+// #        define GCC_VERSION 5
+// #    elif __GNUC_PREREQ( 4, 0 )
+// #        define GCC_VERSION 4
+// #    else
+// #        error "gcc version not supported"
+// #    endif
+//
+// #else
+#define GCC_VERSION __GNUC__
+//#endif
+
+#elif defined( __clang__ )
+#    define COMPILER_CLANG
+#    define CLANG_VERSION __clang_major__
+
+#elif defined( _MSC_VER )
+//#if _MSC_VER >= 1900
+#    define COMPILER_MSVC
+#    define _USE_MATH_DEFINES
+#else
+#ifndef CPP_CHECK
+#    error unsupported compiler
+#endif
+#endif
+
 
 // Check arch for macos and linux
 #if defined( OS_MACOS ) || defined( OS_LINUX )
@@ -213,9 +239,9 @@ namespace hub {
 
 #        if GCC_VERSION < 12
 #            define FILE_NAME                                                          \
-                std::string( __FILE__ )                                                \
-                    .substr( std::max( std::string( __FILE__ ).find_last_of( '\\' ),   \
-                                       std::string( __FILE__ ).find_last_of( '/' ) ) + \
+                std::string( "/\\" __FILE__ )                                                \
+                    .substr( std::max( std::string( "/\\" __FILE__ ).find_last_of( '\\' ),   \
+                                       std::string("/\\"  __FILE__ ).find_last_of( '/' ) ) + \
                              1 )
 #        else
 #            define FILE_NAME std::string( __FILE_NAME__ )
@@ -313,8 +339,10 @@ namespace hub {
 
 template <typename T>
 concept isContainer = !std::is_same<T, std::string>() && requires( T t ) {
-    std::begin( t );
-    std::end( t );
+    t.begin();
+    t.end();
+    // std::begin( t );
+    // std::end( t );
 };
 
 #else
@@ -383,7 +411,7 @@ static constexpr bool nameable_v = nameable<T>::value;
 
 template <class T>
 static typename std::enable_if_t<!nameable_v<T> && !has_name_v<T>, std::string>
-typeName( const T& t ) {
+typeName( const T&  ) {
 #ifdef HUB_USE_BOOST
     return boost::typeindex::type_id<typeof( T )>().pretty_name();
 #else
@@ -393,7 +421,7 @@ typeName( const T& t ) {
 
 template <class T>
 static typename std::enable_if_t<!nameable_v<T> && has_name_v<T>, std::string>
-typeName( const T& t ) {
+typeName( const T&  ) {
     return T::name();
 }
 
@@ -502,24 +530,24 @@ enum Cpp : TypeId_t { NONE = 0, INT /* 1 */, BOOL /* 2 */, Cpp_Count /* 3 */ };
 static_assert( Types::Cpp_Count == 3 );
 
 template <class T>
-static constexpr typename std::enable_if_t<has_id_v<T>, TypeId_t> typeId( const T& t ) {
+static constexpr typename std::enable_if_t<has_id_v<T>, TypeId_t> getTypeId( const T&  ) {
     return T::id;
 }
 
 template <class T>
-static constexpr typename std::enable_if_t<!has_id_v<T>, TypeId_t> typeId( const T& t ) {
+static constexpr typename std::enable_if_t<!has_id_v<T>, TypeId_t> getTypeId( const T& ) {
     return typeid( T ).hash_code();
 }
 
-constexpr auto typeId( int ) -> TypeId_t {
+constexpr auto getTypeId( int ) -> TypeId_t {
     return Types::Cpp::INT;
 }
 
-constexpr auto typeId( bool ) -> TypeId_t {
+constexpr auto getTypeId( bool ) -> TypeId_t {
     return Types::Cpp::BOOL;
 }
 
-#define TYPE_ID( _Type_ ) hub::typeId( _Type_() )
+#define TYPE_ID( _Type_ ) hub::getTypeId( _Type_() )
 
 #if CPP_VERSION >= 20
 #    define REQUIRES( _CONST_, _COND_, _TYPE_ ) requires( _COND_ ) _CONST_ _TYPE_
@@ -619,7 +647,7 @@ sizeOf( const T& t, const Ts&... ts ) {
 //// Prints to the provided buffer a nice number of bytes (KB, MB, GB, etc)
 /// \brief pretty_bytes
 static std::string pretty_bytes( hub::Size_t bytes ) {
-    std::string str;
+    // std::string str;
 
     constexpr auto buffSize = 32;
     char buff[buffSize] { 0 };

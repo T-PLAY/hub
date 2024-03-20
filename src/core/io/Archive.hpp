@@ -1,6 +1,12 @@
-/// © 2021-2024 Hub, All Rights Reserved
-/// @author gauthier <gauthierbouyjou@aol.com>
-/// @date 2023/10/25
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright © 2021-2024 Hub. All Rights Reserved.
+ * @author Gauthier Bouyjou <gauthierbouyjou@aol.com>
+ * @date 2023/10/25
+ */
 
 #pragma once
 
@@ -10,7 +16,9 @@
 
 #include "InputOutput.hpp"
 
+#ifndef HUB_NON_BUILD_IO
 #include "io/Header.hpp"
+#endif
 
 namespace hub {
 namespace io {
@@ -31,7 +39,9 @@ class ArchiveT : public InputOutputT
     /// \brief ArchiveT
     /// \param header
     ///
-    ArchiveT(const io::Header & header) : m_header{header} {};
+#ifndef HUB_NON_BUILD_IO
+    explicit ArchiveT( const io::Header& header ) : m_header { header } {};
+#endif
 
     ///
     /// \brief read
@@ -85,13 +95,17 @@ class ArchiveT : public InputOutputT
     /// \brief isOpen
     /// \return
     ///
-    bool isOpen() const override { return true; }
+    bool isOpen() const override {
+        return true;
+    }
 
     ///
     /// \brief isEnd
     /// \return
     ///
-    bool isEnd() const override { return m_datas.empty(); }
+    bool isEnd() const override {
+        return m_datas.empty();
+    }
 
     ///
     /// \brief clear
@@ -111,23 +125,28 @@ class ArchiveT : public InputOutputT
     /// \brief getHeader
     /// \return
     ///
+#ifndef HUB_NON_BUILD_IO
     const Header& getHeader() const {
-        return
-     m_header;
+        return m_header;
     }
+#endif
 
 #ifdef DEBUG
     ///
     /// \brief getNCall
     /// \return
     ///
-    size_t getNCall() const { return m_nCall; }
+    size_t getNCall() const {
+        return m_nCall;
+    }
 
     ///
     /// \brief getLastCallSize
     /// \return
     ///
-    size_t getLastCallSize() const { return m_lastCallSize; }
+    size_t getLastCallSize() const {
+        return m_lastCallSize;
+    }
 #endif
 
   private:
@@ -136,7 +155,9 @@ class ArchiveT : public InputOutputT
     size_t m_nCall        = 0;
     size_t m_lastCallSize = 0;
 #endif
+#ifndef HUB_NON_BUILD_IO
     io::Header m_header;
+#endif
 };
 
 ///

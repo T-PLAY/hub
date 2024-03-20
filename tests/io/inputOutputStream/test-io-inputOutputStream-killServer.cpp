@@ -17,7 +17,7 @@ TEST_CASE( "InputOutputStream kill server test" ) {
 
     {
 
-        hub::output::OutputStream outputStream( { sizeof( int ) }, FILE_NAME, port );
+        hub::output::OutputStream outputStream( hub::io::Header{ sizeof( int ) }, FILE_NAME, port );
 
         hub::input::InputStream inputStream( FILE_NAME, port );
 
@@ -25,14 +25,14 @@ TEST_CASE( "InputOutputStream kill server test" ) {
         outputStream.write( a );
         int a_read;
         inputStream.read( a_read );
-        assert( a == a_read );
+        CHECK( a == a_read );
 
         delete server;
 
         a = 6;
         outputStream.write( a );
         inputStream.read( a_read );
-        assert( a == a_read );
+        CHECK( a == a_read );
     }
     std::cout << "[test] inputStream ended" << std::endl;
     std::cout << "[test] outputStream ended" << std::endl;

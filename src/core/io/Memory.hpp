@@ -1,6 +1,12 @@
-/// © 2021-2024 Hub, All Rights Reserved
-/// @author gauthier <gauthierbouyjou@aol.com>
-/// @date 2023/12/07
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright © 2021-2024 Hub. All Rights Reserved.
+ * @author Gauthier Bouyjou <gauthierbouyjou@aol.com>
+ * @date 2023/12/07
+ */
 
 #pragma once
 
@@ -55,8 +61,10 @@ class MemoryT : public InputOutputT
         std::copy( m_data.begin(), std::next( m_data.begin(), size ), data );
         m_data.erase( m_data.begin(), std::next( m_data.begin(), size ) );
 
+#ifdef DEBUG_MEMORY
         std::vector<Data_t> vector( data, data + size );
-        // std::cout << "[Memory] read " << vector << std::endl;
+        std::cout << "[Memory] read " << vector << std::endl;
+#endif
 
         // std::cout << "[Memory] data " << m_data << std::endl;
     }
@@ -67,9 +75,11 @@ class MemoryT : public InputOutputT
     /// \param size
     ///
     void write( const hub::Data_t* data, hub::Size_t size ) override {
-        std::vector<Data_t> vector( data, data + size );
         // std::cout << "[Memory] data " << m_data << std::endl;
-        // std::cout << "[Memory] write " << vector << std::endl;
+#ifdef DEBUG_MEMORY
+        std::vector<Data_t> vector( data, data + size );
+        std::cout << "[Memory] write " << vector << std::endl;
+#endif
 
         assert( size > 0 );
         const auto prevSize = m_data.size();
@@ -89,18 +99,24 @@ class MemoryT : public InputOutputT
     /// \brief isOpen
     /// \return
     ///
-    bool isOpen() const override { return true; }
+    bool isOpen() const override {
+        return true;
+    }
 
     ///
     /// \brief isEnd
     /// \return
     ///
-    bool isEnd() const override { return m_data.empty(); }
+    bool isEnd() const override {
+        return m_data.empty();
+    }
 
     ///
     /// \brief clear
     ///
-    void clear() override { m_data.clear(); }
+    void clear() override {
+        m_data.clear();
+    }
 
     ///
     /// \brief setRetain

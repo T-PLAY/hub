@@ -1,14 +1,14 @@
 
 #include <test_common.hpp>
+//#include <catch2/catch_test_macros.hpp>
 
 #include <iostream>
 
-#ifdef HUB_USE_EIGEN3
-#    include <Eigen/Core>
-#endif
+// #    include <Eigen/Core>
+#include <Eigen/Core>
 
 TEST_CASE( "Matrix compat Eigen test" ) {
-    TEST_BEGIN()
+ //   TEST_BEGIN()
 
     constexpr auto width  = 20;
     constexpr auto height = 10;
@@ -18,9 +18,8 @@ TEST_CASE( "Matrix compat Eigen test" ) {
         data[i] = 65 + i;
     }
 
-    ////            assert( eigenMat.coeff( i, j ) == cvMat.data[i * height + j] );
+    ////            CHECK( eigenMat.coeff( i, j ) == cvMat.data[i * height + j] );
 
-#ifdef HUB_USE_EIGEN3
     Eigen::Matrix<unsigned char, height, width, Eigen::RowMajor> eigenMat( data );
     for ( int j = 0; j < height; ++j ) {
         for ( int i = 0; i < width; ++i ) {
@@ -29,7 +28,6 @@ TEST_CASE( "Matrix compat Eigen test" ) {
         std::cout << std::endl;
     }
     std::cout << std::endl;
-#endif
 
-    TEST_END()
+//    TEST_END()
 }

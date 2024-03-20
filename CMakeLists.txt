@@ -44,6 +44,7 @@ endif()
 
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
     set(ARCHITECTURE "UWP-${ARCHITECTURE}")
+    add_definitions(-DHUB_BUILD_UWP)
 endif()
 message(STATUS "${HEADER_MSG} Architecture: ${ARCHITECTURE}")
 
@@ -133,13 +134,6 @@ if(Boost_FOUND)
     add_definitions(-DHUB_USE_BOOST)
 endif()
 
-find_package(Eigen3 QUIET)
-if(Eigen3_FOUND)
-    add_definitions(-DHUB_USE_EIGEN3)
-    link_libraries(Eigen3::Eigen)
-    include_directories(${EIGEN3_INCLUDE_DIR})
-endif()
-
 find_package(TBB QUIET)
 set(HUB_TBB_TARGET)
 if(TBB_FOUND)
@@ -175,7 +169,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 # # set(HUB_MODULES "core" "net" "io" "server" "client")
 # # set(HUB_MODULES "core" "net" "io" "server" "client" "native")
 # # set(HUB_MODULES "core" "net" "io" "server" "client" "native" "sensor")
-set(HUB_MODULES "core" "net" "io" "server" "client" "native" "sensor" "data")
+ set(HUB_MODULES "core" "net" "io" "server" "client" "native" "sensor" "data")
 
 set(ALL_HUB_MODULES "core" "net" "io" "server" "client" "native" "sensor" "data")
 # cmake-format: on
@@ -223,10 +217,15 @@ if(NOT WIN32)
     add_custom_target(
         hub-cppCheck
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-        # COMMAND cppcheck --enable=all --error-exitcode=1 src tests -I src -I tests --inline-suppr
-        COMMAND cppcheck --enable=all --error-exitcode=1 src -I src -I external --inline-suppr
-                --suppress=toomanyconfigs --suppress=missingIncludeSystem
-                # --suppress=noValidConfiguration
+        # # COMMAND cppcheck --enable=all --error-exitcode=1 src tests -I src -I tests --inline-suppr
+        # # COMMAND cppcheck --enable=all --error-exitcode=1 src -I src -I external --inline-suppr
+        # # --suppress=toomanyconfigs --suppress=missingIncludeSystem
+        # # COMMAND cppcheck -DCPP_CHECK --enable=all --error-exitcode=1 src --suppress=missingIncludeSystem
+        # # --suppress=toomanyconfigs --suppress=unusedFunction --suppress=virtualCallInConstructor
+        COMMAND
+            cppcheck -DCPP_CHECK src -I src --error-exitcode=1 --enable=all --suppress=missingIncludeSystem
+            --suppress=missingInclude --suppress=unusedFunction --suppress=virtualCallInConstructor --inline-suppr
+            # # --suppress=noValidConfiguration
         COMMENT "Running cppCheck")
     custom_target_added(cppCheck)
 endif()
@@ -234,8 +233,8 @@ endif()
 add_custom_target(
     hub-format
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-    COMMAND scripts/format-all.sh
-    COMMENT "Format sources")
+    COMMAND scripts/format-project.sh
+    COMMENT "Format project")
 custom_target_added(format)
 
 option(HUB_ENABLE_WRAPPER "Enable wrapper" OFF)

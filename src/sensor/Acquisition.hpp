@@ -1,6 +1,12 @@
-/// © 2021-2024 Hub, All Rights Reserved
-/// @author gauthier <gauthierbouyjou@aol.com>
-/// @date 2023/09/28
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright © 2021-2024 Hub. All Rights Reserved.
+ * @author Gauthier Bouyjou <gauthierbouyjou@aol.com>
+ * @date 2023/09/28
+ */
 
 #pragma once
 
@@ -29,8 +35,9 @@ static inline Clock getClock() {
 
 ///
 /// \brief The Acquisition class
-///
+/// todo move to protected
 class SRC_API Acquisition : public Matrix
+// class SRC_API Acquisition : protected Matrix
 {
   public:
     using Matrix::getData;
@@ -60,7 +67,7 @@ class SRC_API Acquisition : public Matrix
     /// \brief clone
     /// \return
     ///
-    Acquisition clone() const {
+    Acquisition copy() const {
         Acquisition acq;
         acq |= *this;
         return acq;
@@ -84,8 +91,8 @@ class SRC_API Acquisition : public Matrix
     /// \return
     ///
     Clock& start() {
-        auto offset  = getOffset<Clock>( 0 );
-        auto offset2 = getOffset<Clock>( 1 );
+        // auto offset  = getOffset<Clock>( 0 );
+        // auto offset2 = getOffset<Clock>( 1 );
         assert( getOffset<Clock>( 0 ) == 0 );
         return get<Clock&>();
     }
@@ -141,9 +148,10 @@ class SRC_API Acquisition : public Matrix
     /// \return
     ///
     Acquisition operator<<( const Acquisition& other ) const {
-        Acquisition matrix = this->clone();
-        matrix << other;
-        return matrix;
+        // Acquisition acq = this->clone();
+        Acquisition acq = this->copy();
+        acq << other;
+        return acq;
     }
 
     ///

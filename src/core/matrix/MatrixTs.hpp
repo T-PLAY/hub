@@ -1,6 +1,12 @@
-/// © 2021-2024 Hub, All Rights Reserved
-/// @author gauthier <gauthierbouyjou@aol.com>
-/// @date 2023/11/09
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright © 2021-2024 Hub. All Rights Reserved.
+ * @author Gauthier Bouyjou <gauthierbouyjou@aol.com>
+ * @date 2023/11/09
+ */
 
 #pragma once
 
@@ -84,13 +90,17 @@ requires( sizeof...( Types ) > 1 )
     /// \brief data
     /// \return
     ///
-    const Data_t* data() const { return m_buffer.data(); }
+    const Data_t* data() const {
+        return m_buffer.data();
+    }
 
     ///
     /// \brief data
     /// \return
     ///
-    Data_t* data() { return m_buffer.data(); };
+    Data_t* data() {
+        return m_buffer.data();
+    };
 
     ///
     /// \brief hasType
@@ -163,7 +173,7 @@ requires( sizeof...( Types ) > 1 )
     /// \param args
     ///
     template <class... Args>
-    constexpr MatrixTs( Args&&... args ) : m_buffer { std::forward<Data_t&&>( args )... } {}
+    constexpr explicit MatrixTs( Args&&... args ) : m_buffer { std::forward<Data_t&&>( args )... } {}
 
     ///
     /// \brief get
@@ -231,12 +241,16 @@ requires( sizeof...( Types ) > 1 )
     /// \brief name
     /// \return
     ///
-    static CONSTEXPR20 std::string name() { return printName<Types...>(); }
+    static CONSTEXPR20 std::string name() {
+        return printName<Types...>();
+    }
 
     ///
     /// \brief toString
     ///
-    constexpr auto toString() const { return name() + " = " + m_buffer.toString(); }
+    constexpr auto toString() const {
+        return name() + " = " + m_buffer.toString();
+    }
 
     ///
     /// \brief getOffset
@@ -252,42 +266,46 @@ requires( sizeof...( Types ) > 1 )
 
     ///
     /// \brief serialize
-    /// \param matrix
+    /// \param mat
     ///
-    void serialize( Matrix& matrix ) const { serialize_<Types...>( matrix ); }
+    void serialize( Matrix& mat ) const {
+        serialize_<Types...>( mat );
+    }
 
     ///
     /// \brief getMatrix
     /// \return
     ///
     Matrix getMatrix() const {
-        Matrix matrix;
-        serialize( matrix );
-        matrix.setData( m_buffer.data(), m_buffer.size() );
-        return matrix;
+        Matrix mat;
+        serialize( mat );
+        mat.setData( m_buffer.data(), m_buffer.size() );
+        return mat;
     }
 
     ///
     /// \brief operator ==
-    /// \param matrix
+    /// \param mat
     /// \return
     ///
-    bool operator==( const Matrix& matrix ) const { return getMatrix() == matrix; }
+    bool operator==( const Matrix& mat ) const {
+        return getMatrix() == mat;
+    }
 
  // private:
     ///
     /// \brief serialize_
-    /// \param matrix
+    /// \param mat
     ///
     template <class Type_, class... Types_>
-    void serialize_( Matrix& matrix ) const {
-        // Matrix::serialize_( matrix );
-        if constexpr ( isMatrix<Type_> ) { matrix |= Type_().getMatrix(); }
+    void serialize_( Matrix& mat ) const {
+        // Matrix::serialize_( mat );
+        if constexpr ( isMatrix<Type_> ) { mat |= Type_().getMatrix(); }
         else {
-            matrix |= make_matrix<Type_>();
+            mat |= make_matrix<Type_>();
         }
 
-        if constexpr ( sizeof...( Types_ ) > 0 ) { serialize_<Types_...>( matrix ); }
+        if constexpr ( sizeof...( Types_ ) > 0 ) { serialize_<Types_...>( mat ); }
     }
 
     ///

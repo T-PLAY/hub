@@ -1,6 +1,12 @@
-/// © 2021-2024 Hub, All Rights Reserved
-/// @author gauthier <gauthierbouyjou@aol.com>
-/// @date 2023/11/30
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright © 2021-2024 Hub. All Rights Reserved.
+ * @author Gauthier Bouyjou <gauthierbouyjou@aol.com>
+ * @date 2023/11/30
+ */
 
 #pragma once
 
@@ -17,7 +23,7 @@ namespace client {
 class AskerServer : public AskerInterface
 {
   public:
-    AskerServer( const std::string& ipv4 = io::StreamServer::s_defaultIpv4,
+    explicit AskerServer( const std::string& ipv4 = io::StreamServer::s_defaultIpv4,
                  int port                = io::StreamServer::s_defaultPort );
     ~AskerServer();
 

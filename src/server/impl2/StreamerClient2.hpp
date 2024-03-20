@@ -1,6 +1,12 @@
-/// © 2021-2024 Hub, All Rights Reserved
-/// @author gauthier <gauthierbouyjou@aol.com>
-/// @date 2023/11/27
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright © 2021-2024 Hub. All Rights Reserved.
+ * @author Gauthier Bouyjou <gauthierbouyjou@aol.com>
+ * @date 2023/11/27
+ */
 
 #pragma once
 
@@ -48,6 +54,7 @@ class SRC_API StreamerClient2 : public Client2
     /// \brief headerMsg
     /// \return
     ///
+    // cppcheck-suppress virtualCallinConstructor
     std::string headerMsg() const override;
 
     ///

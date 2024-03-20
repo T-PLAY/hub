@@ -1,12 +1,20 @@
-/// © 2021-2024 Hub, All Rights Reserved
-/// @author gauthier <gauthierbouyjou@aol.com>
-/// @date 2024/01/07
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright © 2021-2024 Hub. All Rights Reserved.
+ * @author Gauthier Bouyjou <gauthierbouyjou@aol.com>
+ * @date 2024/01/07
+ */
 
 #pragma once
 
 #include <array>
 
-#include "zpp/serializer.h"
+//#include "zpp/serializer.h"
+#include "serializer/serializer.h"
+
 
 #include "SerializerI.hpp"
 #include "core/InputBase.hpp"
@@ -25,7 +33,7 @@ class SRC_API SerializerZpp : public SerializerI
     /// \brief SerializerZpp
     /// \param byteView
     ///
-    SerializerZpp( ByteView& byteView ) : SerializerI( byteView ) {
+    explicit SerializerZpp( ByteView& byteView ) : SerializerI( byteView ) {
         m_buff.clear();
         m_in.reset( 0 );
         m_out.reset( 0 );

@@ -1,6 +1,12 @@
-/// © 2021-2024 Hub, All Rights Reserved
-/// @author gauthier <gauthierbouyjou@aol.com>
-/// @date 2024/01/07
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright © 2021-2024 Hub. All Rights Reserved.
+ * @author Gauthier Bouyjou <gauthierbouyjou@aol.com>
+ * @date 2024/01/07
+ */
 
 #pragma once
 
@@ -93,13 +99,15 @@ class SRC_API SerializerT
     static constexpr bool has_it_second_v = has_it_second<T>::value;
 
 #if defined( COMPILER_GCC )
-#    if __GNUC_PREREQ( 12, 3 )
-    template <class T>
-    static constexpr auto isMap = has_it_first_v<T>&& has_it_second_v<T>;
-#    else
+
+/// #    if __GNUC_PREREQ( 12, 3 )
+/// // #if GCC_VERSION >= 12
+///     template <class T>
+///     static constexpr auto isMap = has_it_first_v<T>&& has_it_second_v<T>;
+/// #    else
     template <class T>
     static constexpr bool isMap = has_it_first_v<T>&& has_it_second_v<T>;
-#    endif
+/// #    endif
 
 #elif defined( COMPILER_CLANG )
 #    if CLANG_VERSION >= 14
@@ -153,7 +161,8 @@ class SRC_API SerializerT
     ///
     /// \brief BuffSize
     ///
-    static constexpr Size_t BuffSize = 20'000'000; // 20 Mo
+    //static constexpr Size_t BuffSize = 20'000'000; // 20 Mo
+    static constexpr Size_t BuffSize = 1'000'000; // 1 Mo
 
     ///
     /// \brief SerializerT
@@ -301,6 +310,7 @@ class SRC_API SerializerT
     template <class... Ts>
     // REQUIRES(, Serializables<Ts...>, void )
     typename std::enable_if_t<Serializables<Ts...>, void>
+    // cppcheck-suppress missingReturn
     writeAll( const Ts&... ts ) {
         const auto lastPosition = m_serializer.outPosition();
 
@@ -319,7 +329,9 @@ class SRC_API SerializerT
     template <class T, class... Ts>
     // REQUIRES(, (!Serializables<T, Ts...>), void )
     typename std::enable_if_t<(!Serializables<T, Ts...>), void>
-    writeAll( const T& t, const Ts&... ts ) {
+    // cppcheck-suppress missingReturn
+    writeAll( const T& t,
+                                                                          const Ts&... ts ) {
         write( t );
         if constexpr ( sizeof...( Ts ) > 0 ) { writeAll( ts... ); }
     }
@@ -334,6 +346,7 @@ class SRC_API SerializerT
     template <class... Ts>
     // REQUIRES(, Serializables<Ts...>, void )
     typename std::enable_if_t<Serializables<Ts...>, void>
+    // cppcheck-suppress missingReturn
     readAll( Ts&... ts ) {
         const auto lastPosition = m_serializer.inPosition();
 
@@ -352,6 +365,7 @@ class SRC_API SerializerT
     template <class T, class... Ts>
     // REQUIRES(, (!Serializables<T, Ts...>), void )
     typename std::enable_if_t<(!Serializables<T, Ts...>), void>
+    // cppcheck-suppress missingReturn
     readAll( T& t, Ts&... ts ) {
         read( t );
         if constexpr ( sizeof...( Ts ) > 0 ) { readAll( ts... ); }
@@ -409,7 +423,8 @@ class SRC_API SerializerT
     ///
     template <class T>
     // REQUIRES(, ! Writable_v<T>, void )
-    typename std::enable_if_t<! Writable_v<T>, void>
+    typename std::enable_if_t<!Writable_v<T>, void>
+    // cppcheck-suppress missingReturn
     write( const T& t ) {
 
         const auto lastPosition = m_serializer.outPosition();
@@ -481,7 +496,8 @@ class SRC_API SerializerT
     ///
     template <class T>
     // REQUIRES(, ! Readable_v<T>, void )
-    typename std::enable_if_t<! Readable_v<T>, void>
+    typename std::enable_if_t<!Readable_v<T>, void>
+    // cppcheck-suppress missingReturn
     read( T& t ) {
 #ifdef HUB_DEBUG_INPUT
         // DEBUG_MSG( "\t--->" << HEADER << "\033[1;36mread\033[0m(serial: " << TYPE_NAME( t )
@@ -623,7 +639,7 @@ class SRC_API SerializerT
     typename std::enable_if_t<(!Serializables<T, U>), void>
     read( std::map<T, U>& map ) {
 
-        uint64_t nbEl;
+        uint64_t nbEl = 0;
         read( nbEl );
         map.clear();
 

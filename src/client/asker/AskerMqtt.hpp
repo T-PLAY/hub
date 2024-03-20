@@ -1,6 +1,12 @@
-/// © 2021-2024 Hub, All Rights Reserved
-/// @author gauthier <gauthierbouyjou@aol.com>
-/// @date 2023/11/30
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright © 2021-2024 Hub. All Rights Reserved.
+ * @author Gauthier Bouyjou <gauthierbouyjou@aol.com>
+ * @date 2023/11/30
+ */
 
 #pragma once
 
@@ -16,7 +22,7 @@ namespace client {
 class AskerMqtt : public AskerInterface
 {
   public:
-    AskerMqtt( const std::string& ipv4 = io::StreamMqtt::s_defaultIpv4,
+    explicit AskerMqtt( const std::string& ipv4 = io::StreamMqtt::s_defaultIpv4,
                int port                = io::StreamMqtt::s_defaultPort );
     ~AskerMqtt();
 

@@ -1,6 +1,12 @@
-/// © 2021-2024 Hub, All Rights Reserved
-/// @author gauthier <gauthierbouyjou@aol.com>
-/// @date 2023/11/27
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright © 2021-2024 Hub. All Rights Reserved.
+ * @author Gauthier Bouyjou <gauthierbouyjou@aol.com>
+ * @date 2023/11/27
+ */
 
 #pragma once
 
@@ -37,7 +43,7 @@ class SRC_API InputStreamServer2 : public Input, public io::StreamServer2
     /// \param streamPort
     /// \param ipv4
     ///
-    InputStreamServer2( int streamPort, const std::string& ipv4 = "127.0.0.1" );
+    explicit InputStreamServer2( int streamPort, const std::string& ipv4 = "127.0.0.1" );
 
     ///
     /// \brief InputStreamServer2
@@ -55,7 +61,7 @@ class SRC_API InputStreamServer2 : public Input, public io::StreamServer2
     /// when the server is not found or by loosing connection to the server.
     /// Also occur when stream you want to link is not connected to the server.
     ///
-    InputStreamServer2( const std::string& streamName,
+    explicit InputStreamServer2( const std::string& streamName,
                         int serverPort                = HUB_SERVICE_PORT,
                         const std::string& serverIpv4 = HUB_SERVICE_IPV4 );
 

@@ -1,6 +1,12 @@
-/// © 2021-2024 Hub, All Rights Reserved
-/// @author gauthier <gauthierbouyjou@aol.com>
-/// @date 2023/11/09
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright © 2021-2024 Hub. All Rights Reserved.
+ * @author Gauthier Bouyjou <gauthierbouyjou@aol.com>
+ * @date 2023/11/09
+ */
 
 #pragma once
 
@@ -86,7 +92,9 @@ requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
     /// \brief data
     /// \return
     ///
-    const Data_t* data() const { return m_buffer.data(); }
+    const Data_t* data() const {
+        return m_buffer.data();
+    }
 
     ///
     /// \brief hasType
@@ -135,6 +143,7 @@ requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
 
   public:
     template <class... Args>
+    // cppcheck-suppress noExplicitConstructor
     constexpr MatrixXDBase( Args&&... args ) : m_buffer { std::forward<Type&&>( args )... } {}
 
     static CONSTEXPR20 auto name() {
@@ -156,7 +165,9 @@ requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
     ///
     /// \brief toString
     ///
-    constexpr auto toString() const { return name() + " = " + m_buffer.toString(); }
+    constexpr auto toString() const {
+        return name() + " = " + m_buffer.toString();
+    }
 
     ///
     /// \brief get
@@ -170,12 +181,12 @@ requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
 
     ///
     /// \brief serialize
-    /// \param matrix
+    /// \param mat
     ///
-    void serialize( Matrix& matrix ) const {
-        assert( !matrix.hasValue() );
+    void serialize( Matrix& mat ) const {
+        assert( !mat.hasValue() );
         auto matrix2 = make_matrix<Type, Ns...>();
-        matrix |= matrix2;
+        mat |= matrix2;
     }
 
     ///
@@ -183,18 +194,20 @@ requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
     /// \return
     ///
     Matrix getMatrix() const {
-        Matrix matrix;
-        serialize( matrix );
-        matrix.setData( m_buffer.data(), m_buffer.size() );
-        return matrix;
+        Matrix mat;
+        serialize( mat );
+        mat.setData( m_buffer.data(), m_buffer.size() );
+        return mat;
     }
 
     ///
     /// \brief operator ==
-    /// \param matrix
+    /// \param mat
     /// \return
     ///
-    bool operator==( const Matrix& matrix ) { return getMatrix() == matrix; }
+    bool operator==( const Matrix& mat ) {
+        return getMatrix() == mat;
+    }
 
   private:
     // Buffer<Type, Capacity> m_buffer;
@@ -223,7 +236,7 @@ requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
     /// \return
     ///
     template <int i>
-    static constexpr Size_t n() {
+    static constexpr Size_t nDim() {
         static_assert( 0 <= i && i < MatrixXDBase<Type, Ns...>::nDim() );
         int j = 0;
         for ( const auto& n : { Ns... } ) {

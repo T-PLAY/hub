@@ -1,6 +1,12 @@
-/// © 2021-2024 Hub, All Rights Reserved
-/// @author gauthier <gauthierbouyjou@aol.com>
-/// @date 2023/08/17
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright © 2021-2024 Hub. All Rights Reserved.
+ * @author Gauthier Bouyjou <gauthierbouyjou@aol.com>
+ * @date 2023/08/17
+ */
 
 #pragma once
 
@@ -64,7 +70,7 @@ inline void InputStreamMqtt::read( unsigned char* data, size_t len ) {
     std::cout << "[InputStreamMqtt] read(data, len = " << len << ")" << std::endl;
 #    endif
 #    ifdef DEBUG_INPUT_STREAM
-    std::cout << DEBUG_INPUT_STREAM "read(data, len = " << len << ")" << std::endl;
+    std::cout << DEBUG_INPUT_STREAM + "read(data, len = " << len << ")" << std::endl;
 #    endif
 
     assert( m_client->is_connected() );

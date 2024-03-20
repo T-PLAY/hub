@@ -41,7 +41,7 @@ sensor::Acquisition* getAcquisition( sensor::InputSensor* inputSensor ) {
     try {
         *inputSensor >> acq;
         std::cout << "[Native] get acq : " << acq << std::endl;
-        ret = new sensor::Acquisition( acq.clone() );
+        ret = new sensor::Acquisition( acq.copy() );
     }
     catch ( std::exception& e ) {
         std::cout << "[Native] getAcquisition : catch exception : " << e.what() << std::endl;

@@ -1,6 +1,12 @@
-/// © 2021-2024 Hub, All Rights Reserved
-/// @author gauthier <gauthierbouyjou@aol.com>
-/// @date 2023/11/20
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright © 2021-2024 Hub. All Rights Reserved.
+ * @author Gauthier Bouyjou <gauthierbouyjou@aol.com>
+ * @date 2023/11/20
+ */
 
 #pragma once
 
@@ -32,7 +38,7 @@ class InputOutputSocket : public InputOutput<>, public net::ClientSocket
     /// \brief InputOutputSocket
     /// \param clientSocket
     ///
-    InputOutputSocket( net::ClientSocket&& clientSocket ) :
+    explicit InputOutputSocket( net::ClientSocket&& clientSocket ) :
         net::ClientSocket( std::move( clientSocket ) ) {}
 
     ///

@@ -1,6 +1,12 @@
-/// © 2021-2024 Hub, All Rights Reserved
-/// @author gauthier <gauthierbouyjou@aol.com>
-/// @date 2023/11/27
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright © 2021-2024 Hub. All Rights Reserved.
+ * @author Gauthier Bouyjou <gauthierbouyjou@aol.com>
+ * @date 2023/11/27
+ */
 
 #pragma once
 
@@ -88,7 +94,7 @@ class SRC_API ServerImpl2
 
     void addViewer( ViewerClient2* viewer );
 
-    void delStreamer( StreamerClient2* streamer );
+    void delStreamer( const StreamerClient2* streamer );
     void delViewer( ViewerClient2* viewer );
 
     void removeClient( Client2* client );

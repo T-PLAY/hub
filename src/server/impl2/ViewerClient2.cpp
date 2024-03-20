@@ -84,7 +84,8 @@ ViewerClient2::~ViewerClient2() {
 }
 
 std::string ViewerClient2::headerMsg() const {
-    return Client2::headerMsg() + "[Viewer] ";
+    // return Client2::headerMsg() + "[Viewer] ";
+    return Client2::clientMsg() + "[Viewer] ";
 }
 
 void ViewerClient2::notifyNewStreamer( const StreamerClient2* streamer ) {
@@ -99,6 +100,7 @@ void ViewerClient2::notifyNewStreamer( const StreamerClient2* streamer ) {
 
     m_clientStreamAdded = false;
     int iTry            = 0;
+    // Todo fix this
     while ( iTry < 10 && !m_clientStreamAdded ) {
         std::cout << "[ViewerClient] waiting for streamer added ..." << std::endl;
         std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );

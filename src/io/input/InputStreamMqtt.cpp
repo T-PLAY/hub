@@ -71,7 +71,7 @@ void InputStreamMqtt::read( sensor::Acquisition& acq ) {
               << std::endl;
 #    endif
 
-    read( (unsigned char*)buff.data(), m_acqSize );
+    read( reinterpret_cast<unsigned char*>(buff.data()), m_acqSize );
 
     assert( buff.empty() );
 }
@@ -86,15 +86,15 @@ void InputStreamMqtt::read( sensor::SensorSpec& sensorSpec ) {
 
     std::vector<char> buff( sizeof( uint64_t ) + packetSize );
     auto* data             = buff.data();
-    ( (uint64_t*)data )[0] = packetSize;
+     reinterpret_cast<uint64_t*>(data )[0] = packetSize;
     subscribe( s_topicStream + m_name + "/header/data" );
-    read( (unsigned char*)&data[sizeof( uint64_t )], packetSize );
+     read( reinterpret_cast<unsigned char*>(&data[sizeof( uint64_t )]), packetSize );
 }
 
 void InputStreamMqtt::subscribe( const std::string& topic ) {
     m_currentTopic = topic;
 #    ifdef DEBUG_INPUT_STREAM
-    std::cout << DEBUG_INPUT_STREAM "subscribing to " << m_currentTopic << std::endl;
+    std::cout << DEBUG_INPUT_STREAM + "subscribing to " << m_currentTopic << std::endl;
 #    endif
     auto rsp = m_client->subscribe( topic );
     for ( const auto reasonCode : rsp.get_reason_codes() ) {

@@ -1,6 +1,12 @@
-/// © 2021-2024 Hub, All Rights Reserved
-/// @author gauthier <gauthierbouyjou@aol.com>
-/// @date 2024/01/03
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright © 2021-2024 Hub. All Rights Reserved.
+ * @author Gauthier Bouyjou <gauthierbouyjou@aol.com>
+ * @date 2024/01/03
+ */
 
 #pragma once
 
@@ -107,7 +113,7 @@ struct Mat4 {
     /// \param a43
     /// \param a44
     ///
-    constexpr Mat4(
+    explicit constexpr Mat4(
         float a11 = 1.0, float a12 = 0.0, float a13 = 0.0, float a14 = 0.0,
         float a21 = 0.0, float a22 = 1.0, float a23 = 0.0, float a24 = 0.0,
         float a31 = 0.0, float a32 = 0.0, float a33 = 1.0, float a34 = 0.0,
@@ -144,7 +150,7 @@ struct Mat4 {
     /// \brief Mat4
     /// \param array
     ///
-    Mat4( const float* array ) { memcpy( m_array.data(), array, 64 ); }
+    explicit Mat4( const float* array ) { memcpy( m_array.data(), array, 64 ); }
 
     ///
     /// \brief toString
@@ -182,14 +188,13 @@ struct Mat4 {
     ///
     bool operator==( const Mat4& other ) const {
         return m_array == other.m_array;
-        // return !memcmp( data, other.data, 64 );
     }
 
     ///
     /// \brief data
     /// \return
     ///
-    const float * data() const {
+    const float* data() const {
         return m_array.data();
     }
 
@@ -230,7 +235,7 @@ struct Vec3 {
     /// \brief Vec3
     /// \param value
     ///
-    constexpr Vec3( float value = 0.0f ) : x { value }, y { value }, z { value } {};
+    explicit constexpr Vec3( float value = 0.0f ) : x { value }, y { value }, z { value } {};
     ///
     /// \brief Vec3
     /// \param x_
@@ -260,7 +265,9 @@ struct Vec3 {
     ///
     /// \brief name
     ///
-    static constexpr auto name() { return "Vec3"; };
+    static constexpr auto name() {
+        return "Vec3";
+    };
     ///
     /// \brief operator ==
     /// \param other
@@ -297,7 +304,7 @@ struct Vec4 {
     /// \brief Vec4
     /// \param value
     ///
-    constexpr Vec4( float value = 0.0f ) : x { value }, y { value }, z { value }, w { value } {};
+    explicit constexpr Vec4( float value = 0.0f ) : x { value }, y { value }, z { value }, w { value } {};
     ///
     /// \brief Vec4
     /// \param x_
@@ -329,7 +336,9 @@ struct Vec4 {
     ///
     /// \brief name
     ///
-    static constexpr auto name() { return "Vec4"; };
+    static constexpr auto name() {
+        return "Vec4";
+    };
     ///
     /// \brief operator ==
     /// \param other
@@ -411,15 +420,15 @@ struct RGB8 {
     ///
     /// \brief r
     ///
-    unsigned char r;
+    unsigned char r = 0;
     ///
     /// \brief g
     ///
-    unsigned char g;
+    unsigned char g = 0;
     ///
     /// \brief b
     ///
-    unsigned char b;
+    unsigned char b = 0;
     ///
     /// \brief name
     ///
@@ -654,7 +663,7 @@ struct Dof6 {
     /// \param _w2
     /// \param _w3
     ///
-    constexpr Dof6( float _x  = 0.0,
+    explicit constexpr Dof6( float _x  = 0.0,
                     float _y  = 0.0,
                     float _z  = 0.0,
                     float _w0 = 1.0,
@@ -667,7 +676,7 @@ struct Dof6 {
     /// \brief Dof6
     /// \param array
     ///
-    Dof6( const float* array ) { memcpy( this, array, 28 ); }
+    explicit Dof6( const float* array ) { memcpy( this, array, 28 ); }
 
     ///
     /// \brief toString

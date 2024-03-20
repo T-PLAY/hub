@@ -1,6 +1,12 @@
-/// © 2021-2024 Hub, All Rights Reserved
-/// @author gauthier <gauthierbouyjou@aol.com>
-/// @date 2023/11/04
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright © 2021-2024 Hub. All Rights Reserved.
+ * @author Gauthier Bouyjou <gauthierbouyjou@aol.com>
+ * @date 2023/11/04
+ */
 
 #pragma once
 
@@ -99,7 +105,7 @@ class Buffer<Type, Size, StaticMemory> : public BufferBase<Type, Size, StaticMem
     /// \param args
     ///
     template <class... Args>
-    constexpr Buffer( Args&&... args ) : m_array { std::forward<Type&&>( args )... } {}
+    constexpr explicit Buffer( Args&&... args ) : m_array { std::forward<Type&&>( args )... } {}
 
     ///
     /// \brief get
@@ -141,7 +147,9 @@ class Buffer<Type, Size, StaticMemory> : public BufferBase<Type, Size, StaticMem
 
 #if CPP_VERSION >= 20
     using Span = typename BufferBase<Type, Size, StaticMemory>::Span;
-    Span getSpan() override { return Span { m_array.begin(), m_array.end() }; }
+    Span getSpan() override {
+        return Span { m_array.begin(), m_array.end() };
+    }
 #endif
 
   private:
@@ -165,7 +173,7 @@ class Buffer<Type, Size, DynamicMemory> : public BufferBase<Type, Size, DynamicM
     /// \param args
     ///
     template <class... Args>
-    constexpr Buffer( Args&&... args ) : m_vector { std::forward<Type&&>( args )... } {}
+    constexpr explicit Buffer( Args&&... args ) : m_vector { std::forward<Type&&>( args )... } {}
 
     ///
     /// \brief toString
@@ -198,7 +206,9 @@ class Buffer<Type, Size, DynamicMemory> : public BufferBase<Type, Size, DynamicM
 
 #if CPP_VERSION >= 20
     using Span = typename BufferBase<Type, Size, DynamicMemory>::Span;
-    Span getSpan() override { return std::span<Type, Size> { m_vector.begin(), m_vector.end() }; }
+    Span getSpan() override {
+        return std::span<Type, Size> { m_vector.begin(), m_vector.end() };
+    }
 #endif
 
   private:

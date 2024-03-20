@@ -1,6 +1,12 @@
-/// © 2021-2024 Hub, All Rights Reserved
-/// @author gauthier <gauthierbouyjou@aol.com>
-/// @date 2023/03/25
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright © 2021-2024 Hub. All Rights Reserved.
+ * @author Gauthier Bouyjou <Gauthier.Bouyjou@irit.fr>
+ * @date 2023/03/25
+ */
 
 #pragma once
 
@@ -12,6 +18,7 @@
 #include <cstring>
 
 #include <core/Macros.hpp>
+#include <core/Traits.hpp>
 
 namespace hub {
 namespace data {
@@ -38,6 +45,12 @@ struct Vertex {
     /// \brief ty
     float ty;
 
+//    auto toString() const {
+//        std::string str;
+//        str += std::to_string(px) + ":" + std::to_string(py) + ":" + std::to_string(pz);
+//        return str;
+//    }
+
     ///
     /// \brief serialize
     /// \param archive
@@ -49,6 +62,12 @@ struct Vertex {
     }
 
     ///
+    /// \brief toString
+    /// \return
+    ///
+    std::string toString() const;
+
+    ///
     /// \brief operator ==
     /// \param other
     /// \return
@@ -57,6 +76,8 @@ struct Vertex {
         return !std::memcmp( this, &other, sizeof( Vertex ) );
     }
 };
+static_assert(sizeof(float) == 4);
+static_assert(sizeof(Vertex) == 4 * 8);
 
 ///
 /// \brief The Shape class
@@ -99,15 +120,23 @@ struct Shape {
     }
 
     ///
+    /// \brief toString
+    ///
+    auto toString() const {
+        std::string str;
+        //str += hub::to_string(vertices) + " " +  std::to_string(hasNormal) + " " + hub::to_string(indices)  + " " + name + " " + std::to_string(material);
+        str += std::to_string(vertices.size()) + " " +  std::to_string(hasNormal) + " " + std::to_string(indices.size())  + " " + name + " " + std::to_string(material);
+        return str;
+    }
+
+    ///
     /// \brief operator ==
     /// \param other
     /// \return
     ///
-    bool operator==( const Shape& other ) const {
-        return vertices == other.vertices && hasNormal == other.hasNormal &&
-               indices == other.indices && name == other.name && material == other.material;
-    }
+    bool operator==( const Shape& other ) const;
 };
+static_assert(sizeof(unsigned int) == 4);
 
 ///
 /// \brief The Material class
@@ -187,7 +216,7 @@ struct Material {
     /// \return
     ///
     bool operator==( const Material& other ) const {
-        return name == other.name && !std::memcmp( Ka, other.Ka, sizeof( float ) * 21 ) &&
+        return name == other.name && !std::memcmp( &Ka, &other.Ka, sizeof( float ) * 21 ) &&
                illum == other.illum;
     }
 };
@@ -223,7 +252,7 @@ class SRC_API Mesh
     /// \brief Mesh
     /// \param filePaths
     ///
-    Mesh( std::initializer_list<std::string> filePaths );
+    explicit Mesh( std::initializer_list<std::string> filePaths );
 
     ///
     /// \brief Mesh
@@ -296,7 +325,9 @@ class SRC_API Mesh
     bool operator==( const Mesh& other ) const;
 
 #if CPP_VERSION >= 20
-    static constexpr auto serialize( auto& archive, auto& self ) { return archive(); }
+    static constexpr auto serialize( const auto& archive, auto& self ) {
+        return archive();
+    }
 #else
     ///
     /// \brief serialize
