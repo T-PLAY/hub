@@ -60,12 +60,10 @@ class OutputSensor : public Sensor
 #if CPP_VERSION >= 20
               requires std::is_base_of_v<hub::Output, OutputT>
 #endif
-              typename = typename std::enable_if_t<std::is_base_of_v<hub::Output, OutputT>>,
-              class... Args>
-    OutputSensor( const SensorSpec& sensorSpec, const Args&... args ) :
+    typename = typename std::enable_if_t<std::is_base_of_v<hub::Output, OutputT>>,
+    class... Args > OutputSensor( const SensorSpec& sensorSpec, const Args&... args ) :
         Sensor( sensorSpec ),
-        m_output( *( new OutputT( io::make_header( sensorSpec ), args... ) ) ),
-        m_outputOwner( true ) {
+    m_output( *( new OutputT( io::make_header( sensorSpec ), args... ) ) ), m_outputOwner( true ) {
         static_assert( std::is_base_of_v<hub::Output, OutputT> );
 
         assert( m_spec.getResolution().nType() > 0 );
@@ -80,9 +78,10 @@ class OutputSensor : public Sensor
 #if CPP_VERSION >= 20
               requires std::is_base_of_v<hub::Output, OutputT>
 #endif
-              typename = typename std::enable_if_t<std::is_base_of_v<hub::Output, OutputT>>>
-    OutputSensor( const SensorSpec& sensorSpec, OutputT& output ) :
-        Sensor( sensorSpec ), m_output( output ) {
+    typename = typename std::enable_if_t < std::is_base_of_v < hub::Output,
+    OutputT >>> OutputSensor( const SensorSpec& sensorSpec, OutputT& output ) :
+        Sensor( sensorSpec ),
+    m_output( output ) {
         static_assert( std::is_base_of_v<hub::Output, OutputT> );
 
 #ifdef DEBUG
@@ -105,11 +104,10 @@ class OutputSensor : public Sensor
 #if CPP_VERSION >= 20
               requires std::is_base_of_v<hub::Output, OutputT>
 #endif
-              typename = typename std::enable_if_t<std::is_base_of_v<hub::Output, OutputT>>>
-    OutputSensor( const SensorSpec& sensorSpec, OutputT&& output ) :
+    typename = typename std::enable_if_t < std::is_base_of_v < hub::Output,
+    OutputT >>> OutputSensor( const SensorSpec& sensorSpec, OutputT&& output ) :
         Sensor( sensorSpec ),
-        m_output( *( new OutputT( std::move( output ) ) ) ),
-        m_outputOwner( true ) {
+    m_output( *( new OutputT( std::move( output ) ) ) ), m_outputOwner( true ) {
         static_assert( std::is_base_of_v<hub::Output, OutputT> );
 
 #ifdef DEBUG
@@ -143,9 +141,17 @@ class OutputSensor : public Sensor
     /// \brief getOutput
     /// \return
     ///
-    Output& getOutput() const { return m_output; }
+    Output& getOutput() const {
+        return m_output;
+    }
 
-    Acquisition acqMsg() const { return make_acquisition( m_spec.getResolution() ); }
+    ///
+    /// \brief acqMsg
+    /// \return
+    ///
+    Acquisition acqMsg() const {
+        return make_acquisition( m_spec.getResolution() );
+    }
 
     ///
     /// \brief fill
@@ -224,13 +230,17 @@ class OutputSensorT : protected Sensor
     /// \brief acqMsg
     /// \return
     ///
-    Acquisition acqMsg() const { return Acquisition(); }
+    Acquisition acqMsg() const {
+        return Acquisition();
+    }
 
     ///
     /// \brief getOutput
     /// \return
     ///
-    Output& getOutput() const { return m_output; }
+    Output& getOutput() const {
+        return m_output;
+    }
 
   private:
     Output& m_output;

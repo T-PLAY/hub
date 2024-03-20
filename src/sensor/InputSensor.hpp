@@ -235,43 +235,38 @@ namespace sensor {
             }
             return acqs;
         }
+    }
 
-        ///
-        /// \brief fillAllAcquisitions
-        /// \param ts
-        ///
-        template <class Container,
-            typename T = std::decay_t<decltype(*begin(std::declval<Container>()))>>
-        void fillAllAcquisitions(Container& ts)
-        {
-            auto acq = acqMsg();
-            while (std::none_of(m_inputs.begin(), m_inputs.end(), [](const Input* input) { return input->isEnd(); })) {
-                *this >> acq;
-                //            acqs.push_back(acq.clone());
-                ts.push_back(acq.copy());
-            }
-        }
+    ///
+    /// \brief getInput
+    /// \return
+    ///
+    const Input& getInput() const {
+        return *m_inputs.at( 0 );
+    }
 
-        ///
-        /// \brief getInput
-        /// \return
-        ///
-        const Input& getInput() const { return *m_inputs.at(0); }
+    ///
+    /// \brief acqMsg
+    /// \return
+    ///
+    Acquisition acqMsg() const {
+        return make_acquisition( m_spec.getResolution() );
+    }
 
-        Acquisition acqMsg() const { return make_acquisition( m_spec.getResolution() ); }
+    ///
+    /// \brief getInput
+    /// \return
+    ///
+    Input& getInput() {
+        return *m_inputs.at( 0 );
+    }
 
-        ///
-        /// \brief getInput
-        /// \return
-        ///
-        Input& getInput() { return *m_inputs.at(0); }
-
-    private:
-        std::vector<Input*> m_inputs;
-        bool m_inputOwner = false;
-        std::list<sensor::Acquisition> m_lastAcqs;
-        std::vector<hub::sensor::SensorSpec> m_specs;
-    };
+  private:
+    std::vector<Input*> m_inputs;
+    bool m_inputOwner = false;
+    std::list<sensor::Acquisition> m_lastAcqs;
+    std::vector<hub::sensor::SensorSpec> m_specs;
+};
 
 } // namespace sensor
 } // namespace hub

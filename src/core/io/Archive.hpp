@@ -85,13 +85,17 @@ class ArchiveT : public InputOutputT
     /// \brief isOpen
     /// \return
     ///
-    bool isOpen() const override { return true; }
+    bool isOpen() const override {
+        return true;
+    }
 
     ///
     /// \brief isEnd
     /// \return
     ///
-    bool isEnd() const override { return m_datas.empty(); }
+    bool isEnd() const override {
+        return m_datas.empty();
+    }
 
     ///
     /// \brief clear
@@ -111,23 +115,28 @@ class ArchiveT : public InputOutputT
     /// \brief getHeader
     /// \return
     ///
+#ifndef HUB_NON_BUILD_IO
     const Header& getHeader() const {
-        return
-     m_header;
+        return m_header;
     }
+#endif
 
 #ifdef DEBUG
     ///
     /// \brief getNCall
     /// \return
     ///
-    size_t getNCall() const { return m_nCall; }
+    size_t getNCall() const {
+        return m_nCall;
+    }
 
     ///
     /// \brief getLastCallSize
     /// \return
     ///
-    size_t getLastCallSize() const { return m_lastCallSize; }
+    size_t getLastCallSize() const {
+        return m_lastCallSize;
+    }
 #endif
 
   private:
