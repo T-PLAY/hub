@@ -8,10 +8,12 @@
 
 cd $(git rev-parse --show-toplevel)
 
-for file in $(find $(cat scripts/source_dirs.txt) -type f \( -name "*.cpp" -o -name "*.hpp" -o -name "*.h" -o -name "*.inl" \)); do
+for file in $(find $(cat scripts/source_dirs.txt | grep -v '^*') -type f \( -name "*.cpp" -o -name "*.hpp" -o -name "*.h" -o -name "*.inl" \)); do
 	echo "$file"
 	
-	sed -i '/^ *\/\/[^ ^\/].*$/d' $file
+	sed -i '/^ *\/\/[^ ^\/].*$/d' $file #         //a
 	# sed -i '/^ *\/\/ [ ].*$/d' $file
-	sed -i '/^ *\/\/ [^A-Z].*$/d' $file
+	sed -i '/^ *\/\/ [^A-Z^c].*$/d' $file # // auou, protect // cppcheck-suppress and // clang-format
+	sed -i '/^ *\/\/ *$/d' $file # // remove empty comment
+
 done
