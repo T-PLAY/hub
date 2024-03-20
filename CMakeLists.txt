@@ -257,16 +257,9 @@ endif()
 add_custom_target(
     hub-format
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-    COMMAND scripts/format-all.sh
-    COMMENT "Format sources")
+    COMMAND scripts/format-project.sh
+    COMMENT "Format project")
 custom_target_added(format)
-
-add_custom_target(
-    hub-cleanup
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-    COMMAND scripts/cleanup-project.sh
-    COMMENT "Cleanup project")
-custom_target_added(cleanup)
 
 option(HUB_ENABLE_WRAPPER "Enable wrapper" OFF)
 if(HUB_ENABLE_WRAPPER)
