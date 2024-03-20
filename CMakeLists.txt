@@ -134,13 +134,6 @@ if(Boost_FOUND)
     add_definitions(-DHUB_USE_BOOST)
 endif()
 
-# find_package(Eigen3 QUIET)
-# if(Eigen3_FOUND)
-#     add_definitions(-DHUB_USE_EIGEN3)
-#     link_libraries(Eigen3::Eigen)
-#     include_directories(${EIGEN3_INCLUDE_DIR})
-# endif()
-
 find_package(TBB QUIET)
 set(HUB_TBB_TARGET)
 if(TBB_FOUND)
@@ -221,44 +214,20 @@ endif()
 add_subdirectory(bin)
 
 if(NOT WIN32)
-    execute_process(
-        COMMAND cppcheck --version
-        RESULT_VARIABLE CPP_CHECK_FOUND
-        OUTPUT_VARIABLE CPP_CHECK_OUTPUT
-        ERROR_VARIABLE CPP_CHECK_ERROR)
-
-    if (NOT CPP_CHECK_FOUND)
-        string(REGEX MATCHALL "-.*$|[0-9]+" CPP_CHECK_VERSION_LIST ${CPP_CHECK_OUTPUT})
-        list(GET CPP_CHECK_VERSION_LIST 0 CPP_CHECK_VERSION_MAJOR)
-        list(GET CPP_CHECK_VERSION_LIST 1 CPP_CHECK_VERSION_MINOR)
-        # list(GET CPP_CHECK_VERSION_LIST 2 CPP_CHECK_VERSION_PATCH)
-
-        # message(STATUS "${HEADER_MSG} Cppcheck ${CPP_CHECK_VERSION_MAJOR}.${CPP_CHECK_VERSION_MINOR}.${CPP_CHECK_VERSION_PATCH} found")
-        message(STATUS "${HEADER_MSG} Cppcheck ${CPP_CHECK_VERSION_MAJOR}.${CPP_CHECK_VERSION_MINOR} found")
-
-        if(NOT ${CPP_CHECK_VERSION_MAJOR} EQUAL 2)
-            message(FATAL_ERROR "${CPP_CHECK_OUTPUT} unsupported")
-        endif()
-
-        if (${CPP_CHECK_VERSION_MINOR} GREATER 10)
-            add_custom_target(
-                hub-cppCheck
-                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-                COMMAND
-                    cppcheck -DCPP_CHECK src -I src --error-exitcode=1 --enable=all --suppress=missingIncludeSystem
-                    --suppress=missingInclude --suppress=unusedFunction --suppress=virtualCallInConstructor --inline-suppr
-                COMMENT "Running cppCheck")
-        else()
-            add_custom_target(
-                hub-cppCheck
-                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-                COMMAND
-                    cppcheck -DCPP_CHECK src -I src --error-exitcode=1 --enable=all
-                    --suppress=missingInclude --suppress=unusedFunction --suppress=virtualCallInConstructor --inline-suppr
-                COMMENT "Running cppCheck")
-        endif()
-        custom_target_added(cppCheck)
-    endif()
+    add_custom_target(
+        hub-cppCheck
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        # # COMMAND cppcheck --enable=all --error-exitcode=1 src tests -I src -I tests --inline-suppr
+        # # COMMAND cppcheck --enable=all --error-exitcode=1 src -I src -I external --inline-suppr
+        # # --suppress=toomanyconfigs --suppress=missingIncludeSystem
+        # # COMMAND cppcheck -DCPP_CHECK --enable=all --error-exitcode=1 src --suppress=missingIncludeSystem
+        # # --suppress=toomanyconfigs --suppress=unusedFunction --suppress=virtualCallInConstructor
+        COMMAND
+            cppcheck -DCPP_CHECK src -I src --error-exitcode=1 --enable=all --suppress=missingIncludeSystem
+            --suppress=missingInclude --suppress=unusedFunction --suppress=virtualCallInConstructor --inline-suppr
+            # # --suppress=noValidConfiguration
+        COMMENT "Running cppCheck")
+    custom_target_added(cppCheck)
 endif()
 
 add_custom_target(
@@ -267,6 +236,13 @@ add_custom_target(
     COMMAND scripts/format-all.sh
     COMMENT "Format sources")
 custom_target_added(format)
+
+add_custom_target(
+    hub-cleanup
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    COMMAND scripts/cleanup-project.sh
+    COMMENT "Cleanup project")
+custom_target_added(cleanup)
 
 option(HUB_ENABLE_WRAPPER "Enable wrapper" OFF)
 if(HUB_ENABLE_WRAPPER)
