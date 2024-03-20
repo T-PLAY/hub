@@ -133,13 +133,6 @@ if(Boost_FOUND)
     add_definitions(-DHUB_USE_BOOST)
 endif()
 
-find_package(Eigen3 QUIET)
-if(Eigen3_FOUND)
-    add_definitions(-DHUB_USE_EIGEN3)
-    link_libraries(Eigen3::Eigen)
-    include_directories(${EIGEN3_INCLUDE_DIR})
-endif()
-
 find_package(TBB QUIET)
 set(HUB_TBB_TARGET)
 if(TBB_FOUND)
@@ -267,6 +260,13 @@ add_custom_target(
     COMMAND scripts/format-all.sh
     COMMENT "Format sources")
 custom_target_added(format)
+
+add_custom_target(
+    hub-cleanup
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    COMMAND scripts/cleanup-project.sh
+    COMMENT "Cleanup project")
+custom_target_added(cleanup)
 
 option(HUB_ENABLE_WRAPPER "Enable wrapper" OFF)
 if(HUB_ENABLE_WRAPPER)
