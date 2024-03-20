@@ -230,7 +230,9 @@ class SRC_API Any
     /// \param other
     /// \return
     ///
-    bool operator!=( const Any& other ) const { return !( *this == other ); }
+    bool operator!=( const Any& other ) const {
+        return !( *this == other );
+    }
 #endif
 
   private:

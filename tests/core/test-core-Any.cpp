@@ -31,7 +31,9 @@ class Lambda
         archive( self.a, self.b, self.c, self.ds, self.e );
     }
 
-    auto toString() const { return hub::to_string( a, b, c, ds, e ); }
+    auto toString() const {
+        return hub::to_string( a, b, c, ds, e );
+    }
 
     bool operator==( const Lambda& lambda ) const {
         return a == lambda.a && b == lambda.b && c == lambda.c && ds == lambda.ds && e == lambda.e;

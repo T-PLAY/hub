@@ -325,7 +325,9 @@ class SRC_API Mesh
     bool operator==( const Mesh& other ) const;
 
 #if CPP_VERSION >= 20
-    static constexpr auto serialize( const auto& archive, auto& self ) { return archive(); }
+    static constexpr auto serialize( const auto& archive, auto& self ) {
+        return archive();
+    }
 #else
     ///
     /// \brief serialize
