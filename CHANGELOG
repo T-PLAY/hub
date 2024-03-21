@@ -4,6 +4,8 @@ Current head v.2.1 rc
 =====================
 - Community
   * Add CHANGELOG file (#14)
+- Clean code
+  * Removed first server impl (#16)
 
 ---
 v.2.0.0
