@@ -187,7 +187,7 @@ struct Material {
     /// \return
     ///
     bool operator==( const Material& other ) const {
-        return name == other.name && !std::memcmp( Ka, other.Ka, sizeof( float ) * 21 ) &&
+        return name == other.name && !std::memcmp( &Ka, &other.Ka, sizeof( float ) * 21 ) &&
                illum == other.illum;
     }
 };
@@ -223,7 +223,7 @@ class SRC_API Mesh
     /// \brief Mesh
     /// \param filePaths
     ///
-    Mesh( std::initializer_list<std::string> filePaths );
+    explicit Mesh( std::initializer_list<std::string> filePaths );
 
     ///
     /// \brief Mesh
@@ -296,7 +296,7 @@ class SRC_API Mesh
     bool operator==( const Mesh& other ) const;
 
 #if CPP_VERSION >= 20
-    static constexpr auto serialize( auto& archive, auto& self ) { return archive(); }
+    static constexpr auto serialize( const auto& archive, auto& self ) { return archive(); }
 #else
     ///
     /// \brief serialize

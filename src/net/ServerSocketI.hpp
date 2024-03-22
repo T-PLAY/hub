@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "ClientSocketI.hpp"
+// #include "ClientSocketI.hpp"
 #include "core/Macros.hpp"
 
 namespace hub {
@@ -26,7 +26,7 @@ class SRC_API ServerSocketI
     /// \brief waitNewClient
     /// \return
     ///
-    ClientSocketI waitNewClient();
+    // ClientSocketI waitNewClient();
 };
 
 } // namespace net

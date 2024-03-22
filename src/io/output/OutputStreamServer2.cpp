@@ -245,10 +245,10 @@ void OutputStreamServer2::startStreaming() {
                 data->m_mtxClientSockets.unlock();
             }
             else if ( clientType == hub::io::StreamBase::ClientType::KILLER ) {
-                if ( data->m_killed ) {}
-                else {
+//                if ( data->m_killed ) {}
+//                else {
                     data->m_killed = true;
-                }
+//                }
             }
             else {
                 assert( false );

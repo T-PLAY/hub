@@ -23,7 +23,7 @@ class SerializerImpl2 : public SerializerI
     /// \brief SerializerImpl2
     /// \param byteView
     ///
-    SerializerImpl2( ByteView& byteView ) : SerializerI( byteView ) {}
+    explicit SerializerImpl2( ByteView& byteView ) : SerializerI( byteView ) {}
 
     ///
     /// \brief resetIn

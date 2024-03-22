@@ -107,7 +107,7 @@ struct Mat4 {
     /// \param a43
     /// \param a44
     ///
-    constexpr Mat4(
+    explicit constexpr Mat4(
         float a11 = 1.0, float a12 = 0.0, float a13 = 0.0, float a14 = 0.0,
         float a21 = 0.0, float a22 = 1.0, float a23 = 0.0, float a24 = 0.0,
         float a31 = 0.0, float a32 = 0.0, float a33 = 1.0, float a34 = 0.0,
@@ -144,7 +144,7 @@ struct Mat4 {
     /// \brief Mat4
     /// \param array
     ///
-    Mat4( const float* array ) { memcpy( m_array.data(), array, 64 ); }
+    explicit Mat4( const float* array ) { memcpy( m_array.data(), array, 64 ); }
 
     ///
     /// \brief toString
@@ -230,7 +230,7 @@ struct Vec3 {
     /// \brief Vec3
     /// \param value
     ///
-    constexpr Vec3( float value = 0.0f ) : x { value }, y { value }, z { value } {};
+    explicit constexpr Vec3( float value = 0.0f ) : x { value }, y { value }, z { value } {};
     ///
     /// \brief Vec3
     /// \param x_
@@ -297,7 +297,7 @@ struct Vec4 {
     /// \brief Vec4
     /// \param value
     ///
-    constexpr Vec4( float value = 0.0f ) : x { value }, y { value }, z { value }, w { value } {};
+    explicit constexpr Vec4( float value = 0.0f ) : x { value }, y { value }, z { value }, w { value } {};
     ///
     /// \brief Vec4
     /// \param x_
@@ -411,15 +411,15 @@ struct RGB8 {
     ///
     /// \brief r
     ///
-    unsigned char r;
+    unsigned char r = 0;
     ///
     /// \brief g
     ///
-    unsigned char g;
+    unsigned char g = 0;
     ///
     /// \brief b
     ///
-    unsigned char b;
+    unsigned char b = 0;
     ///
     /// \brief name
     ///
@@ -654,7 +654,7 @@ struct Dof6 {
     /// \param _w2
     /// \param _w3
     ///
-    constexpr Dof6( float _x  = 0.0,
+    explicit constexpr Dof6( float _x  = 0.0,
                     float _y  = 0.0,
                     float _z  = 0.0,
                     float _w0 = 1.0,
@@ -667,7 +667,7 @@ struct Dof6 {
     /// \brief Dof6
     /// \param array
     ///
-    Dof6( const float* array ) { memcpy( this, array, 28 ); }
+    explicit Dof6( const float* array ) { memcpy( this, array, 28 ); }
 
     ///
     /// \brief toString

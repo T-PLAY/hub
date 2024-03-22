@@ -23,7 +23,8 @@ class SRC_API Client2
     Client2( ServerImpl2* server, int iClient );
     virtual ~Client2();
 
-    virtual std::string headerMsg() const;
+    std::string clientMsg() const;
+    virtual std::string headerMsg() const = 0;
     void printStatusMessage( const std::string& message ) const;
 
     void setServer( ServerImpl2* newServer );

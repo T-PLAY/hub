@@ -6,7 +6,6 @@
 
 #include <string>
 
-/* cppcheck-suppress missingInclude */
 
 namespace hub {
 

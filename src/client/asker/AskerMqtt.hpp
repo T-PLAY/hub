@@ -16,7 +16,7 @@ namespace client {
 class AskerMqtt : public AskerInterface
 {
   public:
-    AskerMqtt( const std::string& ipv4 = io::StreamMqtt::s_defaultIpv4,
+    explicit AskerMqtt( const std::string& ipv4 = io::StreamMqtt::s_defaultIpv4,
                int port                = io::StreamMqtt::s_defaultPort );
     ~AskerMqtt();
 

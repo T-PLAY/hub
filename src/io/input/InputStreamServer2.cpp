@@ -5,10 +5,11 @@ namespace hub {
 namespace input {
 
 InputStreamServer2::InputStreamServer2( int streamPort, const std::string& ipv4 ) :
-    io::StreamServer2( "", "", 0 ) {
+    io::StreamServer2( "", "", 0 ),
+    m_streamIpv4{ipv4},
+    m_streamPort{streamPort}
+{
 
-    m_streamPort = streamPort;
-    m_streamIpv4 = ipv4;
 
     startStream();
 }

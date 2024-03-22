@@ -25,7 +25,7 @@ class SRC_API SerializerZpp : public SerializerI
     /// \brief SerializerZpp
     /// \param byteView
     ///
-    SerializerZpp( ByteView& byteView ) : SerializerI( byteView ) {
+    explicit SerializerZpp( ByteView& byteView ) : SerializerI( byteView ) {
         m_buff.clear();
         m_in.reset( 0 );
         m_out.reset( 0 );
