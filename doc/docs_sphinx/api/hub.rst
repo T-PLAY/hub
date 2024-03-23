@@ -1,35 +1,40 @@
 API Reference
 =============
 
+.. //////////////////////////////////// Sensor /////////////////////////////////////
+
+----
+
 Sensor
 ------
 
-.. image:: ../_build/html/classhub_1_1Sensor.png
+.. image:: ../_build/html/classhub_1_1sensor_1_1Sensor.png
    :align: center
 
-.. doxygenclass:: hub::Sensor
-   :members: Sensor
+|
 
+.. doxygenclass:: hub::sensor::Sensor
+   :members: Sensor
 
 SensorSpec
 ***********
 
-.. doxygenclass:: hub::SensorSpec
+.. doxygenclass:: hub::sensor::SensorSpec
    :members: SensorNameType, MetaData, SensorSpec
 
 **Instantiate examples :**
 
-.. literalinclude:: ../../../examples/example-sensorSpec.cpp
+.. literalinclude:: ../../../doc/sensor/doc-sensor-sensorSpec.cpp
    :language: cpp
    :start-after: startConstruction
    :end-before: endConstruction
 
-.. literalinclude:: ../../../examples/example-sensorSpec.cpp
+.. literalinclude:: ../../../doc/sensor/doc-sensor-sensorSpec.cpp
    :language: cpp
    :start-after: startConstruction2
    :end-before: endConstruction2
 
-.. literalinclude:: ../../../examples/example-sensorSpec.cpp
+.. literalinclude:: ../../../doc/sensor/doc-sensor-sensorSpec.cpp
    :language: cpp
    :start-after: startConstruction3
    :end-before: endConstruction3
@@ -49,7 +54,7 @@ Dims
 Format
 ******
 
-.. doxygenenum:: hub::Format
+.. doxygenenum:: hub::Types::Format
 
 .. InputOutput
 .. ~~~~~~~~~~~
@@ -66,7 +71,7 @@ Format
     .. doxygenclass:: hub::io::InputOutputInterface
 
 InputOutput
-********************
+***********
 
 .. image:: ../_build/html/classhub_1_1io_1_1InputOutput.png
    :align: center
@@ -120,9 +125,8 @@ InputStream
    :start-after: startConstruction
    :end-before: endConstruction
 
-
 Socket
-************
+******
 
 .. image:: ../_build/html/classhub_1_1net_1_1Socket.png
    :align: center
@@ -167,7 +171,7 @@ Ram
    :end-before: endConstruction
 
 OutputSensor
-------------
+************
 
 .. doxygenclass:: hub::OutputSensor
 
@@ -196,7 +200,7 @@ OutputSensor
    :end-before: endFunctional
 
 InputSensor
------------
+***********
 
 .. doxygenclass:: hub::InputSensor
    :members:
@@ -226,40 +230,40 @@ InputSensor
    :end-before: endFunctional
 
 Acquisition
------------
+***********
 
 .. doxygenclass:: hub::Acquisition
    :members: Acquisition, isInterpolable, clone, getSize, getMeasures, slerp, operator<<
 
-Data
-~~~~~
+Format
+------
 
 .. .. doxygenclass:: hub::data
 
-Measure
-********
-
-.. doxygenclass:: hub::data::Measure
-   :members: Measure, clone, isInterpolable, getResolution, slerp
-
 Dof6
-****
+####
 
-.. doxygenclass:: hub::data::Dof6
+.. doxygenclass:: hub::format::Dof6
    :members: Dof6
 
 Mat4
-****
+####
 
-.. doxygenclass:: hub::data::Mat4
+.. doxygenclass:: hub::format::Mat4
+
+|
+
+.. //////////////////////////////////// Client /////////////////////////////////////
+
+----
 
 Client
-~~~~~~~
+------
 
 .. .. doxygennamespace:: hub::client
 
 Streamer
------------
+********
 
 .. doxygenclass:: hub::client::Streamer
    :members:
@@ -280,7 +284,7 @@ Streamer
  
 
 Viewer
------------
+******
 
 .. doxygenclass:: hub::client::Viewer
    :members:
@@ -293,7 +297,7 @@ Viewer
    :end-before: endConstruction
  
 Asker
------------
+*****
 
 .. doxygenclass:: hub::client::Asker
    :members:

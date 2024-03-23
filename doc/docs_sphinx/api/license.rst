@@ -1,4 +1,4 @@
 License
 =======
 
-Irit license.
+MPL 2.0

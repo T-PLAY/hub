@@ -5,9 +5,14 @@
 #include <client/Asker.hpp>
 
 /// \file
+/// hello
+/// @file
+/// nice
 /// \warning
 /// Needs running server.
-
+/// \brief  Main function
+/// describes how use a file to init input/output sensor stream
+///
 int main() {
 
     hub::client::Asker asker;

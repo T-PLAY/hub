@@ -1,3 +1,741 @@
+1711095827|2024-03-22 Merge pull request #16 from T-PLAY/delOldImpl
+1711026650|2024-03-21 [delOldImpl] update CHANGELOG file
+1711026537|2024-03-21 [delOldImpl] removed all first server impl ref
+1711025955|2024-03-21 [delOldImpl] removed server impl dir
+1711025831|2024-03-21 [delOldImpl] comment old viewer impl
+1710864795|2024-03-19 Merge pull request #14 from T-PLAY/add_changelog
+1710861164|2024-03-19 update CHANGELOG file with previous contributions before v2.0.0
+1710843233|2024-03-19 fix CHANGELOG format
+1710842882|2024-03-19 Create CHANGELOG file
+1710778119|2024-03-18 update readme examples and contributors
+1710167829|2024-03-11 [doc] fixed sphinx compilation
+1710166928|2024-03-11 updated doxygen doc
+1710155714|2024-03-11 fixed doxygen compilation
+1710149981|2024-03-11 WIP complete doc
+1710108226|2024-03-10 update doc
+1709978603|2024-03-09 update script
+1709937428|2024-03-08 added script
+1709935400|2024-03-08 multi new lighter compat arch os ref file
+1709935000|2024-03-08 remove big files
+1709934041|2024-03-08 added script to show large files
+1709933750|2024-03-08 added script to clean git repo
+1709933737|2024-03-08 deleted Bunny mesh because file too large for github repo
+1709503226|2024-03-03 refactor gui view2D imageManipulator
+1709418352|2024-03-02 refactor gui view2D
+1709307967|2024-03-01 fix hub tests on windows
+1709239585|2024-02-29 fix win build
+1709241712|2024-02-29 update hub
+1709240258|2024-02-29 added compat multi os/arch test
+1709143553|2024-02-28 end to end demo worked, integration is ok
+1709047289|2024-02-27 fixed viper streamer
+1708961400|2024-02-26 fix UWP hub build
+1708959921|2024-02-26 WIP fix UWP : x64 and arm64 hub builds
+1708890643|2024-02-25 added volumetric material + hub density instance
+1708865876|2024-02-25 fix x86 applications build
+1708796174|2024-02-24 refactor outputSensor instance to match with generic procedure
+1708695005|2024-02-23 added HUB_EXTENSION .txt -> .hub
+1708622068|2024-02-22 added sync sensor utils + added bin-cat
+1708527739|2024-02-21 WIP fix loader
+1708435407|2024-02-20 update input key event
+1708365649|2024-02-19 fix hub tests
+1708365366|2024-02-19 serialize mesh + mesh is ok
+1708354667|2024-02-19 did nothing
+1708102966|2024-02-16 fix 6Dof RGB8 Packed stream
+1708092856|2024-02-16 fix RGB8 live scan on Radium
+1708023359|2024-02-15 fix distant server
+1708022339|2024-02-15 fix distant server
+1708006025|2024-02-15 fix compilation on work station
+1707847265|2024-02-13 cleanup project
+1707818686|2024-02-13 refactor gui + WIP hub v2.0.0 integration
+1707814218|2024-02-13 WIP outputSensor instances
+1707757929|2024-02-12 fix MatrixTs bug + Able to show scans on UnityViewer + added examples
+1707685049|2024-02-11 WIP hub v2.0.0 -> UnityViewer integration
+1707645574|2024-02-11 update bin-viewer
+1707482358|2024-02-09 fix msvc 19 enabled template
+1707331833|2024-02-07 update bin-viewer
+1707331003|2024-02-07 update git cmake
+1707330683|2024-02-07 update cmake git version + bin-viewer + example-camera
+1707326715|2024-02-07 cleanup cmake
+1706959535|2024-02-03 cleanup project
+1706705370|2024-01-31 added color map editor
+1706135522|2024-01-24 WIP refactor gui
+1706030096|2024-01-23 [hub] added Vec3 Vec4 + [app] fix loader
+1705941016|2024-01-22 refactor node (added getters) + reimplemented 3D image
+1705518469|2024-01-17 supported typeId + fix 2D view
+1705420711|2024-01-16 add streamView lib
+1705406811|2024-01-16 add setAutoConnect to viewer
+1705344252|2024-01-15 WIP fix build app for MacOs
+1705322213|2024-01-15 remove Types.hpp file from hub because conflict with Radium/Core/Types.hpp Eigen definitions, broke include files
+1705321355|2024-01-15 added macros USE_BOOST USE_MQTT for raw source build from external
+1705167401|2024-01-13 fix dll export for all modules
+1705155434|2024-01-13 move external/zpp to core/serializer/zpp
+1705057413|2024-01-12 fix tbb linux
+1704999478|2024-01-11 fix build all applications on debian runner
+1704969222|2024-01-11 update cmake
+1704967060|2024-01-11 hub c++20 -> c++17 for patriot
+1704965742|2024-01-11 serialize Mat4
+1704963062|2024-01-11 Update .gitlab-ci.yml file
+1704963029|2024-01-11 update ci
+1704961992|2024-01-11 fix linux build
+1704923867|2024-01-10 fix win x86 build and tests
+1704914317|2024-01-10 update ci
+1704913403|2024-01-10 update ci
+1704909921|2024-01-10 update ci
+1704909660|2024-01-10 update ci
+1704909374|2024-01-10 update ci
+1704909144|2024-01-10 update ci
+1704908388|2024-01-10 update ci
+1704908244|2024-01-10 update ci
+1704908085|2024-01-10 update ci
+1704907588|2024-01-10 update ci
+1704906303|2024-01-10 update ci
+1704905390|2024-01-10 update ci
+1704905180|2024-01-10 update ci
+1704905147|2024-01-10 update ci
+1704905087|2024-01-10 update ci
+1704904428|2024-01-10 update ci
+1704902932|2024-01-10 update ci
+1704902657|2024-01-10 update ci
+1704902154|2024-01-10 update ci
+1704901747|2024-01-10 update ci
+1704901561|2024-01-10 update ci
+1704901354|2024-01-10 Update .gitlab-ci.yml file
+1704884613|2024-01-10 Update .gitlab-ci.yml file
+1704901257|2024-01-10 update ci
+1704884554|2024-01-10 update ci
+1704884500|2024-01-10 update ci
+1704884458|2024-01-10 update ci
+1704882942|2024-01-10 update ci
+1704882100|2024-01-10 detecting platform with osx architectures variable
+1704879505|2024-01-10 update ci
+1704878929|2024-01-10 update ci
+1704878641|2024-01-10 update ci
+1704877946|2024-01-10 update ci after merge
+1704835520|2024-01-09 update gitlab ci
+1704835216|2024-01-09 update gitlab ci
+1704834255|2024-01-09 update gitlab ci
+1704832332|2024-01-09 fix win build
+1704821327|2024-01-09 versioning src/*hpp files
+1704817072|2024-01-09 commit before adding authors of all source files
+1704810372|2024-01-09 fix all modules
+1704732539|2024-01-08 fix win build
+1704730890|2024-01-08 fix gcc
+1704730497|2024-01-08 git hash string
+1704729863|2024-01-08 fix clang gcc old debian version
+1704729259|2024-01-08 fix clang gcc old debian version
+1704709349|2024-01-08 add name enum
+1704708819|2024-01-08 fix debian build
+1704707457|2024-01-08 clean core tests
+1704661738|2024-01-07 fix core tests
+1704637119|2024-01-07 commit before change typeid to TYPE_NAME to allow multiplatform compatibility
+1704555077|2024-01-06 commit before fix serializer
+1704476076|2024-01-05 WIP c++20 -> c++17 compat
+1704388212|2024-01-04 WIP c++20 -> c++17 compat
+1704351180|2024-01-04 WIP fix win build applications
+1704298870|2024-01-03 all dependencies worked
+1704296668|2024-01-03 WIP cleanup dependencies
+1704288110|2024-01-03 refactor Matrix and format to core
+1704217754|2024-01-02 user friendly OutputSensor constructor using outputStream by default
+1704211932|2024-01-02 fix macOs build
+1704210548|2024-01-02 fix win build
+1704208836|2024-01-02 fix compilation on linux home
+1704117350|2024-01-01 update hub bin user io
+1704041778|2023-12-31 fix release shared to static test lib
+1704033669|2023-12-31 cleanup tests + cmake files
+1703411859|2023-12-24 move header global variables (Info + Version) to cpp files
+1703366046|2023-12-23 2D viewer build ok
+1703151791|2023-12-21 vtk hub opencv issue, todo move to tests
+1703068322|2023-12-20 fix bad impl includes
+1703006079|2023-12-19 fix applications build
+1702990554|2023-12-19 fix macos build
+1702996183|2023-12-19 modify test port 7000 to 8000 used by macos ci
+1702983171|2023-12-19 rename max path limit test name
+1702981679|2023-12-19 update gitlab ci
+1702980588|2023-12-19 fix win build and tests
+1702977574|2023-12-19 added 32/64 compat tests
+1702918001|2023-12-18 update tests
+1702916439|2023-12-18 fixup all tests
+1702672775|2023-12-15 WIP sensor fix
+1702562508|2023-12-14 commit before generalize header from input/output
+1702489522|2023-12-13 fix native tests
+1702402116|2023-12-12 clean input/output stream communications
+1702379519|2023-12-12 fix stream communication
+1702108197|2023-12-09 fix win build
+1702134385|2023-12-09 added WitMotion compat
+1701970671|2023-12-07 fixup tests
+1701958198|2023-12-07 fix net bug
+1701957295|2023-12-07 fix win build
+1701956078|2023-12-07 fix native test
+1701955010|2023-12-07 update gitlab ci
+1701952569|2023-12-07 all tests passed
+1701795467|2023-12-05 fix client tests
+1701710033|2023-12-04 fix socket bug
+1701535055|2023-12-02 fix tests
+1701527186|2023-12-02 ZppSerializer inputSensor failed retain fixed
+1701453309|2023-12-01 WIP ZppSerializer inputSensor failed retain
+1701352016|2023-11-30 fix mac build
+1701365180|2023-11-30 WIP client viewer
+1701342775|2023-11-30 added server sensor test
+1701332615|2023-11-30 fix lastacqs resize not possible with msvc
+1701333531|2023-11-30 cleanup sensor
+1701276405|2023-11-29 fix cmake
+1701277481|2023-11-29 fix cmake
+1701275346|2023-11-29 cleanup module sensor
+1701273140|2023-11-29 fixup cmake
+1701269236|2023-11-29 fix macos ioStream bug server deco/reco
+1701264044|2023-11-29 WIP fix macos ioStream bug server deco/reco
+1701247821|2023-11-29 fix win tests (mutex thread + file log)
+1701246888|2023-11-29 update test
+1701188763|2023-11-28 cleanup cmake
+1701187772|2023-11-28 fix win build
+1701183167|2023-11-28 fix macos print
+1701182401|2023-11-28 fix macos std::seq execution not found
+1701181711|2023-11-28 remove server impl due of sensor depends
+1701180166|2023-11-28 fix debian build
+1701178622|2023-11-28 cleanup code
+1701107357|2023-11-27 cleanup server folder
+1701100194|2023-11-27 rename dir
+1701097570|2023-11-27 commit before expand all impls
+1701094006|2023-11-27 fix tests io stream
+1700919839|2023-11-25 fix tests
+1700919132|2023-11-25 fix debian gcc serializer
+1700917049|2023-11-25 fix tests
+1700916135|2023-11-25 fix tests
+1700846491|2023-11-24 added non regression test CHECK_DECLINE
+1700778262|2023-11-23 WIP inputOutputStream tests
+1700650744|2023-11-22 WIP inputOutputStream tests
+1700437426|2023-11-20 WIP server tests
+1700409742|2023-11-19 fix sensor tests
+1700347346|2023-11-18 InputOutputSync test done
+1700306914|2023-11-18 WIP InputOutputSync test
+1700244723|2023-11-17 Acquisition serial done
+1700088096|2023-11-15 WIP inputOutput sensor
+1700067461|2023-11-15 fix SensorSpec any serializing
+1699908385|2023-11-13 fix linux build
+1699898358|2023-11-13 fix win build core
+1699893424|2023-11-13 fix debian core build
+1699892941|2023-11-13 fix debian core build
+1699892034|2023-11-13 fix core
+1699810501|2023-11-12 WIP Serializer
+1699723927|2023-11-11 WIP MatrixSerial
+1699638709|2023-11-10 WIP constexpr Matrix
+1699569573|2023-11-09 cleanup code
+1699550336|2023-11-09 WIP Data Dynamic/Static memory
+1699541226|2023-11-09 WIP Data Dynamic/Static memory
+1699376269|2023-11-07 WIP acquisition template
+1699221875|2023-11-05 WIP resolution template
+1699109841|2023-11-04 added Buffer class
+1699031912|2023-11-03 WIP Resolution class
+1698923470|2023-11-02 update tests
+1698922926|2023-11-02 fix history cache
+1698919200|2023-11-02 fix windows tests
+1698916597|2023-11-02 fix windows tests
+1698858494|2023-11-01 fix test inputOutput
+1698856404|2023-11-01 wip fix win build segfault
+1698854876|2023-11-01 fix zppBits on debian gcc
+1698854218|2023-11-01 fix memcmp on linux debian
+1698853713|2023-11-01 fix compilation memcpy cstring include
+1698853457|2023-11-01 fix compilation
+1698851364|2023-11-01 compat c++14 with constexpr c++17 warnings
+1698839460|2023-11-01 cleanup code
+1698839457|2023-11-01 cleanup code
+1698774163|2023-10-31 added zppBits serialization InputOutput<Serializer>
+1698707345|2023-10-31 refactor InputOutput -> InputOutput + Serializer
+1698618022|2023-10-29 inputOutput any compatible with all types (and custom users)
+1698490056|2023-10-28 added book and archive classes (tests completed)
+1698415036|2023-10-27 added book and archive classes
+1698268848|2023-10-25 wip added zppBits serialization
+1698164763|2023-10-24 refactor dims and format (template)
+1697992684|2023-10-22 wip refactor resolution template
+1697821944|2023-10-20 wip test inputOutputSensor
+1697723291|2023-10-19 update test
+1697723001|2023-10-19 delete assert false
+1697722955|2023-10-19 fix static assert
+1697722822|2023-10-19 fix assert
+1697722293|2023-10-19 fix template
+1697722071|2023-10-19 update tests, WIP sensor
+1697722060|2023-10-19 update tests, WIP sensor
+1697707595|2023-10-19 update cmake boost
+1697647570|2023-10-18 added boost::asio::tcp ClientSocket and ServerSocket implements
+1697642212|2023-10-18 refactor net socket, commit before adding boost impl
+1697641625|2023-10-18 refactor net socket, commit before adding boost impl
+1697631157|2023-10-18 added latency tracking
+1697623777|2023-10-18 added latency tracking
+1697623190|2023-10-18 update checkRatio to checkValue + added checkValue to InputOutput test
+1697621166|2023-10-18 fix inputOutput test
+1697618289|2023-10-18 fix inputOutput test
+1697617518|2023-10-18 fix inputOutput test
+1697561790|2023-10-17 fix inputOutput test
+1697560863|2023-10-17 wip fix test inputOutput
+1697557708|2023-10-17 fix macOs build and tests
+1697552705|2023-10-17 fix boost include only if package found
+1697552596|2023-10-17 fix boost include only if package found
+1697550968|2023-10-17 update Any and Input/Output
+1697382154|2023-10-15 fix typename template for Clang
+1697371036|2023-10-15 update macros
+1697370559|2023-10-15 fix win build
+1697302339|2023-10-14 WIP update Any
+1697301671|2023-10-14 WIP update Any
+1697185092|2023-10-13 WIP template all
+1696698146|2023-10-07 WIP template all
+1696511350|2023-10-05 commit before templating Measure, Acquisition and Sensor classes
+1696262873|2023-10-02 fix examples build
+1696256888|2023-10-02 fix linux FILE_NAME to string
+1696256720|2023-10-02 fix MSVC FILE_NAME avoiding full path according to Unix
+1696251270|2023-10-02 fix win static shared bin
+1696178203|2023-10-01 remove cmake print
+1696177918|2023-10-01 fix external single build for shared and static
+1696175327|2023-10-01 fix win cmake
+1696172643|2023-10-01 fix cmake external
+1696172026|2023-10-01 compile mqtt only if founded
+1696171824|2023-10-01 refactor project, compile object sources directory
+1696171816|2023-10-01 refactor project, compile object sources directory
+1696005854|2023-09-29 refactor any + socket
+1695919408|2023-09-28 refactor cleanup code
+1695906331|2023-09-28 fix win build test
+1695905259|2023-09-28 update test ratio print
+1694972059|2023-09-17 update cmake
+1694962202|2023-09-17 fix win build
+1694965832|2023-09-17 fix test on win
+1694964623|2023-09-17 update tests
+1694958536|2023-09-17 update tests
+1694956513|2023-09-17 update tests
+1694955721|2023-09-17 update tests
+1694954636|2023-09-17 update tests
+1694953376|2023-09-17 update tests
+1694872719|2023-09-16 update tests
+1694871282|2023-09-16 update tests
+1694788910|2023-09-15 added assert max try closing
+1694786671|2023-09-15 update ci
+1694780154|2023-09-15 refactor server
+1694706115|2023-09-14 [WIP] refactor server
+1694628614|2023-09-13 [WIP] refactor server
+1694089431|2023-09-07 update tests ratio history
+1694080931|2023-09-07 update ci
+1694080216|2023-09-07 checkRatio save to history file
+1694076746|2023-09-07 update ci speed test for all runners
+1694074008|2023-09-07 fix XCode configuration
+1694018864|2023-09-06 update ci
+1694018556|2023-09-06 update ci
+1694018438|2023-09-06 update ci
+1694017851|2023-09-06 update ci
+1694017018|2023-09-06 remove macOs warning
+1694015807|2023-09-06 added macOs runner
+1694015489|2023-09-06 added macOs runner
+1694015200|2023-09-06 fix macOS build
+1693921987|2023-09-05 fix bin dir from win CI
+1693921238|2023-09-05 fix linux build after big win fix (forgot some moves)
+1693912074|2023-09-05 fix cmake
+1693911875|2023-09-05 fix win build and tests
+1693830305|2023-09-04 update tests
+1693829378|2023-09-04 update tests
+1693824318|2023-09-04 fix tests release
+1693758122|2023-09-03 update ci
+1693757770|2023-09-03 adde test
+1693757764|2023-09-03 update tests
+1693748560|2023-09-03 update ci
+1693748203|2023-09-03 update ci
+1693747064|2023-09-03 update ci
+1693745565|2023-09-03 update tests
+1693673358|2023-09-02 cleanup tests
+1693587222|2023-09-01 fix server tests for Debian CI
+1693401373|2023-08-30 Update .gitlab-ci.yml file
+1693571276|2023-09-01 update tests
+1693398792|2023-08-30 fix server build on linux
+1692982133|2023-08-25 added native viewer executable
+1692981172|2023-08-25 Mqtt implement all test passed
+1692964041|2023-08-25 commit before move StreamViewer
+1692901392|2023-08-24 support Asker for Mqtt implement
+1692896080|2023-08-24 update tests able to test Mqtt or Server implement
+1692824003|2023-08-23 update tests able to test Mqtt or Server implement
+1692808020|2023-08-23 update tests StreamMqtt
+1692728614|2023-08-22 update tests Input refactor
+1692728607|2023-08-22 update tests Input refactor
+1692696324|2023-08-22 all test passed
+1692641714|2023-08-21 generalize tests for different implements
+1692625767|2023-08-21 update tests
+1692625058|2023-08-21 update tests
+1692624346|2023-08-21 update tests
+1692623775|2023-08-21 update tests
+1692623042|2023-08-21 able to not use mqtt implement for ci
+1692564629|2023-08-20 refactor tests name
+1692561875|2023-08-20 update tests
+1692553656|2023-08-20 ViewerMqtt worked
+1692526421|2023-08-20 Viewer -> ViewerMqtt and ViewerServer
+1692395767|2023-08-18 update tests
+1692391924|2023-08-18 template InputSyncStream according to InputStream
+1692365392|2023-08-18 mqtt implement works
+1692308983|2023-08-17 implemented mqtt stream
+1692302959|2023-08-17 cleanup project
+1692296915|2023-08-17 refactor File, Memory to Input Output classes
+1692278910|2023-08-17 change inputStream to stream
+1692278904|2023-08-17 change inputStream to stream
+1692266077|2023-08-17 commit before change inputStream to stream
+1692214921|2023-08-16 cleanup project
+1692214897|2023-08-16 cleanup project
+1692187704|2023-08-16 update cmake
+1692186088|2023-08-16 update ci
+1692180710|2023-08-16 added mqtt test compare speed
+1692119556|2023-08-15 move doc examples to doc folder
+1692117058|2023-08-15 remove big data in doc + add readme external meshoptimizer
+1692104980|2023-08-15 update code
+1692104446|2023-08-15 update ci
+1692103881|2023-08-15 update ci
+1692103185|2023-08-15 update ci
+1692102159|2023-08-15 update ci
+1692101268|2023-08-15 update ci
+1692099574|2023-08-15 update ci
+1692094444|2023-08-15 big fix server mutex on win
+1692090776|2023-08-15 update ci
+1692090113|2023-08-15 update ci
+1692090064|2023-08-15 update ci
+1692090034|2023-08-15 update ci
+1692089322|2023-08-15 update ci
+1692048344|2023-08-14 update ci
+1692048153|2023-08-14 cleanup project
+1692047716|2023-08-14 cleanup project
+1692047265|2023-08-14 cleanup project
+1692046897|2023-08-14 update ci
+1692046745|2023-08-14 update ci
+1692035891|2023-08-14 update ci
+1692035149|2023-08-14 update ci
+1692034526|2023-08-14 update ci
+1692033546|2023-08-14 update ci
+1692032705|2023-08-14 update ci
+1692032552|2023-08-14 update ci
+1692032274|2023-08-14 update ci
+1692024568|2023-08-14 update ci
+1692024171|2023-08-14 update ci
+1692023724|2023-08-14 update ci
+1692022804|2023-08-14 update ci
+1692022459|2023-08-14 update ci
+1691944065|2023-08-13 update ci
+1691943816|2023-08-13 update ci
+1691943450|2023-08-13 update ci
+1691943026|2023-08-13 update ci
+1691942319|2023-08-13 Update .gitlab-ci.yml file
+1691941947|2023-08-13 Update .gitlab-ci.yml file
+1691942826|2023-08-13 update ci
+1691941855|2023-08-13 update ci
+1691940439|2023-08-13 update ci
+1691940345|2023-08-13 update ci
+1691930190|2023-08-13 update ci
+1691930048|2023-08-13 update ci
+1691929873|2023-08-13 update ci
+1691929687|2023-08-13 update ci
+1691929616|2023-08-13 update ci
+1691929459|2023-08-13 update ci
+1691929209|2023-08-13 update ci
+1691928961|2023-08-13 update ci
+1691928938|2023-08-13 update ci
+1691928505|2023-08-13 update ci
+1691927960|2023-08-13 update ci
+1691927915|2023-08-13 update ci
+1691927400|2023-08-13 update ci
+1691927293|2023-08-13 update ci
+1691926310|2023-08-13 update ci
+1691926263|2023-08-13 update ci
+1691864713|2023-08-12 update ci
+1691864514|2023-08-12 update ci
+1691864388|2023-08-12 update ci
+1691863992|2023-08-12 update ci
+1691863551|2023-08-12 update ci
+1691863185|2023-08-12 update ci
+1691862419|2023-08-12 update ci
+1691862382|2023-08-12 update ci
+1691862320|2023-08-12 update ci
+1691860867|2023-08-12 update ci
+1691859847|2023-08-12 update ci
+1691774757|2023-08-11 update ci
+1691774626|2023-08-11 update ci
+1691774015|2023-08-11 update ci
+1691773827|2023-08-11 update ci
+1691773576|2023-08-11 update ci
+1691773077|2023-08-11 update ci
+1691772457|2023-08-11 update ci
+1691771963|2023-08-11 update streamer
+1691686488|2023-08-10 update ci
+1691685817|2023-08-10 update ci
+1691497333|2023-08-08 update ci
+1691496253|2023-08-08 update ci
+1691496020|2023-08-08 update ci
+1691495748|2023-08-08 update native
+1691495189|2023-08-08 update getGitVersion for offline use
+1691494502|2023-08-08 update getGitVersion
+1691494252|2023-08-08 update getGitVersion
+1691494061|2023-08-08 update getGitVersion
+1691492219|2023-08-08 update ci
+1691492097|2023-08-08 update ci
+1691491640|2023-08-08 update ci
+1691487172|2023-08-08 update ci
+1691483157|2023-08-08 update cache path
+1691482880|2023-08-08 update cache path
+1691482637|2023-08-08 update ci
+1691435632|2023-08-07 fix test
+1691409808|2023-08-07 update artifact expire time
+1691410130|2023-08-07 fix test
+1691409108|2023-08-07 fix test
+1691403505|2023-08-07 fix test
+1691402114|2023-08-07 update test
+1691357989|2023-08-06 cleanup project
+1691357482|2023-08-06 cleanup project
+1691340718|2023-08-06 update cmake
+1691339620|2023-08-06 fix cmake compilation
+1691337726|2023-08-06 Update .gitlab-ci.yml file
+1691336778|2023-08-06 Update .gitlab-ci.yml file
+1691325685|2023-08-06 Update .gitlab-ci.yml file
+1691325211|2023-08-06 Update .gitlab-ci.yml file
+1691324953|2023-08-06 update ci
+1690805585|2023-07-31 cleanup project and added MPL 2.0 license
+1690797422|2023-07-31 fix Lidar examples
+1690751282|2023-07-30 added features for François
+1690552843|2023-07-28 fix with Francois
+1690464692|2023-07-27 fix no draw with single data
+1690383866|2023-07-26 manual cleanup all projects
+1690374201|2023-07-26 added script
+1690374060|2023-07-26 cleanup all projects
+1690373132|2023-07-26 rename scripts
+1690373128|2023-07-26 rename scripts
+1690313627|2023-07-25 cleanup source files
+1690303605|2023-07-25 cleanup source files
+1690303194|2023-07-25 update scripts
+1690302192|2023-07-25 update source format script
+1690301930|2023-07-25 update scripts
+1690296123|2023-07-25 cleanup cmake files
+1690295885|2023-07-25 update scripts
+1690295874|2023-07-25 cmake format
+1689672815|2023-07-18 added cmake option for python wrapper
+1687795570|2023-06-26 compile static lib with shared lib for python, octave, matlab APIs
+1687362966|2023-06-21 python wrapper worked on windows (static hub needed)
+1687292255|2023-06-20 added python wrapper
+1686663209|2023-06-13 cleanup project
+1686664425|2023-06-13 able to move mri during simulation with holoLens2
+1686589488|2023-06-12 cleanup project for record
+1686498559|2023-06-11 cleanup project
+1686415031|2023-06-10 update viewer + fix holo bad connection to server
+1686331411|2023-06-09 update for holo
+1686251534|2023-06-08 cleanup project (Win)
+1686154340|2023-06-07 update script
+1686154293|2023-06-07 fix non compat 32/64 mesh
+1686086362|2023-06-06 update native lib
+1686066448|2023-06-06 able to share render option through server to all viewers
+1686055906|2023-06-06 commit before break setProperty into viewer
+1685979731|2023-06-05 update script + cmake to install UWP
+1685381103|2023-05-29 fix conflict meshoptimizer::Mesh and hub::data::Mesh
+1685376560|2023-05-29 commit before change namespace Mesh of meshoptimizer to _Mesh conflict with hub::Mesh
+1684509128|2023-05-19 added point cloud generator
+1684421953|2023-05-18 fixup cmake
+1684399140|2023-05-18 fix linux build
+1684341184|2023-05-17 cleanup cmake
+1684231032|2023-05-16 cleanup code
+1683562093|2023-05-08 added magic number
+1683559448|2023-05-08 added magic number + fix cmake compilation
+1683542878|2023-05-08 update date UTC+0
+1683497011|2023-05-08 added step model + update CAD + added fake simulation model
+1683473965|2023-05-07 able to install standalone Release bin
+1683454694|2023-05-07 fix mesh upload glbRead from RAM
+1683402150|2023-05-06 update cmake
+1683406256|2023-05-06 cleanup project
+1683397928|2023-05-06 cleanup project
+1683368464|2023-05-06 WIP glb mesh
+1683308080|2023-05-05 cleanup project
+1683141275|2023-05-03 update dependencies + added TBB
+1683021717|2023-05-02 update install for Lyon
+1682961598|2023-05-01 cleanup project
+1682961409|2023-05-01 cleanup project
+1682961276|2023-05-01 Merge branch 'documentation' of gitlab.irit.fr:storm/repos/projects/private/dcs/plateforme-experimentale/hub into documentation
+1682961272|2023-05-01 cleanup project
+1682960477|2023-05-01 Update Contributors.md
+1682960401|2023-05-01 Add new file
+1682959065|2023-05-01 added cleaned Version.h file
+1682952015|2023-05-01 cleanup project
+1682948718|2023-05-01 get version from git
+1682943798|2023-05-01 delete install folder
+1682698231|2023-04-28 added new script to build all deploy environment
+1682670340|2023-04-28 cleanup warning
+1682515739|2023-04-26 fix win build
+1682454004|2023-04-25 fix gltfpack conflict with compress and compressmore options
+1682350453|2023-04-24 fix win build
+1682190787|2023-04-22 gltf update
+1682029371|2023-04-21 tinyobj -> gltf
+1681835028|2023-04-18 able to scan Bunny with Viper
+1681680782|2023-04-16 able to export point cloud to ply + added new externals + fix viper cmake linux
+1681074937|2023-04-09 able to generate accuracy images
+1680994189|2023-04-09 able to generate scus image from hand record
+1680884216|2023-04-07 cleanup project
+1680878016|2023-04-07 fix win build Mesh conflict
+1680642998|2023-04-04 update application interface
+1680533284|2023-04-03 fix 32/64 compat
+1680532766|2023-04-03 fix 32/64 compat avoid the use of size_t on x86 architecture
+1680469885|2023-04-02 update lidar component
+1680386326|2023-04-01 change simulation resolution dof6 + image -> image
+1680379669|2023-04-01 able to show mri anywhere
+1680282896|2023-03-31 fix win build + added simple recorder
+1680213034|2023-03-30 added lidar support
+1680190396|2023-03-30 wip scus simulation with transforms
+1680107793|2023-03-29 all (strong server) tests pass
+1680107287|2023-03-29 all tests pass
+1679928774|2023-03-27 fix win build/templates
+1679854946|2023-03-26 able to transmit meshes through server
+1679788922|2023-03-26 update tests
+1679769316|2023-03-25 commit before change inputSensor to input
+1679761677|2023-03-25 getAcq -> read(acq)
+1679669470|2023-03-24 update tests viewer + added speed test
+1679610510|2023-03-23 update/simplify viewer class
+1679597708|2023-03-23 update radium app
+1679507471|2023-03-22 fixup hub tests
+1679500674|2023-03-22 added mutex viewer
+1679494638|2023-03-22 update serverSpeed test
+1679493176|2023-03-22 update/fix hub tests on windows platform
+1679438248|2023-03-21 added server tests
+1679438191|2023-03-21 update hub, added/fixed server test, coverage up to 90%
+1679336468|2023-03-20 update cmake
+1679333822|2023-03-20 update minimal clang version on unix system
+1679329250|2023-03-20 update/improve server hub
+1679324810|2023-03-20 fix win build
+1679265974|2023-03-19 fix/improve server + cleanup server + added strong tests (up to coverage 85%)
+1679175549|2023-03-18 fix/improve server
+1679133148|2023-03-18 commit before break server code
+1679069420|2023-03-17 cleanup project
+1679047068|2023-03-17 fix win build
+1679005711|2023-03-16 added inputSensor features to synchronize
+1678973286|2023-03-16 added namespace res
+1678966055|2023-03-16 hide server clients for the user, only server functions is usable by the user
+1678962159|2023-03-16 move libServer to hub sources to allow test of server code
+1678957384|2023-03-16 remove debug output and change loader stream name to avoid conflict with real sensor stream
+1678956600|2023-03-16 remove debug function
+1678900841|2023-03-15 fix emplaceMeasure(const Measure & measure) copy with non dangling pointer
+1678882529|2023-03-15 c++14 supported
+1678881897|2023-03-15 fix win build
+1678832486|2023-03-14 remove streamer debug
+1678831470|2023-03-14 Merge branch 'documentation' of gitlab.irit.fr:storm/repos/projects/private/dcs/plateforme-experimentale/hub into documentation
+1678831452|2023-03-14 big update hub
+1678830663|2023-03-14 Update .gitlab-ci.yml file
+1678830022|2023-03-14 cppCheck
+1678829113|2023-03-14 remove boost
+1678828276|2023-03-14 unignore data folder
+1678828111|2023-03-14 fix ci
+1678827988|2023-03-14 fix ci
+1678827801|2023-03-14 camke clean and format
+1678819181|2023-03-14 cmake format and remove comments
+1678818633|2023-03-14 source format and clean empty comments
+1678818425|2023-03-14 cmake format and clean
+1678817585|2023-03-14 cleanup all targets
+1678809683|2023-03-14 coverage up to 87.2 % lines
+1678741863|2023-03-13 update tests
+1678720226|2023-03-13 move measures to data folder
+1678662186|2023-03-13 update any
+1678659139|2023-03-12 AnyUtils -> Any
+1678658933|2023-03-12 compat cpp 17 to cpp 17 (any to own Any)
+1678650642|2023-03-12 increase coverage up to 63 %
+1678633082|2023-03-12 remove inline files to headers
+1678632744|2023-03-12 no mutable, no const read, write and close operations
+1678396788|2023-03-09 WIP Interface -> Input and Output
+1678294237|2023-03-08 WIP not worked on windows (templates)
+1678209813|2023-03-07 able to send non fixed data through the interface (userData for ihm sender)
+1678182376|2023-03-07 WIP fix sensorSpec get template function
+1678120468|2023-03-06 fix win build
+1677772199|2023-03-02 increase coverage, added tests
+1677685408|2023-03-01 added octave viewer
+1677679736|2023-03-01 remove realsense and opencv examples
+1677670091|2023-03-01 deleted resources directory
+1677663748|2023-03-01 move octave and matlab apis to others repositories
+1677663262|2023-03-01 fix lcov cmake
+1677611012|2023-02-28 update cmake
+1677610575|2023-02-28 Update .gitlab-ci.yml file
+1677609540|2023-02-28 Update .gitlab-ci.yml file
+1677609216|2023-02-28 Update .gitlab-ci.yml file
+1677608847|2023-02-28 update cmake
+1677607850|2023-02-28 Merge branch 'documentation' of gitlab.irit.fr:storm/repos/projects/private/dcs/plateforme-experimentale/hub into documentation
+1677607846|2023-02-28 update cmake
+1677606758|2023-02-28 Update .gitlab-ci.yml file
+1677606716|2023-02-28 update cmake
+1677606179|2023-02-28 update cmake
+1677605541|2023-02-28 Update .gitlab-ci.yml file
+1677605075|2023-02-28 fixup code
+1677604712|2023-02-28 Merge branch 'documentation' of gitlab.irit.fr:storm/repos/projects/private/dcs/plateforme-experimentale/hub into documentation
+1677604708|2023-02-28 fixup code
+1677603480|2023-02-28 Update .gitlab-ci.yml file
+1677603264|2023-02-28 update targets, added all-targets
+1677600486|2023-02-28 format sources
+1677600202|2023-02-28 cleanup project
+1677591128|2023-02-28 commit before move src and include to core dir
+1677586404|2023-02-28 update ccpCheck script
+1677522520|2023-02-27 matlab and octave are working well
+1677445611|2023-02-26 added octave viewer script
+1677445547|2023-02-26 list and get acquisition from octave worked
+1677443093|2023-02-26 Merge branch 'documentation' of gitlab.irit.fr:storm/repos/projects/private/dcs/plateforme-experimentale/hub into documentation
+1677443087|2023-02-26 added to_string for resolution, format
+1677251785|2023-02-24 WIF fix octave on windows
+1677175807|2023-02-23 update matlab octave apis + add FindMatlab.cmake
+1677165203|2023-02-23 added matlab api
+1677084626|2023-02-22 added native for matlab
+1677007368|2023-02-21 update octave api
+1676991383|2023-02-21 added octave api
+1676991335|2023-02-21 added octave api
+1676970853|2023-02-21 update native
+1676654482|2023-02-17 updated from laptop
+1676572319|2023-02-16 added minGW support
+1675959072|2023-02-09 fix dead allocated steal data measure
+1675939780|2023-02-09 add compatible from app
+1675793292|2023-02-07 Update .gitlab-ci.yml file
+1675792739|2023-02-07 Update .gitlab-ci.yml file
+1675792401|2023-02-07 cppcheck clean
+1675792352|2023-02-07 cppcheck clean
+1675791111|2023-02-07 cppcheck clean
+1675787549|2023-02-07 Update .gitlab-ci.yml file
+1675787370|2023-02-07 Update .gitlab-ci.yml file
+1675785177|2023-02-07 Update .gitlab-ci.yml file
+1675784874|2023-02-07 Update .gitlab-ci.yml file
+1675783934|2023-02-07 Update .gitlab-ci.yml file
+1675783674|2023-02-07 Update .gitlab-ci.yml file
+1675783304|2023-02-07 update cmake
+1675780849|2023-02-07 Update .gitlab-ci.yml file
+1675780359|2023-02-07 Update .gitlab-ci.yml file
+1675778365|2023-02-07 Update .gitlab-ci.yml file
+1675778005|2023-02-07 Update .gitlab-ci.yml file
+1675777785|2023-02-07 Update .gitlab-ci.yml file
+1675777324|2023-02-07 Update .gitlab-ci.yml file
+1675776845|2023-02-07 Update .gitlab-ci.yml file
+1675776736|2023-02-07 Update .gitlab-ci.yml file
+1675768780|2023-02-07 Update .gitlab-ci.yml file
+1675768673|2023-02-07 Update .gitlab-ci.yml file
+1675768569|2023-02-07 Update .gitlab-ci.yml file
+1675768143|2023-02-07 Update .gitlab-ci.yml file
+1675767928|2023-02-07 Update .gitlab-ci.yml file
+1675767862|2023-02-07 Update .gitlab-ci.yml file
+1675767484|2023-02-07 Update .gitlab-ci.yml file
+1675767325|2023-02-07 Update .gitlab-ci.yml file
+1675767250|2023-02-07 Update .gitlab-ci.yml file
+1675767186|2023-02-07 Update .gitlab-ci.yml file
+1675767001|2023-02-07 Update .gitlab-ci.yml file
+1675766692|2023-02-07 Update .gitlab-ci.yml file
+1675766351|2023-02-07 Update .gitlab-ci.yml file
+1675765672|2023-02-07 Update .gitlab-ci.yml file
+1675765143|2023-02-07 Update .gitlab-ci.yml file
+1675764901|2023-02-07 Update .gitlab-ci.yml file
+1675764576|2023-02-07 Update .gitlab-ci.yml file
+1675764075|2023-02-07 Update .gitlab-ci.yml file
+1675763436|2023-02-07 update cmake
+1675763045|2023-02-07 update cmake
+1675760927|2023-02-07 update ci
+1675760304|2023-02-07 Update .gitlab-ci.yml file
+1675760038|2023-02-07 update cmake
+1675758801|2023-02-07 Update .gitlab-ci.yml file
+1675758743|2023-02-07 Update .gitlab-ci.yml file
+1675758285|2023-02-07 update cmake
+1675638765|2023-02-06 update cmake
+1675638364|2023-02-05 Update .gitlab-ci.yml file
+1675637977|2023-02-05 Update .gitlab-ci.yml file
+1675637715|2023-02-05 Update .gitlab-ci.yml file
+1675636997|2023-02-05 update cmake
+1675633415|2023-02-05 added coverage
+1674758856|2023-01-26 cmake-format
+1674758835|2023-01-26 clang-format
+1674758781|2023-01-26 fixup rst docs
+1674758338|2023-01-26 finish the doc + added video + split examples with streamer and viewer folder
+1674745864|2023-01-26 added streamer and viewer doxygen sphinx doc
+1674740742|2023-01-26 update gource
 1674732002|2023-01-26 added gource video
 1674731961|2023-01-26 update docs
 1674664593|2023-01-25 cleanup project
@@ -375,7 +1113,7 @@
 1661777892|2022-08-29 commit before change plain material to more complex (transparency)
 1661721762|2022-08-28 able to visualize dicom volume using transparency of slices
 1661692715|2022-08-28 cleanup Measure and Acquisition
-1661637628|2022-08-28 added measure class to split acquisition format and nDim
+1661637628|2022-08-28 added measure class to split acquisition format and dims
 1661610249|2022-08-27 auto start stream + clean exit
 1661602061|2022-08-27 commit before break stream viewer
 1661534478|2022-08-26 save last acquisition for pinging pending stream viewers

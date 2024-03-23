@@ -10,7 +10,7 @@ echo "
 Examples
 ========
 
-Most of the examples in the examples \`directory <https://gitlab.irit.fr/storm/repos/projects/private/dcs/plateforme-experimentale/hub/-/tree/master/examples>\`__.
+Most of the examples in the examples \`directory <https://github.com/T-PLAY/hub/-/tree/main/examples>\`__.
 
 
 "
@@ -43,7 +43,7 @@ printHeaders() {
 	echo
 }
 
-# printHeaders "\`$index-$exampleName <https://gitlab.irit.fr/storm/repos/projects/private/dcs/plateforme-experimentale/hub/-/blob/documentation/examples/$exampleFile>\`__" 0
+# printHeaders "\`$index-$exampleName <https://gitlab.irit.fr/storm/repos/projects/private/dcs/plateforme-experimentale/hub/-/blob/documentation/examples/$exampleFilepath>\`__" 0
 # exit 0
 
 parseDir() {
@@ -56,13 +56,26 @@ parseDir() {
 		exit 2
 	fi
 
-	for exampleFile in $(find $dir -maxdepth 1 -mindepth 1 | sort); do
+	# echo "parsing dir : $1"
+
+	for exampleFilepath in $(find $dir -maxdepth 1 -mindepth 1 | sort); do
 		dir=$1
 		depth=$2
 
-		exampleName=$(basename $exampleFile | cut -d. -f1 | cut -d- -f1 --complement)
-		extension=$(basename $exampleFile | cut -d. -f2)
 
+		exampleFileName=$(basename $exampleFilepath)
+		# echo "$exampleFileName"
+		exampleName=$(echo $exampleFileName | cut -d. -f1 | cut -d- -f1 --complement)
+		# exampleName=$(echo $exampleFileName | cut -d. -f1 | awk -F- '{print $NF}')
+		extension=$(echo $exampleFileName | cut -d. -f2)
+
+		if [ "$exampleName" = "docs_doxygen" ]  \
+			|| [ "$exampleName" = "docs_sphinx" ]  \
+			|| [ "$exampleName" = "CMakeLists.txt" ]  \
+			|| [ "$exampleName" = "readme" ]; then
+
+			continue
+		fi
 
 		# echo $extension
 
@@ -70,15 +83,17 @@ parseDir() {
 			continue
 		fi
 
+		# echo "exampleName = $exampleName"
 		# echo $exampleName
+		# continue
 
-		if [ -d $exampleFile ]; then
-			if [ -e $exampleFile/main.cpp ]; then
-				exampleFile=$exampleFile/main.cpp
+		if [ -d $exampleFilepath ]; then
+			if [ -e $exampleFilepath/main.cpp ]; then
+				exampleFilepath=$exampleFilepath/main.cpp
 			else
 
-				printHeaders $exampleName $depth
-				parseDir $exampleFile $(expr $depth + 1)
+				# printHeaders $exampleName $depth
+				parseDir $exampleFilepath $(expr $depth + 1)
 				continue
 			fi
 		fi
@@ -86,18 +101,20 @@ parseDir() {
 		# echo "exampleName=$exampleName"
 		# echo "extension=$extension"
 
-		if ! cat $exampleFile | grep 'return 0' > /dev/null; then
-			echo "return 0 not found in $exampleFile"
+		if ! cat $exampleFilepath | grep 'return 0' > /dev/null; then
+			echo "return 0 not found in $exampleFilepath"
 			exit 1
 		fi
-		if ! cat $exampleFile | grep '\\file' > /dev/null; then
-			echo "\file not found in $exampleFile"
+		if ! cat $exampleFilepath | grep '\\file' > /dev/null; then
+			echo "\file not found in $exampleFilepath"
 			exit 1
 		fi
 
-		exampleFile=$(echo $exampleFile | cut -c1-18 --complement)
+		# continue
 
-		# echo "exampleFile=$exampleFile"
+		# exampleFilepath=$(echo $exampleFilepath | cut -c1-18 --complement)
+		# echo "exampleFilepath=$exampleFilepath"
+
 
 		index=$iExample
 		if [ $iExample -lt 10 ]; then
@@ -106,31 +123,34 @@ parseDir() {
 
 		echo
 
-		printHeaders "\`$index-$exampleName <https://gitlab.irit.fr/storm/repos/projects/private/dcs/plateforme-experimentale/hub/-/blob/documentation/examples/$exampleFile>\`__" "$depth"
+		# echo "exampleName=$exampleName"
 
-		printHeaders "Includes" "$(expr $depth + 1)"
+		printHeaders "\`$index-$exampleName <https://github.com/T-PLAY/hub/blob/documentation/examples/$exampleFilepath>\`__" "$depth"
+
+		# printHeaders "Includes" "$(expr $depth + 1)"
 
 #         echo "
-# \`$index-$exampleName <https://gitlab.irit.fr/storm/repos/projects/private/dcs/plateforme-experimentale/hub/-/blob/documentation/examples/$exampleFile>\`__
+# \`$index-$exampleName <https://gitlab.irit.fr/storm/repos/projects/private/dcs/plateforme-experimentale/hub/-/blob/documentation/examples/$exampleFilepath>\`__
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #
 # Includes
 # ********
 
 		echo "
-.. literalinclude:: ../../../examples/$exampleFile
+.. literalinclude:: $exampleFilepath
    :language: cpp
    :end-before: \file
 "
 
-		printHeaders "Source Code" "$(expr $depth + 1)"
+	# printHeaders "Source Code" "$(expr $depth + 1)"
+
 		# Source Code
 		# ***********
 
+		# echo "
+# .. doxygenfile:: $exampleFileName
 		echo "
-.. doxygenfile:: $exampleFile
-
-.. literalinclude:: ../../../examples/$exampleFile
+.. literalinclude:: $exampleFilepath
    :language: cpp
    :start-after: main(
    :end-before: return 0
@@ -144,5 +164,5 @@ parseDir() {
 
 iExample=0
 
-parseDir "../../../examples" 0
+parseDir "../../../doc" 0
 
