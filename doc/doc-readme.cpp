@@ -34,6 +34,9 @@ void drawImage( const unsigned char* data, uint64_t size, int width, int height,
 
 #include <sensor/InputSensor.hpp>
 
+/// \brief  Main function
+/// describes how use a file to init input/output sensor stream
+///
 int main() {
 
     constexpr auto serverPort = 4042;

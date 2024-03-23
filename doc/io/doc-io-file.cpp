@@ -5,7 +5,8 @@
 #include <filesystem>
 #include <thread>
 
-/// \file
+/// \file hello
+/// @file hello
 /// \brief  Main function
 /// describes how use a file to init input/output sensor stream
 ///

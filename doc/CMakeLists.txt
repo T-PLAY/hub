@@ -4,7 +4,7 @@ project(doc)
 
 if(HUB_BUILD_DOC)
 
-    file(GLOB DOC_SRC *.cpp)
+    file(GLOB_RECURSE DOC_SRC *.cpp)
 
     add_library(${PROJECT_NAME} ${DOC_SRC})
     target_link_libraries(${PROJECT_NAME} hub)

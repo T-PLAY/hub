@@ -1,11 +1,10 @@
 Documentation
 =============
 
-Cross-platform, sensor description using bus communication abstraction library,
-not licensed yet.
+Abstraction of sensor data flow for universal use on different visualisation platforms.
 
-Source at GitLab Irit:
-    - https://gitlab.irit.fr/storm/repos/projects/private/dcs/plateforme-experimentale/hub
+Source at Github:
+    - https://github.com/T-PLAY/hub
 
 Contents
 --------
@@ -19,6 +18,7 @@ Contents
     build
     examples
     hub
+    Class List <file:///home/gauthier/tmpOpenSource/hub/doc/docs_sphinx/_build/html/annotated.html>
     tools
     license
     whoIsUsingIt

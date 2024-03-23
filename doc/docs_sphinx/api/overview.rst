@@ -4,8 +4,7 @@ Overview
 What is it?
 -----------
 
-Cross-platform, sensor description using bus communication abstraction library,
-not licensed yet.
+Abstraction of sensor data flow for universal use on different visualisation platforms.
 
 Supported Platforms
 ~~~~~~~~~~~~~~~~~~~
@@ -26,37 +25,37 @@ Supported Languages
 ~~~~~~~~~~~~~~~~~~~
 
 .. -  `C/C++ API documentation <https://bkaradzic.github.io/bgfx/bgfx.html>`__
--  `C/C++ API documentation <https://gitlab.irit.fr/storm/repos/projects/private/dcs/plateforme-experimentale/hub/hub.html>`__
+-  `C/C++ API documentation <https://github.com/T-PLAY/hub/hub.html>`__
 
 Project Page
 ~~~~~~~~~~~~
 
-- https://gitlab.irit.fr/storm/repos/projects/private/dcs/plateforme-experimentale/hub
+- https://github.com/T-PLAY/hub
 
 Contact
 ~~~~~~~
 
  - GitHub `@hiergaut <https://github.com/hiergaut>`__
- - Mail `@hiergaut <gauthierbouyjou@aol.com>`__
+ - Mail `@Gauthier Bouyjou <gauthierbouyjou@aol.com>`__
 
 Getting Involved
 ----------------
 
 Everyone is welcome to contribute to hub by submitting bug reports, testing on different
-platforms, writing examples (see `ideas <https://gitlab.irit.fr/storm/repos/projects/private/dcs/plateforme-experimentale/hub/-/issues>`__),
+platforms, writing examples (see `ideas <https://github.com/T-PLAY/hub/-/issues>`__),
 improving documentation, profiling and optimizing, etc.
 
-.. note:: **When contributing to the hub project you must agree to the Irit
+.. note:: **When contributing to the hub project you must agree to the MPL 2.0
           licensing terms.**
 
 Contributors
 ~~~~~~~~~~~~
 
-Chronological order:
+ - Gauthier Bouyjou - Primary POC (`@hiergaut <https://github.com/hiergaut>`__)
+ - Francois Gaits - POC tcp communication
+ - Chems Eddine Himeur - POC sensor communication
 
- - Gauthier Bouyjou (`@hiergaut <https://github.com/hiergaut>`__)
-
-and `others <https://gitlab.irit.fr/storm/repos/projects/private/dcs/plateforme-experimentale/hub/-/project_members>`__...
+and `others <https://github.com/T-PLAY/hub/-/project_members>`__...
 
 Repository visualization
 ~~~~~~~~~~~~~~~~~~~~~~~~

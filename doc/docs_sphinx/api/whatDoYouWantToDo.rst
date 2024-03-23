@@ -5,7 +5,7 @@ What do you want to do ?
 
 * **Start server application ?**
 
-Please :ref:`Building` hub project and :ref:`Installation`, execute bin/app-server{.exe,} to run server.
+Please make :ref:`Building` hub project and do :ref:`Installation`, execute bin/app-server{.exe,} to run server.
 
 Check :ref:`Tools`.
 

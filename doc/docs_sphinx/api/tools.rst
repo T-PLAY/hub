@@ -8,5 +8,7 @@ Server process.
 
 Usage::
 
-    bin/app-server
+    bin/hub-bin-server
+
+    bin/hub-bin-viewer
 

@@ -9,8 +9,20 @@
 #include <sensor/SensorSpec.hpp>
 
 /// \file
-
+/// \brief
 int main() {
+
+    /// startConstruction
+    // hello
+    /// endConstruction
+
+    /// startConstruction2
+    // hello
+    /// endConstruction2
+
+    /// startConstruction3
+    // hello
+    /// endConstruction3
 
 //     {
 //         hub::MetaData metaData;

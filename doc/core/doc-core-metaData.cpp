@@ -3,6 +3,7 @@
 
 #include <core/MetaData.hpp>
 
+/// \file
 int main() {
 
     hub::MetaData metaData;
