@@ -22,11 +22,6 @@ class SRC_API ServerSocketI
     ///
     virtual int getPort() const = 0;
 
-    ///
-    /// \brief waitNewClient
-    /// \return
-    ///
-    // ClientSocketI waitNewClient();
 };
 
 } // namespace net
