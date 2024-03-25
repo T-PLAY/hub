@@ -148,6 +148,12 @@ class OutputSensor : public Sensor
     Acquisition acqMsg() const { return make_acquisition( m_spec.getResolution() ); }
 
     ///
+    /// \brief acqMsg
+    /// \return
+    ///
+    Acquisition acqMsg() const { return make_acquisition( m_spec.getResolution() ); }
+
+    ///
     /// \brief fill
     /// \param ts
     ///
