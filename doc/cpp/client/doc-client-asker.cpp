@@ -15,6 +15,9 @@
 ///
 int main() {
 
+    /// startConstruction
+    /// asker
+    /// endConstruction
     hub::client::Asker asker;
 
     auto listStreams = asker.listStreams();

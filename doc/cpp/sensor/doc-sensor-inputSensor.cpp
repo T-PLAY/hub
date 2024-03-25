@@ -14,6 +14,22 @@
 int main() {
     /// Comments I would like to be documented in as well
 
+    /// startConstruction
+    /// outputSensor
+    /// endConstruction
+
+    /// startConstruction2
+    /// outputSensor2
+    /// endConstruction2
+
+    /// startConstruction3
+    /// outputSensor3
+    /// endConstruction3
+
+    /// startFunctional
+    /// inputSensor
+    /// endFunctional
+
     // const int ref_offset    = 5;
     // constexpr int ref_nAcqs = 10;
 

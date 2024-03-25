@@ -13,6 +13,10 @@
 int main() {
     /// Comments I would like to be documented in as well
 
+    /// startConstruction
+    /// file
+    /// endConstruction
+
     // {
     //     hub::input::InputFile outputFile(
     //         std::fstream( "file.txt", std::ios::binary | std::ios::out | std::ios::trunc ) );
