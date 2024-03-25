@@ -23,7 +23,7 @@ class SRC_API AskerServer2 : public hub::client::AskerInterface
     /// \param ipv4
     /// \param port
     ///
-    AskerServer2( const std::string& ipv4 = HUB_SERVICE_IPV4, int port = HUB_SERVICE_PORT );
+    explicit AskerServer2( const std::string& ipv4 = HUB_SERVICE_IPV4, int port = HUB_SERVICE_PORT );
 
     ~AskerServer2();
 

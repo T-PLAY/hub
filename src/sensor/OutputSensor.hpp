@@ -47,7 +47,7 @@ namespace sensor {
 class OutputSensor : public Sensor
 {
   public:
-    using Sensor::acqMsg;
+    // using Sensor::acqMsg;
 
     // OutputSensor( const SensorSpec& sensorSpec,
 
@@ -145,6 +145,8 @@ class OutputSensor : public Sensor
     ///
     Output& getOutput() const { return m_output; }
 
+    Acquisition acqMsg() const { return make_acquisition( m_spec.getResolution() ); }
+
     ///
     /// \brief fill
     /// \param ts
@@ -170,9 +172,11 @@ class OutputSensor : public Sensor
 /// \brief The OutputSensorT class
 ///
 template <class Resolution, class Output = output::OutputStream>
-class OutputSensorT : public Sensor
+// class OutputSensorT : public Sensor
+class OutputSensorT : protected Sensor
 {
   public:
+    using Sensor::getSpec;
     static_assert( std::is_base_of_v<hub::Output, Output> );
 
     ///

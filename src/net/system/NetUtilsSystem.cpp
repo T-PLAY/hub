@@ -212,6 +212,7 @@ socket_fd serverSocket() {
     sock = ::socket( PF_INET, SOCK_STREAM, IPPROTO_TCP );
     s_netManager.registerSocket( sock );
     int option = 1;
+    (void)option;
 #ifndef WIN32
     setsockopt( sock, SOL_SOCKET, SO_REUSEADDR, &option, sizeof( option ) );
 #endif

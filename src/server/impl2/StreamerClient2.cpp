@@ -119,7 +119,8 @@ StreamerClient2::~StreamerClient2() {
 }
 
 std::string StreamerClient2::headerMsg() const {
-    return Client2::headerMsg() + "[Streamer] ";
+    return Client2::clientMsg() + "[Streamer] ";
+    // return Client2::headerMsg() + "[Streamer] ";
 }
 
 void StreamerClient2::end( hub::io::StreamBase::ServerMessage message ) {

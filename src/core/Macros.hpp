@@ -57,7 +57,9 @@ namespace hub {
 #    define COMPILER_MSVC
 #    define _USE_MATH_DEFINES
 #else
+#ifndef CPP_CHECK
 #    error unsupported compiler
+#endif
 #endif
 
 // OS and architecture identification
@@ -82,7 +84,9 @@ namespace hub {
 #elif defined( __linux__ ) || defined( __CYGWIN__ ) // ---------------------- Linux
 #    define OS_LINUX
 #else
+#ifndef CPP_CHECK
 #    error unsupported OS
+#endif
 #endif
 
 // Check arch for macos and linux
@@ -213,9 +217,9 @@ namespace hub {
 
 #        if GCC_VERSION < 12
 #            define FILE_NAME                                                          \
-                std::string( __FILE__ )                                                \
-                    .substr( std::max( std::string( __FILE__ ).find_last_of( '\\' ),   \
-                                       std::string( __FILE__ ).find_last_of( '/' ) ) + \
+                std::string( "/\\" __FILE__ )                                                \
+                    .substr( std::max( std::string( "/\\" __FILE__ ).find_last_of( '\\' ),   \
+                                       std::string( "/\\" __FILE__ ).find_last_of( '/' ) ) + \
                              1 )
 #        else
 #            define FILE_NAME std::string( __FILE_NAME__ )
@@ -313,8 +317,10 @@ namespace hub {
 
 template <typename T>
 concept isContainer = !std::is_same<T, std::string>() && requires( T t ) {
-    std::begin( t );
-    std::end( t );
+    t.begin();
+    t.end();
+    // std::begin( t );
+    // std::end( t );
 };
 
 #else
@@ -383,7 +389,7 @@ static constexpr bool nameable_v = nameable<T>::value;
 
 template <class T>
 static typename std::enable_if_t<!nameable_v<T> && !has_name_v<T>, std::string>
-typeName( const T& t ) {
+typeName( const T&  ) {
 #ifdef HUB_USE_BOOST
     return boost::typeindex::type_id<typeof( T )>().pretty_name();
 #else
@@ -393,7 +399,7 @@ typeName( const T& t ) {
 
 template <class T>
 static typename std::enable_if_t<!nameable_v<T> && has_name_v<T>, std::string>
-typeName( const T& t ) {
+typeName( const T&  ) {
     return T::name();
 }
 
@@ -502,24 +508,24 @@ enum Cpp : TypeId_t { NONE = 0, INT /* 1 */, BOOL /* 2 */, Cpp_Count /* 3 */ };
 static_assert( Types::Cpp_Count == 3 );
 
 template <class T>
-static constexpr typename std::enable_if_t<has_id_v<T>, TypeId_t> typeId( const T& t ) {
+static constexpr typename std::enable_if_t<has_id_v<T>, TypeId_t> getTypeId( const T&  ) {
     return T::id;
 }
 
 template <class T>
-static constexpr typename std::enable_if_t<!has_id_v<T>, TypeId_t> typeId( const T& t ) {
+static constexpr typename std::enable_if_t<!has_id_v<T>, TypeId_t> getTypeId( const T& ) {
     return typeid( T ).hash_code();
 }
 
-constexpr auto typeId( int ) -> TypeId_t {
+constexpr auto getTypeId( int ) -> TypeId_t {
     return Types::Cpp::INT;
 }
 
-constexpr auto typeId( bool ) -> TypeId_t {
+constexpr auto getTypeId( bool ) -> TypeId_t {
     return Types::Cpp::BOOL;
 }
 
-#define TYPE_ID( _Type_ ) hub::typeId( _Type_() )
+#define TYPE_ID( _Type_ ) hub::getTypeId( _Type_() )
 
 #if CPP_VERSION >= 20
 #    define REQUIRES( _CONST_, _COND_, _TYPE_ ) requires( _COND_ ) _CONST_ _TYPE_
@@ -619,7 +625,7 @@ sizeOf( const T& t, const Ts&... ts ) {
 //// Prints to the provided buffer a nice number of bytes (KB, MB, GB, etc)
 /// \brief pretty_bytes
 static std::string pretty_bytes( hub::Size_t bytes ) {
-    std::string str;
+    // std::string str;
 
     constexpr auto buffSize = 32;
     char buff[buffSize] { 0 };

@@ -1,11 +1,15 @@
 
 ---
-Current head v.2.1 rc
+Current head v.2.1.0 rc
 =====================
 - Community
   * Add CHANGELOG file (#14)
+- Code quality
+  * cppcheck (2.7, 2.12) passed (#15)
 - Clean code
-  * Removed first server impl (#16)
+  * Remove first server impl (#16)
+- CMake
+  * Remove dead code (#15)
 
 ---
 v.2.0.0

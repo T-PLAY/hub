@@ -45,12 +45,13 @@ class SRC_API Any
     /// \brief Any
     /// \param any
     ///
-    Any( const Any& any ) : m_any( any.m_any ) {
+    Any( const Any& any ) :
+        m_any( any.m_any ),
+        m_anyHelper {
+            std::make_unique<Anyable::AnyHelper>( Anyable::s_anyables.at( any.typeName() ) ) } {
 #ifdef HUB_DEBUG_ANY
         std::cout << "[Any] Any(const Any&)" << std::endl;
 #endif
-        m_anyHelper =
-            std::make_unique<Anyable::AnyHelper>( Anyable::s_anyables.at( any.typeName() ) );
     }
 
     ///
@@ -85,18 +86,20 @@ class SRC_API Any
     ///
     template <class T,
               typename = typename std::enable_if_t<!std::is_same_v<std::remove_cvref_t<T>, Any>>>
+    // cppcheck-suppress noExplicitConstructor
     Any( T&& t ) : m_any( std::forward<T>( t ) ) {
         static_assert( !std::is_same_v<std::remove_cvref_t<T>, Any> );
 #ifdef HUB_DEBUG_ANY
         std::cout << "[Any] Any(T&&) " << TYPE_NAME( t ) << std::endl;
 #endif
+        const auto & type_name = TYPE_NAME(std::any_cast<T>(m_any));
 
-        if ( Anyable::s_anyables.find( TYPE_NAME( t ) ) == Anyable::s_anyables.end() ) {
+        if ( Anyable::s_anyables.find( type_name ) == Anyable::s_anyables.end() ) {
             Anyable::registerTypes<std::remove_cvref_t<T>>();
         }
-        assert( Anyable::s_anyables.find( TYPE_NAME( t ) ) != Anyable::s_anyables.end() );
+        assert( Anyable::s_anyables.find( type_name ) != Anyable::s_anyables.end() );
         m_anyHelper =
-            std::make_unique<Anyable::AnyHelper>( Anyable::s_anyables.at( TYPE_NAME( t ) ) );
+            std::make_unique<Anyable::AnyHelper>( Anyable::s_anyables.at( type_name ) );
     }
 
     ///
@@ -105,6 +108,7 @@ class SRC_API Any
     ///
     template <class T,
               typename = typename std::enable_if_t<!std::is_same_v<std::remove_cvref_t<T>, Any>>>
+    // cppcheck-suppress noExplicitConstructor
     Any( const T* t ) : m_any( t ) {
         static_assert( !std::is_same_v<std::remove_cvref_t<T>, Any> );
 #ifdef HUB_DEBUG_ANY

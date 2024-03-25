@@ -32,7 +32,7 @@ class InputOutputSocket : public InputOutput<>, public net::ClientSocket
     /// \brief InputOutputSocket
     /// \param clientSocket
     ///
-    InputOutputSocket( net::ClientSocket&& clientSocket ) :
+    explicit InputOutputSocket( net::ClientSocket&& clientSocket ) :
         net::ClientSocket( std::move( clientSocket ) ) {}
 
     ///

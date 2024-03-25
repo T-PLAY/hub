@@ -163,7 +163,7 @@ requires( sizeof...( Types ) > 1 )
     /// \param args
     ///
     template <class... Args>
-    constexpr MatrixTs( Args&&... args ) : m_buffer { std::forward<Data_t&&>( args )... } {}
+    constexpr explicit MatrixTs( Args&&... args ) : m_buffer { std::forward<Data_t&&>( args )... } {}
 
     ///
     /// \brief get
@@ -252,42 +252,42 @@ requires( sizeof...( Types ) > 1 )
 
     ///
     /// \brief serialize
-    /// \param matrix
+    /// \param mat
     ///
-    void serialize( Matrix& matrix ) const { serialize_<Types...>( matrix ); }
+    void serialize( Matrix& mat ) const { serialize_<Types...>( mat ); }
 
     ///
     /// \brief getMatrix
     /// \return
     ///
     Matrix getMatrix() const {
-        Matrix matrix;
-        serialize( matrix );
-        matrix.setData( m_buffer.data(), m_buffer.size() );
-        return matrix;
+        Matrix mat;
+        serialize( mat );
+        mat.setData( m_buffer.data(), m_buffer.size() );
+        return mat;
     }
 
     ///
     /// \brief operator ==
-    /// \param matrix
+    /// \param mat
     /// \return
     ///
-    bool operator==( const Matrix& matrix ) const { return getMatrix() == matrix; }
+    bool operator==( const Matrix& mat ) const { return getMatrix() == mat; }
 
  // private:
     ///
     /// \brief serialize_
-    /// \param matrix
+    /// \param mat
     ///
     template <class Type_, class... Types_>
-    void serialize_( Matrix& matrix ) const {
-        // Matrix::serialize_( matrix );
-        if constexpr ( isMatrix<Type_> ) { matrix |= Type_().getMatrix(); }
+    void serialize_( Matrix& mat ) const {
+        // Matrix::serialize_( mat );
+        if constexpr ( isMatrix<Type_> ) { mat |= Type_().getMatrix(); }
         else {
-            matrix |= make_matrix<Type_>();
+            mat |= make_matrix<Type_>();
         }
 
-        if constexpr ( sizeof...( Types_ ) > 0 ) { serialize_<Types_...>( matrix ); }
+        if constexpr ( sizeof...( Types_ ) > 0 ) { serialize_<Types_...>( mat ); }
     }
 
     ///

@@ -15,7 +15,7 @@ TEST_CASE( "InputStream server deco reco test" ) {
     server.asyncRun();
 
     {
-        hub::output::OutputStream outputStream( { sizeof( int ) }, FILE_NAME, port );
+        hub::output::OutputStream outputStream( hub::io::Header{ sizeof( int ) }, FILE_NAME, port );
         assert( server.nClient() == 1 );
         assert( server.nStreamer() == 1 );
         assert( outputStream.getNStreamViewer() == 0 );

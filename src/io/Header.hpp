@@ -5,6 +5,7 @@
 #pragma once
 
 #include <array>
+#include <numeric>
 
 #include "core/Macros.hpp"
 #include "core/Traits.hpp"
@@ -38,7 +39,7 @@ class SRC_API Header
     /// \param dataSize
     /// \param userDefined
     ///
-    Header( Size_t dataSize = 0, const Datas_t& userDefined = {} );
+    explicit Header( Size_t dataSize = 0, const Datas_t& userDefined = {} );
 
     ///
     /// \brief Header
@@ -66,7 +67,8 @@ class SRC_API Header
     ///
     auto toString() const {
         std::string str;
-        for (const auto & number : m_magicNumber) {
+        // cppcheck-suppress useStlAlgorithm
+        for ( const auto& number : m_magicNumber ) {
             str += number;
         }
         return str + "header size: " + std::to_string( m_headerSize ) + "\ndata size: " + std::to_string( m_dataSize ) + "\nuser defined: " +
@@ -79,7 +81,7 @@ class SRC_API Header
     ///
     template <class Output>
     void write( Output& output ) {
-        output.write( (Data_t*)m_magicNumber.data(), m_magicNumber.size() );
+        output.write( reinterpret_cast<Data_t*>(m_magicNumber.data()), m_magicNumber.size() );
         output.writeAll( m_headerSize, m_dataSize, m_userDefined );
     }
 
@@ -89,7 +91,7 @@ class SRC_API Header
     ///
     template <class Input>
     void read( Input& input ) {
-        input.read( (Data_t*)m_magicNumber.data(), m_magicNumber.size() );
+        input.read( reinterpret_cast<Data_t*>(m_magicNumber.data()), m_magicNumber.size() );
 
         checkMagicNumber();
 
