@@ -261,6 +261,12 @@ namespace sensor {
         Acquisition acqMsg() const { return make_acquisition( m_spec.getResolution() ); }
 
         ///
+        /// \brief acqMsg
+        /// \return
+        ///
+        Acquisition acqMsg() const { return make_acquisition( m_spec.getResolution() ); }
+
+        ///
         /// \brief getInput
         /// \return
         ///

@@ -110,6 +110,15 @@ struct Shape {
     }
 
     ///
+    /// \brief toString
+    ///
+    auto toString() const {
+        std::string str;
+        str += std::to_string(vertices.size()) + " " +  std::to_string(hasNormal) + " " + std::to_string(indices.size())  + " " + name + " " + std::to_string(material);
+        return str;
+    }
+
+    ///
     /// \brief operator ==
     /// \param other
     /// \return
