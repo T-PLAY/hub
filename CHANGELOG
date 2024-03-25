@@ -7,7 +7,6 @@ Current head v.2.1.0 rc
 - Code quality
   * cppcheck (2.7, 2.12) passed (#15)
 - Clean code
-  * Remove first server impl (#16)
 - CMake
   * Remove dead code (#15)
   * Install external headers due of inline headers (zpp_bits, serializer, std_any) (#34)
@@ -17,6 +16,7 @@ Current head v.2.1.0 rc
   * Add github ci with build and install (#22)
   * Add issue templates for bug report and feature request (#29)
   * Add PULL_REQUEST_TEMPLATE file (#30)
+  * Updated gitlab config.yml with full pipeline
 - Tests
   * Fix timeout error on macos (#33)
 - Documentation
