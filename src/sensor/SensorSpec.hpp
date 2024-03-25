@@ -57,10 +57,13 @@ class SRC_API SensorSpec
         m_sensorName { sensorName }, m_resolution { resolution.clone() }, m_metaData { metaData } {}
 
     ///
-    /// \brief SensorSpec
+    /// \brief
     /// \param sensorName
+    /// [in] Given by the sensor manufacturer or user defined.
     /// \param resolution
+    /// [in] Resolution of the corresponding sensor.
     /// \param metaData
+    /// [in] Additional informations of the sensor and acquisition.
     ///
     template <class Resolution>
     SensorSpec( const std::string& sensorName,

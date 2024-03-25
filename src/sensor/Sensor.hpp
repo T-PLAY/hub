@@ -31,16 +31,15 @@ namespace sensor {
 class SRC_API Sensor
 {
   protected:
-    ///
-    /// \brief Sensor
-    /// \param sensorSpec
-    /// [in] user defined sensor spec
-    ///
-    Sensor() = default;
+//    ///
+//    /// \brief Sensor
+//    ///
+    // Sensor() = default;
 
     ///
     /// \brief Sensor
     /// \param sensorSpec
+    /// [in] user defined sensor spec
     ///
     explicit Sensor( const SensorSpec& sensorSpec ) : m_spec { sensorSpec } {}
 
@@ -52,6 +51,7 @@ class SRC_API Sensor
     ///
     /// \brief acqMsg
     /// \return
+    /// acquisition according to the sensor spec resolution
     ///
     // Acquisition acqMsg() const { return make_acquisition( m_spec.getResolution() ); }
 
@@ -59,6 +59,7 @@ class SRC_API Sensor
     ///
     /// \brief getSpec
     /// \return
+    /// sensor spec
     ///
     const SensorSpec& getSpec() const { return m_spec; }
 
