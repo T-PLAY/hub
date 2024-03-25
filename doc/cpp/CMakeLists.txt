@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
+project(doc-examples)
 
 file(GLOB_RECURSE DOC_SRC *.cpp)
 

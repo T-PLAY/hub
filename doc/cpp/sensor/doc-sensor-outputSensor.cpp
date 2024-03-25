@@ -9,6 +9,22 @@
 int main() {
     /// Comments I would like to be documented in as well
 
+    /// startConstruction
+    /// outputSensor
+    /// endConstruction
+
+    /// startConstruction2
+    /// outputSensor2
+    /// endConstruction2
+
+    /// startConstruction3
+    /// outputSensor3
+    /// endConstruction3
+
+    /// startFunctional
+    /// outputSensor
+    /// endFunctional
+
     constexpr auto width  = 512;
     constexpr auto depth  = 512;
     constexpr auto height = 100;

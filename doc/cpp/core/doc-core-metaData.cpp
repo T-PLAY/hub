@@ -6,6 +6,9 @@
 /// \file
 int main() {
 
+    /// startConstruction
+    /// metaData
+    /// endConstruction
     hub::MetaData metaData;
     metaData["hello"] = 0;
 

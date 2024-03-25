@@ -8,6 +8,9 @@
 
 int main() {
 
+    /// startConstruction
+    /// viewer
+    /// endConstruction
     auto onNewStreamer = [=]( const std::string& streamName,
                               const hub::sensor::SensorSpec& sensorSpec ) {
         std::cout << "[example-viewer] onNewStreamer : " << streamName << std::endl;

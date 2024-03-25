@@ -8,7 +8,7 @@ if(HUB_BUILD_DOC)
 
     # add_library(${PROJECT_NAME} ${DOC_SRC})
     # target_link_libraries(${PROJECT_NAME} hub)
-	add_subdirectory(docs_cpp)
+        add_subdirectory(cpp)
 
     if(NOT HUB_BROWSER)
         set(HUB_BROWSER
@@ -19,7 +19,7 @@ if(HUB_BUILD_DOC)
     find_package(Doxygen REQUIRED)
 
     if(DOXYGEN_FOUND)
-        set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/docs_doxygen/Doxyfile.in)
+        set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/doxygen/Doxyfile.in)
         set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile.out)
 
         configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
@@ -27,7 +27,7 @@ if(HUB_BUILD_DOC)
         add_custom_target(
             hub-doc-doxygen
             COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
-            COMMAND ${HUB_BROWSER} ${CMAKE_BINARY_DIR}/doc/docs_doxygen/html/annotated.html
+            COMMAND ${HUB_BROWSER} ${CMAKE_BINARY_DIR}/doc/doxygen/html/annotated.html
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
             COMMENT "Generating API documentation with Doxygen"
             VERBATIM)
@@ -39,10 +39,10 @@ if(HUB_BUILD_DOC)
 
     add_custom_target(
         hub-doc-sphinx
-        # COMMAND make -C ${PROJECT_SOURCE_DIR}/doc/docs_sphinx html
-        COMMAND make -C ${HUB_PROJECT_DIR}/doc/docs_sphinx html
-        # COMMAND ${HUB_BROWSER} ${PROJECT_SOURCE_DIR}/doc/docs_sphinx/_build/html/api/index.html
-        COMMAND ${HUB_BROWSER} ${HUB_PROJECT_DIR}/doc/docs_sphinx/_build/html/api/index.html
+        # COMMAND make -C ${PROJECT_SOURCE_DIR}/doc/sphinx html
+        COMMAND make -C ${HUB_PROJECT_DIR}/doc/sphinx html
+        # COMMAND ${HUB_BROWSER} ${PROJECT_SOURCE_DIR}/doc/sphinx/_build/html/api/index.html
+        COMMAND ${HUB_BROWSER} ${HUB_PROJECT_DIR}/doc/sphinx/_build/html/api/index.html
         COMMENT "Generating API documentation with Sphinx")
     custom_target_added(doc-sphinx)
 

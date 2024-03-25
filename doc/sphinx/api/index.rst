@@ -18,7 +18,7 @@ Contents
     build
     examples
     hub
-    Class List <file:///home/gauthier/tmpOpenSource/hub/doc/docs_sphinx/_build/html/annotated.html>
+    Class List <file:///home/gauthier/tmpOpenSource/hub/doc/sphinx/_build/html/annotated.html>
     tools
     license
     whoIsUsingIt

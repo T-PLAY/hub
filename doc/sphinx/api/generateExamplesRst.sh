@@ -69,8 +69,8 @@ parseDir() {
 		# exampleName=$(echo $exampleFileName | cut -d. -f1 | awk -F- '{print $NF}')
 		extension=$(echo $exampleFileName | cut -d. -f2)
 
-		if [ "$exampleName" = "docs_doxygen" ]  \
-			|| [ "$exampleName" = "docs_sphinx" ]  \
+		if [ "$exampleName" = "doxygen" ]  \
+			|| [ "$exampleName" = "sphinx" ]  \
 			|| [ "$exampleName" = "CMakeLists.txt" ]  \
 			|| [ "$exampleName" = "readme" ]; then
 
@@ -164,5 +164,5 @@ parseDir() {
 
 iExample=0
 
-parseDir "../../../doc" 0
+parseDir "../../../doc/cpp" 0
 

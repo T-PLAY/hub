@@ -12,6 +12,9 @@
 
 int main() {
 
+    /// startConstruction
+    /// nativeViewer
+    /// endConstruction
     // auto onNewStreamer = []( const char* streamName, const hub::sensor::SensorSpec* sensorSpec ) {
     //     std::cout << "[Example][Viewer] onNewStreamer : " << streamName << std::endl;
     //     char sensorName[80] = { 0 };
