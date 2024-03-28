@@ -1,5 +1,6 @@
 
 #include <test_common.hpp>
+//#include <catch2/catch_test_macros.hpp>
 
 #include <iostream>
 
@@ -7,7 +8,7 @@
 #include <Eigen/Core>
 
 TEST_CASE( "Matrix compat Eigen test" ) {
-    TEST_BEGIN()
+ //   TEST_BEGIN()
 
     constexpr auto width  = 20;
     constexpr auto height = 10;
@@ -28,5 +29,5 @@ TEST_CASE( "Matrix compat Eigen test" ) {
     }
     std::cout << std::endl;
 
-    TEST_END()
+//    TEST_END()
 }
