@@ -93,13 +93,14 @@ class SRC_API SerializerT
     static constexpr bool has_it_second_v = has_it_second<T>::value;
 
 #if defined( COMPILER_GCC )
-#    if __GNUC_PREREQ( 12, 3 )
+
+#if GCC_VERSION > 12
     template <class T>
     static constexpr auto isMap = has_it_first_v<T>&& has_it_second_v<T>;
-#    else
+#else
     template <class T>
     static constexpr bool isMap = has_it_first_v<T>&& has_it_second_v<T>;
-#    endif
+#endif
 
 #elif defined( COMPILER_CLANG )
 #    if CLANG_VERSION >= 14
@@ -149,11 +150,16 @@ class SRC_API SerializerT
     template <class... Ts>
     static constexpr auto Serializables = ( Serializable<Ts>() && ... );
 
-    // static constexpr Size_t BuffSize = 2'000'000; // 2 Mo
     ///
     /// \brief BuffSize
     ///
-    static constexpr Size_t BuffSize = 20'000'000; // 20 Mo
+    /// todo change SerializerImpl to singleton with unique (large ~20Mo) instanced memory buffer.
+    /// zpp Serializer (C++14) we use here should have fixed size buffer to be construct.
+    /// Unlike zpp_bits C++20 using dynamic (non fixed size) buffer.
+    /// However singleton imply concurrency with all user of user wanted to serialize data.
+    /// We need to check if there is decrease of application performance.
+    /// The size of serializer buffer depends of user application (need to be configured by user ?)
+    static constexpr Size_t BuffSize = 1'000'000; // 1 Mo
 
     ///
     /// \brief SerializerT

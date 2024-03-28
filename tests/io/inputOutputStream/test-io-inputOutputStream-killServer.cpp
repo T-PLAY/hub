@@ -25,14 +25,14 @@ TEST_CASE( "InputOutputStream kill server test" ) {
         outputStream.write( a );
         int a_read;
         inputStream.read( a_read );
-        assert( a == a_read );
+        CHECK( a == a_read );
 
         delete server;
 
         a = 6;
         outputStream.write( a );
         inputStream.read( a_read );
-        assert( a == a_read );
+        CHECK( a == a_read );
     }
     std::cout << "[test] inputStream ended" << std::endl;
     std::cout << "[test] outputStream ended" << std::endl;

@@ -64,43 +64,43 @@ void checkAny( const T& t, const T& t2 ) {
     CHECK( any != any_compare );
 
     hub::Any any_clone { any };
-    assert( any_clone == any );
-    assert( any_clone != any_compare );
+    CHECK( any_clone == any );
+    CHECK( any_clone != any_compare );
     const hub::Any any2_clone { any_compare };
-    assert( any2_clone == any_compare );
-    assert( any2_clone != any );
+    CHECK( any2_clone == any_compare );
+    CHECK( any2_clone != any );
 
     hub::Any any_copy;
     any_copy = any;
-    assert( any_copy == any );
-    assert( any_copy != any_compare );
+    CHECK( any_copy == any );
+    CHECK( any_copy != any_compare );
     hub::Any any2_copy;
     any2_copy = any_compare;
-    assert( any2_copy == any_compare );
-    assert( any2_copy != any );
+    CHECK( any2_copy == any_compare );
+    CHECK( any2_copy != any );
 
     hub::Any any_moved = std::move( any_copy );
-    assert( any_moved == any );
-    assert( any_moved != any_compare );
+    CHECK( any_moved == any );
+    CHECK( any_moved != any_compare );
     hub::Any any2_moved = std::move( any2_copy );
-    assert( any2_moved == any_compare );
-    assert( any2_moved != any );
+    CHECK( any2_moved == any_compare );
+    CHECK( any2_moved != any );
 
-    assert( ( std::is_same_v<T, int> == any.is<int>() ) );
-    assert( ( std::is_same_v<T, bool> == any.is<bool>() ) );
-    assert( ( std::is_same_v<T, double> == any.is<double>() ) );
-    assert( ( std::is_same_v<T, const char*> == any.is<const char*>() ) );
-    assert( ( std::is_same_v<T, std::string> == any.is<std::string>() ) );
-    assert( ( std::is_same_v<T, Lambda> == any.is<Lambda>() ) );
+    CHECK( ( std::is_same_v<T, int> == any.is<int>() ) );
+    CHECK( ( std::is_same_v<T, bool> == any.is<bool>() ) );
+    CHECK( ( std::is_same_v<T, double> == any.is<double>() ) );
+    CHECK( ( std::is_same_v<T, const char*> == any.is<const char*>() ) );
+    CHECK( ( std::is_same_v<T, std::string> == any.is<std::string>() ) );
+    CHECK( ( std::is_same_v<T, Lambda> == any.is<Lambda>() ) );
 
     // CHECK( t3 == t );
 
 #ifdef USE_ARCHIVE
-    assert( s_archive.isEnd() );
+    CHECK( s_archive.isEnd() );
     s_archive.write( any );
     s_archive.read( any_compare );
     CHECK( any == any_compare );
-    assert( s_archive.isEnd() );
+    CHECK( s_archive.isEnd() );
 #endif
 }
 
@@ -123,14 +123,14 @@ TEST_CASE( "Any test" ) {
     std::cout << "any supported types : " << hub::Anyable::supportedTypes() << std::endl;
 
     const hub::Any any;
-    assert( any.typeName() == "void" );
-    assert( !any.hasValue() );
+    CHECK( any.typeName() == "void" );
+    CHECK( !any.hasValue() );
     std::cout << "any: " << any << std::endl;
     hub::Any any2;
-    assert( !any2.hasValue() );
-    assert( any == any2 );
+    CHECK( !any2.hasValue() );
+    CHECK( any == any2 );
     any2 = 1;
-    assert( any2.hasValue() );
+    CHECK( any2.hasValue() );
     std::cout << "any2: " << any2 << std::endl;
 
     checkAny<int>( 1, 2 );

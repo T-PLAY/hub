@@ -10,8 +10,11 @@
 #include <numeric>
 #include <thread>
 
+#include <Version.hpp>
 #include <core/Macros.hpp>
 #include <core/Utils.hpp>
+
+// Todo use namespace for test common functions
 
 #define CONSTRUCT_BEGIN( name )                                                              \
     std::cout << "\033[1;32m[test] -------------------------------------------------> " name \
@@ -74,7 +77,7 @@ static int getRandomPort( const char* filename ) {
     } while ( usedPorts.find( randomPort ) != usedPorts.end() );
 
     std::ofstream outFile( randomUsedPortsFilename.c_str(), std::ios::out | std::ios::app );
-    assert( outFile.is_open() );
+    CHECK( outFile.is_open() );
     outFile << randomPort << " " << filename << std::endl;
     outFile.close();
 
@@ -93,7 +96,7 @@ static std::string ReplaceAll( std::string str, const std::string& from, const s
 
 #define START_REPORT()                  \
     std::ofstream file( "report.txt" ); \
-    assert( file.is_open() );
+    CHECK( file.is_open() );
 
 #define END_REPORT() (void)0
 
@@ -143,7 +146,7 @@ static std::string s_latestFilename = "";
         const auto testName     = filenameStr.substr( first, last - first );       \
         std::cout << _params << std::endl;                                         \
         std::ofstream file( "report.txt", std::ios::app );                         \
-        assert( file.is_open() );                                                  \
+        CHECK( file.is_open() );                                                  \
         if ( filename != s_latestFilename ) {                                      \
             s_latestFilename = filename;                                           \
             file << std::endl;                                                     \
@@ -204,7 +207,7 @@ void _checkValue( double value,
                   const std::string& name,
                   const std::string& unit,
                   const std::string& filename,
-                  int line );
+                         int line );
 
 #define CHECK_DECLINE( ... ) _checkValue( __VA_ARGS__, FILE_NAME, __LINE__ )
 

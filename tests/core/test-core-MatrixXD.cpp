@@ -99,14 +99,14 @@ TEST_CASE( "MatrixXD test" ) {
     using VectorChar = Vector<char, 10>;
     VectorChar vectorChar { { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 } };
     std::cout << "vectorChar: " << vectorChar << std::endl;
-    assert( vectorChar.get<0>() == 1 );
-    assert( vectorChar.get<1>() == 2 );
+    CHECK( vectorChar.get<0>() == 1 );
+    CHECK( vectorChar.get<1>() == 2 );
 
     auto serial = vectorChar.getMatrix();
     std::cout << "serial: " << serial << std::endl;
 
-    assert( serial.hasType<char>() );
-    assert( serial.getDims<char>() == std::vector<int> { 10 } );
+    CHECK( serial.hasType<char>() );
+    CHECK( serial.getDims<char>() == std::vector<int> { 10 } );
 #endif
 
     ////////////////////////////////

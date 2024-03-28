@@ -3,16 +3,15 @@ cmake_minimum_required(VERSION 3.5)
 project(tests LANGUAGES CXX)
 
 set(LINK_LIBRARIES Catch2::Catch2WithMain hub)
-# Threads::Threads ) set( LINK_LIBRARIES Catch2::Catch2WithMain hub PahoMqttCpp::paho - mqttpp3 )
+set(INCLUDE_LIBRARIES)
 
-find_package(Catch2 QUIET)
+find_package(Catch2 3 QUIET)
 if(NOT ${Catch2_FOUND})
     include(FetchContent)
     FetchContent_Declare(
         Catch2
         GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-        # GIT_TAG v3 .0.1 # or a later release
-        GIT_TAG v3.3.2 # or a later release
+        GIT_TAG v3.4.0
         GIT_PROGRESS TRUE)
     FetchContent_MakeAvailable(Catch2)
 endif()
@@ -31,23 +30,39 @@ list(APPEND test_headers ${CMAKE_CURRENT_SOURCE_DIR}/test_common.hpp)
 
 add_library(test-common STATIC ${test_headers} ${CMAKE_CURRENT_SOURCE_DIR}/test_common.cpp)
 target_link_libraries(test-common PUBLIC ${LINK_LIBRARIES})
+set(LINK_LIBRARIES ${LINK_LIBRARIES} test-common)
 
-if(BUILD_CORE)
-    if(NOT Eigen3_FOUND)
-        list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/core/matrix/test-core-matrix-compatEigen3.cpp)
+if(HUB_BUILD_CORE)
+    find_package(Eigen3 QUIET)
+    if(Eigen3_FOUND)
+        set(LINK_LIBRARIES ${LINK_LIBRARIES} Eigen3::Eigen)
+        set(INCLUDE_LIBRARIES ${INCLUDE_LIBRARIES} ${EIGEN3_INCLUDE_DIR})
+        # # message(STATUS "${HEADER_MSG} Eigen found: ${EIGEN3_INCLUDE_DIR}")
+    else()
+       list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/core/matrix/test-core-matrix-compatEigen3.cpp)
     endif()
-    if(NOT OpenCV_FOUND)
-        list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/core/matrix/test-core-matrix-compatOpenCV.cpp)
+
+    find_package(OpenCV QUIET COMPONENTS core imgproc)
+    if(OpenCV_FOUND)
+        set(LINK_LIBRARIES ${LINK_LIBRARIES} opencv_core opencv_imgproc)
+        set(INCLUDE_LIBRARIES ${INCLUDE_LIBRARIES} ${OpenCV_INCLUDE_DIRS}/opencv2)
+        # # message(STATUS "${HEADER_MSG} OpenCV found: ${OpenCV_INCLUDE_DIRS}")
+    else()
+       list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/core/matrix/test-core-matrix-compatOpenCV.cpp)
     endif()
-    if(NOT OIIO_FOUND)
-        list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/core/matrix/test-core-matrix-compatOIIO.cpp)
+
+    find_package(OpenImageIO QUIET)
+    if(OpenImageIO_FOUND)
+        set(LINK_LIBRARIES ${LINK_LIBRARIES} OpenImageIO)
+        set(INCLUDE_LIBRARIES ${INCLUDE_LIBRARIES} ${OpenImageIO_INCLUDE_DIR}/OpenImageIO)
+        # # message(STATUS "${HEADER_MSG} OpenImageIO found: ${OpenImageIO_INCLUDE_DIR}/OpenImageIO")
+    else()
+       list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/core/matrix/test-core-matrix-compatOIIO.cpp)
     endif()
 endif()
 
 find_package(PahoMqttCpp QUIET)
-set(LINK_LIBRARIES)
 if(PahoMqttCpp_FOUND)
-
     set(LINK_LIBRARIES ${LINK_LIBRARIES} PahoMqttCpp::paho-mqttpp3)
 else()
     list(FILTER test_srcs EXCLUDE REGEX ".*Mqtt\\.cpp$")
@@ -56,12 +71,10 @@ endif()
 if(NOT HUB_BUILD_SERVER)
     list(FILTER test_srcs EXCLUDE REGEX ".*inputOutputStream/.*\\.cpp$")
     list(FILTER test_srcs EXCLUDE REGEX ".*test-io-InputOutputStream.cpp$")
-
 endif()
 
 if(NOT HUB_BUILD_SENSOR)
     list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/client/test-client-ViewerSensor.cpp)
-
 endif()
 
 list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-end.cpp)
@@ -70,10 +83,13 @@ list(APPEND test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-end.cpp)
 list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-start.cpp)
 list(PREPEND test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-start.cpp)
 
+#set(test_srcs)
+list(APPEND test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-wip.cpp)
+
 add_executable(hub-test-all ${test_srcs} ${test_headers})
-target_link_libraries(hub-test-all PRIVATE ${LINK_LIBRARIES} test-common)
-target_include_directories(hub-test-all PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-# CXX_EXTENSIONS OFF)
+target_link_libraries(hub-test-all PRIVATE ${LINK_LIBRARIES})
+target_include_directories(hub-test-all PRIVATE ${INCLUDE_LIBRARIES} ${CMAKE_CURRENT_SOURCE_DIR})
+
 if(PahoMqttCpp_FOUND)
     target_compile_definitions(hub-test-all PUBLIC -DHUB_TESTS_MQTT_FOUND)
 endif()
@@ -105,7 +121,7 @@ foreach(testFile ${test_srcs})
     get_filename_component(test ${testFile} NAME_WE)
 
     add_executable(hub-${test} ${testFile})
-    target_link_libraries(hub-${test} PRIVATE ${LINK_LIBRARIES} test-common)
+    target_link_libraries(hub-${test} PRIVATE ${LINK_LIBRARIES})
     target_include_directories(hub-${test} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
     if(PahoMqttCpp_FOUND)
         target_compile_definitions(hub-${test} PUBLIC -DHUB_TESTS_MQTT_FOUND)
@@ -177,10 +193,7 @@ add_custom_target(
     COMMENT "Running tests")
 custom_target_added(tests)
 
-
-# if (UNIX)
 add_custom_command(
     TARGET test-common
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy "${HUB_PROJECT_DIR}/scripts/showDurationTest.sh" ${CMAKE_CURRENT_BINARY_DIR})
-# endif()

@@ -65,7 +65,7 @@ void clearAll( Input& input, Inputs&... inputs ) {
     if ( sizeof...( Inputs ) > 0 ) { clearAll( inputs... ); }
 }
 
-////    assert(input.isEnd());
+////    CHECK(input.isEnd());
 constexpr static size_t s_dataSize = 1'000'000; // 1Mo
 constexpr static auto s_nIteration = 100;
 static std::vector<hub::Data_t> s_testData;
@@ -105,7 +105,7 @@ static auto inputOutputBench( Input& input, Output& output, std::string verbose 
         for ( int i = 0; i < s_nIteration; ++i ) {
             input.read( s_testData_read.data(), size );
 #ifdef DEBUG
-            assert( s_testData == s_testData_read );
+            CHECK( s_testData == s_testData_read );
 #endif
         }
     } );
@@ -164,7 +164,7 @@ static auto inputOutputBench( std::vector<Input>& inputs,
             for ( auto& input : inputs ) {
                 input.read( s_testData_read.data(), s_dataSize );
 #ifdef DEBUG
-                assert( s_testData == s_testData_read );
+                CHECK( s_testData == s_testData_read );
 #endif
             }
         }

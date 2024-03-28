@@ -58,7 +58,7 @@ TEST_CASE( "Net test : ClientSocket speed test" ) {
                         const auto& buffer = boost::asio::buffer( bigData, bigDataSize );
                         auto uploadBytes   = boost::asio::write( clientSocket, buffer );
 #    ifdef DEBUG
-                        assert( uploadBytes == bigDataSize );
+                        CHECK( uploadBytes == bigDataSize );
 #    endif
                         dataWrote += bigDataSize;
                     }
@@ -74,7 +74,7 @@ TEST_CASE( "Net test : ClientSocket speed test" ) {
                     const auto& buffer = boost::asio::buffer( dataIn, bigDataSize );
                     auto downloadBytes = boost::asio::read( clientServerSocket, buffer );
 #    ifdef DEBUG
-                    assert( downloadBytes == bigDataSize );
+                    CHECK( downloadBytes == bigDataSize );
 #    endif
                 }
             }
@@ -83,7 +83,7 @@ TEST_CASE( "Net test : ClientSocket speed test" ) {
                           << std::endl;
             }
 
-            assert( thread.joinable() );
+            CHECK( thread.joinable() );
             thread.join();
         }
         const auto& end = std::chrono::high_resolution_clock::now();
@@ -113,9 +113,9 @@ TEST_CASE( "Net test : ClientSocket speed test" ) {
 
         hub::net::ClientSocket clientSocket( ipv4, port2 );
 
-        assert( clientSocket.isConnected() );
+        CHECK( clientSocket.isConnected() );
         auto clientServerSocket = serverSocket.waitNewClient();
-        assert( clientServerSocket.isConnected() );
+        CHECK( clientServerSocket.isConnected() );
 
         unsigned char* dataIn = new unsigned char[bigDataSize];
         memset( dataIn, 0, bigDataSize );
@@ -145,7 +145,7 @@ TEST_CASE( "Net test : ClientSocket speed test" ) {
                 std::cout << "[test][ClientSocket] catch exception : " << ex.what() << std::endl;
             }
 
-            assert( thread.joinable() );
+            CHECK( thread.joinable() );
             thread.join();
         }
         const auto& end = std::chrono::high_resolution_clock::now();

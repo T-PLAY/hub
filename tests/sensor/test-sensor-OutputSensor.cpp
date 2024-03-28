@@ -15,16 +15,16 @@ TEST_CASE( "OutputSensor test" ) {
     metaData["parent"] = "parentName";
 
     auto resolution = hub::make_matrix<hub::format::BGR8>();
-    assert( resolution.size() != 0 );
-    assert( resolution.nType() > 0 );
+    CHECK( resolution.size() != 0 );
+    CHECK( resolution.nType() > 0 );
 
     const hub::sensor::SensorSpec sensorSpec( "sensorName", resolution, metaData );
-    assert( sensorSpec.getResolution().size() != 0 );
-    assert( sensorSpec.getResolution().nType() > 0 );
+    CHECK( sensorSpec.getResolution().size() != 0 );
+    CHECK( sensorSpec.getResolution().nType() > 0 );
 
     hub::sensor::OutputSensor outputSensor( sensorSpec, FILE_NAME, SERVER_PORT );
 
-    assert( outputSensor.getSpec() == sensorSpec );
+    CHECK( outputSensor.getSpec() == sensorSpec );
 
     auto acq = outputSensor.acqMsg();
 

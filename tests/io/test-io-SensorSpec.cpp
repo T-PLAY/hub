@@ -6,7 +6,7 @@
 #include <sensor/SensorSpec.hpp>
 
 
-TEST_CASE( "Test io header" ) {
+TEST_CASE( "Test io sensorSpec" ) {
     TEST_BEGIN()
 
     const std::string meshPath = HUB_PROJECT_DIR "data/assets/";
@@ -46,8 +46,8 @@ TEST_CASE( "Test io header" ) {
     archive.read(sensorSpec_read);
 
 
-    // assert(header == header_read);
-    assert(sensorSpec_read == refSensorSpec);
+    // CHECK(header == header_read);
+    CHECK(sensorSpec_read == refSensorSpec);
 
 
     TEST_END()

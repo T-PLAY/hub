@@ -14,7 +14,7 @@ TEST_CASE( "InputOutputStream no stream twice test" ) {
 
         try {
             hub::output::OutputStream outputStream2( TEST_IO_HEADER, FILE_NAME, SERVER_PORT );
-            assert( false );
+            CHECK( false );
         }
         catch ( hub::net::system::SocketSystem::exception& ex ) {
             CHECK( true );

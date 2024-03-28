@@ -78,11 +78,11 @@ TEST_CASE( "InputOutput speed compare test" ) {
 
         benchStatInputOutputZppBits.readWriteDataStat =
             readWriteData( archive, s_nReadWrite, userData );
-        assert( archive.isEnd() );
+        CHECK( archive.isEnd() );
 
         benchStatInputOutputZppBits.readWriteDataPtrStat =
             readWriteDataPtr( archive, s_nReadWriteDataPtr, data_write, s_DataSizePtr );
-        assert( archive.isEnd() );
+        CHECK( archive.isEnd() );
         dataBenchStats.insert( benchStatInputOutputZppBits );
     }
 #endif
@@ -97,11 +97,11 @@ TEST_CASE( "InputOutput speed compare test" ) {
 
         benchStatInputOutputZpp.readWriteDataStat =
             readWriteData( archive, s_nReadWrite, userData );
-        assert( archive.isEnd() );
+        CHECK( archive.isEnd() );
 
         benchStatInputOutputZpp.readWriteDataPtrStat =
             readWriteDataPtr( archive, s_nReadWriteDataPtr, data_write, s_DataSizePtr );
-        assert( archive.isEnd() );
+        CHECK( archive.isEnd() );
         dataBenchStats.insert( benchStatInputOutputZpp );
     }
 
