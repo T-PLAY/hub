@@ -3,11 +3,12 @@
 
 #include <iostream>
 
-// #    include <opencv2/opencv.hpp>
 #include <opencv2/opencv.hpp>
 
 TEST_CASE( "Matrix compat OpenCV test" ) {
     TEST_BEGIN()
+
+   // Todo check if hub matrix is compatible with OpenCV matrix
 
     constexpr auto width  = 20;
     constexpr auto height = 10;
