@@ -88,18 +88,7 @@ TEST_CASE( "sensor compat os and arch test" ) {
         CHECK( sensorSpec.getResolution() == refSensorSpec.getResolution() );
         const auto& metaData = sensorSpec.getMetaData();
         CHECK( metaData.at( "parent" ) == refMetadata.at( "parent" ) );
-        // refMesh.printInfo();
-        // const auto& meshGet   = refMetadata.at( "asset" ).get<const hub::data::Mesh&>();
-        // const auto& meshGet2  = metaData.at( "asset" ).get<const hub::data::Mesh&>();
-        // const auto& shapeGet  = meshGet.getShapes();
-        // const auto& shapeGet2 = meshGet2.getShapes();
-        // std::cout << shapeGet << std::endl;
-        // std::cout << shapeGet2 << std::endl;
-        // CHECK( shapeGet == shapeGet2 );
-        // CHECK( refMesh == meshGet );
-        // CHECK( refMesh == meshGet2 );
-        // CHECK( meshGet == meshGet2 );
-        // CHECK( metaData.at( "asset" ) == refMetadata.at( "asset" ) );
+
         /// todo fix mesh x64/arm64 compat vertices differ
         /// CHECK( sensorSpec == refSensorSpec );
 
