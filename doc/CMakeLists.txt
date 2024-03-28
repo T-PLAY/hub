@@ -22,7 +22,6 @@ if(HUB_BUILD_DOC)
         set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile.out)
 
         configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
-        message("Doxygen build started")
 
         add_custom_target(
             hub-doc-doxygen
