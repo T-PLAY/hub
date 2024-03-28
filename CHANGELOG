@@ -12,6 +12,8 @@ Current head v.2.1.0 rc
   * Remove dead code (#15)
 - Licensing
   * Added license and readme to externals (#18)
+- CI
+  * Add github ci with build and install (#22)
 
 ---
 v.2.0.0
