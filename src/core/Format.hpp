@@ -182,14 +182,13 @@ struct Mat4 {
     ///
     bool operator==( const Mat4& other ) const {
         return m_array == other.m_array;
-        // return !memcmp( data, other.data, 64 );
     }
 
     ///
     /// \brief data
     /// \return
     ///
-    const float * data() const {
+    const float* data() const {
         return m_array.data();
     }
 
@@ -260,7 +259,9 @@ struct Vec3 {
     ///
     /// \brief name
     ///
-    static constexpr auto name() { return "Vec3"; };
+    static constexpr auto name() {
+        return "Vec3";
+    };
     ///
     /// \brief operator ==
     /// \param other
@@ -329,7 +330,9 @@ struct Vec4 {
     ///
     /// \brief name
     ///
-    static constexpr auto name() { return "Vec4"; };
+    static constexpr auto name() {
+        return "Vec4";
+    };
     ///
     /// \brief operator ==
     /// \param other

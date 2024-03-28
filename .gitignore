@@ -13,3 +13,5 @@ install/
 *.glb
 *.history
 ..bfg-report
+!data/compat/*.glb
+*.gch
