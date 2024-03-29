@@ -5,9 +5,8 @@
 #define DEBUG_CHECK_TYPE
 #include "test_core_io_common.hpp"
 
-#include <core/Macros.hpp>
+//#include <core/Macros.hpp>
 #include <core/Serializer.hpp>
-#include <core/Traits.hpp>
 #include <core/io/Archive.hpp>
 
 class InputCustom : public hub::Input

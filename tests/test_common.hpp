@@ -10,8 +10,7 @@
 #include <numeric>
 #include <thread>
 
-#include <Version.hpp>
-#include <core/Macros.hpp>
+#include <core/Base.hpp>
 #include <core/Utils.hpp>
 
 // Todo use namespace for test common functions

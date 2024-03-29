@@ -5,8 +5,9 @@
 #include <set>
 #include <sstream>
 
-#include <core/Macros.hpp>
-#include <core/Traits.hpp>
+//#include <core/Macros.hpp>
+//#include <core/Traits.hpp>
+#include <core/Base.hpp>
 
 class Lambda
 {

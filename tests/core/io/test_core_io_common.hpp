@@ -11,7 +11,6 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <core/Serializer.hpp>
-#include <core/Traits.hpp>
 #include <core/io/Archive.hpp>
 #include <core/ios.hpp>
 

@@ -5,8 +5,6 @@
 #include <core/io/Archive.hpp>
 #include <sensor/SensorSpec.hpp>
 
-#include <any>
-
 TEST_CASE( "SensorSpec test" ) {
     TEST_BEGIN()
 
