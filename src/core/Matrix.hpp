@@ -11,10 +11,9 @@
 #include <type_traits>
 #include <vector>
 
-#include "Macros.hpp"
+#include "Base.hpp"
 #include "MatrixBase.hpp"
 #include "Node.hpp"
-#include "Traits.hpp"
 
 namespace hub {
 
@@ -90,7 +89,6 @@ class SRC_API Matrix
     /// \return
     ///
     template <class... Types>
-    // REQUIRES(, sizeof...( Types ) > 1, bool )
     typename std::enable_if_t<(sizeof...( Types ) > 1), bool>
     hasAnyType() const;
 
@@ -99,7 +97,6 @@ class SRC_API Matrix
     /// \return
     ///
     template <class... Types>
-    // REQUIRES(, sizeof...( Types ) > 1, bool )
     typename std::enable_if_t<(sizeof...( Types ) > 1), bool>
     hasSomeType() const;
 
@@ -530,20 +527,30 @@ bool Matrix::hasType() const {
     // return false;
 }
 
+///
+/// \brief hasAnyType
+/// \return
+///
 template <class... Types>
-// REQUIRES(, sizeof...( Types ) > 1, bool )
 typename std::enable_if_t<(sizeof...( Types ) > 1), bool>
 Matrix::hasAnyType() const {
     return ( hasType<Types>() && ... );
 }
 
+///
+/// \brief hasSomeType
+/// \return
+///
 template <class... Types>
-// REQUIRES(, sizeof...( Types ) > 1, bool )
 typename std::enable_if_t<(sizeof...( Types ) > 1), bool>
 Matrix::hasSomeType() const {
     return ( hasType<Types>() || ... );
 }
 
+///
+/// \brief nType
+/// \return
+///
 template <class Type>
 int Matrix::nType() {
     assert( hasType<Type>() );

@@ -6,11 +6,10 @@
 
 #include <type_traits>
 
-#include "Macros.hpp"
+#include "Base.hpp"
 #if defined( HUB_DEBUG_INPUT ) || defined( HUB_DEBUG_OUTPUT )
 #    include <mutex>
 #endif
-#include "Traits.hpp"
 
 namespace hub {
 

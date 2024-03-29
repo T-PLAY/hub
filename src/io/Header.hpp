@@ -7,8 +7,7 @@
 #include <array>
 #include <numeric>
 
-#include "core/Macros.hpp"
-#include "core/Traits.hpp"
+#include "core/Base.hpp"
 #include "core/io/Memory.hpp"
 
 namespace hub {
@@ -29,6 +28,7 @@ class SRC_API Header
 
     ///
     /// \brief getSize
+    /// \return
     ///
     auto getSize() const {
         return sizeof( m_headerSize ) + sizeof( m_dataSize ) + 4 + m_userDefined.size();
@@ -64,6 +64,7 @@ class SRC_API Header
 
     ///
     /// \brief toString
+    /// \return
     ///
     auto toString() const {
         std::string str;

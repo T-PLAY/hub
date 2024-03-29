@@ -4,16 +4,14 @@
 
 #pragma once
 
+#include "core/Base.hpp"
 #include "core/Input.hpp"
-#include "core/Macros.hpp"
-
 #include "Acquisition.hpp"
 #include "Sensor.hpp"
-//// #include "core/Tuple.hpp"
 
+//// #include "core/Tuple.hpp"
 #include "io/input/InputFile.hpp"
 #include "io/input/InputStream.hpp"
-
 //// #include "io/File.hpp"
 //// #include "io/input/InputFile.hpp"
 //// #include "io/input/InputStream.hpp"
@@ -257,8 +255,6 @@ namespace sensor {
         /// \return
         ///
         const Input& getInput() const { return *m_inputs.at(0); }
-
-        Acquisition acqMsg() const { return make_acquisition( m_spec.getResolution() ); }
 
         ///
         /// \brief acqMsg

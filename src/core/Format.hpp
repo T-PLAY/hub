@@ -5,11 +5,11 @@
 #pragma once
 
 #include <memory>
-
 #include <cstring>
 
-#include "Macros.hpp"
-#include "Traits.hpp"
+#include "Base.hpp"
+
+// Todo split all format into single file (each)
 
 namespace hub {
 
@@ -84,6 +84,7 @@ struct Mat4 {
 
     ///
     /// \brief name
+    /// \return
     ///
     static constexpr auto name() { return "Mat4"; };
 
@@ -148,6 +149,7 @@ struct Mat4 {
 
     ///
     /// \brief toString
+    /// \return
     ///
     auto toString() const {
         float dataTmp[16];
@@ -231,6 +233,7 @@ struct Vec3 {
     /// \param value
     ///
     explicit constexpr Vec3( float value = 0.0f ) : x { value }, y { value }, z { value } {};
+
     ///
     /// \brief Vec3
     /// \param x_
@@ -238,10 +241,13 @@ struct Vec3 {
     /// \param z_
     ///
     constexpr Vec3( float x_, float y_, float z_ ) : x { x_ }, y { y_ }, z { z_ } {};
+
     ///
     /// \brief toString
+    /// \return
     ///
     auto toString() const { return hub::to_string( x, y, z ); }
+
 #if CPP_VERSION <= 17
     ///
     /// \brief serialize
@@ -253,12 +259,15 @@ struct Vec3 {
         archive( self.x, self.y, self.z );
     }
 #endif
+
     ///
     /// \brief id
     ///
     static constexpr auto id = Types::Format::VEC3;
+
     ///
     /// \brief name
+    /// \return
     ///
     static constexpr auto name() { return "Vec3"; };
     ///
@@ -309,8 +318,10 @@ struct Vec4 {
         x { x_ }, y { y_ }, z { z_ }, w { w_ } {};
     ///
     /// \brief toString
+    /// \return
     ///
     auto toString() const { return hub::to_string( x, y, z, w ); }
+
 #if CPP_VERSION <= 17
     ///
     /// \brief serialize
@@ -326,8 +337,10 @@ struct Vec4 {
     /// \brief id
     ///
     static constexpr auto id = Types::Format::VEC4;
+
     ///
     /// \brief name
+    /// \return
     ///
     static constexpr auto name() { return "Vec4"; };
     ///
@@ -358,6 +371,7 @@ struct Density {
     float value;
     ///
     /// \brief name
+    /// \return
     ///
     static constexpr auto name() { return "Density"; };
 };
@@ -379,6 +393,7 @@ struct Distance {
     float value;
     ///
     /// \brief name
+    /// \return
     ///
     static constexpr auto name() { return "Distance"; };
 };
@@ -422,6 +437,7 @@ struct RGB8 {
     unsigned char b = 0;
     ///
     /// \brief name
+    /// \return
     ///
     static constexpr auto name() { return "RGB8"; };
 };
@@ -454,6 +470,7 @@ struct RGBA8 {
     unsigned char a;
     ///
     /// \brief name
+    /// \return
     ///
     static constexpr auto name() { return "RGBA8"; };
 };
@@ -481,6 +498,7 @@ struct BGR8 {
     ///
     unsigned char r;
     /// \brief name
+    /// \return
     static constexpr auto name() { return "BGR8"; };
 };
 static_assert( sizeof( BGR8 ) == 3 );
@@ -500,6 +518,7 @@ struct Y8 {
     unsigned char y;
     ///
     /// \brief name
+    /// \return
     ///
     static constexpr auto name() { return "Y8"; };
 };
@@ -520,6 +539,7 @@ struct Y16 {
     uint16_t y;
     ///
     /// \brief name
+    /// \return
     ///
     static constexpr auto name() { return "Y16"; };
 };
@@ -539,6 +559,7 @@ struct Z16 {
     uint16_t depth; // meters
     ///
     /// \brief name
+    /// \return
     ///
     static constexpr auto name() { return "Z16"; };
 };
@@ -570,6 +591,7 @@ struct Position // Cartesian
     float z;
     ///
     /// \brief name
+    /// \return
     ///
     static constexpr auto name() { return "Position"; };
 };
@@ -598,6 +620,7 @@ struct Orientation // Euler
     float rz;
     ///
     /// \brief name
+    /// \return
     ///
     static constexpr auto name() { return "Orientation"; };
 };
@@ -642,6 +665,7 @@ struct Dof6 {
     float w3; // z
     ///
     /// \brief name
+    /// \return
     ///
     static constexpr auto name() { return "Dof6"; };
     ///
@@ -671,6 +695,7 @@ struct Dof6 {
 
     ///
     /// \brief toString
+    /// \return
     ///
     auto toString() const {
         return "x:" + std::to_string( x ) + " y:" + std::to_string( y ) +
@@ -706,6 +731,7 @@ struct XYZ32F {
     float z;
     ///
     /// \brief name
+    /// \return
     ///
     static constexpr auto name() { return "XYZ32F"; };
 };

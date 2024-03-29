@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "core/Macros.hpp"
+#include "core/Base.hpp"
 
 namespace hub {
 
@@ -20,23 +20,6 @@ namespace native {
 extern "C"
 {
 #endif
-
-    ///
-    /// \brief createMat4OutputSensor
-    /// \param sensorName
-    /// \param ipv4
-    /// \param port
-    /// \return
-    ///
-    // SRC_API sensor::OutputSensor*
-
-    ///
-    /// \brief mat4OutputSensorSendAcq
-    /// \param outputSensor
-    /// \param input
-    /// \return
-    ///
-    // SRC_API bool mat4OutputSensorSendAcq( sensor::OutputSensor* outputSensor, const float* input
 
     ///
     /// \brief freeOutputSensor

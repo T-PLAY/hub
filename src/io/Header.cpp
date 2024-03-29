@@ -2,9 +2,8 @@
 
 #include <array>
 
+#include "core/Base.hpp"
 #include "core/Info.hpp"
-#include "core/Macros.hpp"
-#include "core/Traits.hpp"
 #include "core/io/Memory.hpp"
 
 namespace hub {

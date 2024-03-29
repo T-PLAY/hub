@@ -10,8 +10,8 @@
 #include <list>
 #include <string>
 
+#include "core/Base.hpp"
 #include "NetUtilsSystem.hpp"
-#include "core/Macros.hpp"
 
 namespace hub {
 namespace net {

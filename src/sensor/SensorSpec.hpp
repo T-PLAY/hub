@@ -9,12 +9,11 @@
 
 //// #include "io/output/Output.hpp"
 //// #include "io/input/Input.hpp"
+#include "core/Base.hpp"
 #include "core/Any.hpp"
-#include "core/Macros.hpp"
 #include "core/MetaData.hpp"
-
-#include "Acquisition.hpp"
 #include "core/Matrix.hpp"
+#include "Acquisition.hpp"
 
 namespace hub {
 namespace sensor {
@@ -64,6 +63,7 @@ class SRC_API SensorSpec
 
     ///
     /// \brief toString
+    /// \return
     ///
     auto toString() const {
         return "'" + m_sensorName + "' " + m_resolution.toString() + " " +

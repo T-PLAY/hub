@@ -4,8 +4,8 @@
 
 #pragma once
 
+#include "core/Base.hpp"
 // #include "ClientSocketI.hpp"
-#include "core/Macros.hpp"
 
 namespace hub {
 namespace net {

@@ -12,13 +12,11 @@
 #include <tuple>
 #include <vector>
 
+#include "core/Base.hpp"
 #include "core/InputBase.hpp"
 #include "core/OutputBase.hpp"
 #include "core/ios.hpp"
-
-#include "core/Macros.hpp"
 #include "core/ios.hpp"
-
 #include "SerializerI.hpp"
 
 namespace hub {

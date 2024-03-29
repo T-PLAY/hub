@@ -8,8 +8,7 @@
 #include <type_traits>
 #include <vector>
 
-#include "Macros.hpp"
-#include "Traits.hpp"
+#include "Base.hpp"
 
 namespace hub {
 

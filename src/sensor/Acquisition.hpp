@@ -102,6 +102,7 @@ class SRC_API Acquisition : public Matrix
 
     ///
     /// \brief clocks
+    /// \return
     ///
     auto clocks() { return std::tuple<Clock&, Clock&> { start(), end() }; }
 
@@ -210,6 +211,7 @@ class AcquisitionT : public MatrixTs<Clock, Clock, Resolution>
 
     ///
     /// \brief clocks
+    /// \return
     ///
     auto clocks() { return std::tuple<Clock&, Clock&> { start(), end() }; }
 };

@@ -7,7 +7,7 @@
 #include <list>
 #include <string>
 
-#include "core/Macros.hpp"
+#include "core/Base.hpp"
 #include "sensor/Acquisition.hpp"
 #include "sensor/SensorSpec.hpp"
 

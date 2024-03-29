@@ -12,10 +12,8 @@
 #include <string>
 #include <vector>
 
-#include "Macros.hpp"
+#include "Base.hpp"
 #include "Serializer.hpp"
-#include "Traits.hpp"
-
 #include "Anyable.hpp"
 
 namespace hub {
@@ -199,6 +197,7 @@ class SRC_API Any
 
     ///
     /// \brief toString
+    /// \return
     ///
     auto toString() const {
         std::string str;

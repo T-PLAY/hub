@@ -52,16 +52,6 @@ class SRC_API StreamerClient2 : public Client2
     std::string headerMsg() const override;
 
     ///
-    /// \brief getInputSensor
-    /// \return
-    ///
-
-    ///
-    /// \brief getLastAcq
-    /// \return
-    ///
-
-    ///
     /// \brief end
     /// \param message
     ///

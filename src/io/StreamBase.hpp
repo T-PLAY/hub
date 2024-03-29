@@ -7,9 +7,7 @@
 #include <iostream>
 #include <string>
 
-#include "core/Macros.hpp"
-#include "core/Traits.hpp"
-
+#include "core/Base.hpp"
 #include "Header.hpp"
 
 namespace hub {

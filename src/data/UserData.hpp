@@ -18,10 +18,6 @@ class SRC_API UserData
   public:
     ///
     /// \brief UserData
-    /// \param measure
-    ///
-    ///
-    /// \brief UserData
     /// \param name
     /// \param any
     ///

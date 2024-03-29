@@ -11,8 +11,7 @@
 #include <iostream>
 #include <cstring>
 
-#include <core/Macros.hpp>
-#include <core/Traits.hpp>
+#include "core/Base.hpp"
 
 namespace hub {
 namespace data {
@@ -117,6 +116,7 @@ struct Shape {
 
     ///
     /// \brief toString
+    /// \return
     ///
     auto toString() const {
         std::string str;
@@ -230,6 +230,7 @@ class SRC_API Mesh
   public:
     ///
     /// \brief name
+    /// \return
     ///
     static constexpr auto name() { return "Mesh"; };
 
@@ -240,11 +241,7 @@ class SRC_API Mesh
 
     Mesh() = default;
 
-    ///
-    /// \brief Mesh
-    /// \param mesh
-    ///
-    // explicit Mesh( const Mesh& mesh );
+//    explicit Mesh( const Mesh&  ) = delete;
 
     ///
     /// \brief Mesh
@@ -297,12 +294,6 @@ class SRC_API Mesh
         return m_materials;
     }
 
-    ///
-    /// \brief operator <<
-    /// \param os
-    /// \param mesh
-    /// \return
-    ///
     // SRC_API friend std::ostream& operator<<( std::ostream& os, const Mesh& mesh );
 
     ///

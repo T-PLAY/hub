@@ -3,6 +3,7 @@
 #include <string>
 
 // Include all core headers to check dll export
+#include "Base.hpp"
 #include "Any.hpp"
 #include "Anyable.hpp"
 #include "Buffer.hpp"
@@ -11,7 +12,6 @@
 #include "Info.hpp"
 #include "Input.hpp"
 #include "InputBase.hpp"
-#include "Macros.hpp"
 #include "Matrix.hpp"
 #include "MatrixBase.hpp"
 #include "MetaData.hpp"
@@ -19,7 +19,6 @@
 #include "Output.hpp"
 #include "OutputBase.hpp"
 #include "Serializer.hpp"
-#include "Traits.hpp"
 #include "Types.h"
 #include "Utils.hpp"
 #include "Version.hpp"
@@ -43,12 +42,12 @@
 #include "serializer/SerializerZpp.hpp"
 #include "serializer/SerializerZppBits.hpp"
 
-#include "traits/Array.hpp"
-#include "traits/Map.hpp"
-#include "traits/Span.hpp"
-#include "traits/Tuple.hpp"
-#include "traits/Vector.hpp"
-#include "traits/std_any.hpp"
+//#include "traits/Array.hpp"
+//#include "traits/Map.hpp"
+//#include "traits/Span.hpp"
+//#include "traits/Tuple.hpp"
+//#include "traits/Vector.hpp"
+//#include "traits/std_any.hpp"
 
 
 namespace hub {

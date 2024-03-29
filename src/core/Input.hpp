@@ -4,8 +4,8 @@
 
 #pragma once
 
+#include "Base.hpp"
 #include "InputBase.hpp"
-#include "Macros.hpp"
 #include "Serializer.hpp"
 
 namespace hub {
@@ -26,11 +26,11 @@ class SRC_API InputT : public InputBase
   public:
     ///
     /// \brief read
-    /// \param t
+    /// \tparam T	A packable object
     /// \return
     ///
     template <class T>
-    typename std::enable_if<packable_v<T>>::type read( T& t ) {
+    typename std::enable_if_t<packable_v<T>, void> read( T& t ) {
         assert( isOpen() );
         assert( !isEnd() );
         if constexpr ( isPacket<T> ) { read( t.data(), t.size() ); }
@@ -44,11 +44,11 @@ class SRC_API InputT : public InputBase
 
     ///
     /// \brief read
-    /// \param t
+    /// \tparam T
     /// \return
     ///
     template <class T>
-    typename std::enable_if<!packable_v<T> && readable_v<T>>::type read( T& t ) {
+    typename std::enable_if_t<!packable_v<T> && readable_v<T>, void> read( T& t ) {
         assert( isOpen() );
         assert( !isEnd() );
         t.read( *this );
@@ -60,11 +60,11 @@ class SRC_API InputT : public InputBase
 
     ///
     /// \brief read
-    /// \param t
+    /// \tparam T
     /// \return
     ///
     template <class T>
-    typename std::enable_if<!packable_v<T> && !readable_v<T>>::type read( T& t ) {
+    typename std::enable_if_t<!packable_v<T> && !readable_v<T>, void> read( T& t ) {
         assert( isOpen() );
         assert( !isEnd() );
         m_serializer.unpack( *this, t );
@@ -76,8 +76,8 @@ class SRC_API InputT : public InputBase
 
     ///
     /// \brief readAll
-    /// \param t
-    /// \param ts
+    /// \tparam T
+    /// \tparam Ts
     ///
     template <class T, class... Ts>
     void readAll( T& t, Ts&... ts ) {
