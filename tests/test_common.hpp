@@ -209,7 +209,7 @@ void _checkValue( double value,
                   const std::string& name,
                   const std::string& unit,
                   const std::string& filename,
-                         int line );
+                  int line );
 
 #define CHECK_DECLINE( ... ) _checkValue( __VA_ARGS__, FILE_NAME, __LINE__ )
 
