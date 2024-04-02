@@ -2,18 +2,18 @@
 #include <filesystem>
 
 #include "test_common.hpp"
-// #include "io/test_io_common.hpp"
 #include "test_sensor_common.hpp"
 
 #include <sensor/InputSensor.hpp>
 #include <sensor/OutputSensor.hpp>
 
 TEST_CASE( "sensor compat os and arch test" ) {
-//    int main() {
-    // multi os/platform compatibility
-    // able to load hub file through differents os and platform
-    // test if raw stream data is same using different architectures like x64 x86 arm64,
-    // using different os like linux, windows, macos
+
+    // Multi os/platform compatibility.
+    // Able to load hub file through differents os and platform.
+    // Test if raw stream data is same using different architectures like x64, x86 and arm64
+    // using different os like linux, windows and macos.
+
     TEST_BEGIN()
 
     // INIT_SERVER

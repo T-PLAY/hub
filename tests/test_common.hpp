@@ -50,6 +50,8 @@
 #define GET_RANDOM_PORT getRandomPort( __FILE__ )
 
 static int getRandomPort( const char* filename ) {
+    // Avoid the use of same random port for different tests.
+    // Single port cannot be used twice with 2 servers.
 
     const std::string randomUsedPortsFilename = "randomUsedPorts.txt";
     std::map<int, std::string> usedPorts;

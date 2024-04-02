@@ -40,6 +40,7 @@ if(HUB_BUILD_CORE)
         # # message(STATUS "${HEADER_MSG} Eigen found: ${EIGEN3_INCLUDE_DIR}")
     else()
        list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/core/matrix/test-core-matrix-compatEigen3.cpp)
+       message(WARNING "core/matrix/test-core-matrix-compatEigen3 disabled")
     endif()
 
     find_package(OpenCV QUIET COMPONENTS core imgproc)
@@ -49,6 +50,7 @@ if(HUB_BUILD_CORE)
         # # message(STATUS "${HEADER_MSG} OpenCV found: ${OpenCV_INCLUDE_DIRS}")
     else()
        list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/core/matrix/test-core-matrix-compatOpenCV.cpp)
+       message(WARNING "core/matrix/test-core-matrix-compatOpenCV disabled")
     endif()
 
     find_package(OpenImageIO QUIET)
@@ -58,6 +60,7 @@ if(HUB_BUILD_CORE)
         # # message(STATUS "${HEADER_MSG} OpenImageIO found: ${OpenImageIO_INCLUDE_DIR}/OpenImageIO")
     else()
        list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/core/matrix/test-core-matrix-compatOIIO.cpp)
+       message(WARNING "core/matrix/test-core-matrix-compatOIIO disabled")
     endif()
 endif()
 
@@ -82,9 +85,6 @@ list(APPEND test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-end.cpp)
 
 list(REMOVE_ITEM test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-start.cpp)
 list(PREPEND test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-start.cpp)
-
-#set(test_srcs)
-list(APPEND test_srcs ${CMAKE_CURRENT_SOURCE_DIR}/test-wip.cpp)
 
 add_executable(hub-test-all ${test_srcs} ${test_headers})
 target_link_libraries(hub-test-all PRIVATE ${LINK_LIBRARIES})

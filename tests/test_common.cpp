@@ -183,10 +183,10 @@ void _checkValue( double value,
                 const auto mean = algo::Mean( values.begin(), values.begin() + nEl );
                 report += "\n\t\t\033[31mvalue:" + std::to_string( value ) +
                           ", mean:" + std::to_string( mean ) +
-                          ", ?:" + std::to_string( standardDeviation ) +
-                          ", mean-?(15.9%):" + std::to_string( mean - standardDeviation ) +
-                          ", mean-2?(2.3%):" + std::to_string( mean - 2 * standardDeviation ) +
-                          ", mean-3?(0.1%):" + std::to_string( mean - 3 * standardDeviation ) +
+                          ", σ:" + std::to_string( standardDeviation ) +
+                          ", mean-σ(15.9%):" + std::to_string( mean - standardDeviation ) +
+                          ", mean-2σ(2.3%):" + std::to_string( mean - 2 * standardDeviation ) +
+                          ", mean-3σ(0.1%):" + std::to_string( mean - 3 * standardDeviation ) +
                           "\033[0m";
             }
 

@@ -16,10 +16,10 @@ TEST_CASE( "Native Viewer stream" ) {
 
     {
 
-        static std::atomic<int> nNewStreamer                     = 0;
-        static std::atomic<int> nDelStreamer                     = 0;
+        static std::atomic<int> nNewStreamer        = 0;
+        static std::atomic<int> nDelStreamer        = 0;
         static std::atomic<int> nServerNotFound     = 0;
-        static std::atomic<int> nServerConnected                 = 0;
+        static std::atomic<int> nServerConnected    = 0;
         static std::atomic<int> nServerDisconnected = 0;
         static int nNewData                         = 0;
 
