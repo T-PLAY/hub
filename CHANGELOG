@@ -14,6 +14,8 @@ Current head v.2.1.0 rc
   * Added license and readme to externals (#18)
 - CI
   * Add github ci with build and install (#22)
+- Tests
+  * Fix timeout error on macos (#33)
 
 ---
 v.2.0.0
