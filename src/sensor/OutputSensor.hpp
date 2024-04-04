@@ -16,6 +16,7 @@
 #include "Sensor.hpp"
 #include "SensorSpec.hpp"
 
+// User friendly headers (classes can be used as output parameter of constructor)
 #include "io/output/OutputFile.hpp"
 #include "io/output/OutputStream.hpp"
 //// #include "io/output/OutputFile.hpp"

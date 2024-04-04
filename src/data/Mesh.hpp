@@ -233,8 +233,6 @@ class SRC_API Mesh
 
     Mesh() = default;
 
-//    explicit Mesh( const Mesh&  ) = delete;
-
     ///
     /// \brief Mesh
     /// \param filePaths

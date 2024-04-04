@@ -3,7 +3,6 @@
 #include <string>
 #include <thread>
 
-//#include "core/Configuration.hpp"
 #include <native/Native.hpp>
 
 #define COLOR "\033[44m"

@@ -1,12 +1,10 @@
 
-
 #include "test_common.hpp"
+
 #include <iomanip>
 #include <set>
 #include <sstream>
 
-//#include <core/Macros.hpp>
-//#include <core/Traits.hpp>
 #include <core/Base.hpp>
 
 class Lambda

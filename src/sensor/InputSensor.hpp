@@ -9,6 +9,7 @@
 #include "Acquisition.hpp"
 #include "Sensor.hpp"
 
+// User friendly headers (classes can be used as input parameter of constructor)
 //// #include "core/Tuple.hpp"
 #include "io/input/InputFile.hpp"
 #include "io/input/InputStream.hpp"
