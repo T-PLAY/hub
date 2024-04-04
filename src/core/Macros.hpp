@@ -25,42 +25,6 @@
 namespace hub {
 
 // Compiler identification
-#if defined( __clang__ )
-#    define COMPILER_CLANG
-#    define CLANG_VERSION __clang_major__
-
-#elif defined( __GNUC__ )
-#    define COMPILER_GCC
-#    include <features.h>
-#    if __GNUC_PREREQ( 15, 0 )
-#        define GCC_VERSION 15
-#    elif __GNUC_PREREQ( 14, 0 )
-#        define GCC_VERSION 14
-#    elif __GNUC_PREREQ( 13, 0 )
-#        define GCC_VERSION 13
-#    elif __GNUC_PREREQ( 12, 0 )
-#        define GCC_VERSION 12
-#    elif __GNUC_PREREQ( 11, 0 )
-#        define GCC_VERSION 11
-#    elif __GNUC_PREREQ( 10, 0 )
-#        define GCC_VERSION 10
-#    elif __GNUC_PREREQ( 9, 0 )
-#        define GCC_VERSION 9
-#    elif __GNUC_PREREQ( 8, 0 )
-#        define GCC_VERSION 8
-#    else
-#        error "gcc version not supported"
-#    endif
-
-#elif defined( _MSC_VER )
-//#if _MSC_VER >= 1900
-#    define COMPILER_MSVC
-#    define _USE_MATH_DEFINES
-#else
-#ifndef CPP_CHECK
-#    error unsupported compiler
-#endif
-#endif
 
 // OS and architecture identification
 #if defined( _WIN32 ) || defined( _WIN64 ) // ------------------------------ Windows
@@ -88,6 +52,26 @@ namespace hub {
 #    error unsupported OS
 #endif
 #endif
+
+#if defined( __GNUC__ )
+
+#define COMPILER_GCC
+#define GCC_VERSION __GNUC__
+
+#elif defined( __clang__ )
+#    define COMPILER_CLANG
+#    define CLANG_VERSION __clang_major__
+
+#elif defined( _MSC_VER )
+//#if _MSC_VER >= 1900
+#    define COMPILER_MSVC
+#    define _USE_MATH_DEFINES
+#else
+#ifndef CPP_CHECK
+#    error unsupported compiler
+#endif
+#endif
+
 
 // Check arch for macos and linux
 #if defined( OS_MACOS ) || defined( OS_LINUX )

@@ -10,8 +10,11 @@
 #include <numeric>
 #include <thread>
 
+#include <Version.hpp>
 #include <core/Macros.hpp>
 #include <core/Utils.hpp>
+
+// Todo use namespace for test common functions
 
 #define CONSTRUCT_BEGIN( name )                                                              \
     std::cout << "\033[1;32m[test] -------------------------------------------------> " name \
@@ -47,6 +50,8 @@
 #define GET_RANDOM_PORT getRandomPort( __FILE__ )
 
 static int getRandomPort( const char* filename ) {
+    // Avoid the use of same random port for different tests.
+    // Single port cannot be used twice with 2 servers.
 
     const std::string randomUsedPortsFilename = "randomUsedPorts.txt";
     std::map<int, std::string> usedPorts;
@@ -74,7 +79,7 @@ static int getRandomPort( const char* filename ) {
     } while ( usedPorts.find( randomPort ) != usedPorts.end() );
 
     std::ofstream outFile( randomUsedPortsFilename.c_str(), std::ios::out | std::ios::app );
-    assert( outFile.is_open() );
+    CHECK( outFile.is_open() );
     outFile << randomPort << " " << filename << std::endl;
     outFile.close();
 
@@ -93,7 +98,7 @@ static std::string ReplaceAll( std::string str, const std::string& from, const s
 
 #define START_REPORT()                  \
     std::ofstream file( "report.txt" ); \
-    assert( file.is_open() );
+    CHECK( file.is_open() );
 
 #define END_REPORT() (void)0
 
@@ -143,7 +148,7 @@ static std::string s_latestFilename = "";
         const auto testName     = filenameStr.substr( first, last - first );       \
         std::cout << _params << std::endl;                                         \
         std::ofstream file( "report.txt", std::ios::app );                         \
-        assert( file.is_open() );                                                  \
+        CHECK( file.is_open() );                                                  \
         if ( filename != s_latestFilename ) {                                      \
             s_latestFilename = filename;                                           \
             file << std::endl;                                                     \

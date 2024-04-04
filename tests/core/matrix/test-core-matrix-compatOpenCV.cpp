@@ -3,12 +3,12 @@
 
 #include <iostream>
 
-#ifdef HUB_USE_OPENCV
-#    include <opencv2/opencv.hpp>
-#endif
+#include <opencv2/opencv.hpp>
 
 TEST_CASE( "Matrix compat OpenCV test" ) {
     TEST_BEGIN()
+
+   // Todo check if hub matrix is compatible with OpenCV matrix
 
     constexpr auto width  = 20;
     constexpr auto height = 10;
@@ -18,7 +18,6 @@ TEST_CASE( "Matrix compat OpenCV test" ) {
         data[i] = 65 + i;
     }
 
-#ifdef HUB_USE_OPENCV
     cv::Mat cvMat( height, width, CV_8UC3, data ); // row major
 
     for ( int j = 0; j < height; ++j ) {
@@ -27,7 +26,6 @@ TEST_CASE( "Matrix compat OpenCV test" ) {
         }
         std::cout << std::endl;
     }
-#endif
 
     TEST_END()
 }

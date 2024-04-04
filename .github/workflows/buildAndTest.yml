@@ -38,3 +38,6 @@ jobs:
     - name: Install
       run: cmake --install "${{github.workspace}}/build" --config ${{env.BUILD_TYPE}}
 
+    - name: Test
+      run: cmake --build "${{github.workspace}}/build" --target hub-tests-bin
+

@@ -11,17 +11,17 @@ TEST_CASE( "Mesh test" ) {
 
     const std::string meshPath = HUB_PROJECT_DIR "data/assets/";
     // hub::data::Mesh quadMesh()
-    assert(std::filesystem::exists(meshPath));
-    assert(std::filesystem::exists(meshPath + "quad.gltf"));
+    CHECK(std::filesystem::exists(meshPath));
+    CHECK(std::filesystem::exists(meshPath + "quad.gltf"));
 
     const hub::data::Mesh quadMesh(meshPath + "quad");
 //    const hub::data::Mesh quadMesh(meshPath + "sensor");
     const auto quadShapes = quadMesh.getShapes();
-    assert(quadShapes.size() == 1);
+    CHECK(quadShapes.size() == 1);
     const auto quadShape = quadShapes.at(0);
-    assert(quadShape.indices.size() == 6);
-    assert(quadShape.vertices.size() == 4);
-    assert(quadShape.material == 0);
+    CHECK(quadShape.indices.size() == 6);
+    CHECK(quadShape.vertices.size() == 4);
+    CHECK(quadShape.material == 0);
     const auto quadMaterials = quadMesh.getMaterials();
 
     // hub::data::Mesh quadMesh(meshPath + "sensor");
@@ -40,7 +40,7 @@ TEST_CASE( "Mesh test" ) {
     archive.read(quadMesh_read);
     std::cout << "quadMesh_read : " << quadMesh_read << std::endl;
 
-    assert(quadMesh == quadMesh_read);
+    CHECK(quadMesh == quadMesh_read);
 
     std::cout << "typename mesh : " << TYPE_NAME(hub::data::Mesh()) << std::endl;
 

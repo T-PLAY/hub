@@ -155,34 +155,34 @@ TEST_CASE( "MatrixT test" ) {
     static_assert( matricesChar.hasType<char, int>() );
     static_assert( matricesChar.nType<char>() == 9 );
     static_assert( matricesChar.nType<int>() == 1 );
-    assert( matricesChar.get<const char&>() == 'g' );
-    assert( ( matricesChar.get<const char&, 0>() == 'g' ) );
-    assert( ( matricesChar.get<const char&, 1>() == 'a' ) );
-    assert( ( matricesChar.get<const char&, 2>() == 'u' ) );
+    CHECK( matricesChar.get<const char&>() == 'g' );
+    CHECK( ( matricesChar.get<const char&, 0>() == 'g' ) );
+    CHECK( ( matricesChar.get<const char&, 1>() == 'a' ) );
+    CHECK( ( matricesChar.get<const char&, 2>() == 'u' ) );
     char* myName = matricesChar.get<char*>();
-    assert( std::memcmp( myName, "gauthier", strlen( myName ) ) == 0 );
-    assert( strlen( myName ) == 8 );
+    CHECK( std::memcmp( myName, "gauthier", strlen( myName ) ) == 0 );
+    CHECK( strlen( myName ) == 8 );
     std::cout << "myName: " << myName << std::endl;
-    assert( matricesChar.get<const int&>() == 5 );
+    CHECK( matricesChar.get<const int&>() == 5 );
 
     auto serialChar = matricesChar.getMatrix();
     serialChar.setData( matricesChar.data(), matricesChar.size() );
     std::cout << "serialChar: " << serialChar << std::endl;
-    assert( serialChar.nType() == 10 );
-    assert( ( serialChar.hasAnyType<char, int>() ) );
-    assert( serialChar.nType<char>() == 9 );
-    assert( serialChar.nType<int>() == 1 );
-    assert( serialChar.getDims<char>() == Dims { 1 } );
-    assert( ( serialChar.getDims<char, 1>() == Dims { 1 } ) );
-    assert( ( serialChar.getDims<char, 2>() == Dims { 1 } ) );
-    assert( ( serialChar.getDims<char, 8>() == Dims { 1 } ) );
-    assert( serialChar.get<const char&>() == 'g' );
-    assert( ( serialChar.get<const char&, 0>() == 'g' ) );
-    assert( ( serialChar.get<const char&, 1>() == 'a' ) );
-    assert( ( serialChar.get<const char&, 2>() == 'u' ) );
+    CHECK( serialChar.nType() == 10 );
+    CHECK( ( serialChar.hasAnyType<char, int>() ) );
+    CHECK( serialChar.nType<char>() == 9 );
+    CHECK( serialChar.nType<int>() == 1 );
+    CHECK( serialChar.getDims<char>() == Dims { 1 } );
+    CHECK( ( serialChar.getDims<char, 1>() == Dims { 1 } ) );
+    CHECK( ( serialChar.getDims<char, 2>() == Dims { 1 } ) );
+    CHECK( ( serialChar.getDims<char, 8>() == Dims { 1 } ) );
+    CHECK( serialChar.get<const char&>() == 'g' );
+    CHECK( ( serialChar.get<const char&, 0>() == 'g' ) );
+    CHECK( ( serialChar.get<const char&, 1>() == 'a' ) );
+    CHECK( ( serialChar.get<const char&, 2>() == 'u' ) );
     char* myName2 = serialChar.get<char*>();
-    assert( std::memcmp( myName2, "gauthier", strlen( myName2 ) ) == 0 );
-    assert( serialChar.get<const int&>() == 5 );
+    CHECK( std::memcmp( myName2, "gauthier", strlen( myName2 ) ) == 0 );
+    CHECK( serialChar.get<const int&>() == 5 );
 
     for ( int iType = 0; iType < serialChar.nType(); ++iType ) {
         const auto& dims = serialChar.getDims( iType );
@@ -216,14 +216,14 @@ TEST_CASE( "MatrixT test" ) {
     using VectorChar = Vector<char, 10>;
     VectorChar vectorChar { { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 } };
     std::cout << "vectorChar: " << vectorChar << std::endl;
-    assert( vectorChar.get<0>() == 1 );
-    assert( vectorChar.get<1>() == 2 );
+    CHECK( vectorChar.get<0>() == 1 );
+    CHECK( vectorChar.get<1>() == 2 );
 
     auto serial = vectorChar.getMatrix();
     std::cout << "serial: " << serial << std::endl;
 
-    assert( serial.hasType<char>() );
-    assert( serial.getDims<char>() == std::vector<int> { 10 } );
+    CHECK( serial.hasType<char>() );
+    CHECK( serial.getDims<char>() == std::vector<int> { 10 } );
 #endif
 
     ////////////////////////////////
@@ -237,12 +237,12 @@ TEST_CASE( "MatrixT test" ) {
     std::cout << "matrixUser: " << serial2 << std::endl;
     serial2.hasAnyType<int, double>();
     auto hasIntDouble = serial2.hasAnyType<int, double>();
-    assert( hasIntDouble );
+    CHECK( hasIntDouble );
 
-    assert( ( serial2.hasSomeType<bool, int>() ) );
+    CHECK( ( serial2.hasSomeType<bool, int>() ) );
 
-    assert( serial2.getDims<int>() == Dims { 1 } );
-    assert( serial2.getDims<double>() == Dims { 1 } );
+    CHECK( serial2.getDims<int>() == Dims { 1 } );
+    CHECK( serial2.getDims<double>() == Dims { 1 } );
 
     ////////////////////////////////
 

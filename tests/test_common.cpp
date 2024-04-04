@@ -2,6 +2,7 @@
 
 #include "Version.hpp"
 
+
 void _checkValue( double value,
                   const std::string& name,
                   const std::string& unit,
@@ -23,14 +24,14 @@ void _checkValue( double value,
     bool decline             = false;
     constexpr int nMaxMean   = 4;
     constexpr int nRatio     = 8;
-    assert( nRatio == std::pow( 2, nMaxMean - 1 ) );
+    CHECK( nRatio == std::pow( 2, nMaxMean - 1 ) );
 
     const std::string logFilename = filename2 + "_" + name2 + extension;
 
     {
         std::ifstream inFile( logFilename.c_str() );
         if ( inFile.is_open() ) {
-            assert( inFile.is_open() );
+            CHECK( inFile.is_open() );
 
             std::vector<double> lastValues;
             std::string hash;
@@ -67,7 +68,7 @@ void _checkValue( double value,
 
     if ( !decline ) {
         std::ofstream logFile( logFilename.c_str(), std::ios::out | std::ios::app );
-        assert( logFile.is_open() );
+        CHECK( logFile.is_open() );
 
         logFile << HUB_COMMIT_HASH << " " << value << " " << unit << std::endl;
 
@@ -77,7 +78,7 @@ void _checkValue( double value,
     {
         std::ifstream inFile( logFilename.c_str() );
         if ( inFile.is_open() ) {
-            assert( inFile.is_open() );
+            CHECK( inFile.is_open() );
 
             double value2;
             std::string hash;
@@ -97,7 +98,7 @@ void _checkValue( double value,
                 }
             }
             inFile.close();
-            assert( iRatio > 0 );
+            CHECK( iRatio > 0 );
             double sumRatios[nMaxMean];
             double minRatios[nMaxMean];
             double maxRatios[nMaxMean];

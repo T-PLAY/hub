@@ -28,7 +28,7 @@ if(MINGW)
         set(REQUIRED_LIBS ${REQUIRED_LIBS} Threads::Threads)
 
     elseif(GNU)
-        message(FATAL_ERROR "GNU not supported")
+        message(WARNING "GNU not tested with MinGW")
 
     elseif(GCC)
         set(REQUIRED_LIBS ${REQUIRED_LIBS} ws2_32)
@@ -354,7 +354,7 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
 
     setup_target_for_coverage_lcov(
         NAME
-        coverage-lcov
+        hub-coverage-lcov
         EXECUTABLE
         ctest
         --test-dir
@@ -363,7 +363,7 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         ${n_cores}
         DEPENDENCIES
         hub
-        test-all
+        hub-test-all
         EXCLUDE
         "external/*.h"
         "external/*.cpp"
@@ -382,7 +382,7 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
 
     add_custom_target(hub-coverage COMMAND ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../coverage-lcov/index.html)
     custom_target_added(coverage)
-    add_dependencies(hub-coverage coverage-lcov)
+    add_dependencies(hub-coverage hub-coverage-lcov)
 
     add_custom_target(hub-coverage-all)
     custom_target_added(coverage-all)
@@ -393,6 +393,7 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_INCLUDE_DIR}/*.cpp)
 
     foreach(file ${src_headers})
+        message(STATUS "file : ${file}")
         get_filename_component(basename ${file} NAME)
         get_filename_component(parentDir ${file} DIRECTORY)
         get_filename_component(parentName ${parentDir} NAME)
@@ -412,9 +413,11 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         set(sourcesTmp ${SOURCE_FILES})
         list(FILTER sourcesTmp EXCLUDE REGEX ".*/${name}\\.cpp$")
 
+        message(STATUS "lcov target : ${name}")
+
         setup_target_for_coverage_lcov(
             NAME
-            coverage-lcov-${name}
+            hub-coverage-lcov-${name}
             # BASE_DIRECTORY "src/"                        # Base directory for report
             EXECUTABLE
             tests/test-${parentMacro}${name}
@@ -430,12 +433,12 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         add_custom_target(
             hub-coverage-${name}
             COMMAND
-            ls ${CMAKE_CURRENT_BINARY_DIR}/../coverage-lcov-${name}/index.html && head -n 40
-            ${CMAKE_CURRENT_BINARY_DIR}/../coverage-lcov-${name}/index.html | grep '100.0 %' || ${HUB_BROWSER}
-            ${CMAKE_CURRENT_BINARY_DIR}/../coverage-lcov-${name}/index.html)
+            ls ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov-${name}/index.html && head -n 40
+            ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov-${name}/index.html | grep '100.0 %' || ${HUB_BROWSER}
+            ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov-${name}/index.html)
 
-        add_dependencies(coverage-${name} coverage-lcov-${name})
-        add_dependencies(coverage-all coverage-${name})
+        add_dependencies(hub-coverage-${name} hub-coverage-lcov-${name})
+        add_dependencies(hub-coverage-all hub-coverage-${name})
 
     endforeach()
 endif()

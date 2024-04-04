@@ -36,8 +36,8 @@ ViewerClient2::ViewerClient2( ServerImpl2* server, int iClient, net::ClientSocke
                 }
                 else if ( message ==
                           hub::io::StreamBase::ClientMessage::VIEWER_CLIENT_STREAM_ADDED ) {
-                    // Todo fix
-                    //assert( !m_clientStreamAdded );
+                    // Todo fix, some tests failed with assert below
+                    /// assert( !m_clientStreamAdded );
                     m_clientStreamAdded = true;
                 }
                 else if ( message == hub::io::StreamBase::ClientMessage::VIEWER_CLIENT_CLOSED ) {
@@ -100,6 +100,11 @@ void ViewerClient2::notifyNewStreamer( const StreamerClient2* streamer ) {
 
     m_clientStreamAdded = false;
     int iTry            = 0;
+    // For some reason, it has been decided here that we must wait for the client to connect and identify itself before completing this function.
+    // However, some clients can crash and so the server part of the client will be waiting throughout the programme.
+    // This is why we don't wait for the deadly client at the end of this method.
+    // The reason for waiting for the client to connect is that after the end of this function, if the client is not available and functions are called immediately after notification, some tests will not pass.
+    // Fix : use a better way of doing things
     while ( iTry < 10 && !m_clientStreamAdded ) {
         std::cout << "[ViewerClient] waiting for streamer added ..." << std::endl;
         std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );

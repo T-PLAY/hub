@@ -20,6 +20,8 @@ TEST_CASE( "sensor : InputOutputSensorSync" ) {
     hub::output::OutputStream outputStream(
         hub::io::make_header( sensorSpec ), FILE_NAME, SERVER_PORT );
 
+    // Todo avoid sleep on macos, concurrency bug when 2 outputStream login in same time (only llvm on macos)
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     using Resolution2 = hub::format::Z16;
     const hub::sensor::SensorSpec sensorSpec2( "sensorName2", hub::make_matrix<Resolution2>() );
     const auto acqs2 = test::sensor::generateRefAcqs( 5, 10, sensorSpec2 );

@@ -29,7 +29,7 @@ TEST_CASE( "InputOutputStream multicast test" ) {
             {
                 std::vector<hub::input::InputStream> inputStreams;
                 inputStreams.emplace_back( FILE_NAME, SERVER_PORT );
-                assert( inputStreams.back().getHeader() == TEST_IO_HEADER );
+                CHECK( inputStreams.back().getHeader() == TEST_IO_HEADER );
 
                 {
                     const auto& [durationInMillisecond, gigaBytePerSecond] =
@@ -45,7 +45,7 @@ TEST_CASE( "InputOutputStream multicast test" ) {
 
                 for ( int i = 1; i < nStream; ++i ) {
                     inputStreams.emplace_back( FILE_NAME + std::to_string( i ), SERVER_PORT );
-                    assert( inputStreams.back().getHeader() == TEST_IO_HEADER );
+                    CHECK( inputStreams.back().getHeader() == TEST_IO_HEADER );
                 }
 
                 {
