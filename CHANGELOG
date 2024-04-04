@@ -20,6 +20,7 @@ Current head v.2.1.0 rc
   * Fix timeout error on macos (#33)
 - Documentation
   * Fix doxygen (#20)
+  * Deploy doxygen doc to github page (#20)
 
 ---
 v.2.0.0
