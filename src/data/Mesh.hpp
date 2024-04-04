@@ -48,8 +48,6 @@ struct Vertex {
         archive( self.px, self.py, self.pz, self.nx, self.ny, self.nz, self.tx, self.ty );
     }
 
-    std::string toString() const;
-
     ///
     /// \brief toString
     /// \return
@@ -106,12 +104,6 @@ struct Shape {
     template <typename Archive, typename Self>
     static void serialize( Archive& archive, Self& self ) {
         archive( self.vertices, self.hasNormal, self.indices, self.name, self.material );
-    }
-
-    auto toString() const {
-        std::string str;
-        str += std::to_string(vertices.size()) + " " +  std::to_string(hasNormal) + " " + std::to_string(indices.size())  + " " + name + " " + std::to_string(material);
-        return str;
     }
 
     ///
