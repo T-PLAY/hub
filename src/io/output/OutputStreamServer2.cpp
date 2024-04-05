@@ -77,7 +77,8 @@ OutputStreamServer2::OutputStreamServer2( const io::Header& header,
 #ifdef DEBUG_OUTPUT_STREAM
                     std::cout << "[OutputStream] stream viewer inited" << std::endl;
 #endif
-                    assert( !data->m_streamViewerInited );
+                    // Todo check if streamViewerInited is false before set to true
+//                    assert( !data->m_streamViewerInited );
                     data->m_streamViewerInited = true;
                 }
                 else if ( mess == hub::io::StreamBase::ServerMessage::STREAMER_INITED ) {
@@ -216,6 +217,7 @@ void OutputStreamServer2::startStreaming() {
                         hub::io::StreamBase::ClientMessage::STREAMER_CLIENT_NEW_STREAM_VIEWER );
                     data->m_serverSocket->write( (int)data->m_streamViewerSocks.size() + 1 );
 
+                    // Todo check if streamViewerInited is true before set to false
                     data->m_streamViewerInited = false;
                     while ( !data->m_streamViewerInited ) {
 #ifdef DEBUG_OUTPUT_STREAM
