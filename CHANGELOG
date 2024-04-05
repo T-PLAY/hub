@@ -14,6 +14,7 @@ Current head v.2.1.0 rc
   * Added license and readme to externals (#18)
 - CI
   * Add github ci with build and install (#22)
+  * Add issue templates for bug report and feature request (#29)
   * Add PULL_REQUEST_TEMPLATE file (#30)
 - Tests
   * Fix timeout error on macos (#33)
