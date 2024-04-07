@@ -31,3 +31,5 @@ jobs:
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         folder: ${{github.workspace}}/build/doc/docs_doxygen/html # The folder the action should deploy.
+        clean: true
+        single-commit: true
