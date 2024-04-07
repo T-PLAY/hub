@@ -6,9 +6,9 @@
 
 #include <thread>
 
+#include "core/Configuration.hpp"
 #include "core/Input.hpp"
 #include "io/InputOutputSocket.hpp"
-
 #include "io/StreamServer2.hpp"
 
 namespace hub {
@@ -61,9 +61,7 @@ class SRC_API InputStreamServer2 : public Input, public io::StreamServer2
 
     ///
     /// \brief InputStreamServer2
-    /// \param inputStream
     ///
-
     InputStreamServer2( const InputStreamServer2& ) = delete;
 
     ///

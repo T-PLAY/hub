@@ -6,7 +6,6 @@
 
 #include <core/Any.hpp>
 #include <core/Matrix.hpp>
-#include <core/Traits.hpp>
 #include <core/io/Archive.hpp>
 
 class Lambda

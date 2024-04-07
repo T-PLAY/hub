@@ -11,6 +11,8 @@
 // namespace native {}
 // } // namespace hub
 
+#include "core/Configuration.hpp"
+
 #include "native_Any.hpp"
 #include "native_MetaData.hpp"
 #include "native_OutputStream.hpp"

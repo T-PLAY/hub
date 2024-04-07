@@ -9,7 +9,7 @@
 #include <stdexcept>
 #include <string>
 
-#include "core/Macros.hpp"
+#include "core/Base.hpp"
 #include "io/Header.hpp"
 
 namespace hub {

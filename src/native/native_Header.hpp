@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "core/Macros.hpp"
+#include "core/Base.hpp"
 
 namespace hub {
 

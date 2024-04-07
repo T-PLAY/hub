@@ -4,22 +4,23 @@
 
 #pragma once
 
-#include "Macros.hpp"
-
-#include "traits/Array.hpp"
-#include "traits/Map.hpp"
-#include "traits/Span.hpp"
-#include "traits/Tuple.hpp"
-#include "traits/Vector.hpp"
-#include "traits/std_any.hpp"
-
-#include <map>
-#include <string>
 #include <type_traits>
+#include <string>
+#include <map>
+
+#include "core/base/Macros.hpp"
+
+#include "Array.hpp"
+#include "Map.hpp"
+#include "Span.hpp"
+#include "Tuple.hpp"
+#include "Vector.hpp"
 
 ////////////////////////////////////////////////////////////////////////
 
 namespace hub {
+
+//////////////////////////////////////// STRING /////////////////////////////////////////////
 
 #if CPP_VERSION >= 20
 
@@ -352,11 +353,6 @@ constexpr bool is_one_of() noexcept {
 }
 #endif
 
-////    using readable_t = decltype( std::declval<T>().read( std::declval<Input&>() ) );
-
-////static constexpr bool isInput_v = isInput<T>::value;
-
-////static constexpr bool isInput_v = isInput<T>::value;
 
 } // namespace hub
 

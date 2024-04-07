@@ -18,6 +18,9 @@ Current head v.2.1.0 rc
   * Add PULL_REQUEST_TEMPLATE file (#30)
 - Tests
   * Fix timeout error on macos (#33)
+- Documentation
+  * Fix doxygen (#20)
+  * Deploy doxygen doc to github page (#20)
 
 ---
 v.2.0.0

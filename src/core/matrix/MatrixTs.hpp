@@ -46,32 +46,37 @@ requires( sizeof...( Types ) > 1 )
 
     ///
     /// \brief capacity
+    /// \return
     ///
     static constexpr auto capacity() { return Capacity; };
 
     ///
     /// \brief size
+    /// \return
     ///
     static constexpr auto size() { return Size; };
 
     ///
     /// \brief nType
+    /// \return
     ///
     static constexpr auto nType() { return sizeof...( Types ); };
 
     ///
     /// \brief nDim
+    /// \return
     ///
     static constexpr auto nDim() { return 1; };
 
     ///
     /// \brief getDim
+    /// \return
     ///
     template <Size_t i>
 #if CPP_VERSION >= 20
     requires( i == 0 )
 #endif
-        static constexpr auto getDim() {
+    static constexpr auto getDim() {
         static_assert( i == 0 );
         return 1;
     }
@@ -94,6 +99,7 @@ requires( sizeof...( Types ) > 1 )
 
     ///
     /// \brief hasType
+    /// \return
     ///
     template <class Type>
     static constexpr auto hasType() {
@@ -235,6 +241,7 @@ requires( sizeof...( Types ) > 1 )
 
     ///
     /// \brief toString
+    /// \return
     ///
     constexpr auto toString() const { return name() + " = " + m_buffer.toString(); }
 

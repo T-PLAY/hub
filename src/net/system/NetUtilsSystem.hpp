@@ -4,9 +4,10 @@
 
 #pragma once
 
-#include "core/Macros.hpp"
 #include <iostream>
 #include <memory>
+
+#include "core/Base.hpp"
 
 namespace hub {
 namespace net {

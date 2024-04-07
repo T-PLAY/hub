@@ -40,7 +40,6 @@ class SRC_API OutputStreamServer2 : public Output, public io::StreamServer2
     /// [in] is an unique identifier name of stream
     /// \param port
     /// \param ipv4
-    /// \param clientSocket
     /// [in] is an existing connection to a hub server
     /// \warning The hub service must be accessible, that means the
     /// server hub is running on a machine you know the ip and the oppened port of the service.

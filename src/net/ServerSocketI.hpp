@@ -4,8 +4,7 @@
 
 #pragma once
 
-// #include "ClientSocketI.hpp"
-#include "core/Macros.hpp"
+#include "core/Base.hpp"
 
 namespace hub {
 namespace net {
@@ -22,11 +21,6 @@ class SRC_API ServerSocketI
     ///
     virtual int getPort() const = 0;
 
-    ///
-    /// \brief waitNewClient
-    /// \return
-    ///
-    // ClientSocketI waitNewClient();
 };
 
 } // namespace net

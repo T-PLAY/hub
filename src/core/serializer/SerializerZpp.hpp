@@ -8,8 +8,6 @@
 
 //#include "zpp/serializer.h"
 #include "serializer/serializer.h"
-
-
 #include "SerializerI.hpp"
 #include "core/InputBase.hpp"
 #include "core/OutputBase.hpp"

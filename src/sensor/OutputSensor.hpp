@@ -10,20 +10,21 @@
 //// #include "Acquisition.hpp"
 //// #include "core/Traits.hpp"
 
+#include "core/Base.hpp"
+#include "core/Output.hpp"
+#include "Acquisition.hpp"
+#include "Sensor.hpp"
+#include "SensorSpec.hpp"
+
+// User friendly headers (classes can be used as output parameter of constructor)
 #include "io/output/OutputFile.hpp"
 #include "io/output/OutputStream.hpp"
-
 //// #include "io/output/OutputFile.hpp"
 //// #include "io/output/OutputStream.hpp"
 //// #include "io/output/OutputMemory.hpp"
 //// #include "io/Memory.hpp"
 
-#include "core/Macros.hpp"
-#include "core/Output.hpp"
 
-#include "Acquisition.hpp"
-#include "Sensor.hpp"
-#include "SensorSpec.hpp"
 
 //// #include "net/ClientSocket.hpp"
 ////#include "Format.hpp"
@@ -145,6 +146,10 @@ class OutputSensor : public Sensor
     ///
     Output& getOutput() const { return m_output; }
 
+    ///
+    /// \brief acqMsg
+    /// \return
+    ///
     Acquisition acqMsg() const { return make_acquisition( m_spec.getResolution() ); }
 
     ///
@@ -244,6 +249,7 @@ class OutputSensorT : protected Sensor
 /// \brief make_outputSensor
 /// \param sensorSpec
 /// \param args
+/// \return
 ///
 template <class Output = output::OutputStream, class... Args>
 inline auto make_outputSensor( const sensor::SensorSpec& sensorSpec, const Args&... args ) {
@@ -254,6 +260,7 @@ inline auto make_outputSensor( const sensor::SensorSpec& sensorSpec, const Args&
 /// \brief make_outputSensorT
 /// \param sensorSpec
 /// \param args
+/// \return
 ///
 template <class Resolution, class... Args>
 inline auto make_outputSensorT( const sensor::SensorSpec& sensorSpec, const Args&... args ) {

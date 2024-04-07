@@ -3,8 +3,7 @@
 #include "test_common.hpp"
 
 #include <core/Buffer.hpp>
-#include <core/Traits.hpp>
-#include <core/traits/Span.hpp>
+//#include <core/traits/Span.hpp>
 
 TEST_CASE( "Buffer test" ) {
     TEST_BEGIN()

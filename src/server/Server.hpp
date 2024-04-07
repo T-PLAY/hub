@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "server/impl2/ServerImpl2.hpp"
+#include "impl2/ServerImpl2.hpp"
 
 namespace hub {
 

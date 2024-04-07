@@ -3,10 +3,10 @@
 #include <regex>
 #include <sstream>
 
-#include <core/Serializer.hpp>
-#include <core/io/Memory.hpp>
+#include "core/Base.hpp"
+#include "core/Serializer.hpp"
+#include "core/io/Memory.hpp"
 
-#include <core/Macros.hpp>
 
 namespace hub {
 namespace client {

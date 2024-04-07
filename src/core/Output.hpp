@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "Macros.hpp"
+#include "core/Base.hpp"
 #include "OutputBase.hpp"
 #include "Serializer.hpp"
 
@@ -30,11 +30,11 @@ class SRC_API OutputT : public OutputBase
 
     ///
     /// \brief write
-    /// \param t
+    /// \tparam t
     /// \return
     ///
     template <class T>
-    typename std::enable_if<packable_v<T>>::type write( const T& t ) {
+    typename std::enable_if_t<packable_v<T>, void> write( const T& t ) {
 #ifdef HUB_DEBUG_OUTPUT
         DEBUG_MSG( HEADER << "write(packable: " << TYPE_NAME( t ) << ") = " << t );
 #endif
@@ -47,11 +47,11 @@ class SRC_API OutputT : public OutputBase
 
     ///
     /// \brief write
-    /// \param t
+    /// \tparam t
     /// \return
     ///
     template <class T>
-    typename std::enable_if<!packable_v<T> && writable_v<T>>::type write( const T& t ) {
+    typename std::enable_if_t<!packable_v<T> && writable_v<T>, void> write( const T& t ) {
 #ifdef HUB_DEBUG_OUTPUT
         DEBUG_MSG( HEADER << "write(writable: " << TYPE_NAME( t ) << ") = " << t );
 #endif
@@ -61,11 +61,11 @@ class SRC_API OutputT : public OutputBase
 
     ///
     /// \brief write
-    /// \param t
+    /// \tparam t
     /// \return
     ///
     template <class T>
-    typename std::enable_if<!packable_v<T> && !writable_v<T>>::type write( const T& t ) {
+    typename std::enable_if_t<!packable_v<T> && !writable_v<T>, void> write( const T& t ) {
 #ifdef HUB_DEBUG_OUTPUT
         DEBUG_MSG( HEADER << "write(serial: " << TYPE_NAME( t ) << ") = " << t );
 #endif
@@ -75,8 +75,8 @@ class SRC_API OutputT : public OutputBase
 
     ///
     /// \brief writeAll
-    /// \param t
-    /// \param ts
+    /// \tparam t
+    /// \tparam ts
     ///
     template <class T, class... Ts>
     void writeAll( const T& t, const Ts&... ts ) {

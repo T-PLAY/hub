@@ -4,16 +4,15 @@
 
 #pragma once
 
+#include "core/Base.hpp"
 #include "core/Input.hpp"
-#include "core/Macros.hpp"
-
 #include "Acquisition.hpp"
 #include "Sensor.hpp"
-//// #include "core/Tuple.hpp"
 
+// User friendly headers (classes can be used as input parameter of constructor)
+//// #include "core/Tuple.hpp"
 #include "io/input/InputFile.hpp"
 #include "io/input/InputStream.hpp"
-
 //// #include "io/File.hpp"
 //// #include "io/input/InputFile.hpp"
 //// #include "io/input/InputStream.hpp"
@@ -258,6 +257,10 @@ namespace sensor {
         ///
         const Input& getInput() const { return *m_inputs.at(0); }
 
+        ///
+        /// \brief acqMsg
+        /// \return
+        ///
         Acquisition acqMsg() const { return make_acquisition( m_spec.getResolution() ); }
 
         ///

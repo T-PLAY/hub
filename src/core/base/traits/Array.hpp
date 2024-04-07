@@ -4,7 +4,8 @@
 
 #pragma once
 
-#include "core/Traits.hpp"
+#include "core/base/Traits.hpp"
+
 #include <array>
 #include <iostream>
 

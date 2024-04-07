@@ -6,7 +6,7 @@
 
 #include <string>
 
-#include "Macros.hpp"
+#include "Base.hpp"
 
 namespace hub {
 namespace utils {

@@ -9,19 +9,14 @@
 #include <map>
 #include <sstream>
 
+#include "Base.hpp"
 #include "Format.hpp"
-#include "Macros.hpp"
 #include "Serializer.hpp"
 
 #ifndef HUB_NON_BUILD_DATA
 #    include "data/Mesh.hpp"
 #endif
 
-#if CPP_VERSION <= 14
-#    include "traits/std_any.hpp"
-#else
-#    include <any>
-#endif
 
 namespace hub {
 

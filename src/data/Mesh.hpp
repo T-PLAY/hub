@@ -11,8 +11,7 @@
 #include <iostream>
 #include <cstring>
 
-#include <core/Macros.hpp>
-#include <core/Traits.hpp>
+#include "core/Base.hpp"
 
 namespace hub {
 namespace data {
@@ -49,6 +48,10 @@ struct Vertex {
         archive( self.px, self.py, self.pz, self.nx, self.ny, self.nz, self.tx, self.ty );
     }
 
+    ///
+    /// \brief toString
+    /// \return
+    ///
     std::string toString() const;
 
     ///
@@ -103,6 +106,10 @@ struct Shape {
         archive( self.vertices, self.hasNormal, self.indices, self.name, self.material );
     }
 
+    ///
+    /// \brief toString
+    /// \return
+    ///
     auto toString() const {
         std::string str;
         str += std::to_string(vertices.size()) + " " +  std::to_string(hasNormal) + " " + std::to_string(indices.size())  + " " + name + " " + std::to_string(material);
@@ -215,6 +222,7 @@ class SRC_API Mesh
   public:
     ///
     /// \brief name
+    /// \return
     ///
     static constexpr auto name() { return "Mesh"; };
 
@@ -224,12 +232,6 @@ class SRC_API Mesh
     ///
 
     Mesh() = default;
-
-    ///
-    /// \brief Mesh
-    /// \param mesh
-    ///
-    // explicit Mesh( const Mesh& mesh );
 
     ///
     /// \brief Mesh
@@ -282,12 +284,6 @@ class SRC_API Mesh
         return m_materials;
     }
 
-    ///
-    /// \brief operator <<
-    /// \param os
-    /// \param mesh
-    /// \return
-    ///
     // SRC_API friend std::ostream& operator<<( std::ostream& os, const Mesh& mesh );
 
     ///

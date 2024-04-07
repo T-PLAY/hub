@@ -6,7 +6,7 @@
 #include <string>
 #include <thread> // contains <chrono>
 
-#include "Macros.hpp"
+#include "Base.hpp"
 
 #ifndef WIN32
 #include <unistd.h>

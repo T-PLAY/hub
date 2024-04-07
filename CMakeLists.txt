@@ -131,6 +131,7 @@ add_definitions(-DHUB_PROJECT_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\")
 find_package(Boost QUIET) # tcp socket communication
 if(Boost_FOUND)
     add_definitions(-DHUB_USE_BOOST)
+    message(STATUS "${HEADER_MSG} Boost found : ${Boost_DIR}")
 endif()
 
 find_package(TBB QUIET)

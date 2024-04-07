@@ -47,26 +47,31 @@ requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
 
     ///
     /// \brief capacity
+    /// \return
     ///
     static constexpr auto capacity() { return Capacity; };
 
     ///
     /// \brief size
+    /// \return
     ///
     static constexpr auto size() { return Size; };
 
     ///
     /// \brief nType
+    /// \return
     ///
     static constexpr auto nType() { return 1; };
 
     ///
     /// \brief nDim
+    /// \return
     ///
     static constexpr auto nDim() { return sizeof...( Ns ); };
 
     ///
     /// \brief getDim
+    /// \return
     ///
     template <Size_t i>
 #if CPP_VERSION >= 20
@@ -90,6 +95,7 @@ requires( sizeof...( Ns ) > 0 && ( ( Ns > 1 ) && ... ) )
 
     ///
     /// \brief hasType
+    /// \return
     ///
     template <class Type_>
     static constexpr auto hasType() {
@@ -251,6 +257,7 @@ requires( N > 1 )
   public:
     ///
     /// \brief length
+    /// \return
     ///
     static constexpr auto length() { return N; }
 };

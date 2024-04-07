@@ -6,6 +6,7 @@
 
 #include <string>
 
+#include "core/Configuration.hpp"
 #include "InputOutputSocket.hpp"
 #include "StreamBase.hpp"
 

@@ -5,7 +5,6 @@
 #include <tuple>
 
 #include <core/Any.hpp>
-#include <core/Traits.hpp>
 #include <core/matrix/MatrixT.hpp>
 
 class Lambda

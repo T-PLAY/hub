@@ -7,9 +7,8 @@
 #include <algorithm>
 #include <type_traits>
 
+#include "Base.hpp"
 #include "Buffer.hpp"
-#include "Macros.hpp"
-#include "Traits.hpp"
 
 namespace hub {
 

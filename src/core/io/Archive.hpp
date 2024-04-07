@@ -6,8 +6,7 @@
 
 #include <queue>
 
-#include "core/Macros.hpp"
-
+#include "core/Base.hpp"
 #include "InputOutput.hpp"
 
 #ifndef HUB_NON_BUILD_IO

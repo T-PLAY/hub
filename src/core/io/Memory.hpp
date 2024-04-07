@@ -6,8 +6,7 @@
 
 #include <list>
 
-#include "core/Macros.hpp"
-
+#include "core/Base.hpp"
 #include "InputOutput.hpp"
 
 namespace hub {
