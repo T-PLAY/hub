@@ -24,8 +24,7 @@ Supported Compilers
 Supported Languages
 ~~~~~~~~~~~~~~~~~~~
 
-.. -  `C/C++ API documentation <https://bkaradzic.github.io/bgfx/bgfx.html>`__
--  `C/C++ API documentation <https://github.com/T-PLAY/hub/hub.html>`__
+-  `C/C++ API documentation <https://t-play.github.io/hub/api/index.html>`__
 
 Project Page
 ~~~~~~~~~~~~

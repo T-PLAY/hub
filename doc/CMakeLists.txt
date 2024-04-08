@@ -4,11 +4,7 @@ project(doc)
 
 if(HUB_BUILD_DOC)
 
-    # file(GLOB_RECURSE DOC_SRC *.cpp)
-
-    # add_library(${PROJECT_NAME} ${DOC_SRC})
-    # target_link_libraries(${PROJECT_NAME} hub)
-        add_subdirectory(cpp)
+    add_subdirectory(cpp)
 
     if(NOT HUB_BROWSER)
         set(HUB_BROWSER
@@ -39,9 +35,7 @@ if(HUB_BUILD_DOC)
 
     add_custom_target(
         hub-doc-sphinx
-        # COMMAND make -C ${PROJECT_SOURCE_DIR}/doc/sphinx html
         COMMAND make -C ${HUB_PROJECT_DIR}/doc/sphinx html
-        # COMMAND ${HUB_BROWSER} ${PROJECT_SOURCE_DIR}/doc/sphinx/_build/html/api/index.html
         COMMAND ${HUB_BROWSER} ${HUB_PROJECT_DIR}/doc/sphinx/_build/html/api/index.html
         COMMENT "Generating API documentation with Sphinx")
     custom_target_added(doc-sphinx)
