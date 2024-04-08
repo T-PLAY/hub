@@ -17,17 +17,14 @@ set (HUB_VERSION "@hub_VERSION@")
 
 message(STATUS "Found hub: ${PACKAGE_PREFIX_DIR} (version \"${HUB_VERSION}\")")
 
-# Todo export hub_static target
-#if (NOT TARGET hub_static)
-#        message(FATAL_ERROR "hub_static is not installed")
-#endif()
-
-if (NOT TARGET hub_shared)
-        message(FATAL_ERROR "hub_shared is not installed")
-endif()
-
-if(TARGET hub_static AND hub_shared)
-    add_library(hub ALIAS hub_static)
+if(TARGET hub_shared OR TARGET hub_static)
+	if(TARGET hub_shared AND TARGET hub_static)
+		add_library(hub ALIAS hub_static)
+	elseif(TARGET hub_shared)
+		add_library(hub ALIAS hub_shared)
+	else()
+		add_library(hub ALIAS hub_static)
+	endif()
 else()
-    add_library(hub ALIAS hub_shared)
+	message(FATAL_ERROR "static or shared library are not installed")
 endif()
