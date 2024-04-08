@@ -98,7 +98,6 @@ if(UNIX)
 endif()
 
 install(
-    # DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
     DIRECTORY ${HUB_EXTERNAL_DIR}/
     DESTINATION include/
     FILES_MATCHING
@@ -221,8 +220,9 @@ if(HUB_BUILD_STATIC)
     target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DSRC_STATIC)
     target_link_libraries(${PROJECT_NAME}_static PRIVATE external ${REQUIRED_LIBS})
 
-#    set_target_properties(${PROJECT_NAME}_static PROPERTIES VERSION ${${PROJECT_NAME}_VERSION}
-#                                                            SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR})
+	# Todo export static lib
+	#    set_target_properties(${PROJECT_NAME}_static PROPERTIES VERSION ${${PROJECT_NAME}_VERSION}
+	#                                                            SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR})
 
     install(
         TARGETS ${PROJECT_NAME}_static
@@ -257,13 +257,13 @@ if(HUB_BUILD_STATIC)
         endif()
     endif() # MSVC
 
-    # Unable to export hub_static target
-#    install(
-#        EXPORT ${PROJECT_NAME}_static
-#        FILE ${PROJECT_NAME}Targets.cmake
-#        # DESTINATION lib/cmake/${PROJECT_NAME})
-#        DESTINATION share/${PROJECT_NAME}/cmake)
-#    export(EXPORT ${PROJECT_NAME}_static FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
+    # Todo export static lib
+	#    install(
+	#        EXPORT ${PROJECT_NAME}_static
+	#        FILE ${PROJECT_NAME}Targets.cmake
+	#        # DESTINATION lib/cmake/${PROJECT_NAME})
+	#        DESTINATION share/${PROJECT_NAME}/cmake)
+	#    export(EXPORT ${PROJECT_NAME}_static FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 
 
     if(UNIX)
