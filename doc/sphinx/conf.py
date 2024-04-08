@@ -26,7 +26,11 @@ project = 'hub'
 copyright = '2021-2024, Gauthier Bouyjou'
 author = 'Gauthier BOUYJOU'
 
-version = 'v2.0.0'
+def get_git_hub_version() -> str:
+    return subprocess.check_output(['git', 'describe', '--tags', '--abbrev=0']).decode('ascii').strip()
+
+#  version = 'v2.0.0'
+version = get_git_hub_version()
 
 root_doc = 'api/index'
 
