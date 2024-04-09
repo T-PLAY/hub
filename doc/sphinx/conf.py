@@ -18,7 +18,8 @@ from sphinx.builders.html import StandaloneHTMLBuilder
 import subprocess, os
 
 # Doxygen
-subprocess.call('doxygen Doxyfile.in', shell=True)
+#  subprocess.call('doxygen Doxyfile.in', shell=True)
+subprocess.call('doxygen Doxyfile.out', shell=True)
 
 # -- Project information -----------------------------------------------------
 

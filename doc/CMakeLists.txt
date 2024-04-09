@@ -16,8 +16,7 @@ if(HUB_BUILD_DOC)
 
     if(DOXYGEN_FOUND)
         set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/doxygen/Doxyfile.in)
-        set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile.out)
-
+        set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/doxygen/Doxyfile.out)
         configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
 
         add_custom_target(
@@ -33,11 +32,30 @@ if(HUB_BUILD_DOC)
         message("Doxygen need to be installed to generate the doxygen documentation")
     endif(DOXYGEN_FOUND)
 
-    add_custom_target(
-        hub-doc-sphinx
-        COMMAND make -C ${HUB_PROJECT_DIR}/doc/sphinx html
-        COMMAND ${HUB_BROWSER} ${HUB_PROJECT_DIR}/doc/sphinx/_build/html/api/index.html
-        COMMENT "Generating API documentation with Sphinx")
+    set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/sphinx/Doxyfile.in)
+    set(DOXYGEN_OUT ${CMAKE_CURRENT_SOURCE_DIR}/sphinx/Doxyfile.out)
+    configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+    # file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/sphinx DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
+
+    find_package(Sphinx REQUIRED)
+
+    set(SPHINX_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/sphinx)
+    set(SPHINX_BUILD ${CMAKE_CURRENT_BINARY_DIR}/doc/sphinx)
+
+    add_custom_target(hub-doc-sphinx ALL
+                      COMMAND ${SPHINX_EXECUTABLE} -b html ${SPHINX_SOURCE} ${SPHINX_BUILD}
+                      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+                      COMMENT "Generating documentation with Sphinx")
+
+    # add_custom_target(
+    #     hub-doc-sphinx
+    #     COMMAND export BUILDDIR="${CMAKE_CURRENT_BINARY_DIR}/sphinx"
+    #     COMMAND make -C ${HUB_PROJECT_DIR}/doc/sphinx html
+    #     COMMAND ${HUB_BROWSER} ${CMAKE_BINARY_DIR}/doc/sphinx/html/api/index.html
+    #     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    #     COMMENT "Generating API documentation with Sphinx"
+    #     VERBATIM
+    # )
     custom_target_added(doc-sphinx)
 
 endif()
