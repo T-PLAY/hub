@@ -13,6 +13,8 @@ Current head v.2.1.0 rc
   * Install external headers due of inline headers (zpp_bits, serializer, std_any) (#34)
 - Licensing
   * Added license and readme to externals (#18)
+  * License headers with MPL 2.0 (#19)
+  * Add company name to contributors file (#19)
 - CI
   * Add github ci with build and install (#22)
   * Add issue templates for bug report and feature request (#29)
