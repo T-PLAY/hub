@@ -64,7 +64,7 @@ client::ViewerHandler* createViewerHandler( onServerNotFoundFunc onServerNotFoun
     return viewerHandler;
 }
 
-void freeViewer( client::ViewerHandler* viewerHandler ) {
+void freeViewerHandler( client::ViewerHandler* viewerHandler ) {
     assert( viewerHandler != nullptr );
     delete viewerHandler;
 }

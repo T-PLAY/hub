@@ -24,7 +24,14 @@ std::string Client2::clientMsg() const
     return str;
 }
 
+///
+/// \brief g_margin
+///
 constexpr int g_margin  = 45;
+
+///
+/// \brief g_margin2
+///
 constexpr int g_margin2 = 20;
 
 // std::string Client2::headerMsg() const {

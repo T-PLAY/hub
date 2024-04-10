@@ -17,6 +17,9 @@ constexpr int s_materialSize = 4 * 3 * 6 + 4 * 3 + 4;
 namespace hub {
 namespace data {
 
+///
+/// \brief The MeshImpl class
+///
 class MeshImpl
 {
   public:

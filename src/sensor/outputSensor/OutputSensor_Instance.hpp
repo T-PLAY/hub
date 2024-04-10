@@ -28,9 +28,9 @@ namespace outputSensor {
 class OutputSensor_Instance
 {
   public:
-    // OutputSensor_Instance()                               = default;
     OutputSensor_Instance( OutputSensor_Instance&& )      = delete;
     OutputSensor_Instance( const OutputSensor_Instance& ) = delete;
+
     ///
     /// \brief OutputSensor_Instance
     /// \param port

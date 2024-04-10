@@ -28,13 +28,9 @@ namespace outputSensor {
 class OutputSensor_3D_Density : public OutputSensor_Instance
 {
   public:
-    /// \brief asyncRun
     using OutputSensor_Instance::asyncRun;
-    /// \brief OutputSensor_Instance
     using OutputSensor_Instance::OutputSensor_Instance;
-    /// \brief run
     using OutputSensor_Instance::run;
-    /// \brief stop
     using OutputSensor_Instance::stop;
 
     ///

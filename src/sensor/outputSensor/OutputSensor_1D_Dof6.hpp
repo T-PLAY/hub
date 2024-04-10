@@ -28,20 +28,15 @@ namespace outputSensor {
 class OutputSensor_1D_Dof6 : public OutputSensor_Instance
 {
   public:
-    /// \brief asyncRun
     using OutputSensor_Instance::asyncRun;
-    /// \brief OutputSensor_Instance
     using OutputSensor_Instance::OutputSensor_Instance;
-    /// \brief run
     using OutputSensor_Instance::run;
-    /// \brief stop
     using OutputSensor_Instance::stop;
 
     ///
     /// \brief Resolution
     ///
     using Resolution = hub::format::Dof6;
-    // using OutputSensor = hub::sensor::OutputSensorT<Resolution>;
 
     ///
     /// \brief init
@@ -64,8 +59,6 @@ class OutputSensor_1D_Dof6 : public OutputSensor_Instance
             outputSensor =
                 std::make_unique<OutputSensor>( m_sensorSpec, m_streamName, m_port, m_ipv4 );
         }
-        // auto acq    = outputSensor.acqMsg();
-        // auto acq    = AcquisitionT<Resolution>();
         auto acq    = hub::sensor::make_acquisition( hub::make_matrix<Resolution>() );
         auto& start = acq.start();
         auto& end   = acq.end();

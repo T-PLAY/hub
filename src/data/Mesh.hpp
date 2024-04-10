@@ -240,9 +240,7 @@ class SRC_API Mesh
 
     ///
     /// \brief Mesh
-    /// \param measure
     ///
-
     Mesh() = default;
 
     ///

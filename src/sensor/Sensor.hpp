@@ -31,10 +31,11 @@ namespace sensor {
 class SRC_API Sensor
 {
   protected:
-//    ///
-//    /// \brief Sensor
-//    ///
-    // Sensor() = default;
+    ///
+    /// \brief Sensor
+    /// [in] user defined sensor spec
+    ///
+    Sensor() = default;
 
     ///
     /// \brief Sensor
