@@ -97,6 +97,14 @@ if(UNIX)
     set_property(TARGET external PROPERTY POSITION_INDEPENDENT_CODE ON) # gltfpack
 endif()
 
+install(
+    DIRECTORY ${HUB_EXTERNAL_DIR}/
+    DESTINATION include/
+    FILES_MATCHING
+    PATTERN "*.hpp"
+    PATTERN "*.h"
+    PATTERN "*.inl")
+
 set(SRC_TARGETS)
 
 if(NOT XCODE) # unable to have object files as native build with Xcode
@@ -212,6 +220,10 @@ if(HUB_BUILD_STATIC)
     target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DSRC_STATIC)
     target_link_libraries(${PROJECT_NAME}_static PRIVATE external ${REQUIRED_LIBS})
 
+	# Todo export static lib
+	#    set_target_properties(${PROJECT_NAME}_static PROPERTIES VERSION ${${PROJECT_NAME}_VERSION}
+	#                                                            SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR})
+
     install(
         TARGETS ${PROJECT_NAME}_static
         EXPORT ${PROJECT_NAME}_static
@@ -244,6 +256,15 @@ if(HUB_BUILD_STATIC)
                 OPTIONAL)
         endif()
     endif() # MSVC
+
+    # Todo export static lib
+	#    install(
+	#        EXPORT ${PROJECT_NAME}_static
+	#        FILE ${PROJECT_NAME}Targets.cmake
+	#        # DESTINATION lib/cmake/${PROJECT_NAME})
+	#        DESTINATION share/${PROJECT_NAME}/cmake)
+	#    export(EXPORT ${PROJECT_NAME}_static FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
+
 
     if(UNIX)
         set_target_properties(${PROJECT_NAME}_static PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
