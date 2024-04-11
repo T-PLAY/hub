@@ -16,11 +16,8 @@
 #pragma once
 
 #include <functional>
-#include <mutex>
-#include <regex>
 #include <sstream>
 #include <string>
-#include <thread>
 
 #include "ViewerHandler.hpp"
 #include "ViewerStream.hpp"

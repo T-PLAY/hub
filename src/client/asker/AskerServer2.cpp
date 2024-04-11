@@ -1,5 +1,7 @@
 #include "AskerServer2.hpp"
 
+#include "io/StreamBase.hpp"
+
 namespace hub {
 namespace client {
 
