@@ -16,11 +16,9 @@
 
 #pragma once
 
-#include <initializer_list>
 #include <memory>
 #include <string>
 #include <vector>
-#include <iostream>
 #include <cstring>
 
 #include "core/Base.hpp"
@@ -146,49 +144,49 @@ static_assert(sizeof(unsigned int) == 4);
 ///
 struct Material {
     ///
-    /// \brief name
+    /// \brief Material id name
     ///
     std::string name;
 
     ///
-    /// \brief Ka
+    /// \brief Ambient color
     ///
     float Ka[3]; /* Ambient */
 
     ///
-    /// \brief Kd
+    /// \brief Diffuse color
     ///
     float Kd[3]; /* Diffuse */
     ///
-    /// \brief Ks
+    /// \brief Specular color
     ///
     float Ks[3]; /* Specular */
     ///
-    /// \brief Ke
+    /// \brief Emission color
     ///
     float Ke[3]; /* Emission */
     ///
-    /// \brief Kt
+    /// \brief Transmission color
     ///
     float Kt[3]; /* Transmittance */
     ///
-    /// \brief Ns
+    /// \brief Shininess factor
     ///
     float Ns;    /* Shininess */
     ///
-    /// \brief Ni
+    /// \brief Index of refraction
     ///
     float Ni;    /* Index of refraction */
     ///
-    /// \brief Tf
+    /// \brief Transmission filter color
     ///
     float Tf[3]; /* Transmission filter */
     ///
-    /// \brief d
+    /// \brief Alpha factor
     ///
     float d;     /* Disolve (alpha) */
     ///
-    /// \brief illum
+    /// \brief Illumination model
     ///
     int illum;   /* Illumination model */
 
@@ -244,18 +242,20 @@ class SRC_API Mesh
     Mesh() = default;
 
     ///
-    /// \brief Mesh
-    /// \param filePaths
-    ///
-    explicit Mesh( std::initializer_list<std::string> filePaths );
-
-    ///
-    /// \brief Mesh
-    /// \param filePath
+    /// \brief Construct mesh with file
+    /// \param filePath [in] file is going to import to mesh
+    /// (extension supported: .gltf)
+    /// \warning Only gltf file is importable
     ///
     explicit Mesh( const std::string& filePath );
 
-    // ~Mesh();
+    ///
+    /// \brief Construct mesh with list of files
+    /// \param filePaths [in] list of files is going to import to mesh
+    /// (extension supported: .gltf)
+    /// \warning Only gltf file is importable
+    ///
+    explicit Mesh( std::initializer_list<std::string> filePaths );
 
     ///
     /// \brief to_string
@@ -275,8 +275,8 @@ class SRC_API Mesh
     }
 
     ///
-    /// \brief getShapes
-    /// \return
+    /// \brief Getter function
+    /// \return Shapes of mesh
     ///
     const std::vector<Shape>& getShapes() const {
         // if ( m_shapes.empty() ) unpack( false );
@@ -285,8 +285,8 @@ class SRC_API Mesh
     }
 
     ///
-    /// \brief getMaterials
-    /// \return
+    /// \brief Getter function
+    /// \return Materials of mesh
     ///
     const std::vector<Material>& getMaterials() const {
         // if (m_shapes.empty() ) unpack( false );
@@ -294,15 +294,13 @@ class SRC_API Mesh
         return m_materials;
     }
 
-    // SRC_API friend std::ostream& operator<<( std::ostream& os, const Mesh& mesh );
-
     ///
-    /// \brief printStats
+    /// \brief Print status information of mesh
     ///
     void printStats() const;
 
     ///
-    /// \brief printInfo
+    /// \brief Print information of mesh
     ///
     void printInfo() const;
 

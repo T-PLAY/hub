@@ -15,7 +15,6 @@
 
 #pragma once
 
-#include <memory>
 #include <cstring>
 
 #include "Base.hpp"
@@ -76,6 +75,7 @@ static inline int nChannel(TypeId_t format) {
 /// is 4x4 Matrix of float
 ///
 struct Mat4 {
+
     ///
     /// \brief id
     ///
@@ -134,27 +134,9 @@ struct Mat4 {
     }
     // clang-format on
 
-    // constexpr Mat4( float value ) :
-    //     m_array { value,
-    //            value,
-    //            value,
-    //            value,
-    //            value,
-    //            value,
-    //            value,
-    //            value,
-    //            value,
-    //            value,
-    //            value,
-    //            value,
-    //            value,
-    //            value,
-    //            value,
-    //            value } {}
-
     ///
-    /// \brief Mat4
-    /// \param array
+    /// \brief Create from array of float
+    /// \param array [in] Array of float (row major)
     ///
     explicit Mat4( const float* array ) { memcpy( m_array.data(), array, 64 ); }
 
@@ -199,8 +181,8 @@ struct Mat4 {
     }
 
     ///
-    /// \brief data
-    /// \return
+    /// \brief Getter function
+    /// \return raw data pointer (row major)
     ///
     const float * data() const {
         return m_array.data();
@@ -226,6 +208,7 @@ static_assert( sizeof( Mat4 ) == 64 );
 /// is 3D vector of float
 ///
 struct Vec3 {
+
     ///
     /// \brief x
     ///
@@ -240,8 +223,8 @@ struct Vec3 {
     float z;
 
     ///
-    /// \brief Vec3
-    /// \param value
+    /// \brief Three dimensionnal vector
+    /// \param value [in] copy value for x, y and z
     ///
     explicit constexpr Vec3( float value = 0.0f ) : x { value }, y { value }, z { value } {};
 
@@ -636,7 +619,6 @@ struct Orientation // Euler
     static constexpr auto name() { return "Orientation"; };
 };
 
-// Pose data packed as floats array, containing translation vector (x, y, z), rotation quaternion
 ///
 /// \brief The Dof6 class
 /// represents cartesian position with quaternion orientation (7 floats)
@@ -717,7 +699,6 @@ struct Dof6 {
 };
 static_assert( sizeof( Dof6 ) == 28 );
 
-// Point consist of x, y and z position, rgb color and depth .
 
 ///
 /// \brief The XYZ32F class

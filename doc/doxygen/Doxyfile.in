@@ -994,7 +994,6 @@ FILE_PATTERNS          = *.c \
                          *.cc \
                          *.cxx \
                          *.cxxm \
-                         *.cpp \
                          *.cppm \
                          *.ccm \
                          *.c++ \
@@ -1041,6 +1040,7 @@ FILE_PATTERNS          = *.c \
                          *.ucf \
                          *.qsf \
                          *.ice
+                         # *.cpp \
 
 # The RECURSIVE tag can be used to specify whether or not subdirectories should
 # be searched for input files as well.

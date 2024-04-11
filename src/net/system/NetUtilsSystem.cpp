@@ -37,9 +37,6 @@ namespace net {
 namespace system {
 namespace utils {
 
-///
-/// \brief The NetManager class
-///
 class NetManager
 {
   public:
@@ -63,10 +60,6 @@ class NetManager
     }
 #endif
 
-    ///
-    /// \brief registerSocket
-    /// \param sock
-    ///
     void registerSocket( const socket_fd& sock ) {
         int iTry = 0;
         m_mtxSockets.lock();
@@ -99,10 +92,6 @@ class NetManager
         m_mtxSockets.unlock();
     }
 
-    ///
-    /// \brief unregisterSocket
-    /// \param sock
-    ///
     void unregisterSocket( const socket_fd& sock ) {
 
         m_mtxSockets.lock();
@@ -198,17 +187,10 @@ bool isConnected( socket_fd sock ) {
 
 /////////////////////////////// SERVER ADDRESS /////////////////////////////////////////////
 
-///
-/// \brief The ServerAddrImpl class
-///
 class ServerAddrImpl
 {
   public:
 
-    ///
-    /// \brief init
-    /// \param port
-    ///
     void init( int port ) {
         memset( &m_sockAddr, 0, sizeof( m_sockAddr ) );
         m_sockAddr.sin_family      = AF_INET;
@@ -216,9 +198,6 @@ class ServerAddrImpl
         m_sockAddr.sin_port        = htons( port ); // Server port
     }
 
-    ///
-    /// \brief m_sockAddr
-    ///
     struct sockaddr_in m_sockAddr;
 };
 
@@ -258,17 +237,9 @@ int listen( socket_fd sock, int backlog ) {
 
 ///////////////////////////////// CLIENT ADDRESS ///////////////////////////////////////////
 
-///
-/// \brief The ClientAddrImpl class
-///
 class ClientAddrImpl
 {
   public:
-    ///
-    /// \brief init
-    /// \param ipv4
-    /// \param port
-    ///
     void init( const std::string& ipv4, int port ) {
         // Server address construction
         memset( &m_sockAddr, 0, sizeof( m_sockAddr ) );
@@ -277,25 +248,14 @@ class ClientAddrImpl
         m_sockAddr.sin_port = htons( port );                             // Server port
     }
 
-    ///
-    /// \brief setPort
-    /// \param port
-    ///
     void setPort( int port ) {
         m_sockAddr.sin_port = htons( port ); // Server port
     }
 
-    ///
-    /// \brief setIpv4
-    /// \param ipv4
-    ///
     void setIpv4( const std::string& ipv4 ) {
         inet_pton( AF_INET, ipv4.c_str(), &m_sockAddr.sin_addr.s_addr ); // winsock 2.0
     }
 
-    ///
-    /// \brief m_sockAddr
-    ///
     struct sockaddr_in m_sockAddr;
 };
 

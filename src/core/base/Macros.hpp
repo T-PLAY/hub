@@ -241,13 +241,5 @@ namespace hub {
 #endif
 
 
-/////////////////////////////////////////////// STATIC WARNING /////////////////////////////////////////////////
-
-//// Note: using STATIC_WARNING_TEMPLATE changes the meaning of a program in a small way.
-//// It introduces a member/variable declaration.  This means at least one byte of space
-//// in each structure/class instantiation.  STATIC_WARNING should be preferred in any
-//// non-template situation.
-////  'token' must be a program-wide unique identifier.
-// STATIC_WARNING(cond, msg) PP_CAT(PP_CAT(_localvar_, token),__LINE__)
 
 } // namespace hub

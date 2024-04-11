@@ -16,8 +16,6 @@
 
 #pragma once
 
-#include <list>
-
 #include "core/Base.hpp"
 #include "InputOutput.hpp"
 
@@ -26,6 +24,8 @@ namespace io {
 
 ///
 /// \brief The MemoryT class
+/// implements input/output features with a any serializer to save data locally in a vector.
+/// It's allow to pack/serialize many objects into one vector.
 ///
 template <class SerializerT = Serializer, class InputOutputT = InputOutput<SerializerT>>
 class MemoryT : public InputOutputT
@@ -35,11 +35,11 @@ class MemoryT : public InputOutputT
     using InputOutputT::write;
 
     ///
-    /// \brief MemoryT
-    /// \param container
+    /// \brief Construct with any container
+    /// \param container [in] Copy all data from container to internal data
     ///
     template <class Container>
-    explicit MemoryT( Container& container ) {
+    explicit MemoryT( const Container& container ) {
         m_data.clear();
         m_data.insert( m_data.end(), container.begin(), container.end() );
     }
@@ -48,15 +48,7 @@ class MemoryT : public InputOutputT
     /// \brief MemoryT
     ///
     MemoryT() = default;
-    // MemoryT() {
-        // m_data.reserve(20'000'000);
-    // }
 
-    ///
-    /// \brief read
-    /// \param data
-    /// \param size
-    ///
     void read( hub::Data_t* data, hub::Size_t size ) override {
         assert( size > 0 );
         assert( !m_data.empty() );
@@ -74,11 +66,6 @@ class MemoryT : public InputOutputT
         // std::cout << "[Memory] data " << m_data << std::endl;
     }
 
-    ///
-    /// \brief write
-    /// \param data
-    /// \param size
-    ///
     void write( const hub::Data_t* data, hub::Size_t size ) override {
         // std::cout << "[Memory] data " << m_data << std::endl;
 #ifdef DEBUG_MEMORY
@@ -95,37 +82,19 @@ class MemoryT : public InputOutputT
         // std::cout << "[Memory] data " << m_data << std::endl;
     }
 
-    ///
-    /// \brief close
-    ///
     void close() override {};
 
-    ///
-    /// \brief isOpen
-    /// \return
-    ///
     bool isOpen() const override { return true; }
 
-    ///
-    /// \brief isEnd
-    /// \return
-    ///
     bool isEnd() const override { return m_data.empty(); }
 
-    ///
-    /// \brief clear
-    ///
     void clear() override { m_data.clear(); }
 
-    ///
-    /// \brief setRetain
-    /// \param retained
-    ///
     void setRetain( bool retained ) override {}
 
     ///
-    /// \brief getData
-    /// \return
+    /// \brief Getter function
+    /// \return Internal data
     ///
     const Datas_t & getData() const {
         return m_data;
