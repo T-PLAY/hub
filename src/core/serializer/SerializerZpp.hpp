@@ -17,9 +17,9 @@
 
 #include <array>
 
-//#include "zpp/serializer.h"
 #include "serializer/serializer.h"
 #include "SerializerI.hpp"
+
 #include "core/InputBase.hpp"
 #include "core/OutputBase.hpp"
 
@@ -28,6 +28,7 @@ namespace serializer {
 
 ///
 /// \brief The SerializerZpp class
+/// is an implement of serializer using zpp serializer (https://github.com/eyalz800/serializer)
 ///
 class SRC_API SerializerZpp : public SerializerI
 {

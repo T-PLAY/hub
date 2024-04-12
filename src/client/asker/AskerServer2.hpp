@@ -24,7 +24,7 @@ namespace client {
 
 ///
 /// \brief The AskerServer2 class
-/// is an implement of AskerInterface linking with ServerImpl2 server implement
+/// is an implement of AskerInterface linking with ServerImpl server implement
 ///
 class SRC_API AskerServer2 : public hub::client::AskerInterface
 {
@@ -39,8 +39,17 @@ class SRC_API AskerServer2 : public hub::client::AskerInterface
 
     ~AskerServer2();
 
+    ///
+    /// \brief listStreams
+    /// \return
+    ///
     std::list<std::pair<std::string, sensor::SensorSpec>> listStreams() override;
 
+    ///
+    /// \brief getAcquisition
+    /// \param streamName
+    /// \return
+    ///
     sensor::Acquisition getAcquisition( const std::string& streamName ) override;
 
   private:

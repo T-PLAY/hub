@@ -72,7 +72,7 @@ static inline int nChannel(TypeId_t format) {
 // Transform matrix 4x4 of float.
 ///
 /// \brief The Mat4 class
-/// is 4x4 Matrix of float
+/// is 4x4 matrix of float
 ///
 struct Mat4 {
 
@@ -205,7 +205,7 @@ static_assert( sizeof( Mat4 ) == 64 );
 
 ///
 /// \brief The Vec3 class
-/// is 3D vector of float
+/// is a vector with 3 float
 ///
 struct Vec3 {
 

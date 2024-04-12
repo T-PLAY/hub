@@ -22,13 +22,14 @@ namespace net {
 
 ///
 /// \brief The ServerSocketI class
+/// is an interface describing server socket basic features.
 ///
 class SRC_API ServerSocketI
 {
   public:
     ///
-    /// \brief getPort
-    /// \return
+    /// \brief Getter function
+    /// \return port
     ///
     virtual int getPort() const = 0;
 

@@ -50,8 +50,9 @@ static constexpr bool serializable_v = serializable<T>::value;
 
 ///
 /// \brief The SerializerImpl class
+/// Todo remove this class because not efficient compare to default current serializer
 ///
-class SerializerImpl : public SerializerI
+class [[deprecated]] SerializerImpl : public SerializerI
 {
     static constexpr Size_t BuffSize = 1'000'000; // 1 Mo
     bool m_writing                   = false;
@@ -186,9 +187,6 @@ class SerializerImpl : public SerializerI
     Size_t m_position     = 0;
 };
 
-////////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////////////////////////////
 
 } // namespace serializer
 } // namespace hub

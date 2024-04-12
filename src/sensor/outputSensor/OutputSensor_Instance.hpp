@@ -28,7 +28,15 @@ namespace outputSensor {
 class OutputSensor_Instance
 {
   public:
+
+    ///
+    /// \brief OutputSensor_Instance
+    ///
     OutputSensor_Instance( OutputSensor_Instance&& )      = delete;
+
+    ///
+    /// \brief OutputSensor_Instance
+    ///
     OutputSensor_Instance( const OutputSensor_Instance& ) = delete;
 
     ///

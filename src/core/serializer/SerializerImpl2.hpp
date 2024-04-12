@@ -26,8 +26,9 @@ namespace serializer {
 
 ///
 /// \brief The SerializerImpl2 class
+/// Todo remove this class because useless
 ///
-class SerializerImpl2 : public SerializerI
+class [[deprecated]] SerializerImpl2 : public SerializerI
 {
   public:
     ///

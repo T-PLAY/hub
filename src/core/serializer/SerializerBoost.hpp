@@ -17,14 +17,14 @@
 
 #ifdef HUB_USE_BOOST
 
-#    include <array>
+#include <array>
 
-#    include <boost/archive/text_iarchive.hpp>
-#    include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
 
-#    include "SerializerI.hpp"
-#    include "core/InputBase.hpp"
-#    include "core/OutputBase.hpp"
+#include "SerializerI.hpp"
+#include "core/InputBase.hpp"
+#include "core/OutputBase.hpp"
 
 namespace hub {
 namespace serializer {
@@ -32,7 +32,7 @@ namespace serializer {
 ///
 /// \brief The SerializerBoost class
 ///
-class SerializerBoost : public SerializerI
+class [[deprecated]] SerializerBoost : public SerializerI
 {
   public:
     SerializerBoost( ByteView& byteView ) : SerializerI( byteView ) {}

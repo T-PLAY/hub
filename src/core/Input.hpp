@@ -38,7 +38,7 @@ class SRC_API InputT : public InputBase
   public:
     ///
     /// \brief read
-    /// \tparam T	A packable object
+    /// \tparam T is a packable object
     /// \param t
     /// \return
     ///
