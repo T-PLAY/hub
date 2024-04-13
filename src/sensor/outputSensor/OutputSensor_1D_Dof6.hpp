@@ -24,6 +24,7 @@ namespace outputSensor {
 
 ///
 /// \brief The OutputSensor_1D_Dof6 class
+/// mimic 6DoF sensor
 ///
 class OutputSensor_1D_Dof6 : public OutputSensor_Instance
 {

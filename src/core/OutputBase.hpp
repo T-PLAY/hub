@@ -44,14 +44,16 @@ class SRC_API OutputBase : public ios
 };
 
 ///
-/// \brief writable_t
+/// \brief Object that can write to an output
 ///
 template <typename T>
 using writable_t = decltype( std::declval<T>().write( std::declval<OutputBase&>() ) );
 
+/// \copydoc writable_t
 template <typename T, typename = std::void_t<>>
 struct writable : std::false_type {};
 
+/// \copydoc writable_t
 template <typename T>
 struct writable<T, std::void_t<writable_t<T>>> : std::true_type {};
 
@@ -61,14 +63,16 @@ static constexpr bool writable_v = writable<T>::value;
 ////////////////////
 
 ///
-/// \brief notWritable_t
+/// \brief Object with notWritable property
 ///
 template <typename T>
 using notWritable_t = decltype( T::notWritable );
 
+/// \copydoc notWritable_t
 template <typename T, typename = std::void_t<>>
 struct notWritable : std::false_type {};
 
+/// \copydoc notWritable_t
 template <typename T>
 struct notWritable<T, std::void_t<notWritable_t<T>>> : std::true_type {};
 

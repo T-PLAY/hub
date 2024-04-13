@@ -26,6 +26,7 @@ namespace output {
 
 ///
 /// \brief The OutputFile class
+/// is an implement of File only used by output communication
 ///
 class SRC_API OutputFile : public Output, public io::File
 {

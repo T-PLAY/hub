@@ -43,50 +43,52 @@ extern "C"
 #endif
 
     ///
-    /// \brief onServerNotFoundFunc
+    /// \brief on server not found viewer event
     ///
     typedef void ( *onServerNotFoundFunc )( const char* ipv4, int port );
 
     ///
-    /// \brief onServerConnectedFunc
+    /// \brief on server connected viewer event
     ///
     typedef void ( *onServerConnectedFunc )( const char* ipv4, int port );
 
     ///
-    /// \brief onServerDisconnectedFunc
+    /// \brief on server disconnected viewer event
     ///
     typedef void ( *onServerDisconnectedFunc )( const char* ipv4, int port );
 
     ///
-    /// \brief onNewStreamFunc
+    /// \brief on new stream viewer event
     ///
     typedef bool ( *onNewStreamFunc )( const char* streamName, const io::Header* header );
+
 #ifndef HUB_NON_BUILD_SENSOR
     ///
-    /// \brief onNewSensorFunc
+    /// \brief on new sensor viewer event
     ///
     typedef bool ( *onNewSensorFunc )( const char* streamName,
                                        const sensor::SensorSpec* sensorSpec );
 #endif
 
     ///
-    /// \brief onNewDataFunc
+    /// \brief on new data viewer event
     ///
     typedef void ( *onNewDataFunc )( const char* streamName, const Datas_t* datas );
+
 #ifndef HUB_NON_BUILD_SENSOR
     ///
-    /// \brief onNewAcqFunc
+    /// \brief on new acq viewer event
     ///
     typedef void ( *onNewAcqFunc )( const char* streamName, const sensor::Acquisition* acq );
 #endif
 
     ///
-    /// \brief onDelStreamFunc
+    /// \brief on del stream viewer event
     ///
     typedef void ( *onDelStreamFunc )( const char* streamName );
 
     ///
-    /// \brief onSetPropertyFunc
+    /// \brief on set property viewer event
     ///
     typedef void ( *onSetPropertyFunc )( const char* streamName,
                                          const char* objectName,
@@ -94,7 +96,7 @@ extern "C"
                                          const Any* value );
 
     ///
-    /// \brief onServerNotFoundFunc
+    /// \brief on log message viewer event
     ///
     typedef void ( *onLogMessageFunc )( const char* logMessage );
 

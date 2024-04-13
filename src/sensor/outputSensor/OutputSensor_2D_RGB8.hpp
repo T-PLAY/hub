@@ -24,6 +24,7 @@ namespace outputSensor {
 
 ///
 /// \brief The OutputSensor_2D_RGB8 class
+/// mimic camera sensor
 ///
 class OutputSensor_2D_RGB8 : public OutputSensor_Instance
 {

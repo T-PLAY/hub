@@ -24,6 +24,7 @@ namespace outputSensor {
 
 ///
 /// \brief The OutputSensor_3D_Density class
+/// mimic volumetric sensor (ex: MRI)
 ///
 class OutputSensor_3D_Density : public OutputSensor_Instance
 {

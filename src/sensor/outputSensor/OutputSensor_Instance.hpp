@@ -24,6 +24,10 @@ namespace outputSensor {
 
 ///
 /// \brief The OutputSensor_Instance class
+/// is a helper class to create mimic of different sensor.
+/// This class allow to simulate procedural sensor.
+/// Instance of sensor can be used to check viewer support.
+/// Each viewer application does not support all data to render.
 ///
 class OutputSensor_Instance
 {

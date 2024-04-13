@@ -24,19 +24,22 @@
 namespace hub {
 
 ///
-/// \brief TypeId_t
+/// \brief Identify each user type by unique id (32/64 os/arch) compatible
 ///
 using TypeId_t = int;
+static_assert(sizeof(int) == 4);
 
 ///
-/// \brief has_id_t
+/// \brief Object with id property
 ///
 template <typename T>
 using has_id_t = decltype( T::id );
 
+/// \copydoc has_id_t
 template <typename T, typename = std::void_t<>>
 struct has_id : std::false_type {};
 
+/// \copydoc has_id_t
 template <typename T>
 struct has_id<T, std::void_t<has_id_t<T>>> : std::true_type {};
 

@@ -173,7 +173,7 @@ class OutputSensor : public Sensor
 /////////////////////////////////////// TEMPLATE //////////////////////////////////////////////////
 
 ///
-/// \brief The OutputSensorT class
+/// \copydoc OutputSensor
 ///
 template <class Resolution, class Output = output::OutputStream>
 // class OutputSensorT : public Sensor

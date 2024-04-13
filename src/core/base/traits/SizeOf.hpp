@@ -49,14 +49,16 @@ requires( sizeof...( Ts ) > 1 ) constexpr auto sizeOf() {
 #else
 
 ///
-/// \brief has_Size_t
+/// \brief Object with Size property
 ///
 template <typename T>
 using has_Size_t = decltype( T::Size );
 
+/// \copydoc has_Size_t
 template <typename T, typename = std::void_t<>>
 struct has_Size : std::false_type {};
 
+/// \copydoc has_Size_t
 template <typename T>
 struct has_Size<T, std::void_t<has_Size_t<T>>> : std::true_type {};
 
@@ -66,14 +68,16 @@ static constexpr bool has_Size_v = has_Size<T>::value;
 ////////////////////////
 
 ///
-/// \brief has_size_t
+/// \brief Object with size() feature
 ///
 template <typename T>
 using has_size_t = decltype( std::declval<T>().size() );
 
+/// \copydoc has_size_t
 template <typename T, typename = std::void_t<>>
 struct has_size : std::false_type {};
 
+/// \copydoc has_size_t
 template <typename T>
 struct has_size<T, std::void_t<has_size_t<T>>> : std::true_type {};
 

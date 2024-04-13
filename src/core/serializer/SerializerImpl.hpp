@@ -34,14 +34,16 @@ namespace hub {
 namespace serializer {
 
 ///
-/// \brief serializable_t
+/// \brief Object with serialize(input/output) feature
 ///
 template <typename T>
 using serializable_t = decltype( std::declval<T>().serialize( std::declval<ios&>() ) );
 
+/// \copydoc serializable_t
 template <typename T, typename = std::void_t<>>
 struct serializable : std::false_type {};
 
+/// \copydoc serializable_t
 template <typename T>
 struct serializable<T, std::void_t<serializable_t<T>>> : std::true_type {};
 
