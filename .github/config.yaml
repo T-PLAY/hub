@@ -32,8 +32,9 @@ include:
     # - { name: "Ubuntu gcc", os: ubuntu-latest, cc: "gcc", cxx: "g++", icon: "Linux" }
     # - { name: "MacOS clang", os: macos-latest, cc: "clang", cxx: "clang++", icon: "Apple" }
     #
-  - builder-image: "paketobuildpacks/builder-jammy-tiny:0.0.173"
-    pack_cli_version: "v0.30.0-rc1"
+  # - builder-image: "paketobuildpacks/builder-jammy-tiny:0.0.173"
+  - builder-image: "ubuntu-latest"
+    # pack_cli_version: "v0.30.0-rc1"
   #   # The following syntax is not supported and will generate an array object when you echo: "Java version: Array"
   #   # java: ["11","17"]
   #   # It is then needed to populate yourself all the combinations as we do hereafter
