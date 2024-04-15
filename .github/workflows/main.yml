@@ -23,8 +23,9 @@ jobs:
           - { name: "MacOS clang", os: macos-latest, cc: "clang", cxx: "clang++", icon: "Apple" }
 
     steps:
-    # - name: Build and Install
+    - uses: actions/checkout@v3
     - uses: ./.github/workflows/buildAndTest.yml
+    # - name: Build and Install
       # with:
         # matrix: ${{ matrix }}
         # version: ${{ matrix.config }}
