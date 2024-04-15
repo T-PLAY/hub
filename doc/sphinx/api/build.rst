@@ -75,11 +75,3 @@ Installed paths :
 * lib/cmake/hub/hubConfig.cmake
 
 
-Tools
------
-
-* bin/app-server (server hub)
-* bin/app-viewer
-* bin/app-nativeViewer
-
-

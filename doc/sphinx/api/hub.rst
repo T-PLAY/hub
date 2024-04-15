@@ -21,7 +21,7 @@ Sensor
 ..   :members: Sensor(const SensorSpec& sensorSpec)
 
 .. doxygenfunction:: hub::sensor::Sensor::getSpec
-.. doxygenfunction:: hub::sensor::Sensor::acqMsg
+.. .. doxygenfunction:: hub::sensor::Sensor::acqMsg
 
 SensorSpec
 ***********

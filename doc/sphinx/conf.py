@@ -18,10 +18,12 @@ from sphinx.builders.html import StandaloneHTMLBuilder
 import subprocess, os
 
 # Doxygen
-#  subprocess.call('doxygen Doxyfile.in', shell=True)
-subprocess.call('doxygen Doxyfile.out', shell=True)
+subprocess.call('doxygen Doxyfile.in', shell=True)
+#  subprocess.call('doxygen Doxyfile.out', shell=True)
 
 # -- Project information -----------------------------------------------------
+#  sys.path.append(os.path.abspath('xml'))
+
 
 project = 'hub'
 copyright = '2021-2024, Gauthier Bouyjou'
@@ -102,7 +104,9 @@ html_static_path = ['_static']
 # -- Breathe configuration -------------------------------------------------
 
 breathe_projects = {
-	"hub": "_build/xml/"
+    "hub": "_build/xml/"
+    #  "hub": "/home/gauthier/tmpOpenSource/build-hub-Desktop-Debug/doc/sphinx/html/doxygen"
+	#  "hub": "xml/"
 }
 breathe_default_project = "hub"
 breathe_default_members = ('members', 'undoc-members')

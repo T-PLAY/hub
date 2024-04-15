@@ -12,3 +12,5 @@ Usage::
 
     bin/hub-bin-viewer
 
+    bin/hub-bin-nativeViewer
+
