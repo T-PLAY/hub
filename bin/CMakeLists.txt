@@ -15,6 +15,7 @@ if(TARGET hub)
 
     foreach(name ${SOURCES_BASENAME})
         get_filename_component(basename ${name} NAME)
+        STRING(REPLACE "bin-" "" basename ${basename})
         set(TARGET_NAME hub-${basename})
         add_executable(${TARGET_NAME} ${name}.cpp)
         target_link_libraries(${TARGET_NAME} hub)

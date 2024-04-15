@@ -4,6 +4,11 @@
 #include <sensor/outputSensor/OutputSensor_1D_Dof6.hpp>
 
 int main(int argc, char* argv[]) {
+
+    /** Description
+Run server.
+    End description */
+
     std::vector<std::string> args( argv + 1, argv + argc );
 
     int port                = HUB_SERVICE_PORT;

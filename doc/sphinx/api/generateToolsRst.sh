@@ -10,7 +10,7 @@ echo "
 Tools
 =====
 
-Most of the tools in the binaries \`directory <https://github.com/T-PLAY/hub/-/tree/main/bin>\`__.
+Most of the tools in the project bin \`folder <https://github.com/T-PLAY/hub/-/tree/main/bin>\`__.
 
 
 "
@@ -64,6 +64,7 @@ parseDir() {
 
 
 		exampleFileName=$(basename $exampleFilepath)
+		exampleFileNameWithoutExtension=$(echo $exampleFileName | cut -d. -f1)
 		# echo "$exampleFileName"
 		exampleName=$(echo $exampleFileName | cut -d. -f1 | cut -d- -f1 --complement)
 		# exampleName=$(echo $exampleFileName | cut -d. -f1 | awk -F- '{print $NF}')
@@ -139,7 +140,8 @@ parseDir() {
 # Includes
 # ********
 
-#         echo "
+		echo "./hub-$exampleName"
+
 # .. literalinclude:: $exampleFilepath
 #    :language: cpp
 #    :end-before: \file

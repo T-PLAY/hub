@@ -8,7 +8,6 @@
 int main( int argc, char* argv[] ) {
 
     /** Description
-bin-server
 Run server.
     End description */
 
