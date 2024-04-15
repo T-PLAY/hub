@@ -1,0 +1,50 @@
+#
+# To convert a yaml to json, execute the following command in a terminal
+# yq -P -o=json config.yaml
+#
+
+# >>>> Test case using job strategy syntax
+#
+# The following syntax which is derived from what we use in a job strategy
+#
+#include:
+#  builder-image: [ 'paketobuildpacks/builder-jammy-tiny:0.0.173', 'paketobuildpacks/builder-jammy-tiny:0.0.175' ]
+#  pack_cli_version: [ 'v0.30.0-rc1' ]
+#
+# and which corresponds to what we declare as job/step
+# strategy:
+#  matrix:
+#   builder-image: [ 'paketobuildpacks/builder-jammy-tiny:0.0.173', 'paketobuildpacks/builder-jammy-tiny:0.0.175' ]
+#   pack_cli_version: [ 'v0.30.0', 'v0.30.0-rc1' ]
+#
+# dot not work as github expects an array of values and will raise this error: A mapping was not expected !!!
+#
+
+#
+# This is why the yaml file should be declared as such:
+#
+# >>>> Test case with array of values
+#
+#
+include:
+  - builder-image: "paketobuildpacks/builder-jammy-tiny:0.0.173"
+    pack_cli_version: "v0.30.0-rc1"
+    # The following syntax is not supported and will generate an array object when you echo: "Java version: Array"
+    # java: ["11","17"]
+    # It is then needed to populate yourself all the combinations as we do hereafter
+    java: "11"
+  - builder-image: "paketobuildpacks/builder-jammy-tiny:0.0.175"
+    pack_cli_version: "v0.30.0"
+    java: "11"
+  - builder-image: "paketobuildpacks/builder-jammy-tiny:0.0.175"
+    pack_cli_version: "v0.30.0"
+    java: "17"
+  - builder-image: "paketobuildpacks/builder-jammy-tiny:0.0.175"
+    pack_cli_version: "v0.30.0-rc1"
+    java: "17"
+    tekton-version: "v0.48.0"
+    shipwright-version: "v0.11.0"
+    tekton-client-version: "0.31.0"
+    lifecycle-image: "buildpacksio/lifecycle:0.17.0"
+    run-image: "paketobuildpacks/run-jammy-tiny:latest"
+    kind_sha_commit: "33ccc3fd1cb4a92ab5bf294a994318848aa3a3c4"
