@@ -4,7 +4,7 @@ project(doc)
 
 if(HUB_BUILD_DOC)
 
-    add_subdirectory(cpp)
+    # add_subdirectory(cpp)
 
     if(NOT HUB_BROWSER)
         set(HUB_BROWSER
@@ -45,7 +45,7 @@ if(HUB_BUILD_DOC)
     add_custom_target(hub-doc-sphinx
           COMMAND ${SPHINX_EXECUTABLE} -b html ${SPHINX_SOURCE} ${SPHINX_BUILD}
           COMMAND ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/sphinx/html/api/index.html
-          COMMAND cp -r ${CMAKE_CURRENT_SOURCE_DIR}/sphinx/_build/html ${CMAKE_CURRENT_BINARY_DIR}/sphinx/html/doxygen
+          COMMAND cp -r ${CMAKE_CURRENT_SOURCE_DIR}/sphinx/_build/html ${CMAKE_CURRENT_BINARY_DIR}/sphinx/html/classes
           WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
           COMMENT "Generating documentation with Sphinx"
           VERBATIM

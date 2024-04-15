@@ -56,7 +56,8 @@ extensions = [
     'sphinx.ext.inheritance_diagram',
     'breathe',
     'sphinx.ext.githubpages',
-    'sphinx_rtd_theme'
+    'sphinx_rtd_theme',
+    #  'sphinx_mdinclude'
 ]
 
 # Add any paths that contain templates here, relative to this directory.

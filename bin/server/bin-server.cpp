@@ -4,7 +4,13 @@
 #include <io/Stream.hpp>
 #include <server/Server.hpp>
 
+
 int main( int argc, char* argv[] ) {
+
+    /** Description
+bin-server
+Run server.
+    End description */
 
     int port = HUB_SERVICE_PORT;
 

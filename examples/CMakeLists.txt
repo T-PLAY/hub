@@ -11,6 +11,7 @@ if(TARGET hub)
     endforeach()
 
     list(APPEND example_srcs ${CMAKE_CURRENT_SOURCE_DIR}/example-wip.cpp)
+    list(APPEND example_srcs ${CMAKE_CURRENT_SOURCE_DIR}/example-readme.cpp)
 
     string(REPLACE ".cpp" "" EXAMPLE_SRC_BASENAME "${example_srcs}")
     set(EXAMPLE_SRC_BASENAME ${EXAMPLE_SRC_BASENAME})

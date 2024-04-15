@@ -31,17 +31,17 @@ SensorSpec
 
 **Instantiate examples :**
 
-.. literalinclude:: ../../../doc/cpp/sensor/doc-sensor-sensorSpec.cpp
+.. literalinclude:: ../../../examples/sensor/example-sensor-sensorSpec.cpp
    :language: cpp
    :start-after: startConstruction
    :end-before: endConstruction
 
-.. literalinclude:: ../../../doc/cpp/sensor/doc-sensor-sensorSpec.cpp
+.. literalinclude:: ../../../examples/sensor/example-sensor-sensorSpec.cpp
    :language: cpp
    :start-after: startConstruction2
    :end-before: endConstruction2
 
-.. literalinclude:: ../../../doc/cpp/sensor/doc-sensor-sensorSpec.cpp
+.. literalinclude:: ../../../examples/sensor/example-sensor-sensorSpec.cpp
    :language: cpp
    :start-after: startConstruction3
    :end-before: endConstruction3
@@ -64,7 +64,7 @@ Matrix
 
 **Instantiate examples :**
 
-.. literalinclude:: ../../../doc/cpp/core/doc-core-matrix.cpp
+.. literalinclude:: ../../../examples/core/example-core-matrix.cpp
    :language: cpp
    :start-after: startConstruction
    :end-before: endConstruction
@@ -77,7 +77,7 @@ MatrixXD
 
 **Instantiate examples :**
 
-.. literalinclude:: ../../../doc/cpp/core/doc-core-matrixXD.cpp
+.. literalinclude:: ../../../examples/core/example-core-matrixXD.cpp
    :language: cpp
    :start-after: startConstruction
    :end-before: endConstruction
@@ -90,7 +90,7 @@ MatrixTs
 
 **Instantiate examples :**
 
-.. literalinclude:: ../../../doc/cpp/core/doc-core-matrixTs.cpp
+.. literalinclude:: ../../../examples/core/example-core-matrixTs.cpp
    :language: cpp
    :start-after: startConstruction
    :end-before: endConstruction
@@ -124,7 +124,7 @@ OutputSensor
 
 **Instantiate examples :**
 
-.. literalinclude:: ../../../doc/cpp/sensor/doc-sensor-outputSensor.cpp
+.. literalinclude:: ../../../examples/sensor/example-sensor-outputSensor.cpp
    :language: cpp
    :start-after: startConstruction
    :end-before: endConstruction
@@ -138,7 +138,7 @@ InputSensor
 
 **Instantiate examples :**
 
-.. literalinclude:: ../../../doc/cpp/sensor/doc-sensor-inputSensor.cpp
+.. literalinclude:: ../../../examples/sensor/example-sensor-inputSensor.cpp
    :language: cpp
    :start-after: startConstruction
    :end-before: endConstruction
@@ -184,7 +184,7 @@ InputStream
 
 **Instantiate example :**
 
-.. literalinclude:: ../../../doc/cpp/io/doc-io-inputStream.cpp
+.. literalinclude:: ../../../examples/io/example-io-inputStream.cpp
    :language: cpp
    :start-after: startConstruction
    :end-before: endConstruction
@@ -227,7 +227,7 @@ OutputStream
 
 **Instantiate example :**
 
-.. literalinclude:: ../../../doc/cpp/io/doc-io-outputStream.cpp
+.. literalinclude:: ../../../examples/io/example-io-outputStream.cpp
    :language: cpp
    :start-after: startConstruction
    :end-before: endConstruction
@@ -275,7 +275,7 @@ File
 
 .. doxygenfunction:: hub::io::File::File(const char* filePath)
 
-.. literalinclude:: ../../../doc/cpp/io/doc-io-file.cpp
+.. literalinclude:: ../../../examples/io/example-io-file.cpp
    :language: cpp
    :start-after: startConstruction
    :end-before: endConstruction
@@ -326,7 +326,7 @@ ViewerServer2
 
 **Instantiate examples :**
 
-.. literalinclude:: ../../../doc/cpp/client/doc-client-viewer.cpp
+.. literalinclude:: ../../../examples/client/example-client-viewer.cpp
    :language: cpp
    :start-after: startConstruction
    :end-before: endConstruction
@@ -351,7 +351,7 @@ AskerServer2
 
 **Instantiate examples :**
 
-.. literalinclude:: ../../../doc/cpp/client/doc-client-asker.cpp
+.. literalinclude:: ../../../examples/client/example-client-asker.cpp
    :language: cpp
    :start-after: startConstruction
    :end-before: endConstruction

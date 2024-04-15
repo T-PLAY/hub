@@ -8,4 +8,6 @@ You can write processing/visualising applications without worrying about the acq
 It is a reusable and modular system.
 It also allows several machines to work on the same data in real time.
 
+.. Todo change image
+
 .. image:: modular.png

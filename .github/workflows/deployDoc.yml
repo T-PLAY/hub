@@ -25,7 +25,7 @@ jobs:
     - name: Install Sphinx and Breathe
       run:
         sudo apt install -y sphinx-doc
-        && pip3 install sphinx-rtd-theme breathe sphinx-sitemap
+        && pip3 install sphinx-rtd-theme breathe sphinx-sitemap sphinx-mdinclude
 
     - name: Build sphinx doc
       run:

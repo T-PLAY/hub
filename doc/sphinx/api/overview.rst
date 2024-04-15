@@ -47,6 +47,8 @@ improving documentation, profiling and optimizing, etc.
 .. note:: **When contributing to the hub project you must agree to the MPL 2.0
           licensing terms.**
 
+See `license <https://github.com/T-PLAY/hub/blob/main/LICENSE>`__...
+
 Contributors
 ~~~~~~~~~~~~
 
@@ -54,7 +56,11 @@ Contributors
  - Francois Gaits - POC tcp communication
  - Chems Eddine Himeur - POC sensor communication
 
-and `others <https://github.com/T-PLAY/hub/-/project_members>`__...
+and `others <https://github.com/T-PLAY/hub/graphs/contributors>`__...
+
+.. mdinclude:: https://github.com/T-PLAY/hub/blob/main/Contributors.md
+
+.. mdinclude:: ../../../Contributors.md
 
 Repository visualization
 ~~~~~~~~~~~~~~~~~~~~~~~~
