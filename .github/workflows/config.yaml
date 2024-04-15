@@ -27,24 +27,29 @@
 #
 #
 include:
-  - builder-image: "paketobuildpacks/builder-jammy-tiny:0.0.173"
-    pack_cli_version: "v0.30.0-rc1"
-    # The following syntax is not supported and will generate an array object when you echo: "Java version: Array"
-    # java: ["11","17"]
-    # It is then needed to populate yourself all the combinations as we do hereafter
-    java: "11"
-  - builder-image: "paketobuildpacks/builder-jammy-tiny:0.0.175"
-    pack_cli_version: "v0.30.0"
-    java: "11"
-  - builder-image: "paketobuildpacks/builder-jammy-tiny:0.0.175"
-    pack_cli_version: "v0.30.0"
-    java: "17"
-  - builder-image: "paketobuildpacks/builder-jammy-tiny:0.0.175"
-    pack_cli_version: "v0.30.0-rc1"
-    java: "17"
-    tekton-version: "v0.48.0"
-    shipwright-version: "v0.11.0"
-    tekton-client-version: "0.31.0"
-    lifecycle-image: "buildpacksio/lifecycle:0.17.0"
-    run-image: "paketobuildpacks/run-jammy-tiny:latest"
-    kind_sha_commit: "33ccc3fd1cb4a92ab5bf294a994318848aa3a3c4"
+  config:
+    - { name: "Windows MSVC", os: windows-latest, cc: "cl.exe", cxx: "cl.exe", icon: "Windows"}
+    - { name: "Ubuntu gcc", os: ubuntu-latest, cc: "gcc", cxx: "g++", icon: "Linux" }
+    - { name: "MacOS clang", os: macos-latest, cc: "clang", cxx: "clang++", icon: "Apple" }
+
+  # - builder-image: "paketobuildpacks/builder-jammy-tiny:0.0.173"
+  #   pack_cli_version: "v0.30.0-rc1"
+  #   # The following syntax is not supported and will generate an array object when you echo: "Java version: Array"
+  #   # java: ["11","17"]
+  #   # It is then needed to populate yourself all the combinations as we do hereafter
+  #   java: "11"
+  # - builder-image: "paketobuildpacks/builder-jammy-tiny:0.0.175"
+  #   pack_cli_version: "v0.30.0"
+  #   java: "11"
+  # - builder-image: "paketobuildpacks/builder-jammy-tiny:0.0.175"
+  #   pack_cli_version: "v0.30.0"
+  #   java: "17"
+  # - builder-image: "paketobuildpacks/builder-jammy-tiny:0.0.175"
+  #   pack_cli_version: "v0.30.0-rc1"
+  #   java: "17"
+  #   tekton-version: "v0.48.0"
+  #   shipwright-version: "v0.11.0"
+  #   tekton-client-version: "0.31.0"
+  #   lifecycle-image: "buildpacksio/lifecycle:0.17.0"
+  #   run-image: "paketobuildpacks/run-jammy-tiny:latest"
+  #   kind_sha_commit: "33ccc3fd1cb4a92ab5bf294a994318848aa3a3c4"
