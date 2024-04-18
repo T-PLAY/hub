@@ -18,7 +18,7 @@ jobs:
     with:
       name: Ubuntu gcc
       os: ubuntu-latest
-      build-type: Debug
+      build-type: Release
       cc: gcc
       cxx: g++
       icon: Linux
@@ -28,7 +28,7 @@ jobs:
     with:
       name: Windows MSVC
       os: windows-latest
-      build-type: Debug
+      build-type: Release
       cc: cl
       cxx: cl
       icon: Windows
@@ -38,7 +38,7 @@ jobs:
     with:
       name: MacOS clang
       os: macos-latest
-      build-type: Debug
+      build-type: Release
       cc: clang
       cxx: clang++
       icon: Apple
