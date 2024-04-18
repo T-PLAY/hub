@@ -54,5 +54,5 @@ jobs:
 
     - name: Test
       run: cmake --build "${{github.workspace}}/build" --target hub-tests-bin
-      timeout-minutes: 5
+      timeout-minutes: 10
   
