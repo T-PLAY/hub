@@ -218,6 +218,7 @@ void OutputStreamServer2::startStreaming() {
 
                     // Todo check if streamViewerInited is true before set to false
                     data->m_streamViewerInited = false;
+                    // cppcheck-suppress [knownConditionTrueFalse]
                     while ( !data->m_streamViewerInited ) {
 #ifdef DEBUG_OUTPUT_STREAM
                         std::cout << "[OutputStream][Stream] waiting for stream viewer inited ..."
