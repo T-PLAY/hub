@@ -38,7 +38,7 @@ jobs:
                 -DCMAKE_BUILD_TYPE=${{inputs.build-type}} -DCMAKE_INSTALL_PREFIX=install -DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_EXAMPLES=ON
 
     - name: Build
-      run: cmake --build "${{github.workspace}}/build" --config ${{inputs.build-type}} --parallel -j $(expr $(nproc --all) - 1)
+      run: cmake --build "${{github.workspace}}/build" --config ${{inputs.build-type}}
 
     - name: Install
       run: cmake --install "${{github.workspace}}/build" --config ${{inputs.build-type}}
