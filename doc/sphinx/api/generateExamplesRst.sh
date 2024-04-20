@@ -62,11 +62,15 @@ parseDir() {
 		dir=$1
 		depth=$2
 
+		# echo "exampleFilepath = $exampleFilepath"
 
 		exampleFileName=$(basename $exampleFilepath)
-		# echo "$exampleFileName"
+		# echo "exampleFileName = $exampleFileName"
+
 		exampleName=$(echo $exampleFileName | cut -d. -f1 | cut -d- -f1 --complement)
+		# echo "exampleName = $exampleName"
 		# exampleName=$(echo $exampleFileName | cut -d. -f1 | awk -F- '{print $NF}')
+		
 		extension=$(echo $exampleFileName | cut -d. -f2)
 
 		if [ "$exampleName" = "doxygen" ]  \
@@ -127,7 +131,7 @@ parseDir() {
 
 		# echo "exampleName=$exampleName"
 
-		printHeaders "\`$index-$exampleName <https://github.com/T-PLAY/hub/blob/main/examples/$exampleFilepath>\`__" "$depth"
+		printHeaders "\`$index-$exampleName <https://github.com/T-PLAY/hub/blob/main/$exampleFilepath>\`__" "$depth"
 
 		# printHeaders "Includes" "$(expr $depth + 1)"
 
@@ -139,7 +143,7 @@ parseDir() {
 # ********
 
 		echo "
-.. literalinclude:: $exampleFilepath
+.. literalinclude:: ../../../$exampleFilepath
    :language: cpp
    :end-before: \file
 "
@@ -152,7 +156,7 @@ parseDir() {
 		# echo "
 # .. doxygenfile:: $exampleFileName
 		echo "
-.. literalinclude:: $exampleFilepath
+.. literalinclude:: ../../../$exampleFilepath
    :language: cpp
    :start-after: main(
    :end-before: return 0
@@ -166,5 +170,7 @@ parseDir() {
 
 iExample=0
 
-parseDir "../../../examples" 0
+cd ../../..
+# parseDir "../../../examples" 0
+parseDir "examples" 0
 

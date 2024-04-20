@@ -129,7 +129,7 @@ parseDir() {
 
 		# echo "exampleName=$exampleName"
 
-		printHeaders "\`$index-$exampleName <https://github.com/T-PLAY/hub/blob/main/bin/$exampleFilepath>\`__" "$depth"
+		printHeaders "\`$index-$exampleName <https://github.com/T-PLAY/hub/blob/main/$exampleFilepath>\`__" "$depth"
 
 		# printHeaders "Includes" "$(expr $depth + 1)"
 
@@ -155,7 +155,7 @@ parseDir() {
 		# echo "
 # .. doxygenfile:: $exampleFileName
 		echo "
-.. literalinclude:: $exampleFilepath
+.. literalinclude:: ../../../$exampleFilepath
    :language: cpp
    :start-after: Description
    :end-before: End description
@@ -169,5 +169,7 @@ parseDir() {
 
 iExample=0
 
-parseDir "../../../bin" 0
+cd ../../..
+# parseDir "../../../bin" 0
+parseDir "bin" 0
 
