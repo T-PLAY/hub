@@ -8,6 +8,8 @@ defaults:
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   deploy-doc:
@@ -34,6 +36,6 @@ jobs:
     - name: Deploy doc 🚀
       uses: JamesIves/github-pages-deploy-action@v4
       with:
-        folder: ${{github.workspace}}/doc/sphinx/_build/html/ # The folder the action should deploy.
+        folder: ${{github.workspace}}/build/doc/sphinx/html # The folder the action should deploy.
         clean: true
         single-commit: true
