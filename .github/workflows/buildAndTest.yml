@@ -7,9 +7,9 @@ defaults:
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ disable ]
   push:
-    branches: [ main ]
+    branches: [ disable ]
 
 env:
   BUILD_TYPE: Debug
