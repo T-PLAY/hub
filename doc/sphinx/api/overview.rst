@@ -34,8 +34,7 @@ Project Page
 Contact
 ~~~~~~~
 
- - GitHub `@hiergaut <https://github.com/hiergaut>`__
- - Mail `@Gauthier Bouyjou <gauthierbouyjou@aol.com>`__
+ - Mail `TPlay tplay@irit.fr`__
 
 Getting Involved
 ----------------
@@ -49,18 +48,9 @@ improving documentation, profiling and optimizing, etc.
 
 See `license <https://github.com/T-PLAY/hub/blob/main/LICENSE>`__...
 
-Contributors
-~~~~~~~~~~~~
-
- - Gauthier Bouyjou - Primary POC (`@hiergaut <https://github.com/hiergaut>`__)
- - Francois Gaits - POC tcp communication
- - Chems Eddine Himeur - POC sensor communication
+.. mdinclude:: ../../../Contributors.md
 
 and `others <https://github.com/T-PLAY/hub/graphs/contributors>`__...
-
-.. mdinclude:: https://github.com/T-PLAY/hub/blob/main/Contributors.md
-
-.. mdinclude:: ../../../Contributors.md
 
 Repository visualization
 ~~~~~~~~~~~~~~~~~~~~~~~~
