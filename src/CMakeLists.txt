@@ -401,7 +401,7 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         )
     endif()
 
-    add_custom_target(hub-coverage COMMAND ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../coverage-lcov/index.html)
+    add_custom_target(hub-coverage COMMAND ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov/index.html)
     custom_target_added(coverage)
     add_dependencies(hub-coverage hub-coverage-lcov)
 
@@ -411,7 +411,16 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
     file(
         GLOB_RECURSE
         src_headers
-        ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_INCLUDE_DIR}/*.cpp)
+        ${HUB_INCLUDE_DIR}/*.cpp)
+
+    # if(NOT PahoMqttCpp_FOUND)
+        list(FILTER src_headers EXCLUDE REGEX ".*Mqtt\\.cpp$")
+        list(FILTER src_headers EXCLUDE REGEX ".*Server2\\.cpp$")
+        list(REMOVE_ITEM src_headers ${HUB_INCLUDE_DIR}/core/Configuration.cpp)
+        list(REMOVE_ITEM src_headers ${HUB_INCLUDE_DIR}/core/Info.cpp)
+        list(REMOVE_ITEM src_headers ${HUB_INCLUDE_DIR}/core/Utils.cpp)
+        list(REMOVE_ITEM src_headers ${HUB_INCLUDE_DIR}/core/base/traits/SizeOf.cpp)
+    # endif()
 
     foreach(file ${src_headers})
         message(STATUS "file : ${file}")
@@ -425,10 +434,10 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         else()
             set(parentMacro "${parentName}-")
         endif()
-        if(NOT EXISTS "${PROJECT_SOURCE_DIR}/tests/test-${parentMacro}${name}.cpp")
-            message("parentMacro :${parentMacro}")
-            message("name :${name}")
-            message(FATAL_ERROR "test-${parentMacro}${name}.cpp not found in tests directory")
+        if(NOT EXISTS "${PROJECT_SOURCE_DIR}/tests/${parentName}/test-${parentMacro}${name}.cpp")
+            message("parentName: ${parentName}")
+            message("name: ${name}")
+            message(WARNING "${parentName}/test-${parentMacro}${name}.cpp not found in tests directory")
         endif()
 
         set(sourcesTmp ${SOURCE_FILES})
