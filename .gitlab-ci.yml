@@ -12,10 +12,9 @@ variables:
 
 stages: 
   - build
-  # - test
+  - test
   # - coverage
-  - code-analysis
-  # - format
+  - code-quality
   # - doc
 
 cache:
@@ -32,11 +31,11 @@ cache:
     - cmake --build $buildDir --config $BUILD_TYPE --parallel -j $(expr $(nproc --all) - 1)
     - cmake --install $buildDir --config $BUILD_TYPE
 
-# .test_any:
-#   script:
-#     - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-$ARCHITECTURE-$COMPILER_C-$BUILD_TYPE
-#     - cmake --build $buildDir --config $BUILD_TYPE --target hub-tests-bin
-#
+.test_any:
+  script:
+    - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-$ARCHITECTURE-$COMPILER_C-$BUILD_TYPE
+    - cmake --build $buildDir --config $BUILD_TYPE --target hub-tests-bin
+
 
 ############################################# Builds ############################################
 
@@ -66,7 +65,7 @@ build-linux-gcc-x64-debug:
     - CMAKE_CONFIGURE_ARGS=""
     - !reference [.build_any, script]
 
-############################################# Windows
+############################################# Windows (build)
 
 build-windows-cl-x64-release:
   stage: build
@@ -123,101 +122,93 @@ build-macOs-llvm_gcc-arm64-debug:
 
 ############################################# Linux (test)
 
-# test-linux-clang-x64-release:
-#   stage: test
-#   tags:
-#     - $LINUX_TAG
-#   script:
-#     - COMPILER_C=clang
-#     - ARCHITECTURE=x64
-#     - BUILD_TYPE=Release
-#     - !reference [.test_any, script]
-#   needs:
-#     - job: build-linux-clang-x64-release
-#       optional: true
-#
-#
-# test-linux-gcc-x64-debug:
-#   stage: test
-#   tags:
-#     - $LINUX_TAG
-#   script:
-#     - COMPILER_C=gcc
-#     - ARCHITECTURE=x64
-#     - BUILD_TYPE=Debug
-#     - !reference [.test_any, script]
-#   needs:
-#     - job: build-linux-gcc-x64-debug
-#       optional: true
-#
-# ############################################ DOS (test)
-#
-# test-windows-cl-x64-release:
-#   stage: test
-#   tags:
-#     - $WIN_TAG
-#   script:
-#     - COMPILER_C=cl
-#     - ARCHITECTURE=x64
-#     - BUILD_TYPE=Release
-#     - !reference [.test_any, script]
-#   needs:
-#     - job: build-windows-cl-x64-release
-#       optional: true
-#
-# test-windows-cl-Win32-debug:
-#   stage: test
-#   tags:
-#     - $WIN_TAG
-#   script:
-#     - COMPILER_C=cl
-#     - ARCHITECTURE=Win32
-#     - BUILD_TYPE=Debug
-#     - !reference [.test_any, script]
-#   needs:
-#     - job: build-windows-cl-Win32-debug
-#       optional: true
-#
+test-linux-clang-x64-release:
+  stage: test
+  tags:
+    - $LINUX_TAG
+  script:
+    - COMPILER_C=clang
+    - ARCHITECTURE=x64
+    - BUILD_TYPE=Release
+    - !reference [.test_any, script]
+  needs:
+    - job: build-linux-clang-x64-release
+      optional: true
+
+
+test-linux-gcc-x64-debug:
+  stage: test
+  tags:
+    - $LINUX_TAG
+  script:
+    - COMPILER_C=gcc
+    - ARCHITECTURE=x64
+    - BUILD_TYPE=Debug
+    - !reference [.test_any, script]
+  needs:
+    - job: build-linux-gcc-x64-debug
+      optional: true
+
+# ############################################ Windows (test)
+
+test-windows-cl-x64-release:
+  stage: test
+  tags:
+    - $WIN_TAG
+  script:
+    - COMPILER_C=cl
+    - ARCHITECTURE=x64
+    - BUILD_TYPE=Release
+    - !reference [.test_any, script]
+  needs:
+    - job: build-windows-cl-x64-release
+      optional: true
+
+test-windows-cl-Win32-debug:
+  stage: test
+  tags:
+    - $WIN_TAG
+  script:
+    - COMPILER_C=cl
+    - ARCHITECTURE=Win32
+    - BUILD_TYPE=Debug
+    - !reference [.test_any, script]
+  needs:
+    - job: build-windows-cl-Win32-debug
+      optional: true
+
 # ############################################ MacOs (test)
-#
-# test-macOs-clang-arm64-debug:
-#   stage: test
-#   tags:
-#     - $MACOS_TAG
-#   script:
-#     - COMPILER_C=clang
-#     - ARCHITECTURE=arm64
-#     - BUILD_TYPE=Debug
-#     - !reference [.test_any, script]
-#   needs:
-#     - job: build-macOs-clang-arm64-debug
-#       optional: true
-#
-# test-macOs-llvm_gcc-arm64-debug:
-#   stage: test
-#   tags:
-#     - $MACOS_TAG
-#   script:
-#     - COMPILER_C=llvm-gcc
-#     - ARCHITECTURE=arm64
-#     - BUILD_TYPE=Debug
-#     - !reference [.test_any, script]
-#   needs:
-#     - job: build-macOs-llvm_gcc-arm64-debug
-#       optional: true
-#
+
+test-macOs-clang-arm64-debug:
+  stage: test
+  tags:
+    - $MACOS_TAG
+  script:
+    - COMPILER_C=clang
+    - ARCHITECTURE=arm64
+    - BUILD_TYPE=Debug
+    - !reference [.test_any, script]
+  needs:
+    - job: build-macOs-clang-arm64-debug
+      optional: true
+
+test-macOs-llvm_gcc-arm64-debug:
+  stage: test
+  tags:
+    - $MACOS_TAG
+  script:
+    - COMPILER_C=llvm-gcc
+    - ARCHITECTURE=arm64
+    - BUILD_TYPE=Debug
+    - !reference [.test_any, script]
+  needs:
+    - job: build-macOs-llvm_gcc-arm64-debug
+      optional: true
+
 ############################################ Others ##############################################
 
-# coverage:
-#   stage: coverage
-#   tags:
-#     - $LINUX_TAG
-#   script:
-#     - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-x64-clang-Release
-#     - cmake --build $buildDir --target hub-coverage
-
 cppCheck-linux-clang-x64-release:
-  stage: code-analysis
+  stage: code-quality
   tags:
     - $LINUX_TAG
   script:
@@ -225,6 +216,17 @@ cppCheck-linux-clang-x64-release:
     - cmake --build $buildDir --target hub-cppCheck
   needs:
     - job: test-linux-clang-x64-release
+      optional: true
+
+doc-doxygen-linux-clang-x64-release:
+  stage: code-quality
+  tags:
+    - $LINUX_TAG
+  script:
+    - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-x64-clang-Release
+    - cmake --build $buildDir --target hub-doc-doxygen
+  needs:
+    - job: cppCheck-linux-clang-x64-release
       optional: true
 
 # format-linux-clang-x64-release:
@@ -239,17 +241,6 @@ cppCheck-linux-clang-x64-release:
 #     - job: cppCheck-linux-clang-x64-release
 #       optional: true
 
-# doc-doxygen-linux-clang-x64-release:
-#   stage: doc
-#   tags:
-#     - $LINUX_TAG
-#   script:
-#     - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-x64-clang-Release
-#     - cmake --build $buildDir --target hub-doc-doxygen
-#   needs:
-#     - job: format-linux-clang-x64-release
-#       optional: true
-
 # doc-sphinx-linux-clang-x64-release:
 #   stage: doc
 #   tags:
@@ -261,3 +252,10 @@ cppCheck-linux-clang-x64-release:
 #     - job: doc-doxygen-linux-clang-x64-release
 #       optional: true
 #
+# coverage:
+#   stage: coverage
+#   tags:
+#     - $LINUX_TAG
+#   script:
+#     - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-x64-clang-Release
+#     - cmake --build $buildDir --target hub-coverage
