@@ -46,6 +46,7 @@ if(HUB_BUILD_DOC)
           COMMAND ${SPHINX_EXECUTABLE} -b html ${SPHINX_SOURCE} ${SPHINX_BUILD}
           COMMAND ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/sphinx/html/api/index.html
           COMMAND cp -r ${CMAKE_CURRENT_SOURCE_DIR}/sphinx/_build/html ${CMAKE_CURRENT_BINARY_DIR}/sphinx/html/classes
+          COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/sphinx/index.html ${CMAKE_CURRENT_BINARY_DIR}/sphinx/html/
           WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
           COMMENT "Generating documentation with Sphinx"
           VERBATIM
