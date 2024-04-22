@@ -6,7 +6,7 @@
 int main(int argc, char* argv[]) {
 
     /** Description
-Run server.
+Run 6DOF procedural.
     End description */
 
     std::vector<std::string> args( argv + 1, argv + argc );

@@ -7,7 +7,7 @@
 int main( int argc, char* argv[] ) {
 
     /** Description
-Run server.
+Run cat.
     End description */
 
 
