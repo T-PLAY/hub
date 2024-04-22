@@ -223,15 +223,11 @@ endif()
 find_package(cppcheck QUIET)
 if(cppcheck_FOUND)
     execute_process(
-#        COMMAND cppcheck --version
         COMMAND ${CPPCHECK_EXECUTABLE} --version
         RESULT_VARIABLE CPP_CHECK_FOUND
         OUTPUT_VARIABLE CPP_CHECK_OUTPUT
         ERROR_VARIABLE CPP_CHECK_ERROR
     )
-#    if (NOT CPP_CHECK_FOUND)
-#        message(FATAL_ERROR "cppcheck is found or not ?")
-#    endif()
 
     string(REGEX MATCHALL "-.*$|[0-9]+" CPP_CHECK_VERSION_LIST ${CPP_CHECK_OUTPUT})
     list(GET CPP_CHECK_VERSION_LIST 0 CPP_CHECK_VERSION_MAJOR)
