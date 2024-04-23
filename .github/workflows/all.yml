@@ -28,7 +28,7 @@ jobs:
     - uses: actions/cache@v3
       with:
         path: "${{github.workspace}}/"
-        key: abc
+        key: ${{ runner.name }}-${{ runner.os }}-${{ runner.arch }}
 
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -50,7 +50,7 @@ jobs:
     - uses: actions/cache@v3
       with:
         path: "${{github.workspace}}/"
-        key: abc
+        key: ${{ runner.name }}-${{ runner.os }}-${{ runner.arch }}
 
     - name: Test
       run: cmake --build "${{github.workspace}}/build" --target hub-tests-bin
