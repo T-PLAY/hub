@@ -105,6 +105,14 @@ install(
     PATTERN "*.h"
     PATTERN "*.inl")
 
+# Todo export static lib
+#install(
+#	EXPORT external
+#	FILE ${PROJECT_NAME}Targets.cmake
+#	# DESTINATION lib/cmake/${PROJECT_NAME})
+#	DESTINATION share/${PROJECT_NAME}/cmake)
+#export(EXPORT external FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
+
 set(SRC_TARGETS)
 
 if(NOT XCODE) # unable to have object files as native build with Xcode
@@ -263,8 +271,7 @@ if(HUB_BUILD_STATIC)
 	#        FILE ${PROJECT_NAME}Targets.cmake
 	#        # DESTINATION lib/cmake/${PROJECT_NAME})
 	#        DESTINATION share/${PROJECT_NAME}/cmake)
-	#    export(EXPORT ${PROJECT_NAME}_static FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
-
+	    #export(EXPORT ${PROJECT_NAME}_static FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 
     if(UNIX)
         set_target_properties(${PROJECT_NAME}_static PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
@@ -292,7 +299,8 @@ if(HUB_BUILD_SHARED)
             PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
                    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
                    $<INSTALL_INTERFACE:include>
-            # PRIVATE ${HUB_EXTERNAL_DIR}
+            #PRIVATE 
+            #${HUB_EXTERNAL_DIR}
         )
     endif() # (XCODE)
 
@@ -330,7 +338,7 @@ endif() # (HUB_BUILD_SHARED)
 
 if(HUB_BUILD_SHARED OR HUB_BUILD_STATIC)
     if(HUB_BUILD_SHARED AND HUB_BUILD_STATIC)
-        add_library(hub ALIAS hub_static)
+        add_library(hub ALIAS hub_static) # Todo change to shared by default
     elseif(HUB_BUILD_SHARED)
         add_library(hub ALIAS hub_shared)
     else()
