@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.8)
 find_package(Git)
 include(GetVersionFromGitTag)
 
+set(HUB_LIBRARY)
 set(REQUIRED_LIBS ${HUB_TBB_TARGET})
 
 message(STATUS "${HEADER_MSG} Version: ${${PROJECT_NAME}_VERSION}")
@@ -289,6 +290,8 @@ if(HUB_BUILD_STATIC)
         set_target_properties(${PROJECT_NAME}_static PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
     endif()
 
+    list(APPEND HUB_LIBRARY hub_static)
+
 endif() # static library
 
 # ############################ SHARED LIBRARY
@@ -347,7 +350,11 @@ if(HUB_BUILD_SHARED)
 
     set_target_properties(${PROJECT_NAME}_shared PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 
+    list(APPEND HUB_LIBRARY hub_shared)
+
 endif() # (HUB_BUILD_SHARED)
+
+message(STATUS "${HEADER_MSG} Libraries: (${HUB_LIBRARY})")
 
 if(HUB_BUILD_SHARED OR HUB_BUILD_STATIC)
     if(HUB_BUILD_SHARED AND HUB_BUILD_STATIC)
