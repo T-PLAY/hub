@@ -4,7 +4,7 @@ project(bin LANGUAGES CXX)
 
 if(TARGET hub)
 
-    option(HUB_ENABLE_BINS "Enable binaries" ON)
+    option(HUB_ENABLE_BINS "Enable binaries" OFF)
     if(HUB_ENABLE_BINS)
 
         set(bin_srcs)
@@ -31,6 +31,14 @@ if(TARGET hub)
                         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:hub_shared> $<TARGET_FILE_DIR:${TARGET_NAME}>)
                 endif()
             endif()
+
+            install(
+                    TARGETS ${TARGET_NAME}
+                    EXPORT ${TARGET_NAME}
+                    DESTINATION ${ARCHITECTURE}/bin)
+#	    set_target_properties(${TARGET_NAME} PROPERTIES INSTALL_RPATH ${ARCHITECTURE}/bin)
+
+
         endforeach()
 
     endif()
