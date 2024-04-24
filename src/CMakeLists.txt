@@ -20,7 +20,8 @@ endif()
 option(HUB_BUILD_STATIC "Build static library" ON)
 option(HUB_BUILD_SHARED "Build shared library" ON)
 
-# ######################## OS specifics
+########################## OS specifics ###########################
+
 if(MINGW)
     if(CLANG)
         set(THREADS_PREFER_PTHREAD_FLAG ON)
@@ -79,10 +80,10 @@ if (REQUIRED_LIBS)
         message(STATUS "${HEADER_MSG} Dependencies: ${REQUIRED_LIBS}")
 endif()
 
-file(# GLOB
-     GLOB_RECURSE external_sources ${HUB_EXTERNAL_DIR}/*.cpp ${HUB_EXTERNAL_DIR}/*.c)
-file(# GLOB
-     GLOB_RECURSE external_headers ${HUB_EXTERNAL_DIR}/*.hpp ${HUB_EXTERNAL_DIR}/*.h)
+############################# Externals #################################
+
+file(GLOB_RECURSE external_sources ${HUB_EXTERNAL_DIR}/*.cpp ${HUB_EXTERNAL_DIR}/*.c)
+file(GLOB_RECURSE external_headers ${HUB_EXTERNAL_DIR}/*.hpp ${HUB_EXTERNAL_DIR}/*.h)
 
 if(NOT HUB_USE_ZPP_BITS)
     list(REMOVE_ITEM external_headers ${HUB_EXTERNAL_DIR}/zpp_bits.h)
@@ -97,13 +98,16 @@ if(UNIX)
     set_property(TARGET external PROPERTY POSITION_INDEPENDENT_CODE ON) # gltfpack
 endif()
 
+#set(external_headers_only ${HUB_EXTERNAL_DIR}/serializer/serializer.h)
 install(
-    DIRECTORY ${HUB_EXTERNAL_DIR}/
-    DESTINATION include/
+#    DIRECTORY ${HUB_EXTERNAL_DIR}/
+    DIRECTORY ${HUB_EXTERNAL_DIR}/serializer/
+    DESTINATION include/serializer/
     FILES_MATCHING
     PATTERN "*.hpp"
     PATTERN "*.h"
-    PATTERN "*.inl")
+    PATTERN "*.inl"
+)
 
 # Todo export static lib
 #install(
@@ -115,6 +119,8 @@ install(
 
 set(SRC_TARGETS)
 
+############################# Modules #################################
+
 if(NOT XCODE) # unable to have object files as native build with Xcode
 
     foreach(HUB_MODULE ${HUB_MODULES})
@@ -123,11 +129,9 @@ if(NOT XCODE) # unable to have object files as native build with Xcode
         string(REPLACE "/" "-" TARGET_NAME "${TARGET_NAME}")
 
         set(object_sources)
-        file(# GLOB
-             GLOB_RECURSE object_sources ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_MODULE}/*.cpp)
+        file(GLOB_RECURSE object_sources ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_MODULE}/*.cpp)
         set(object_headers)
-        file(# GLOB
-             GLOB_RECURSE object_headers ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_MODULE}/*.hpp
+        file(GLOB_RECURSE object_headers ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_MODULE}/*.hpp
              ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_MODULE}/*.h)
         if(object_headers MATCHES "Types.hpp")
             message(FATAL_ERROR "Types.hpp shallow Radium Core/Types.hpp definitions")
@@ -220,23 +224,29 @@ if(HUB_BUILD_STATIC)
             ${PROJECT_NAME}_static
             PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
                    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
+                   $<BUILD_INTERFACE:${HUB_EXTERNAL_DIR}>
                    $<INSTALL_INTERFACE:include>
-                   # PRIVATE
-                   ${HUB_EXTERNAL_DIR})
+#                   PRIVATE
+#                   ${HUB_EXTERNAL_DIR}
+        )
     endif() # (XCODE)
 
     target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DSRC_STATIC)
-    target_link_libraries(${PROJECT_NAME}_static PRIVATE external ${REQUIRED_LIBS})
+#    target_link_libraries(${PROJECT_NAME}_static PRIVATE external ${REQUIRED_LIBS})
+    target_link_libraries(${PROJECT_NAME}_static PRIVATE ${REQUIRED_LIBS})
 
 	# Todo export static lib
-	#    set_target_properties(${PROJECT_NAME}_static PROPERTIES VERSION ${${PROJECT_NAME}_VERSION}
-	#                                                            SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR})
+#            set_target_properties(${PROJECT_NAME}_static PROPERTIES VERSION ${${PROJECT_NAME}_VERSION}
+#                                                                    SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR})
 
     install(
         TARGETS ${PROJECT_NAME}_static
         EXPORT ${PROJECT_NAME}_static
         # DESTINATION lib/${ARCHITECTURE}
-        DESTINATION ${ARCHITECTURE}/lib)
+        DESTINATION ${ARCHITECTURE}/lib
+        RUNTIME DESTINATION ${ARCHITECTURE}/bin
+        )
+
     if(MSVC)
         if(${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
             target_compile_options(${PROJECT_NAME}_static PRIVATE /Zi)
@@ -266,11 +276,11 @@ if(HUB_BUILD_STATIC)
     endif() # MSVC
 
     # Todo export static lib
-	#    install(
-	#        EXPORT ${PROJECT_NAME}_static
-	#        FILE ${PROJECT_NAME}Targets.cmake
-	#        # DESTINATION lib/cmake/${PROJECT_NAME})
-	#        DESTINATION share/${PROJECT_NAME}/cmake)
+            install(
+                EXPORT ${PROJECT_NAME}_static
+                FILE ${PROJECT_NAME}Targets.cmake
+                # DESTINATION lib/cmake/${PROJECT_NAME})
+                DESTINATION share/${PROJECT_NAME}/cmake)
 	    #export(EXPORT ${PROJECT_NAME}_static FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 
     if(UNIX)
@@ -315,7 +325,6 @@ if(HUB_BUILD_SHARED)
         TARGETS ${PROJECT_NAME}_shared
         EXPORT ${PROJECT_NAME}_shared
         DESTINATION ${ARCHITECTURE}/bin # Linux
-        # DESTINATION ${ARCHITECTURE}/lib)
         RUNTIME DESTINATION ${ARCHITECTURE}/bin # Windows
     )
 
@@ -328,7 +337,6 @@ if(HUB_BUILD_SHARED)
     install(
         EXPORT ${PROJECT_NAME}_shared
         FILE ${PROJECT_NAME}Targets.cmake
-        # DESTINATION lib/cmake/${PROJECT_NAME})
         DESTINATION share/${PROJECT_NAME}/cmake)
     export(EXPORT ${PROJECT_NAME}_shared FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 
@@ -337,8 +345,9 @@ if(HUB_BUILD_SHARED)
 endif() # (HUB_BUILD_SHARED)
 
 if(HUB_BUILD_SHARED OR HUB_BUILD_STATIC)
+
     if(HUB_BUILD_SHARED AND HUB_BUILD_STATIC)
-        add_library(hub ALIAS hub_static) # Todo change to shared by default
+        add_library(hub ALIAS hub_shared)
     elseif(HUB_BUILD_SHARED)
         add_library(hub ALIAS hub_shared)
     else()
@@ -357,13 +366,11 @@ include(CMakePackageConfigHelpers)
 
 configure_package_config_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-    # INSTALL_DESTINATION "lib/cmake/${PROJECT_NAME}"
     INSTALL_DESTINATION "share/${PROJECT_NAME}/cmake/"
     NO_SET_AND_CHECK_MACRO NO_CHECK_REQUIRED_COMPONENTS_MACRO)
 
 write_basic_package_version_file(
     "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-    # VERSION 1.0.0
     VERSION ${${PROJECT_NAME}_VERSION}
     COMPATIBILITY AnyNewerVersion)
 

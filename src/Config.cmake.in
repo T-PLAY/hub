@@ -18,8 +18,9 @@ set (HUB_VERSION "@hub_VERSION@")
 message(STATUS "Found hub: ${PACKAGE_PREFIX_DIR} (version \"${HUB_VERSION}\")")
 
 if(TARGET hub_shared OR TARGET hub_static)
+
 	if(TARGET hub_shared AND TARGET hub_static)
-		add_library(hub ALIAS hub_static)
+                add_library(hub ALIAS hub_shared)
 	elseif(TARGET hub_shared)
 		add_library(hub ALIAS hub_shared)
 	else()
