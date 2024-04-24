@@ -286,9 +286,9 @@ if(HUB_BUILD_STATIC)
                 DESTINATION share/${PROJECT_NAME}/cmake)
 #            export(EXPORT ${PROJECT_NAME}_static FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 
-#    if(UNIX)
-    set_target_properties(${PROJECT_NAME}_static PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
-#    endif()
+    if(UNIX)
+		set_target_properties(${PROJECT_NAME}_static PROPERTIES OUTPUT_NAME ${PROJECT_NAME}) # multiple rules generate hub.lib (hub.dll do so) on windows
+    endif()
 
     list(APPEND HUB_LIBRARIES static)
 

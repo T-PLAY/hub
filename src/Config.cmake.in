@@ -30,10 +30,13 @@ if(TARGET hub_shared OR TARGET hub_static)
 	if(TARGET hub_shared AND TARGET hub_static)
                 add_library(hub ALIAS hub_static)
         elseif(TARGET hub_shared)
+				add_definitions(-DSRC_IMPORTS) # Import dll only for external use
                 add_library(hub ALIAS hub_shared)
         else()
-		add_library(hub ALIAS hub_static)
+				add_library(hub ALIAS hub_static)
         endif()
 else()
 	message(FATAL_ERROR "static or shared library are not installed")
 endif()
+
+

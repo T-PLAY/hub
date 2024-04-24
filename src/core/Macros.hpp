@@ -154,12 +154,14 @@ namespace hub {
 #    if defined SRC_STATIC
 #        define SRC_API
 
+#    elif defined SRC_IMPORTS
+#        define SRC_API __declspec( dllimport )
+
 #    elif defined SRC_EXPORTS
 #        define SRC_API __declspec( dllexport )
 
 #    else
-#        error "unable to import from build environment"
-#        define SRC_API __declspec( dllimport )
+#        error "unable to recognize situation"
 #    endif
 
 #else // unix
@@ -613,68 +615,5 @@ sizeOf( const T& t, const Ts&... ts ) {
 }
 
 #endif
-
-/////////////////////////////////////////////// PRETTY BYTES
-/////////////////////////////////////////////////
-
-//// source : https://www.mbeckler.org/blog/?p=114
-//// Prints to the provided buffer a nice number of bytes (KB, MB, GB, etc)
-/// \brief pretty_bytes
-static std::string pretty_bytes( hub::Size_t bytes ) {
-    // std::string str;
-
-    constexpr auto buffSize = 32;
-    char buff[buffSize] { 0 };
-    static CONSTEXPR17 std::string_view suffixes[] { "Bytes", "Ko", "Mo", "Go", "To", "Po", "Eo" };
-    uint64_t s          = 0; // which suffix to use
-    double count        = bytes;
-    constexpr auto kilo = 1'000;
-
-    while ( count >= kilo && s < 7 ) {
-        s++;
-        count /= kilo;
-    }
-
-    /// \brief count
-    if ( count - floor( count ) == 0.0 ) {
-#ifdef WIN32
-        snprintf( buff, buffSize, "%d %s", (int)count, suffixes[s].data() );
-#else
-#    ifdef OS_MACOS
-        snprintf( buff, buffSize, "%d %s", (int)count, suffixes[s].data() );
-#    else
-        sprintf( buff, "%d %s", (int)count, suffixes[s].data() );
-#    endif
-#endif
-    }
-    /// \brief else
-    else
-    {
-#ifdef WIN32
-        snprintf( buff, buffSize, "%.1f %s", count, suffixes[s].data() );
-#else
-#    ifdef OS_MACOS
-        snprintf( buff, buffSize, "%.1f %s", count, suffixes[s].data() );
-#    else
-        sprintf( buff, "%.1f %s", count, suffixes[s].data() );
-#    endif
-#endif
-    }
-
-    // return std::string( buff );
-    /// \brief return
-    return buff;
-}
-#define PRETTY_BYTES( t ) hub::pretty_bytes( t )
-
-/////////////////////////////////////////////// STATIC WARNING
-/////////////////////////////////////////////////
-
-//// Note: using STATIC_WARNING_TEMPLATE changes the meaning of a program in a small way.
-//// It introduces a member/variable declaration.  This means at least one byte of space
-//// in each structure/class instantiation.  STATIC_WARNING should be preferred in any
-//// non-template situation.
-////  'token' must be a program-wide unique identifier.
-// STATIC_WARNING(cond, msg) PP_CAT(PP_CAT(_localvar_, token),__LINE__)
 
 } // namespace hub
