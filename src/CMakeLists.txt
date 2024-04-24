@@ -118,6 +118,7 @@ install(
 #export(EXPORT external FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 
 set(SRC_TARGETS)
+list(APPEND SRC_TARGETS "$<TARGET_OBJECTS:external>")
 
 ############################# Modules #################################
 
@@ -281,7 +282,7 @@ if(HUB_BUILD_STATIC)
                 FILE ${PROJECT_NAME}Targets.cmake
                 # DESTINATION lib/cmake/${PROJECT_NAME})
                 DESTINATION share/${PROJECT_NAME}/cmake)
-	    #export(EXPORT ${PROJECT_NAME}_static FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
+#            export(EXPORT ${PROJECT_NAME}_static FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 
     if(UNIX)
         set_target_properties(${PROJECT_NAME}_static PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
@@ -308,6 +309,7 @@ if(HUB_BUILD_SHARED)
             ${PROJECT_NAME}_shared
             PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
                    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
+                   $<BUILD_INTERFACE:${HUB_EXTERNAL_DIR}>
                    $<INSTALL_INTERFACE:include>
             #PRIVATE 
             #${HUB_EXTERNAL_DIR}
@@ -315,7 +317,8 @@ if(HUB_BUILD_SHARED)
     endif() # (XCODE)
 
     target_compile_definitions(${PROJECT_NAME}_shared PUBLIC -DSRC_EXPORTS)
-    target_link_libraries(${PROJECT_NAME}_shared PRIVATE external ${REQUIRED_LIBS})
+#    target_link_libraries(${PROJECT_NAME}_shared PRIVATE external ${REQUIRED_LIBS})
+    target_link_libraries(${PROJECT_NAME}_shared PRIVATE ${REQUIRED_LIBS})
 
     # PUBLIC $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
     set_target_properties(${PROJECT_NAME}_shared PROPERTIES VERSION ${${PROJECT_NAME}_VERSION}
@@ -338,7 +341,7 @@ if(HUB_BUILD_SHARED)
         EXPORT ${PROJECT_NAME}_shared
         FILE ${PROJECT_NAME}Targets.cmake
         DESTINATION share/${PROJECT_NAME}/cmake)
-    export(EXPORT ${PROJECT_NAME}_shared FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
+#    export(EXPORT ${PROJECT_NAME}_shared FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 
     set_target_properties(${PROJECT_NAME}_shared PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 
