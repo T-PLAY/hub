@@ -102,7 +102,7 @@ endif()
 install(
 #    DIRECTORY ${HUB_EXTERNAL_DIR}/
     DIRECTORY ${HUB_EXTERNAL_DIR}/serializer/
-    DESTINATION include/serializer/
+    DESTINATION include/external/serializer/
     FILES_MATCHING
     PATTERN "*.hpp"
     PATTERN "*.h"
@@ -227,6 +227,7 @@ if(HUB_BUILD_STATIC)
                    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
                    $<BUILD_INTERFACE:${HUB_EXTERNAL_DIR}>
                    $<INSTALL_INTERFACE:include>
+                   $<INSTALL_INTERFACE:include/external>
 #                   PRIVATE
 #                   ${HUB_EXTERNAL_DIR}
         )
@@ -279,7 +280,7 @@ if(HUB_BUILD_STATIC)
     # Todo export static lib
             install(
                 EXPORT ${PROJECT_NAME}_static
-                FILE ${PROJECT_NAME}Targets.cmake
+                FILE ${PROJECT_NAME}StaticTargets.cmake
                 # DESTINATION lib/cmake/${PROJECT_NAME})
                 DESTINATION share/${PROJECT_NAME}/cmake)
 #            export(EXPORT ${PROJECT_NAME}_static FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
@@ -311,7 +312,8 @@ if(HUB_BUILD_SHARED)
                    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
                    $<BUILD_INTERFACE:${HUB_EXTERNAL_DIR}>
                    $<INSTALL_INTERFACE:include>
-            #PRIVATE 
+                   $<INSTALL_INTERFACE:include/external>
+            #PRIVATE
             #${HUB_EXTERNAL_DIR}
         )
     endif() # (XCODE)
@@ -339,7 +341,7 @@ if(HUB_BUILD_SHARED)
 
     install(
         EXPORT ${PROJECT_NAME}_shared
-        FILE ${PROJECT_NAME}Targets.cmake
+        FILE ${PROJECT_NAME}SharedTargets.cmake
         DESTINATION share/${PROJECT_NAME}/cmake)
 #    export(EXPORT ${PROJECT_NAME}_shared FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 
@@ -348,9 +350,8 @@ if(HUB_BUILD_SHARED)
 endif() # (HUB_BUILD_SHARED)
 
 if(HUB_BUILD_SHARED OR HUB_BUILD_STATIC)
-
     if(HUB_BUILD_SHARED AND HUB_BUILD_STATIC)
-        add_library(hub ALIAS hub_shared)
+        add_library(hub ALIAS hub_static)
     elseif(HUB_BUILD_SHARED)
         add_library(hub ALIAS hub_shared)
     else()

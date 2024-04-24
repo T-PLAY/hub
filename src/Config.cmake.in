@@ -1,7 +1,12 @@
 
 @PACKAGE_INIT@
 
-include ( "${CMAKE_CURRENT_LIST_DIR}/hubTargets.cmake" )
+if (@HUB_BUILD_STATIC@)
+    include ( "${CMAKE_CURRENT_LIST_DIR}/hubStaticTargets.cmake" )
+endif()
+if (@HUB_BUILD_SHARED@)
+    include ( "${CMAKE_CURRENT_LIST_DIR}/hubSharedTargets.cmake" )
+endif()
 
 set(CMAKE_CXX_STANDARD @CMAKE_CXX_STANDARD@)
 set(CMAKE_CXX_STANDARD_REQUIRED @CMAKE_CXX_STANDARD_REQUIRED@)
@@ -10,8 +15,11 @@ if(UNIX)
     find_package(Threads REQUIRED)
 endif()
 
-set(HUB_INCLUDE_DIR ${PACKAGE_PREFIX_DIR}/include)
+if (@TBB_FOUND@)
+    find_package(TBB REQUIRED)
+endif()
 
+set(HUB_INCLUDE_DIR ${PACKAGE_PREFIX_DIR}/include)
 
 set (HUB_VERSION "@hub_VERSION@")
 
@@ -20,9 +28,9 @@ message(STATUS "Found hub: ${PACKAGE_PREFIX_DIR} (version \"${HUB_VERSION}\")")
 if(TARGET hub_shared OR TARGET hub_static)
 
 	if(TARGET hub_shared AND TARGET hub_static)
-                add_library(hub ALIAS hub_shared)
+                add_library(hub ALIAS hub_static)
 	elseif(TARGET hub_shared)
-		add_library(hub ALIAS hub_shared)
+                add_library(hub ALIAS hub_shared)
 	else()
 		add_library(hub ALIAS hub_static)
 	endif()
