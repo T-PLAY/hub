@@ -234,21 +234,54 @@ if(HUB_BUILD_STATIC)
         )
     endif() # (XCODE)
 
+    target_compile_features(${PROJECT_NAME}_static PUBLIC cxx_std_17)
     target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DSRC_STATIC)
 #    target_link_libraries(${PROJECT_NAME}_static PRIVATE external ${REQUIRED_LIBS})
     target_link_libraries(${PROJECT_NAME}_static PRIVATE ${REQUIRED_LIBS})
 
 	# Todo export static lib
-#            set_target_properties(${PROJECT_NAME}_static PROPERTIES VERSION ${${PROJECT_NAME}_VERSION}
-#                                                                    SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR})
+#           set_target_properties(${PROJECT_NAME}_static PROPERTIES VERSION ${${PROJECT_NAME}_VERSION}
+#                                                                    SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR}
+#																	OUTPUT_NAME ${PROJECT_NAME}
+#           )
 
     install(
         TARGETS ${PROJECT_NAME}_static
         EXPORT ${PROJECT_NAME}_static
-        # DESTINATION lib/${ARCHITECTURE}
+#        # DESTINATION lib/${ARCHITECTURE}
         DESTINATION ${ARCHITECTURE}/lib
-        RUNTIME DESTINATION ${ARCHITECTURE}/bin
+#        #RUNTIME DESTINATION ${ARCHITECTURE}/bin # Todo fix
         )
+
+    # Copy lib file with the name of dll (implib not found when using dll)
+    if(MSVC)
+                #FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME}${CMAKE_POSTFIX}.pdb
+if(${CMAKE_GENERATOR} MATCHES "Visual Studio.*")
+		install(
+			FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME}_static${CMAKE_POSTFIX}.lib
+			DESTINATION ${ARCHITECTURE}/lib
+			RENAME ${PROJECT_NAME}${CMAKE_POSTFIX}.lib
+		)
+else()
+		install(
+			FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_static${CMAKE_POSTFIX}.lib
+			DESTINATION ${ARCHITECTURE}/lib
+			RENAME ${PROJECT_NAME}${CMAKE_POSTFIX}.lib
+		)
+endif()
+        install(
+			CODE "
+				execute_process(
+					COMMAND ${CMAKE_COMMAND} -E remove ${PROJECT_NAME}_static${CMAKE_POSTFIX}.lib
+					WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/${ARCHITECTURE}/lib/
+				)
+			"
+#    COMPONENT my_component
+        )
+#        install(CODE "execute_process(COMMAND \"${CMAKE_COMMAND} -E remove hub_staticd.lib\" WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/${ARCHITECTURE}/lib/)")
+        # Todo remove hub_static.lib file (only on windows)
+		#COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/tests/DartConfiguration.tcl
+    endif()
 
     if(MSVC)
         if(${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
@@ -261,7 +294,7 @@ if(HUB_BUILD_STATIC)
             set_target_properties(
                 ${PROJECT_NAME}_static
                 PROPERTIES # COMPILE_PDB_NAME ${PROJECT_NAME}${CMAKE_POSTFIX}
-                           COMPILE_PDB_NAME ${PROJECT_NAME} COMPILE_PDB_OUTPUT_DIR ${CMAKE_BINARY_DIR}
+                           COMPILE_PDB_NAME ${PROJECT_NAME}_static COMPILE_PDB_OUTPUT_DIR ${CMAKE_BINARY_DIR}
                            # DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
             )
         endif()
@@ -286,9 +319,9 @@ if(HUB_BUILD_STATIC)
                 DESTINATION share/${PROJECT_NAME}/cmake)
 #            export(EXPORT ${PROJECT_NAME}_static FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 
-    if(UNIX)
+   # if(NOT MSVC)
 		set_target_properties(${PROJECT_NAME}_static PROPERTIES OUTPUT_NAME ${PROJECT_NAME}) # multiple rules generate hub.lib (hub.dll do so) on windows
-    endif()
+   # endif()
 
     list(APPEND HUB_LIBRARIES static)
 
@@ -321,24 +354,60 @@ if(HUB_BUILD_SHARED)
         )
     endif() # (XCODE)
 
+    target_compile_features(${PROJECT_NAME}_shared PUBLIC cxx_std_17)
     target_compile_definitions(${PROJECT_NAME}_shared PUBLIC -DSRC_EXPORTS)
 #    target_link_libraries(${PROJECT_NAME}_shared PRIVATE external ${REQUIRED_LIBS})
     target_link_libraries(${PROJECT_NAME}_shared PRIVATE ${REQUIRED_LIBS})
 
     # PUBLIC $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
     set_target_properties(${PROJECT_NAME}_shared PROPERTIES VERSION ${${PROJECT_NAME}_VERSION}
-                                                            SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR})
+                                                            SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR}
+                                                            OUTPUT_NAME ${PROJECT_NAME}
+#                                                            RUNTIME_OUTPUT_NAME ${PROJECT_NAME}
+#                                                            PREFIX ""
+#                                                            SUFFIX ".dll"
+#	                                                        VS_GLOBAL_IgnoreImportLibrary "false"
+#                                                            ARCHIVE_OUTPUT_NAME ${PROJECT_NAME}_shared
+#                                                            IMPORT_PREFIX ""
+#                                                            IMPORT_SUFFIX ".lib"
+    )
+
 
     install(
         TARGETS ${PROJECT_NAME}_shared
         EXPORT ${PROJECT_NAME}_shared
-        DESTINATION ${ARCHITECTURE}/bin # Linux
+        #DESTINATION ${ARCHITECTURE}/bin # Linux
+        DESTINATION ${ARCHITECTURE}/lib # Linux
         RUNTIME DESTINATION ${ARCHITECTURE}/bin # Windows
+        #RUNTIME DESTINATION ${ARCHITECTURE}/lib # Windows
+        #RENAME ${PROJECT_NAME}
     )
 
     if(MSVC)
+#		if (HUB_BUILD_STATIC)
+#			add_custom_command(TARGET ${PROJECT_NAME}_shared POST_BUILD
+#						COMMAND copy ${CMAKE_CURRENT_BINARY_DIR}/hub_staticd.lib ${CMAKE_CURRENT_BYNARY_DIR}/hubd.lib
+#			)
+#			add_custom_command(
+#				TARGET ${PROJECT_NAME}_shared
+#				COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/hub_staticd.lib ${CMAKE_CURRENT_BYNARY_DIR}/hubd.lib)
+#		endif()
+		# target_compile_options(${PROJECT_NAME}_shared PRIVATE /noimplib)
+		# Tell linker to include symbol data
+		# set_target_properties(${PROJECT_NAME}_shared PROPERTIES LINK_FLAGS
+		# 														"/noimplib")
+
         if(NOT ${CMAKE_BUILD_TYPE} STREQUAL "Release")
             install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}_shared> DESTINATION ${ARCHITECTURE}/bin)
+
+
+            # Set file name & location
+            #set_target_properties(
+            #    ${PROJECT_NAME}_static
+            #    PROPERTIES # COMPILE_PDB_NAME ${PROJECT_NAME}${CMAKE_POSTFIX}
+            #               COMPILE_PDB_NAME ${PROJECT_NAME}_static COMPILE_PDB_OUTPUT_DIR ${CMAKE_BINARY_DIR}
+            #               # DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
+            #)
         endif()
     endif()
 
@@ -348,7 +417,6 @@ if(HUB_BUILD_SHARED)
         DESTINATION share/${PROJECT_NAME}/cmake)
 #    export(EXPORT ${PROJECT_NAME}_shared FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 
-    set_target_properties(${PROJECT_NAME}_shared PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 
     list(APPEND HUB_LIBRARIES shared)
 
@@ -358,7 +426,8 @@ message(STATUS "${HEADER_MSG} Libraries: (${HUB_LIBRARIES})")
 
 if(HUB_BUILD_SHARED OR HUB_BUILD_STATIC)
     if(HUB_BUILD_SHARED AND HUB_BUILD_STATIC)
-        add_library(hub ALIAS hub_static)
+        #add_library(hub ALIAS hub_static)
+        add_library(hub ALIAS hub_shared) # default
     elseif(HUB_BUILD_SHARED)
         add_library(hub ALIAS hub_shared)
     else()
