@@ -373,6 +373,8 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
             CACHE STRING "User browser to see html docs and coverage")
     endif()
 
+    ################################# CPP FULL COVERAGE ################################
+
     setup_target_for_coverage_lcov(
         NAME
         hub-coverage-lcov
@@ -401,22 +403,17 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         )
     endif()
 
-    # add_custom_target(hub-coverage COMMAND ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov/index.html)
     add_custom_target(
         hub-coverage
         COMMAND
         ${CMAKE_SOURCE_DIR}/scripts/check-coverage.sh ${CMAKE_BINARY_DIR}/hub-coverage-lcov ||
         ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov/index.html
     )
-    # add_custom_command(
-    #     TARGET hub-coverage
-    #     POST_BUILD
-    #     COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_SOURCE_DIR}/scripts/check-coverage.sh
-    #     ${CMAKE_BINARY_DIR}/hub-coverage-lcov
-    # )
-
     custom_target_added(coverage)
-    # add_dependencies(hub-coverage hub-coverage-lcov)
+    add_dependencies(hub-coverage hub-coverage-lcov)
+
+
+    ################################# CPP EACH COVERAGE ################################
 
     file(
         GLOB_RECURSE
