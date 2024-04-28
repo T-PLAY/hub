@@ -26,6 +26,9 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Install lcov
+      run: sudo apt install lcov
+
     - name: Configure CMake
       run: cmake -B "${{github.workspace}}/build" -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
                 -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=install -DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_COVERAGE=ON
