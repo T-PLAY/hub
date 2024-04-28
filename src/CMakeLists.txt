@@ -401,12 +401,22 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         )
     endif()
 
-    add_custom_target(hub-coverage COMMAND ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov/index.html)
-    custom_target_added(coverage)
-    add_dependencies(hub-coverage hub-coverage-lcov)
+    # add_custom_target(hub-coverage COMMAND ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov/index.html)
+    add_custom_target(
+        hub-coverage
+        COMMAND
+        ${CMAKE_SOURCE_DIR}/scripts/check-coverage.sh ${CMAKE_BINARY_DIR}/hub-coverage-lcov ||
+        ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov/index.html
+    )
+    # add_custom_command(
+    #     TARGET hub-coverage
+    #     POST_BUILD
+    #     COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_SOURCE_DIR}/scripts/check-coverage.sh
+    #     ${CMAKE_BINARY_DIR}/hub-coverage-lcov
+    # )
 
-    add_custom_target(hub-coverage-all)
-    custom_target_added(coverage-all)
+    custom_target_added(coverage)
+    # add_dependencies(hub-coverage hub-coverage-lcov)
 
     file(
         GLOB_RECURSE
@@ -422,8 +432,11 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         list(REMOVE_ITEM src_headers ${HUB_INCLUDE_DIR}/core/base/traits/SizeOf.cpp)
     # endif()
 
+    add_custom_target(hub-coverage-all)
+    custom_target_added(coverage-all)
+
     foreach(file ${src_headers})
-        message(STATUS "file : ${file}")
+        # message(STATUS "file : ${file}")
         get_filename_component(basename ${file} NAME)
         get_filename_component(parentDir ${file} DIRECTORY)
         get_filename_component(parentName ${parentDir} NAME)
@@ -434,16 +447,16 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         else()
             set(parentMacro "${parentName}-")
         endif()
-        if(NOT EXISTS "${PROJECT_SOURCE_DIR}/tests/${parentName}/test-${parentMacro}${name}.cpp")
-            message("parentName: ${parentName}")
-            message("name: ${name}")
-            message(WARNING "${parentName}/test-${parentMacro}${name}.cpp not found in tests directory")
-        endif()
+        # if(NOT EXISTS "${PROJECT_SOURCE_DIR}/tests/${parentName}/test-${parentMacro}${name}.cpp")
+            # message("parentName: ${parentName}")
+            # message("name: ${name}")
+            # message(WARNING "${parentName}/test-${parentMacro}${name}.cpp not found in tests directory")
+        # endif()
 
         set(sourcesTmp ${SOURCE_FILES})
         list(FILTER sourcesTmp EXCLUDE REGEX ".*/${name}\\.cpp$")
 
-        message(STATUS "lcov target : ${name}")
+        # message(STATUS "lcov target : ${name}")
 
         setup_target_for_coverage_lcov(
             NAME
@@ -463,9 +476,9 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         add_custom_target(
             hub-coverage-${name}
             COMMAND
-            ls ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov-${name}/index.html && head -n 40
-            ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov-${name}/index.html | grep '100.0 %' || ${HUB_BROWSER}
-            ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov-${name}/index.html)
+            ls ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov-${name}/index.html &&
+            head -n 40 ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov-${name}/index.html | grep '100.0 %' ||
+            ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov-${name}/index.html)
 
         add_dependencies(hub-coverage-${name} hub-coverage-lcov-${name})
         add_dependencies(hub-coverage-all hub-coverage-${name})
