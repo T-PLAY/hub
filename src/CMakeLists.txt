@@ -417,23 +417,35 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
 
     file(
         GLOB_RECURSE
-        src_headers
+        SOURCE_FILES
         ${HUB_INCLUDE_DIR}/*.cpp)
-
     # if(NOT PahoMqttCpp_FOUND)
-        list(FILTER src_headers EXCLUDE REGEX ".*Mqtt\\.cpp$")
-        list(FILTER src_headers EXCLUDE REGEX ".*Server2\\.cpp$")
-        list(REMOVE_ITEM src_headers ${HUB_INCLUDE_DIR}/core/Configuration.cpp)
-        list(REMOVE_ITEM src_headers ${HUB_INCLUDE_DIR}/core/Info.cpp)
-        list(REMOVE_ITEM src_headers ${HUB_INCLUDE_DIR}/core/Utils.cpp)
-        list(REMOVE_ITEM src_headers ${HUB_INCLUDE_DIR}/core/base/traits/SizeOf.cpp)
+        # list(FILTER SOURCE_FILES EXCLUDE REGEX ".*Mqtt\\.cpp$")
+        # list(FILTER SOURCE_FILES EXCLUDE REGEX ".*Server2\\.cpp$")
+        # list(REMOVE_ITEM SOURCE_FILES ${HUB_INCLUDE_DIR}/core/Configuration.cpp)
+        # list(REMOVE_ITEM SOURCE_FILES ${HUB_INCLUDE_DIR}/core/Info.cpp)
+        # list(REMOVE_ITEM SOURCE_FILES ${HUB_INCLUDE_DIR}/core/Utils.cpp)
+        # list(REMOVE_ITEM SOURCE_FILES ${HUB_INCLUDE_DIR}/core/base/traits/SizeOf.cpp)
     # endif()
+
+    file(
+        GLOB_RECURSE
+        HEADER_FILES
+        ${HUB_INCLUDE_DIR}/*.hpp
+    )
+    # list(REMOVE_ITEM HEADER_FILES ${HUB_INCLUDE_DIR}/client/Asker.hpp)
+    # list(REMOVE_ITEM HEADER_FILES ${HUB_INCLUDE_DIR}/client/Viewer.hpp)
+    # list(REMOVE_ITEM HEADER_FILES ${HUB_INCLUDE_DIR}/client/asker/AskerInterface.hpp)
+    # list(REMOVE_ITEM HEADER_FILES ${HUB_INCLUDE_DIR}/client/asker/AskerServer2.hpp)
+
 
     add_custom_target(hub-coverage-all)
     custom_target_added(coverage-all)
 
-    foreach(file ${src_headers})
+    foreach(file ${SOURCE_FILES})
         # message(STATUS "file : ${file}")
+        # get_filename_component(fileWE ${file} NAME_WE)
+        # message(STATUS "fileWE: ${fileWE}")
         get_filename_component(basename ${file} NAME)
         get_filename_component(parentDir ${file} DIRECTORY)
         get_filename_component(parentName ${parentDir} NAME)
@@ -450,32 +462,47 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
             # message(WARNING "${parentName}/test-${parentMacro}${name}.cpp not found in tests directory")
         # endif()
 
-        set(sourcesTmp ${SOURCE_FILES})
-        list(FILTER sourcesTmp EXCLUDE REGEX ".*/${name}\\.cpp$")
+        set(sourceOthers ${SOURCE_FILES})
+        # list(REMOVE_ITEM sourceOthers ${fileWE}.cpp)
+        list(FILTER sourceOthers EXCLUDE REGEX ".*/${name}\\.cpp")
 
-        # message(STATUS "lcov target : ${name}")
+        set(headerOthers ${HEADER_FILES})
+        list(FILTER headerOthers EXCLUDE REGEX ".*/${name}\\.hpp")
+        # list(REMOVE_ITEM headerOthers ${fileWE}.hpp)
+
+        message(STATUS "lcov target : ${name}")
 
         setup_target_for_coverage_lcov(
             NAME
             hub-coverage-lcov-${name}
             # BASE_DIRECTORY "src/"                        # Base directory for report
+            LCOV_ARGS
+            --ignore-errors unused
             EXECUTABLE
-            tests/test-${parentMacro}${name}
+            tests/hub-test-${parentMacro}${name}
             DEPENDENCIES
             hub
-            test-${parentMacro}${name}
+            hub-test-${parentMacro}${name}
             EXCLUDE
             "external/*.h"
             "external/*.cpp"
             "/usr/*"
-            ${sourcesTmp})
+            ${sourceOthers}
+            ${headerOthers}
+        )
 
         add_custom_target(
             hub-coverage-${name}
             COMMAND
             ls ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov-${name}/index.html &&
-            head -n 40 ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov-${name}/index.html | grep '100.0 %' ||
+            # head -n 40 ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov-${name}/index.html | grep '100.0 %' ||
             ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov-${name}/index.html)
+
+        add_custom_target(
+            hub-coverage-${name}-checkDecline
+            COMMAND
+            ${CMAKE_SOURCE_DIR}/scripts/check-coverageDecline.sh ${CMAKE_BINARY_DIR}/hub-coverage-lcov-${name} ${CMAKE_BINARY_DIR}/decline/ hub-coverage-lcov-${name}
+        )
 
         add_dependencies(hub-coverage-${name} hub-coverage-lcov-${name})
         add_dependencies(hub-coverage-all hub-coverage-${name})
