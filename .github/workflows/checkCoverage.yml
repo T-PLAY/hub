@@ -30,6 +30,8 @@ jobs:
         path: "${{github.workspace}}/build/decline"
         key: ${{ runner.os }}-${{ runner.arch }}
 
+    - uses: actions/checkout@v4
+
     - name: Install lcov
       run: sudo apt install lcov
 
