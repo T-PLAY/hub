@@ -24,7 +24,11 @@ jobs:
           - { name: "Ubuntu gcc", os: ubuntu-latest, cc: "gcc", cxx: "g++", icon: "Linux" }
 
     steps:
-    - uses: actions/checkout@v4
+      
+    - uses: actions/cache@v3
+      with:
+        path: "${{github.workspace}}/build/decline"
+        key: ${{ runner.os }}-${{ runner.arch }}
 
     - name: Install lcov
       run: sudo apt install lcov
@@ -36,6 +40,12 @@ jobs:
     - name: Build
       run: cmake --build "${{github.workspace}}/build" --config ${{env.BUILD_TYPE}}
 
-    - name: Check coverage
+    - name: Build coverage
       run: cmake --build "${{github.workspace}}/build" --target hub-coverage
+
+    - name: Check coverage decline
+      run: cmake --build "${{github.workspace}}/build" --target hub-coverage-checkDecline
+
+    - name: Save coverage stats
+      run: cmake --build "${{github.workspace}}/build" --target hub-coverage-saveStats
 

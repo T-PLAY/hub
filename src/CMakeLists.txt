@@ -462,29 +462,28 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
     # add_custom_target(
     #     hub-coverage
     #     COMMAND
-    #     ${CMAKE_SOURCE_DIR}/scripts/check-coverage.sh ${CMAKE_BINARY_DIR}/hub-coverage-lcov ||
+    #     ${CMAKE_SOURCE_DIR}/scripts/coverage.sh ${CMAKE_BINARY_DIR}/hub-coverage-lcov ||
     #     ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov/index.html
     # )
     add_custom_target(
         hub-coverage
         COMMAND
-        ls ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov/index.html &&
         ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov/index.html)
     custom_target_added(coverage)
 
     add_custom_target(
         hub-coverage-checkDecline
         COMMAND
-        ${CMAKE_SOURCE_DIR}/scripts/check-coverageDecline.sh ${CMAKE_BINARY_DIR}/hub-coverage-lcov ${CMAKE_BINARY_DIR}/decline hub-coverage-lcov
+        ${CMAKE_SOURCE_DIR}/scripts/coverageDecline.sh ${CMAKE_BINARY_DIR}/hub-coverage-lcov ${CMAKE_BINARY_DIR}/decline hub-coverage-lcov
     )
     custom_target_added(coverage-checkDecline)
 
     add_custom_target(
-        hub-coverage-saveDecline
+        hub-coverage-saveStats
         COMMAND
-        ${CMAKE_SOURCE_DIR}/scripts/check-coverageDecline.sh ${CMAKE_BINARY_DIR}/hub-coverage-lcov ${CMAKE_BINARY_DIR}/decline hub-coverage-lcov ${hub_HASH}
+        ${CMAKE_SOURCE_DIR}/scripts/coverageDecline.sh ${CMAKE_BINARY_DIR}/hub-coverage-lcov ${CMAKE_BINARY_DIR}/decline hub-coverage-lcov ${hub_HASH}
     )
-    custom_target_added(coverage-saveDecline)
+    custom_target_added(coverage-saveStats)
 
     add_dependencies(hub-coverage hub-coverage-lcov)
 
@@ -571,19 +570,18 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         add_custom_target(
             hub-coverage-${name}
             COMMAND
-            ls ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov-${name}/index.html &&
             ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov-${name}/index.html)
 
         add_custom_target(
             hub-coverage-${name}-checkDecline
             COMMAND
-            ${CMAKE_SOURCE_DIR}/scripts/check-coverageDecline.sh ${CMAKE_BINARY_DIR}/hub-coverage-lcov-${name} ${CMAKE_BINARY_DIR}/decline hub-coverage-lcov-${name}
+            ${CMAKE_SOURCE_DIR}/scripts/coverageDecline.sh ${CMAKE_BINARY_DIR}/hub-coverage-lcov-${name} ${CMAKE_BINARY_DIR}/decline hub-coverage-lcov-${name}
         )
 
         add_custom_target(
-            hub-coverage-${name}-saveDecline
+            hub-coverage-${name}-saveStats
             COMMAND
-            ${CMAKE_SOURCE_DIR}/scripts/check-coverageDecline.sh ${CMAKE_BINARY_DIR}/hub-coverage-lcov-${name} ${CMAKE_BINARY_DIR}/decline hub-coverage-lcov-${name} ${hub_HASH}
+            ${CMAKE_SOURCE_DIR}/scripts/coverageDecline.sh ${CMAKE_BINARY_DIR}/hub-coverage-lcov-${name} ${CMAKE_BINARY_DIR}/decline hub-coverage-lcov-${name} ${hub_HASH}
         )
 
         add_dependencies(hub-coverage-${name} hub-coverage-lcov-${name})
