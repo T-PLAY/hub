@@ -14,6 +14,53 @@ if (HUB_ENABLE_TESTS)
         set(COVERAGE_COMPILER_FLAGS "-g --coverage -fno-elide-constructors -fno-default-inline -fprofile-update=atomic")
         append_coverage_compiler_flags()
         set(REQUIRED_LIBS ${REQUIRED_LIBS} gcov)
+
+        ########################### LCOV VERSION
+
+        execute_process(
+            COMMAND ${LCOV_PATH} --version
+            RESULT_VARIABLE LCOV_FOUND
+            OUTPUT_VARIABLE LCOV_OUTPUT
+            ERROR_VARIABLE LCOV_ERROR)
+
+        # message(STATUS "lcov output: ${LCOV_OUTPUT}")
+
+        if (NOT LCOV_FOUND)
+            string(REGEX MATCHALL "-.*$|[0-9]+" LCOV_VERSION_LIST ${LCOV_OUTPUT})
+            list(GET LCOV_VERSION_LIST 0 LCOV_VERSION_MAJOR)
+            list(GET LCOV_VERSION_LIST 1 LCOV_VERSION_MINOR)
+            # list(GET LCOV_VERSION_LIST 2 LCOV_VERSION_PATCH)
+
+            message(STATUS "${HEADER_MSG} Lcov ${LCOV_VERSION_MAJOR}.${LCOV_VERSION_MINOR} found")
+
+            # if(NOT ${LCOV_VERSION_MAJOR} EQUAL 2)
+            #     message(FATAL_ERROR "${LCOV_OUTPUT} unsupported")
+            # endif()
+        endif()
+
+        ########################### GCOV VERSION
+
+        # execute_process(
+        #     COMMAND ${GCOV_PATH} --version
+        #     RESULT_VARIABLE GCOV_FOUND
+        #     OUTPUT_VARIABLE GCOV_OUTPUT
+        #     ERROR_VARIABLE GCOV_ERROR)
+
+        # message(STATUS "gcov output: ${GCOV_OUTPUT}")
+
+        # if (NOT GCOV_FOUND)
+        #     string(REGEX MATCHALL "-.*$|[0-9]+" GCOV_VERSION_LIST ${GCOV_OUTPUT})
+        #     list(GET GCOV_VERSION_LIST 0 GCOV_VERSION_MAJOR)
+        #     list(GET GCOV_VERSION_LIST 1 GCOV_VERSION_MINOR)
+        #     # list(GET GCOV_VERSION_LIST 2 GCOV_VERSION_PATCH)
+
+        #     message(STATUS "${HEADER_MSG} gcov ${GCOV_VERSION_MAJOR}.${GCOV_VERSION_MINOR} found")
+
+        #     if(NOT ${GCOV_VERSION_MAJOR} EQUAL 2)
+        #         message(FATAL_ERROR "${GCOV_OUTPUT} unsupported")
+        #     endif()
+        # endif()
+
     endif()
 endif()
 
@@ -373,13 +420,19 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
             CACHE STRING "User browser to see html docs and coverage")
     endif()
 
+    set(LCOV_VERSION_ARGS)
+    if(${LCOV_VERSION_MAJOR} GREATER_EQUAL 2)
+        set(LCOV_VERSION_ARGS --ignore-errors unused)
+    endif()
+
     ################################# CPP FULL COVERAGE ################################
 
     setup_target_for_coverage_lcov(
         NAME
         hub-coverage-lcov
         LCOV_ARGS
-        --ignore-errors unused
+        ${LCOV_VERSION_ARGS}
+        # --ignore-errors unused
         --ignore-errors gcov
         EXECUTABLE
         ctest
@@ -500,7 +553,8 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
             hub-coverage-lcov-${name}
             # BASE_DIRECTORY "src/"                        # Base directory for report
             LCOV_ARGS
-            --ignore-errors unused
+            ${LCOV_VERSION_ARGS}
+            # --ignore-errors unused
             EXECUTABLE
             tests/hub-test-${parentMacro}${name}
             DEPENDENCIES
