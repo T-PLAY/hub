@@ -54,8 +54,8 @@ if [ $# -eq 4  ]; then
 fi
 # indexRef=$2/$3.log
 
-lines=$(cat $index | grep headerCovTableEntryLo | awk -F '[>&]' '{print $2}' | head -n 1)
-functions=$(cat $index | grep headerCovTableEntryLo | awk -F '[>&]' '{print $2}' | tail -n 1)
+lines=$(cat $index | grep headerCovTableEntryLo | tr -d ' ' | awk -F '[>&%]' '{print $2}' | head -n 1)
+functions=$(cat $index | grep headerCovTableEntryLo | tr -d ' ' | awk -F '[>&%]' '{print $2}' | tail -n 1)
 
 # if (($emptyDeclineDir)); then
 if [ -z $coverageRefFile ]; then
