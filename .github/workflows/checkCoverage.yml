@@ -22,32 +22,92 @@ jobs:
       matrix:
         config:
           - { name: "Ubuntu gcc", os: ubuntu-latest, cc: "gcc", cxx: "g++", icon: "Linux" }
+    permissions:
+      contents: write
 
     steps:
-      
-    - uses: actions/cache@v3
-      with:
-        path: "${{github.workspace}}/build/decline"
-        key: ${{ runner.os }}-${{ runner.arch }}
-
     - uses: actions/checkout@v4
 
-    - name: Install lcov
-      run: sudo apt install lcov
+    # - name: Restore cached Primes
+    #   # id: cache-primes-restore
+    #   uses: actions/cache/restore@v4
+    #   with:
+    #     path: cacheDir
+    #     key: ${{ runner.os }}-primes
+    #
+    
+    - name: Mkdir and ls
+      run: mkdir -p build && ls && git clone --branch codeCov https://github.com/T-PLAY/hub.git ${{github.workspace}}/build/
 
-    - name: Configure CMake
-      run: cmake -B "${{github.workspace}}/build" -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
-                -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=install -DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_COVERAGE=ON
+    - name: echo
+      run: echo "bonjour" >> build/test.txt
 
-    - name: Build
-      run: cmake --build "${{github.workspace}}/build" --config ${{env.BUILD_TYPE}}
+    - name: cat
+      run: cat build/test.txt
 
-    - name: Build coverage
-      run: cmake --build "${{github.workspace}}/build" --target hub-coverage
+    
+    # - name: Save Primes
+    #   # id: cache-primes-save
+    #   uses: actions/cache/save@v4
+    #   with:
+    #     path: cacheDir
+    #     # key: ${{ steps.cache-primes-restore.outputs.cache-primary-key }}
+    #     key: ${{ runner.os }}-primes
+    #
+    - name: Deploy doc 🚀
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: ${{github.workspace}}/build/ # The folder the action should deploy.
+        clean: true
+        single-commit: true
+        branch: codeCov
 
-    - name: Check coverage decline
-      run: cmake --build "${{github.workspace}}/build" --target hub-coverage-checkDecline
+    # - name: Cache dir
+    #   uses: actions/cache@v4
+    #   with:
+    #     path: cacheDir
+    #     key: ${{ runner.os }}-branch
+    #     restore-keys: ${{ runner.os }}
+    #
 
-    - name: Save coverage stats
-      run: cmake --build "${{github.workspace}}/build" --target hub-coverage-saveStats
 
+    # steps:
+    #
+    # - uses: actions/checkout@v4
+    #
+    # - name: Cache
+    #   uses: actions/cache@v4
+    #   with:
+    #     path: "${{github.workspace}}/build/"
+    #     # key: ${{ runner.os }}-${{ runner.arch }}-${{ github.ref }}
+    #     key: ${{ runner.os }}-${{ runner.arch }}
+    #
+    #
+    # - name: Mkdir and ls
+    #   run: mkdir -p "${{github.workspace}}/build/"
+    #
+    # - name: echo
+    #   run: echo "bonjour" >> "${{github.workspace}}/build/test.txt"
+    #
+    # - name: cat
+    #   run: cat "${{github.workspace}}/build/test.txt"
+    #
+    # - name: Install lcov
+    #   run: sudo apt install lcov
+    #
+    # - name: Configure CMake
+    #   run: cmake -B "${{github.workspace}}/build" -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
+    #             -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=install -DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_COVERAGE=ON
+    #
+    # - name: Build
+    #   run: cmake --build "${{github.workspace}}/build" --config ${{env.BUILD_TYPE}}
+    #
+    # - name: Build coverage
+    #   run: cmake --build "${{github.workspace}}/build" --target hub-coverage
+    #
+    # - name: Check coverage decline
+    #   run: cmake --build "${{github.workspace}}/build" --target hub-coverage-checkDecline
+    #
+    # - name: Save coverage stats
+    #   run: cmake --build "${{github.workspace}}/build" --target hub-coverage-saveStats
+    #

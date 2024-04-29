@@ -1,4 +1,6 @@
 
+find_package(Git QUIET)
+
 # Check if git is found... if (GIT_FOUND AND VERSION_UPDATE_FROM_GIT)
 if(GIT_FOUND)
     execute_process(
@@ -24,9 +26,6 @@ if(NOT GIT_FOUND OR GIT_DESCRIBE_ERROR_CODE)
     set(${PROJECT_NAME}_VERSION_MINOR ${LATEST_VERSION_MINOR})
     set(${PROJECT_NAME}_VERSION_PATCH ${LATEST_VERSION_PATCH})
 
-    string(TIMESTAMP DATE_EPOCH "%s" UTC)
-    set(${PROJECT_NAME}_HASH \"${DATE_EPOCH}\")
-
 else()
 
     # Get partial versions into a list
@@ -50,8 +49,6 @@ else()
             set(${PROJECT_NAME}_VERSION_MAJOR ${LATEST_VERSION_MAJOR})
             set(${PROJECT_NAME}_VERSION_MINOR ${LATEST_VERSION_MINOR})
             set(${PROJECT_NAME}_VERSION_PATCH ${LATEST_VERSION_PATCH})
-            string(TIMESTAMP DATE_EPOCH "%s" UTC)
-            set(${PROJECT_NAME}_HASH \"${DATE_EPOCH}\")
         else()
             message(FATAL_ERROR "You must update the latest version for offline use")
         endif()
@@ -59,14 +56,6 @@ else()
     endif()
 
     unset(${PROJECT_NAME}_PARTIAL_VERSION_LIST)
-
-    # ##############################################  COMMIT GIT HASH
-    execute_process(
-        COMMAND ${GIT_EXECUTABLE} log -1 --format="%H"
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        OUTPUT_VARIABLE ${PROJECT_NAME}_HASH
-        RESULT_VARIABLE GIT_DESCRIBE_ERROR_CODE
-        OUTPUT_STRIP_TRAILING_WHITESPACE)
 
     execute_process(
         COMMAND ${GIT_EXECUTABLE} log -1 --date=format:%Y --format=%ad
@@ -81,6 +70,19 @@ else()
         message(FATAL_ERROR "You must update the last contribution date for offline use")
     endif()
 
+endif() # if(NOT GIT_FOUND OR GIT_DESCRIBE_ERROR_CODE)
+
+    # ##########################  COMMIT GIT HASH
+if (GIT_FOUND)
+    execute_process(
+        COMMAND ${GIT_EXECUTABLE} log -1 --format="%H"
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        OUTPUT_VARIABLE ${PROJECT_NAME}_HASH
+        RESULT_VARIABLE GIT_DESCRIBE_ERROR_CODE
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+else()
+    string(TIMESTAMP DATE_EPOCH "%s" UTC)
+    set(${PROJECT_NAME}_HASH \"${DATE_EPOCH}\")
 endif()
 
 # Set project version (without the preceding 'v')

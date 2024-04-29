@@ -1,19 +1,14 @@
 cmake_minimum_required(VERSION 3.8)
 
-find_package(Git)
-include(GetVersionFromGitTag)
+# find_package(Git)
 
 set(REQUIRED_LIBS ${HUB_TBB_TARGET})
 
-message(STATUS "${HEADER_MSG} Version: ${${PROJECT_NAME}_VERSION}")
 
 if (HUB_ENABLE_TESTS)
     option(HUB_ENABLE_COVERAGE "Collect coverage from hub library (required tests enable)" OFF)
     if(HUB_ENABLE_COVERAGE)
         include(CodeCoverage)
-        set(COVERAGE_COMPILER_FLAGS "-g --coverage -fno-elide-constructors -fno-default-inline -fprofile-update=atomic")
-        append_coverage_compiler_flags()
-        set(REQUIRED_LIBS ${REQUIRED_LIBS} gcov)
 
         ########################### LCOV VERSION
 
@@ -31,12 +26,16 @@ if (HUB_ENABLE_TESTS)
             list(GET LCOV_VERSION_LIST 1 LCOV_VERSION_MINOR)
             # list(GET LCOV_VERSION_LIST 2 LCOV_VERSION_PATCH)
 
-            message(STATUS "${HEADER_MSG} Lcov ${LCOV_VERSION_MAJOR}.${LCOV_VERSION_MINOR} found")
+            message(STATUS "${HEADER_MSG} Found Lcov ${LCOV_VERSION_MAJOR}.${LCOV_VERSION_MINOR}")
 
             # if(NOT ${LCOV_VERSION_MAJOR} EQUAL 2)
             #     message(FATAL_ERROR "${LCOV_OUTPUT} unsupported")
             # endif()
         endif()
+
+        set(COVERAGE_COMPILER_FLAGS "-g --coverage -fno-elide-constructors -fno-default-inline -fprofile-update=atomic")
+        append_coverage_compiler_flags()
+        set(REQUIRED_LIBS ${REQUIRED_LIBS} gcov)
 
         ########################### GCOV VERSION
 
