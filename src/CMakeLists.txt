@@ -378,6 +378,9 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
     setup_target_for_coverage_lcov(
         NAME
         hub-coverage-lcov
+        LCOV_ARGS
+        --ignore-errors unused
+        --ignore-errors gcov
         EXECUTABLE
         ctest
         --test-dir
@@ -392,7 +395,7 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         "external/*.cpp"
         "/usr/*"
     )
-    custom_target_added(coverage-lcov)
+    # custom_target_added(coverage-lcov)
 
     if(${CMAKE_VERSION} VERSION_LESS "3.20") # ctest --test-dir option
         add_custom_command(
@@ -403,13 +406,33 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         )
     endif()
 
+    # add_custom_target(
+    #     hub-coverage
+    #     COMMAND
+    #     ${CMAKE_SOURCE_DIR}/scripts/check-coverage.sh ${CMAKE_BINARY_DIR}/hub-coverage-lcov ||
+    #     ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov/index.html
+    # )
     add_custom_target(
         hub-coverage
         COMMAND
-        ${CMAKE_SOURCE_DIR}/scripts/check-coverage.sh ${CMAKE_BINARY_DIR}/hub-coverage-lcov ||
-        ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov/index.html
-    )
+        ls ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov/index.html &&
+        ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov/index.html)
     custom_target_added(coverage)
+
+    add_custom_target(
+        hub-coverage-checkDecline
+        COMMAND
+        ${CMAKE_SOURCE_DIR}/scripts/check-coverageDecline.sh ${CMAKE_BINARY_DIR}/hub-coverage-lcov ${CMAKE_BINARY_DIR}/decline hub-coverage-lcov
+    )
+    custom_target_added(coverage-checkDecline)
+
+    add_custom_target(
+        hub-coverage-saveDecline
+        COMMAND
+        ${CMAKE_SOURCE_DIR}/scripts/check-coverageDecline.sh ${CMAKE_BINARY_DIR}/hub-coverage-lcov ${CMAKE_BINARY_DIR}/decline hub-coverage-lcov ${hub_HASH}
+    )
+    custom_target_added(coverage-saveDecline)
+
     add_dependencies(hub-coverage hub-coverage-lcov)
 
 
@@ -470,7 +493,7 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         list(FILTER headerOthers EXCLUDE REGEX ".*/${name}\\.hpp")
         # list(REMOVE_ITEM headerOthers ${fileWE}.hpp)
 
-        message(STATUS "lcov target : ${name}")
+        # message(STATUS "lcov target : ${name}")
 
         setup_target_for_coverage_lcov(
             NAME
@@ -495,16 +518,22 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
             hub-coverage-${name}
             COMMAND
             ls ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov-${name}/index.html &&
-            # head -n 40 ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov-${name}/index.html | grep '100.0 %' ||
             ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov-${name}/index.html)
 
         add_custom_target(
             hub-coverage-${name}-checkDecline
             COMMAND
-            ${CMAKE_SOURCE_DIR}/scripts/check-coverageDecline.sh ${CMAKE_BINARY_DIR}/hub-coverage-lcov-${name} ${CMAKE_BINARY_DIR}/decline/ hub-coverage-lcov-${name}
+            ${CMAKE_SOURCE_DIR}/scripts/check-coverageDecline.sh ${CMAKE_BINARY_DIR}/hub-coverage-lcov-${name} ${CMAKE_BINARY_DIR}/decline hub-coverage-lcov-${name}
+        )
+
+        add_custom_target(
+            hub-coverage-${name}-saveDecline
+            COMMAND
+            ${CMAKE_SOURCE_DIR}/scripts/check-coverageDecline.sh ${CMAKE_BINARY_DIR}/hub-coverage-lcov-${name} ${CMAKE_BINARY_DIR}/decline hub-coverage-lcov-${name} ${hub_HASH}
         )
 
         add_dependencies(hub-coverage-${name} hub-coverage-lcov-${name})
+        # add_dependencies(hub-coverage-${name}-checkDecline hub-coverage-lcov-${name})
         add_dependencies(hub-coverage-all hub-coverage-${name})
 
     endforeach()
