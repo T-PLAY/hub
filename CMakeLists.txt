@@ -211,7 +211,10 @@ if(HUB_ENABLE_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
-add_subdirectory(bin)
+option(HUB_ENABLE_BINS "Enable binaries" OFF)
+if(HUB_ENABLE_BINS)
+    add_subdirectory(bin)
+endif()
 
 if(NOT WIN32)
     # Todo check if cppCheck exe exists on current system

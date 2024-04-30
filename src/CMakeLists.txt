@@ -245,6 +245,24 @@ if(HUB_BUILD_STATIC)
 #																	OUTPUT_NAME ${PROJECT_NAME}
 #           )
 
+if (MSVC AND HUB_BUILD_SHARED)
+        if(${CMAKE_GENERATOR} MATCHES "Visual Studio.*")
+                add_custom_command(
+                TARGET ${PROJECT_NAME}_static
+                COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME}_static${CMAKE_POSTFIX}.lib
+                        ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME}${CMAKE_POSTFIX}.lib
+        #        COMMAND ${CMAKE_COMMAND} -E remove ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME}_static${CMAKE_POSTFIX}.lib
+            )
+        else()
+                add_custom_command(
+                TARGET ${PROJECT_NAME}_static
+                COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_static${CMAKE_POSTFIX}.lib
+                        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}${CMAKE_POSTFIX}.lib
+        #        COMMAND ${CMAKE_COMMAND} -E remove ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_static${CMAKE_POSTFIX}.lib
+            )
+        endif()
+endif()
+
     install(
         TARGETS ${PROJECT_NAME}_static
         EXPORT ${PROJECT_NAME}_static
@@ -319,9 +337,10 @@ endif()
                 DESTINATION share/${PROJECT_NAME}/cmake)
 #            export(EXPORT ${PROJECT_NAME}_static FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 
-   # if(NOT MSVC)
-		set_target_properties(${PROJECT_NAME}_static PROPERTIES OUTPUT_NAME ${PROJECT_NAME}) # multiple rules generate hub.lib (hub.dll do so) on windows
-   # endif()
+        # todo check
+    if(NOT MSVC)
+        set_target_properties(${PROJECT_NAME}_static PROPERTIES OUTPUT_NAME ${PROJECT_NAME}) # multiple rules generate hub.lib (hub.dll do so) on windows
+    endif()
 
     list(APPEND HUB_LIBRARIES static)
 

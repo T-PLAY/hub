@@ -4,8 +4,6 @@ project(bin LANGUAGES CXX)
 
 if(TARGET hub)
 
-    option(HUB_ENABLE_BINS "Enable binaries" OFF)
-    if(HUB_ENABLE_BINS)
 
         set(bin_srcs)
         foreach(HUB_MODULE ${HUB_MODULES})
@@ -41,6 +39,5 @@ if(TARGET hub)
 
         endforeach()
 
-    endif()
 
 endif()
