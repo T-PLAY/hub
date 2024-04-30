@@ -34,8 +34,6 @@ if(TARGET hub)
                     TARGETS ${TARGET_NAME}
                     EXPORT ${TARGET_NAME}
                     DESTINATION ${ARCHITECTURE}/bin)
-#	    set_target_properties(${TARGET_NAME} PROPERTIES INSTALL_RPATH ${ARCHITECTURE}/bin)
-
 
         endforeach()
 

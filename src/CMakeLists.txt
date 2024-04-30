@@ -66,7 +66,7 @@ elseif(UNIX)
     if(Clang)
 
     elseif(GCC)
-        message(FATAL_ERROR "never happened")
+        message(WARNING "not tested")
 
     elseif(GNU)
 
@@ -246,20 +246,6 @@ if(HUB_BUILD_STATIC)
     endif()
 
     ################################ INSTALL ###################################
-
-    # if(MSVC)
-        # if(NOT ${CMAKE_BUILD_TYPE} STREQUAL "Release")
-        #     install(
-        #         FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}${CMAKE_POSTFIX}.pdb
-        #         DESTINATION ${ARCHITECTURE}/lib
-        #         OPTIONAL)
-        #     install(
-        #         FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME}${CMAKE_POSTFIX}.pdb
-        #         DESTINATION ${ARCHITECTURE}/lib
-        #         OPTIONAL)
-        # endif()
-
-    # endif() # MSVC
 
     ################################ EXPORT ####################################
 
