@@ -211,7 +211,7 @@ if(HUB_ENABLE_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
-option(HUB_ENABLE_BINS "Enable binaries" OFF)
+option(HUB_ENABLE_BINS "Enable binaries" ON)
 if(HUB_ENABLE_BINS)
     add_subdirectory(bin)
 endif()
