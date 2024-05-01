@@ -29,33 +29,29 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Restore stats
-      run: mkdir -p ${{github.workspace}}/build && git clone --branch gh-decline https://github.com/T-PLAY/hub.git ${{github.workspace}}/build/decline
+      run: mkdir -p "${{github.workspace}}/build"
+        && git clone --branch gh-decline https://github.com/T-PLAY/hub.git ${{github.workspace}}/build/decline
 
-    - name: echo
-      run: echo "bonjour" >> "${{github.workspace}}/build/decline/test.txt"
+    - name: Install lcov
+      run: sudo apt install lcov
 
-    - name: cat
-      run: cat "${{github.workspace}}/build/decline/test.txt"
+    - name: Configure CMake
+      run: cmake -B "${{github.workspace}}/build" -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
+                -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=install -DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_COVERAGE=ON
 
-    # - name: Install lcov
-    #   run: sudo apt install lcov
-    #
-    # - name: Configure CMake
-    #   run: cmake -B "${{github.workspace}}/build" -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
-    #             -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=install -DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_COVERAGE=ON
-    #
-    # - name: Build
-    #   run: cmake --build "${{github.workspace}}/build" --config ${{env.BUILD_TYPE}}
-    #
-    # - name: Build coverage
-    #   run: cmake --build "${{github.workspace}}/build" --target hub-coverage
-    #
-    # - name: Check coverage decline
-    #   run: cmake --build "${{github.workspace}}/build" --target hub-coverage-checkDecline
-    #
-    # - name: Save coverage stats
-    #   run: cmake --build "${{github.workspace}}/build" --target hub-coverage-saveStats
-    
+    - name: Build
+      run: cmake --build "${{github.workspace}}/build" --config ${{env.BUILD_TYPE}}
+
+    - name: Build coverage
+      run: cmake --build "${{github.workspace}}/build" --target hub-coverage
+
+    - name: Check coverage decline
+      run: cmake --build "${{github.workspace}}/build" --target hub-coverage-checkDecline
+
+    - name: Save coverage stats
+      if: github.event_name == 'push'
+      run: cmake --build "${{github.workspace}}/build" --target hub-coverage-saveStats
+
     - name: Save stats
       uses: JamesIves/github-pages-deploy-action@v4
       with:
