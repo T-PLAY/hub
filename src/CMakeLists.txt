@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 
-# find_package(Git)
-
 set(REQUIRED_LIBS ${HUB_TBB_TARGET})
-
 
 if (HUB_ENABLE_TESTS)
     option(HUB_ENABLE_COVERAGE "Collect coverage from hub library (required tests enable)" OFF)
@@ -18,8 +15,6 @@ if (HUB_ENABLE_TESTS)
             OUTPUT_VARIABLE LCOV_OUTPUT
             ERROR_VARIABLE LCOV_ERROR)
 
-        # message(STATUS "lcov output: ${LCOV_OUTPUT}")
-
         if (NOT LCOV_FOUND)
             string(REGEX MATCHALL "-.*$|[0-9]+" LCOV_VERSION_LIST ${LCOV_OUTPUT})
             list(GET LCOV_VERSION_LIST 0 LCOV_VERSION_MAJOR)
@@ -27,38 +22,11 @@ if (HUB_ENABLE_TESTS)
             # list(GET LCOV_VERSION_LIST 2 LCOV_VERSION_PATCH)
 
             message(STATUS "${HEADER_MSG} Found Lcov ${LCOV_VERSION_MAJOR}.${LCOV_VERSION_MINOR}")
-
-            # if(NOT ${LCOV_VERSION_MAJOR} EQUAL 2)
-            #     message(FATAL_ERROR "${LCOV_OUTPUT} unsupported")
-            # endif()
         endif()
 
         set(COVERAGE_COMPILER_FLAGS "-g --coverage -fno-elide-constructors -fno-default-inline -fprofile-update=atomic")
         append_coverage_compiler_flags()
         set(REQUIRED_LIBS ${REQUIRED_LIBS} gcov)
-
-        ########################### GCOV VERSION
-
-        # execute_process(
-        #     COMMAND ${GCOV_PATH} --version
-        #     RESULT_VARIABLE GCOV_FOUND
-        #     OUTPUT_VARIABLE GCOV_OUTPUT
-        #     ERROR_VARIABLE GCOV_ERROR)
-
-        # message(STATUS "gcov output: ${GCOV_OUTPUT}")
-
-        # if (NOT GCOV_FOUND)
-        #     string(REGEX MATCHALL "-.*$|[0-9]+" GCOV_VERSION_LIST ${GCOV_OUTPUT})
-        #     list(GET GCOV_VERSION_LIST 0 GCOV_VERSION_MAJOR)
-        #     list(GET GCOV_VERSION_LIST 1 GCOV_VERSION_MINOR)
-        #     # list(GET GCOV_VERSION_LIST 2 GCOV_VERSION_PATCH)
-
-        #     message(STATUS "${HEADER_MSG} gcov ${GCOV_VERSION_MAJOR}.${GCOV_VERSION_MINOR} found")
-
-        #     if(NOT ${GCOV_VERSION_MAJOR} EQUAL 2)
-        #         message(FATAL_ERROR "${GCOV_OUTPUT} unsupported")
-        #     endif()
-        # endif()
 
     endif()
 endif()
@@ -431,7 +399,6 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         hub-coverage-lcov
         LCOV_ARGS
         ${LCOV_VERSION_ARGS}
-        # --ignore-errors unused
         --ignore-errors gcov
         EXECUTABLE
         ctest
@@ -447,7 +414,6 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         "external/*.cpp"
         "/usr/*"
     )
-    # custom_target_added(coverage-lcov)
 
     if(${CMAKE_VERSION} VERSION_LESS "3.20") # ctest --test-dir option
         add_custom_command(
@@ -458,12 +424,6 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         )
     endif()
 
-    # add_custom_target(
-    #     hub-coverage
-    #     COMMAND
-    #     ${CMAKE_SOURCE_DIR}/scripts/coverage.sh ${CMAKE_BINARY_DIR}/hub-coverage-lcov ||
-    #     ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov/index.html
-    # )
     add_custom_target(
         hub-coverage
         COMMAND
@@ -493,33 +453,17 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         GLOB_RECURSE
         SOURCE_FILES
         ${HUB_INCLUDE_DIR}/*.cpp)
-    # if(NOT PahoMqttCpp_FOUND)
-        # list(FILTER SOURCE_FILES EXCLUDE REGEX ".*Mqtt\\.cpp$")
-        # list(FILTER SOURCE_FILES EXCLUDE REGEX ".*Server2\\.cpp$")
-        # list(REMOVE_ITEM SOURCE_FILES ${HUB_INCLUDE_DIR}/core/Configuration.cpp)
-        # list(REMOVE_ITEM SOURCE_FILES ${HUB_INCLUDE_DIR}/core/Info.cpp)
-        # list(REMOVE_ITEM SOURCE_FILES ${HUB_INCLUDE_DIR}/core/Utils.cpp)
-        # list(REMOVE_ITEM SOURCE_FILES ${HUB_INCLUDE_DIR}/core/base/traits/SizeOf.cpp)
-    # endif()
 
     file(
         GLOB_RECURSE
         HEADER_FILES
         ${HUB_INCLUDE_DIR}/*.hpp
     )
-    # list(REMOVE_ITEM HEADER_FILES ${HUB_INCLUDE_DIR}/client/Asker.hpp)
-    # list(REMOVE_ITEM HEADER_FILES ${HUB_INCLUDE_DIR}/client/Viewer.hpp)
-    # list(REMOVE_ITEM HEADER_FILES ${HUB_INCLUDE_DIR}/client/asker/AskerInterface.hpp)
-    # list(REMOVE_ITEM HEADER_FILES ${HUB_INCLUDE_DIR}/client/asker/AskerServer2.hpp)
-
 
     add_custom_target(hub-coverage-all)
     custom_target_added(coverage-all)
 
     foreach(file ${SOURCE_FILES})
-        # message(STATUS "file : ${file}")
-        # get_filename_component(fileWE ${file} NAME_WE)
-        # message(STATUS "fileWE: ${fileWE}")
         get_filename_component(basename ${file} NAME)
         get_filename_component(parentDir ${file} DIRECTORY)
         get_filename_component(parentName ${parentDir} NAME)
@@ -537,22 +481,16 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         # endif()
 
         set(sourceOthers ${SOURCE_FILES})
-        # list(REMOVE_ITEM sourceOthers ${fileWE}.cpp)
         list(FILTER sourceOthers EXCLUDE REGEX ".*/${name}\\.cpp")
 
         set(headerOthers ${HEADER_FILES})
         list(FILTER headerOthers EXCLUDE REGEX ".*/${name}\\.hpp")
-        # list(REMOVE_ITEM headerOthers ${fileWE}.hpp)
-
-        # message(STATUS "lcov target : ${name}")
 
         setup_target_for_coverage_lcov(
             NAME
             hub-coverage-lcov-${name}
-            # BASE_DIRECTORY "src/"                        # Base directory for report
             LCOV_ARGS
             ${LCOV_VERSION_ARGS}
-            # --ignore-errors unused
             EXECUTABLE
             tests/hub-test-${parentMacro}${name}
             DEPENDENCIES
@@ -584,7 +522,6 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         )
 
         add_dependencies(hub-coverage-${name} hub-coverage-lcov-${name})
-        # add_dependencies(hub-coverage-${name}-checkDecline hub-coverage-lcov-${name})
         add_dependencies(hub-coverage-all hub-coverage-${name})
 
     endforeach()

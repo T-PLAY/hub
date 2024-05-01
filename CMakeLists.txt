@@ -136,7 +136,6 @@ message(STATUS "${HEADER_MSG} Version: ${${PROJECT_NAME}_VERSION} (hash: ${${PRO
 find_package(Boost QUIET) # tcp socket communication
 if(Boost_FOUND)
     add_definitions(-DHUB_USE_BOOST)
-    # message(STATUS "${HEADER_MSG} Boost found : ${Boost_DIR}")
     message(STATUS "${HEADER_MSG} Found Boost ${Boost_VERSION}")
 endif()
 
@@ -232,7 +231,6 @@ if(NOT WIN32)
         list(GET CPP_CHECK_VERSION_LIST 1 CPP_CHECK_VERSION_MINOR)
         # list(GET CPP_CHECK_VERSION_LIST 2 CPP_CHECK_VERSION_PATCH)
 
-        # message(STATUS "${HEADER_MSG} Cppcheck ${CPP_CHECK_VERSION_MAJOR}.${CPP_CHECK_VERSION_MINOR}.${CPP_CHECK_VERSION_PATCH} found")
         message(STATUS "${HEADER_MSG} Found Cppcheck ${CPP_CHECK_VERSION_MAJOR}.${CPP_CHECK_VERSION_MINOR}")
 
         if(NOT ${CPP_CHECK_VERSION_MAJOR} EQUAL 2)
