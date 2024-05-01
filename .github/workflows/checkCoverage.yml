@@ -53,6 +53,7 @@ jobs:
       run: cmake --build "${{github.workspace}}/build" --target hub-coverage-saveStats
 
     - name: Save stats
+      if: github.event_name == 'push'
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         folder: ${{github.workspace}}/build/decline # The folder the action should deploy.
