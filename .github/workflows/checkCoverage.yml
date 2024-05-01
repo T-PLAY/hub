@@ -28,70 +28,15 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    # - name: Restore cached Primes
-    #   # id: cache-primes-restore
-    #   uses: actions/cache/restore@v4
-    #   with:
-    #     path: cacheDir
-    #     key: ${{ runner.os }}-primes
-    #
-    
-    - name: Mkdir and ls
-      run: mkdir -p build && ls && git clone --branch codeCov https://github.com/T-PLAY/hub.git ${{github.workspace}}/build/
+    - name: Restore stats
+      run: mkdir -p ${{github.workspace}}/build && git clone --branch gh-decline https://github.com/T-PLAY/hub.git ${{github.workspace}}/build/decline
 
     - name: echo
-      run: echo "bonjour" >> build/test.txt
+      run: echo "bonjour" >> "${{github.workspace}}/build/decline/test.txt"
 
     - name: cat
-      run: cat build/test.txt
+      run: cat "${{github.workspace}}/build/decline/test.txt"
 
-    
-    # - name: Save Primes
-    #   # id: cache-primes-save
-    #   uses: actions/cache/save@v4
-    #   with:
-    #     path: cacheDir
-    #     # key: ${{ steps.cache-primes-restore.outputs.cache-primary-key }}
-    #     key: ${{ runner.os }}-primes
-    #
-    - name: Deploy doc 🚀
-      uses: JamesIves/github-pages-deploy-action@v4
-      with:
-        folder: ${{github.workspace}}/build/ # The folder the action should deploy.
-        clean: true
-        single-commit: true
-        branch: codeCov
-
-    # - name: Cache dir
-    #   uses: actions/cache@v4
-    #   with:
-    #     path: cacheDir
-    #     key: ${{ runner.os }}-branch
-    #     restore-keys: ${{ runner.os }}
-    #
-
-
-    # steps:
-    #
-    # - uses: actions/checkout@v4
-    #
-    # - name: Cache
-    #   uses: actions/cache@v4
-    #   with:
-    #     path: "${{github.workspace}}/build/"
-    #     # key: ${{ runner.os }}-${{ runner.arch }}-${{ github.ref }}
-    #     key: ${{ runner.os }}-${{ runner.arch }}
-    #
-    #
-    # - name: Mkdir and ls
-    #   run: mkdir -p "${{github.workspace}}/build/"
-    #
-    # - name: echo
-    #   run: echo "bonjour" >> "${{github.workspace}}/build/test.txt"
-    #
-    # - name: cat
-    #   run: cat "${{github.workspace}}/build/test.txt"
-    #
     # - name: Install lcov
     #   run: sudo apt install lcov
     #
@@ -110,4 +55,12 @@ jobs:
     #
     # - name: Save coverage stats
     #   run: cmake --build "${{github.workspace}}/build" --target hub-coverage-saveStats
-    #
+    
+    - name: Save stats
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: ${{github.workspace}}/build/decline # The folder the action should deploy.
+        clean: true
+        single-commit: true
+        branch: gh-decline
+
