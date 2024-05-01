@@ -55,20 +55,20 @@ void _checkValue( double value,
             const int nValue = lastValues.size();
 
             if ( nValue >= nRatio ) {
-                const auto standardDeviation =
-                    algo::StandardDeviation( std::prev(lastValues.end(), nValue), lastValues.end() );
-                const auto mean = algo::Mean( std::prev(lastValues.end(), nValue), lastValues.end() );
-                const auto minRatio =
-                    mean - standardDeviation * 2.0;
+                const auto standardDeviation = algo::StandardDeviation(
+                    std::prev( lastValues.end(), nValue ), lastValues.end() );
+                const auto mean =
+                    algo::Mean( std::prev( lastValues.end(), nValue ), lastValues.end() );
+                const auto minRatio = mean - standardDeviation * 2.0;
 #ifndef DEBUG
                 CHECK( minRatio <= value );
 #endif
                 if ( !( minRatio <= value ) ) {
                     std::cout << "---------------------------------------------> "
                                  "checkRatio: "
-                              << value << "(value) < "
-                              << minRatio << "(minRatio), decline: "
-                              << value - mean << " " << unit << std::endl;
+                              << value << "(value) < " << minRatio
+                              << "(minRatio), decline: " << value - mean << " " << unit
+                              << std::endl;
                     decline = true;
                 }
             }
@@ -108,7 +108,7 @@ void _checkValue( double value,
         // return;
         // }
 
-        if (! decline) {
+        if ( !decline ) {
             values[iRatio % nRatio] = value;
             ++iRatio;
         }
@@ -143,12 +143,12 @@ void _checkValue( double value,
 
         const int nMean         = static_cast<int>( std::log2( nEl ) ) + 1;
         const auto meanAll      = sumRatios[nMean - 1] / std::pow( 2.0, nMean - 1 );
-        const auto deviationAll = maxRatios[nMean - 1] - minRatios[nMean - 1];
-        const auto epsilon      = deviationAll * 0.1;
+        const auto deviationAll = ( maxRatios[nMean - 1] - minRatios[nMean - 1] ) / 2.0;
+        const auto epsilon      = deviationAll * 0.2;
 
         for ( int iMean = 0; iMean < nMean; ++iMean ) {
             const auto meanRatio = sumRatios[iMean] / std::pow( 2.0, iMean );
-            const auto deviation = maxRatios[iMean] - minRatios[iMean];
+            const auto deviation = ( maxRatios[iMean] - minRatios[iMean] ) / 2.0;
 
             std::string meanRatioStr   = std::to_string( meanRatio );
             meanRatioStr               = meanRatioStr.substr( 0, 5 );
@@ -190,37 +190,36 @@ void _checkValue( double value,
             algo::StandardDeviation( values.begin(), values.begin() + nEl );
         const auto mean = algo::Mean( values.begin(), values.begin() + nEl );
 
-        const auto minRatio =
-            mean - standardDeviation *
-                       2.0; // correspond of 2.3% of the population, should retry if happened
+        // const auto minRatio =
+        // mean - standardDeviation *
+        // 2.0; // correspond of 2.3% of the population, should retry if happened
 
         // if (decline) {
-            // report += "\033[31m" + std::to_string(value) + " > " + std::to_string( minRatio ) +
-                  // " (std:" + std::to_string( standardDeviation ) + ")\033[0m";
+        // report += "\033[31m" + std::to_string(value) + " > " + std::to_string( minRatio ) +
+        // " (std:" + std::to_string( standardDeviation ) + ")\033[0m";
         // } else {
         // if (! decline) {
         //     report += " > " + std::to_string( minRatio ) +
         //           " (std:" + std::to_string( standardDeviation ) + ")\033[0m";
         // }
 
-        if ( iRatio >= nRatio ) {
+        // if ( iRatio >= nRatio ) {
 
-            // decline = value < minRatio;
-            // CHECK(decline == value < minRatio);
-// #ifndef DEBUG
-//             CHECK( value >= minRatio );
-// #endif
+        // decline = value < minRatio;
+        // CHECK(decline == value < minRatio);
+        // #ifndef DEBUG
+        //             CHECK( value >= minRatio );
+        // #endif
 
-            if ( decline ) {
-                report += "\n\t\t\033[31mvalue:" + std::to_string( value ) +
-                          ", mean:" + std::to_string( mean ) +
-                          ", σ:" + std::to_string( standardDeviation ) +
-                          ", mean-σ(15.9%):" + std::to_string( mean - standardDeviation ) +
-                          ", mean-2σ(2.3%):" + std::to_string( mean - 2 * standardDeviation ) +
-                          ", mean-3σ(0.1%):" + std::to_string( mean - 3 * standardDeviation ) +
-                          "\033[0m";
-            }
+        if ( decline ) {
+            report +=
+                "\n\t\t\033[31mvalue:" + std::to_string( value ) +
+                ", mean:" + std::to_string( mean ) + ", σ:" + std::to_string( standardDeviation ) +
+                ", mean-σ(15.9%):" + std::to_string( mean - standardDeviation ) +
+                ", mean-2σ(2.3%):" + std::to_string( mean - 2 * standardDeviation ) +
+                ", mean-3σ(0.1%):" + std::to_string( mean - 3 * standardDeviation ) + "\033[0m";
         }
+        // }
 
         _REPORT( "[" << name << "] " << report, filename, line );
     }
