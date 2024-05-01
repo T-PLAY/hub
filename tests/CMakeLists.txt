@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 
 project(tests LANGUAGES CXX)
 
+
 set(LINK_LIBRARIES Catch2::Catch2WithMain hub)
 set(INCLUDE_LIBRARIES)
 

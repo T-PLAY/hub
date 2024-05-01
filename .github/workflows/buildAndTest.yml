@@ -12,7 +12,7 @@ on:
     branches: [ main ]
 
 env:
-  BUILD_TYPE: Debug
+  BUILD_TYPE: Release
 
 jobs:
   build:
@@ -21,20 +21,24 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          # - { name: "Windows MSVC", os: windows-latest, cc: "cl.exe", cxx: "cl.exe", icon: "Windows"}
+          - { name: "Windows MSVC", os: windows-latest, cc: "cl.exe", cxx: "cl.exe", icon: "Windows"}
           - { name: "Ubuntu gcc", os: ubuntu-latest, cc: "gcc", cxx: "g++", icon: "Linux" }
-          # - { name: "MacOS clang", os: macos-latest, cc: "clang", cxx: "clang++", icon: "Apple" }
+          - { name: "MacOS clang", os: macos-latest, cc: "clang", cxx: "clang++", icon: "Apple" }
+    permissions:
+      contents: write
 
     steps:
     - uses: actions/checkout@v4
 
-    # - name: Restore stats
-    #   run: mkdir -p "${{github.workspace}}/build"
-    #     && git clone --branch gh-stats https://github.com/T-PLAY/hub.git ${{github.workspace}}/build/stats
+    - name: Restore stats
+      run: mkdir -p "${{github.workspace}}/build"
+        && git clone --branch gh-stats https://github.com/T-PLAY/hub.git "${{github.workspace}}/build/stats"
 
     - name: Configure CMake
       run: cmake -B "${{github.workspace}}/build" -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
-                -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=install -DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_EXAMPLES=ON
+                -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=install
+                -DHUB_STATS_DIR="${{github.workspace}}/build/stats/${{matrix.config.name}}"
+                -DHUB_ENABLE_TESTS=ON
 
     - name: Build
       run: cmake --build "${{github.workspace}}/build" --config ${{env.BUILD_TYPE}}
@@ -46,10 +50,9 @@ jobs:
       run: cmake --build "${{github.workspace}}/build" --target hub-tests-bin
 
     - name: Save stats
-      # if: github.event_name == 'push'
-      uses: JamesIves/github-pages-deploy-action@v4
+      uses: peaceiris/actions-gh-pages@v4
       with:
-        folder: ${{github.workspace}}/build/stats # The folder the action should deploy.
-        clean: true
-        single-commit: true
-        branch: gh-stats
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ${{github.workspace}}/build/stats
+        publish_branch: gh-stats
+        keep_files: true

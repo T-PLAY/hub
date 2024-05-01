@@ -4,6 +4,8 @@
 
 #include "Version.hpp"
 
+using namespace hub::utils;
+
 void _checkValue( double value,
                   const std::string& name,
                   const std::string& unit,
@@ -223,7 +225,7 @@ void _checkValue( double value,
         _REPORT( "[" << name << "] " << report, filename, line );
     }
 
-    if ( !decline && HUB_SAVE_STATS ) {
+    if ( !decline ) {
         {
             if ( !std::filesystem::exists( declineFolder ) ) {
                 std::filesystem::create_directories( declineFolder );
