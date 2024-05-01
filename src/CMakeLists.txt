@@ -1,19 +1,33 @@
 cmake_minimum_required(VERSION 3.8)
 
-find_package(Git)
-include(GetVersionFromGitTag)
-
 set(REQUIRED_LIBS ${HUB_TBB_TARGET})
-
-message(STATUS "${HEADER_MSG} Version: ${${PROJECT_NAME}_VERSION}")
 
 if (HUB_ENABLE_TESTS)
     option(HUB_ENABLE_COVERAGE "Collect coverage from hub library (required tests enable)" OFF)
     if(HUB_ENABLE_COVERAGE)
         include(CodeCoverage)
+
+        ########################### LCOV VERSION
+
+        execute_process(
+            COMMAND ${LCOV_PATH} --version
+            RESULT_VARIABLE LCOV_FOUND
+            OUTPUT_VARIABLE LCOV_OUTPUT
+            ERROR_VARIABLE LCOV_ERROR)
+
+        if (NOT LCOV_FOUND)
+            string(REGEX MATCHALL "-.*$|[0-9]+" LCOV_VERSION_LIST ${LCOV_OUTPUT})
+            list(GET LCOV_VERSION_LIST 0 LCOV_VERSION_MAJOR)
+            list(GET LCOV_VERSION_LIST 1 LCOV_VERSION_MINOR)
+            # list(GET LCOV_VERSION_LIST 2 LCOV_VERSION_PATCH)
+
+            message(STATUS "${HEADER_MSG} Found Lcov ${LCOV_VERSION_MAJOR}.${LCOV_VERSION_MINOR}")
+        endif()
+
         set(COVERAGE_COMPILER_FLAGS "-g --coverage -fno-elide-constructors -fno-default-inline -fprofile-update=atomic")
         append_coverage_compiler_flags()
         set(REQUIRED_LIBS ${REQUIRED_LIBS} gcov)
+
     endif()
 endif()
 
@@ -373,9 +387,19 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
             CACHE STRING "User browser to see html docs and coverage")
     endif()
 
+    set(LCOV_VERSION_ARGS)
+    if(${LCOV_VERSION_MAJOR} GREATER_EQUAL 2)
+        set(LCOV_VERSION_ARGS --ignore-errors unused)
+    endif()
+
+    ################################# CPP FULL COVERAGE ################################
+
     setup_target_for_coverage_lcov(
         NAME
         hub-coverage-lcov
+        LCOV_ARGS
+        ${LCOV_VERSION_ARGS}
+        --ignore-errors gcov
         EXECUTABLE
         ctest
         --test-dir
@@ -390,7 +414,6 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         "external/*.cpp"
         "/usr/*"
     )
-    custom_target_added(coverage-lcov)
 
     if(${CMAKE_VERSION} VERSION_LESS "3.20") # ctest --test-dir option
         add_custom_command(
@@ -401,20 +424,46 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         )
     endif()
 
-    add_custom_target(hub-coverage COMMAND ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../coverage-lcov/index.html)
+    add_custom_target(
+        hub-coverage
+        COMMAND
+        ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov/index.html)
     custom_target_added(coverage)
+
+    add_custom_target(
+        hub-coverage-checkDecline
+        COMMAND
+        ${CMAKE_SOURCE_DIR}/scripts/coverageDecline.sh ${CMAKE_BINARY_DIR}/hub-coverage-lcov ${CMAKE_BINARY_DIR}/decline hub-coverage-lcov
+    )
+    custom_target_added(coverage-checkDecline)
+
+    add_custom_target(
+        hub-coverage-saveStats
+        COMMAND
+        ${CMAKE_SOURCE_DIR}/scripts/coverageDecline.sh ${CMAKE_BINARY_DIR}/hub-coverage-lcov ${CMAKE_BINARY_DIR}/decline hub-coverage-lcov ${hub_HASH}
+    )
+    custom_target_added(coverage-saveStats)
+
     add_dependencies(hub-coverage hub-coverage-lcov)
+
+
+    ################################# CPP EACH COVERAGE ################################
+
+    file(
+        GLOB_RECURSE
+        SOURCE_FILES
+        ${HUB_INCLUDE_DIR}/*.cpp)
+
+    file(
+        GLOB_RECURSE
+        HEADER_FILES
+        ${HUB_INCLUDE_DIR}/*.hpp
+    )
 
     add_custom_target(hub-coverage-all)
     custom_target_added(coverage-all)
 
-    file(
-        GLOB_RECURSE
-        src_headers
-        ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_INCLUDE_DIR}/*.cpp)
-
-    foreach(file ${src_headers})
-        message(STATUS "file : ${file}")
+    foreach(file ${SOURCE_FILES})
         get_filename_component(basename ${file} NAME)
         get_filename_component(parentDir ${file} DIRECTORY)
         get_filename_component(parentName ${parentDir} NAME)
@@ -425,38 +474,52 @@ if(HUB_ENABLE_TESTS AND HUB_ENABLE_COVERAGE)
         else()
             set(parentMacro "${parentName}-")
         endif()
-        if(NOT EXISTS "${PROJECT_SOURCE_DIR}/tests/test-${parentMacro}${name}.cpp")
-            message("parentMacro :${parentMacro}")
-            message("name :${name}")
-            message(FATAL_ERROR "test-${parentMacro}${name}.cpp not found in tests directory")
-        endif()
+        # if(NOT EXISTS "${PROJECT_SOURCE_DIR}/tests/${parentName}/test-${parentMacro}${name}.cpp")
+            # message("parentName: ${parentName}")
+            # message("name: ${name}")
+            # message(WARNING "${parentName}/test-${parentMacro}${name}.cpp not found in tests directory")
+        # endif()
 
-        set(sourcesTmp ${SOURCE_FILES})
-        list(FILTER sourcesTmp EXCLUDE REGEX ".*/${name}\\.cpp$")
+        set(sourceOthers ${SOURCE_FILES})
+        list(FILTER sourceOthers EXCLUDE REGEX ".*/${name}\\.cpp")
 
-        message(STATUS "lcov target : ${name}")
+        set(headerOthers ${HEADER_FILES})
+        list(FILTER headerOthers EXCLUDE REGEX ".*/${name}\\.hpp")
 
         setup_target_for_coverage_lcov(
             NAME
             hub-coverage-lcov-${name}
-            # BASE_DIRECTORY "src/"                        # Base directory for report
+            LCOV_ARGS
+            ${LCOV_VERSION_ARGS}
             EXECUTABLE
-            tests/test-${parentMacro}${name}
+            tests/hub-test-${parentMacro}${name}
             DEPENDENCIES
             hub
-            test-${parentMacro}${name}
+            hub-test-${parentMacro}${name}
             EXCLUDE
             "external/*.h"
             "external/*.cpp"
             "/usr/*"
-            ${sourcesTmp})
+            ${sourceOthers}
+            ${headerOthers}
+        )
 
         add_custom_target(
             hub-coverage-${name}
             COMMAND
-            ls ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov-${name}/index.html && head -n 40
-            ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov-${name}/index.html | grep '100.0 %' || ${HUB_BROWSER}
-            ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov-${name}/index.html)
+            ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/../hub-coverage-lcov-${name}/index.html)
+
+        add_custom_target(
+            hub-coverage-${name}-checkDecline
+            COMMAND
+            ${CMAKE_SOURCE_DIR}/scripts/coverageDecline.sh ${CMAKE_BINARY_DIR}/hub-coverage-lcov-${name} ${CMAKE_BINARY_DIR}/decline hub-coverage-lcov-${name}
+        )
+
+        add_custom_target(
+            hub-coverage-${name}-saveStats
+            COMMAND
+            ${CMAKE_SOURCE_DIR}/scripts/coverageDecline.sh ${CMAKE_BINARY_DIR}/hub-coverage-lcov-${name} ${CMAKE_BINARY_DIR}/decline hub-coverage-lcov-${name} ${hub_HASH}
+        )
 
         add_dependencies(hub-coverage-${name} hub-coverage-lcov-${name})
         add_dependencies(hub-coverage-all hub-coverage-${name})

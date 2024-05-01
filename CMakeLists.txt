@@ -128,10 +128,15 @@ endif()
 set(HUB_PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 add_definitions(-DHUB_PROJECT_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\")
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
+
+include(GetVersionFromGitTag)
+message(STATUS "${HEADER_MSG} Version: ${${PROJECT_NAME}_VERSION} (hash: ${${PROJECT_NAME}_HASH})")
+
 find_package(Boost QUIET) # tcp socket communication
 if(Boost_FOUND)
     add_definitions(-DHUB_USE_BOOST)
-    message(STATUS "${HEADER_MSG} Boost found : ${Boost_DIR}")
+    message(STATUS "${HEADER_MSG} Found Boost ${Boost_VERSION}")
 endif()
 
 find_package(TBB QUIET)
@@ -159,7 +164,6 @@ if(CMAKE_CXX_STANDARD GREATER_EQUAL 20)
     add_definitions(-DHUB_USE_ZPP_BITS)
 endif()
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 
 # cmake-format: off
 # # set(HUB_MODULES "core")
@@ -227,8 +231,7 @@ if(NOT WIN32)
         list(GET CPP_CHECK_VERSION_LIST 1 CPP_CHECK_VERSION_MINOR)
         # list(GET CPP_CHECK_VERSION_LIST 2 CPP_CHECK_VERSION_PATCH)
 
-        # message(STATUS "${HEADER_MSG} Cppcheck ${CPP_CHECK_VERSION_MAJOR}.${CPP_CHECK_VERSION_MINOR}.${CPP_CHECK_VERSION_PATCH} found")
-        message(STATUS "${HEADER_MSG} Cppcheck ${CPP_CHECK_VERSION_MAJOR}.${CPP_CHECK_VERSION_MINOR} found")
+        message(STATUS "${HEADER_MSG} Found Cppcheck ${CPP_CHECK_VERSION_MAJOR}.${CPP_CHECK_VERSION_MINOR}")
 
         if(NOT ${CPP_CHECK_VERSION_MAJOR} EQUAL 2)
             message(FATAL_ERROR "${CPP_CHECK_OUTPUT} unsupported")
