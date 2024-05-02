@@ -1,655 +1,134 @@
-# To contribute improvements to CI/CD templates, please follow the Development guide at:
-# https://docs.gitlab.com/ee/development/cicd/templates.html
-# This specific template is located at:
-# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/C++.gitlab-ci.yml
 
-# using Radium development dedicated image
-# image: stormirit/radium_dev:latest
-#image: docker-linux
+
 variables:
-  CACHE_PATH: "cache13"
+  CACHE_PATH: "cache"
   GIT_STRATEGY: fetch
   LINUX_TAG: "linux"
   WIN_TAG: "windows"
-  MACOS_TAG: "macOs"
-  # GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_CONCURRENT_ID/$CI_PROJECT_PATH
+  MACOS_TAG: "saas-macos-medium-m1"
 
-#https://docs.gitlab.com/ee/ci/yaml/#extends
-# .branches_with_ci:
-  # only:
-    # - master
+stages:
+  - buildAndTest
 
-
-stages: 
-  # - dep
-  # - fetch
-  - build
-  # - build-debug
-  # - build-release
-  - test
-  # - coverage
-  # - code-analysis
-  # - format
-  # - doc
-
-# cache:
-#     key: ${CI_COMMIT_REF_SLUG}
-#     paths:
-#       - build/
 cache:
   key: cache
   paths:
     - $CACHE_PATH/$CI_COMMIT_BRANCH/
-    # - dep-cache/
-    # - build-gcc-release/
-    # - build-clang-debug/
-    # - sphinx-cache/
-    # - format-cache/
 
 .build_any:
   script:
-    # - pwd -P
     - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-$ARCHITECTURE-$COMPILER_C-$BUILD_TYPE
     - installDir=$CACHE_PATH/$CI_COMMIT_BRANCH/install-$ARCHITECTURE-$COMPILER_C-$BUILD_TYPE
-    # - buildDir=build-$COMPILER_C-$BUILD_TYPE
-    # - cmake -B $CACHE_PATH/build-cl-release -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
     - mkdir -p $buildDir
-    # - cmake -B $buildDir -DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=$installDir $CMAKE_CONFIGURE_ARGS
-    - cmake -B $buildDir -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=$installDir $CMAKE_CONFIGURE_ARGS
-    # - !reference [.build_any, script]
-    # - cmake -B $CACHE_PATH/build-release -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
-    - cmake --build $buildDir --config $BUILD_TYPE --parallel
+    - cmake -B $buildDir -DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=$installDir -DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_EXAMPLES=ON $CMAKE_CONFIGURE_ARGS
+    # - cmake --build $buildDir --config $BUILD_TYPE --parallel -j $(expr $(nproc --all) - 1)
+    - cmake --build $buildDir --config $BUILD_TYPE
     - cmake --install $buildDir --config $BUILD_TYPE
-    
 
 .test_any:
   script:
     - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-$ARCHITECTURE-$COMPILER_C-$BUILD_TYPE
     - cmake --build $buildDir --config $BUILD_TYPE --target hub-tests-bin
-    # - cmake --build build-$COMPILER_C-$BUILD_TYPE --config $BUILD_TYPE --target tests
-
-#############################################
-
-# fetch-win10:
-#   stage: fetch
-#   tags:
-#     - win10
-#   script:
-#     - git fetch
-#
-# fetch-linux:
-#   stage: fetch
-#   tags:
-#     - linux
-#   script:
-#     - git fetch
 
 ############################################# Linux
 
-build-linux-clang-x64-release:
-  stage: build
+buildAndTest-linux-clang-x64-release:
+  stage: buildAndTest
   tags:
     - $LINUX_TAG
   script:
+    - apt update
+    - apt install -y cmake clang
     - COMPILER_C=clang
     - COMPILER_CXX=clang++
     - ARCHITECTURE=x64
     - BUILD_TYPE=Release
-    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
+    - CMAKE_CONFIGURE_ARGS=""
     - !reference [.build_any, script]
-  
-build-linux-gcc-x64-debug:
-  stage: build
-  tags:
-    - $LINUX_TAG
-  script:
-    - COMPILER_C=gcc
-    - COMPILER_CXX=g++
-    - ARCHITECTURE=x64
-    - BUILD_TYPE=Debug
-    # - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
-    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
-    - !reference [.build_any, script]
-  
+    - !reference [.test_any, script]
+
+# build-linux-gcc-x64-debug:
+#   stage: buildAndTest
+#   tags:
+#     - $LINUX_TAG
+#   script:
+#     - COMPILER_C=gcc
+#     - COMPILER_CXX=g++
+#     - ARCHITECTURE=x64
+#     - BUILD_TYPE=Debug
+#     - CMAKE_CONFIGURE_ARGS=""
+#     - !reference [.build_any, script]
+#     - !reference [.test_any, script]
+
 ############################################# Windows
 
-build-windows-cl-x64-release:
-  stage: build
-  tags:
-    - $WIN_TAG
-  script:
-    - COMPILER_C=cl
-    - COMPILER_CXX=cl
-    - ARCHITECTURE=x64
-    - BUILD_TYPE=Release
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
-    - !reference [.build_any, script]
-
-build-windows-cl-Win32-debug:
-  stage: build
-  tags:
-    - $WIN_TAG
-  script:
-    - COMPILER_C=cl
-    - COMPILER_CXX=cl
-    - ARCHITECTURE=Win32
-    - BUILD_TYPE=Debug
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
-    - !reference [.build_any, script]
-  
-build-windows-cl-x64-debug:
-  stage: build
-  tags:
-    - $WIN_TAG
-  script:
-    - COMPILER_C=cl
-    - COMPILER_CXX=cl
-    - ARCHITECTURE=x64
-    - BUILD_TYPE=Debug
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
-    - !reference [.build_any, script]
-  only:
-    - master
-  
-build-windows-cl-ARM64-debug:
-  stage: build
-  tags:
-    - $WIN_TAG
-  script:
-    - COMPILER_C=cl
-    - COMPILER_CXX=cl
-    - ARCHITECTURE=ARM64
-    - BUILD_TYPE=Debug
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
-    - !reference [.build_any, script]
-  only:
-    - master
-  
-build-windows-cl-ARM-debug:
-  stage: build
-  tags:
-    - $WIN_TAG
-  script:
-    - COMPILER_C=cl
-    - COMPILER_CXX=cl
-    - ARCHITECTURE=ARM
-    - BUILD_TYPE=Debug
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A $ARCHITECTURE"
-    - !reference [.build_any, script]
-  only:
-    - master
-
-build-windows-cl-UWP_x64-debug:
-  stage: build
-  tags:
-    - $WIN_TAG
-  script:
-    - COMPILER_C=cl
-    - COMPILER_CXX=cl
-    - ARCHITECTURE=UWP-x64
-    - BUILD_TYPE=Debug
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -A x64 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0"
-    - !reference [.build_any, script]
-  only:
-    - master
-
-#################################### MacOs
-
-build-macOs-clang-arm64-release:
-  stage: build
-  tags:
-    - $MACOS_TAG
-  script:
-    - COMPILER_C=clang
-    - COMPILER_CXX=clang++
-    - ARCHITECTURE=arm64
-    - BUILD_TYPE=Release
-    # - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON"
-    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
-    - !reference [.build_any, script]
-  
-build-macOs-llvm_gcc-arm64-debug:
-  stage: build
-  tags:
-    - $MACOS_TAG
-  script:
-    #- COMPILER_C=gcc
-    - COMPILER_C=llvm-gcc
-    #- COMPILER_CXX=g++
-    - COMPILER_CXX=llvm-g++
-    - ARCHITECTURE=arm64
-    - BUILD_TYPE=Debug
-    - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON"
-    - !reference [.build_any, script]
-
-build-macOs-clang-x86_64-debug:
-  stage: build
-  tags:
-    - $MACOS_TAG
-  script:
-    - COMPILER_C=clang
-    - COMPILER_CXX=clang++
-    - ARCHITECTURE=x86_64
-    - BUILD_TYPE=Debug
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
-    # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
-    - !reference [.build_any, script]
-  only:
-    - master
-
-build-macOs-clang-arm64-debug:
-  stage: build
-  tags:
-    - $MACOS_TAG
-  script:
-    - COMPILER_C=clang
-    - COMPILER_CXX=clang++
-    - ARCHITECTURE=arm64
-    - BUILD_TYPE=Debug
-    - CMAKE_CONFIGURE_ARGS="-DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
-    # - CMAKE_CONFIGURE_ARGS="-DCMAKE_C_COMPILER=$COMPILER_C -DCMAKE_CXX_COMPILER=$COMPILER_CXX -DHUB_ENABLE_TESTS=ON -DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
-    - !reference [.build_any, script]
-  only:
-    - master
-  
-
-  
-############################################ TESTS
-
-test-linux-clang-x64-release:
-  stage: test
-  tags:
-    - $LINUX_TAG
-  script:
-    - COMPILER_C=clang
-    - ARCHITECTURE=x64
-    - BUILD_TYPE=Release
-    - !reference [.test_any, script]
-  # when: manual
-  needs:
-    - job: build-linux-clang-x64-release
-      optional: true
-
-###################
-
-
-test-linux-gcc-x64-debug:
-  stage: test
-  tags:
-    - $LINUX_TAG
-  script:
-    - COMPILER_C=gcc
-    - ARCHITECTURE=x64
-    - BUILD_TYPE=Debug
-    - !reference [.test_any, script]
-  # when: manual
-  needs:
-    - job: build-linux-gcc-x64-debug
-      optional: true
-
-############################################ DOS
-
-
-
-test-windows-cl-x64-release:
-  stage: test
-  tags:
-    - $WIN_TAG
-  script:
-    - COMPILER_C=cl
-    - ARCHITECTURE=x64
-    - BUILD_TYPE=Release
-    - !reference [.test_any, script]
-  # when: manual
-  needs:
-    - job: build-windows-cl-x64-release
-      optional: true
-
-###################
-
-
-test-windows-cl-Win32-debug:
-  stage: test
-  tags:
-    - $WIN_TAG
-  script:
-    - COMPILER_C=cl
-    - ARCHITECTURE=Win32
-    - BUILD_TYPE=Debug
-    - !reference [.test_any, script]
-  # when: manual
-  needs:
-    - job: build-windows-cl-Win32-debug
-      optional: true
-
-############################################ MacOs
-
-
-test-macOs-clang-arm64-release:
-  stage: test
-  tags:
-    - $MACOS_TAG
-  script:
-    - COMPILER_C=clang
-    - ARCHITECTURE=arm64
-    - BUILD_TYPE=Release
-    - !reference [.test_any, script]
-  # when: manual
-  needs:
-    - job: build-macOs-clang-arm64-release
-      optional: true
-
-###################
-
-
-test-macOs-llvm_gcc-arm64-debug:
-  stage: test
-  tags:
-    - $MACOS_TAG
-  script:
-    #- COMPILER_C=gcc
-    - COMPILER_C=llvm-gcc
-    - ARCHITECTURE=arm64
-    - BUILD_TYPE=Debug
-    - !reference [.test_any, script]
-  # when: manual
-  needs:
-    - job: build-macOs-llvm_gcc-arm64-debug
-      optional: true
-
-
-
-
-
-
-
-
-
-# build-cl-release:
-#   # stage: build-release
-#   stage: build
-# #  before_script:
-# #    - export PATH=$PATH:/opt/Qt/5.10.0/gcc_64/bin
-#   # parallel:
-#     # matrix:
-#       # - PLATFORM: [windows, linux]
-#       # - ARCH: [amd64, arm64, ppc64le]
-#       #
+# build-windows-cl-x64-release:
+#   stage: buildAndTest
 #   tags:
-#     - win10
-#   script:
-#     - mkdir -p $CACHE_PATH/build-release
-#     - cmake -B $CACHE_PATH/build-cl-release -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON
-#     - cmake --build $CACHE_PATH/build-release --config Release --parallel
-#     - cmake --install $CACHE_PATH/build-release --config Release
-#   # only:
-#   # - $MASTER_BRANCH
-#
-# build-cl-debug:
-#   stage: build
-#   tags:
-#     - win10
-#   script:
-#     - mkdir -p $CACHE_PATH/build-debug
-#     - cmake -B $CACHE_PATH/build-gcc-debug -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=Debug -DHUB_ENABLE_TESTS=ON
-#     - cmake --build $CACHE_PATH/build-debug --config Debug --parallel
-#   # only:
-#     # - $MASTER_BRANCH
-#
-# build-clang-release:
-#   stage: build
-#   tags:
-#     - linux
-#   script:
-#     - mkdir -p $CACHE_PATH/build-clang-release
-#     - cmake -B $CACHE_PATH/build-clang-release -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DHUB_BUILD_STATIC_LIBRARY=ON -DHUB_ENABLE_EXAMPLES=ON -DHUB_BUILD_DOC=ON
-#     - cmake --build $CACHE_PATH/build-clang-release --config Release --parallel
-#     - cmake --install $CACHE_PATH/build-clang-release --config Release
-#   # only:
-#   # - $MASTER_BRANCH
-#
-# build-gcc-debug:
-#   stage: build
-#   tags:
-#     - linux
-#   script:
-#     - mkdir -p $CACHE_PATH/build-gcc-debug
-#     - cmake -B $CACHE_PATH/build-gcc-debug -DCMAKE_CXX_COMPILER=/usr/bin/g++ -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_BUILD_TYPE=Debug -DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_COVERAGE=ON
-#     - cmake --build $CACHE_PATH/build-gcc-debug --config Debug --parallel
-#   # only:
-#     # - $MASTER_BRANCH
-#
-# test:
-#   stage: test
-#   script:
-#     # - cd cache/build-gcc-debug/tests
-#     # - ctest -V
-#     - cmake --build $CACHE_PATH/build-gcc-debug --target tests
-# #    - ./runmytests.sh
-#   # only:
-#   # - $MASTER_BRANCH
-#
-# coverage:
-#   stage: coverage
-#   script:
-#
-#     # - cp -rT cache/dep-cache/ /;
-#     # - apt update
-#     # - apt install -y doxygen clang libclang-dev lcov
-#     # - cd build-gcc-release/
-#     # - cmake --build cache/build-gcc-debug/ --target coverage
-#     - cmake --build $CACHE_PATH/build-gcc-debug --target coverage
-#     # - cache/node_modules/.bin/lcov-badge-generator cache/build-gcc-debug/coverage.capture
-#     # - cp badge.svg cache/build-gcc-debug/coverage/
-#     # - mv $CACHE_PATH/build-gcc-debug/coverage-lcov public/
-#   # artifacts:
-#     # paths:
-#       # - public
-#     # expire_in: 1 week
-#   # only:
-#     # - $MASTER_BRANCH
-#
-# cppCheck:
-#   stage: code-analysis
+#     - $WIN_TAG
 #   script:
 #     # - apt update
-#     # - apt install -y cppcheck
-#     # - cppcheck --enable=all --error-exitcode=1 src tests server -I src -I server/libServer/ --inline-suppr --suppress=toomanyconfigs --suppress=missingIncludeSystem --suppress=noValidConfiguration
-#     # - cppcheck --enable=all src server --error-exitcode=1 --suppress=unusedFunction --suppress=missingInclude
-#     - cmake --build ${CACHE_PATH}/build-clang-release --target cppCheck
+#     # - apt install -y cmake clang
+#     - COMPILER_C=cl
+#     - COMPILER_CXX=cl
+#     - ARCHITECTURE=x64
+#     - BUILD_TYPE=Release
+#     - CMAKE_CONFIGURE_ARGS="-A $ARCHITECTURE"
+#     - !reference [.build_any, script]
 #
-#
-# doc-doxygen:
-#   stage: doc
+# build-windows-cl-Win32-debug:
+#   stage: buildAndTest
+#   tags:
+#     - $WIN_TAG
 #   script:
-#     # - cp -rT cache/dep-cache/ /;
-#
-#     # - cmake --build cache/build-clang-release --target docs
-#     - cmake --build $CACHE_PATH/build-clang-release --target doc-doxygen
-#     # - mv $CACHE_PATH/build-clang-release/doc/docs_doxygen/html/ public/
-# #    - ./runmytests.sh
-#   # artifacts:
-#     # paths:
-#     # - public
-#     # expire_in: 1 week
-#   # only:
-#     # - feature/add-gitlab-pages-support
-#   # only:
-#   # - $MASTER_BRANCH
-#
-# # cache-sphinx:
-# #   stage: doc
-# #   script:
-# #     - |-
-# #       cd cache
-# #       cp -rT dep-cache/ /;
-# #
-# #       # rm -rf sphinx-cache
-# #       if [ ! -e sphinx-cache ]; then
-# #         apt update
-# #         apt install -y python3-pip clang
-# #         pip3 install breathe sphinx sphinx-sitemap sphinx-rtd-theme
-# #
-# #         mkdir -pv sphinx-cache/usr/local/bin/
-# #         mkdir -pv sphinx-cache/usr/lib/
-# #         mkdir -pv sphinx-cache/usr/bin/
-# #         mkdir -pv sphinx-cache/usr/local/lib/
-# #         mkdir -pv sphinx-cache/usr/lib/llvm-11/lib/
-# #         mkdir -pv sphinx-cache/usr/lib/x86_64-linux-gnu/
-# #
-# #         cp -ar /usr/lib/python* sphinx-cache/usr/lib/
-# #         cp -ar /usr/lib/clang* sphinx-cache/usr/lib/
-# #         cp -a /usr/lib/x86_64-linux-gnu/libclang* sphinx-cache/usr/lib/x86_64-linux-gnu/
-# #         cp -ra /usr/lib/llvm-11/lib/* sphinx-cache/usr/lib/llvm-11/lib/
-# #         cp -a /usr/bin/python* sphinx-cache/usr/bin/
-# #         cp /usr/local/bin/sphinx-build sphinx-cache/usr/local/bin/
-# #
-# #         cp -ar /usr/local/lib/python* sphinx-cache/usr/local/lib/
-# #       fi
-# #   only:
-# #   - $MASTER_BRANCH
-#
-#
-# doc-sphinx:
-#   stage: doc
+#     - COMPILER_C=cl
+#     - COMPILER_CXX=cl
+#     - ARCHITECTURE=Win32
+#     - BUILD_TYPE=Debug
+#     - CMAKE_CONFIGURE_ARGS="-A $ARCHITECTURE"
+#     - !reference [.build_any, script]
+
+############################################# MacOS
+
+# build-macos-clang-arm64-debug:
+#   stage: buildAndTest
+#   tags:
+#     - $MACOS_TAG
 #   script:
-#     - |-
-#       # cp -rT cache/dep-cache/ /;
-#       # cp -rT cache/sphinx-cache/ /;
-#
-#       # ls -la /usr/local/bin/sphinx-build
-#       # find / -name "sphinx-build"
-#       # echo $PATH
-#
-#       # make -C doc/docs_sphinx html
-#       cmake --build $CACHE_PATH/build-clang-release --target doc-sphinx
-#       # mv doc/docs_sphinx/_build/html public/
-#   # artifacts:
-#     # paths:
-#       # - public
-#     # expire_in: 1 week
-#   # only:
-#   # - $MASTER_BRANCH
-#
-# # cache-format:
-# #   stage: format
-# #   script:
-# #     - |-
-# #       cd cache
-# #       # rm -rf format-cache
-# #       if [ ! -e format-cache ]; then
-# #         apt update
-# #         apt install -y cmake-format clang-format
-# #
-# #         mkdir -pv format-cache/usr/bin/
-# #         mkdir -pv format-cache/usr/lib/llvm-11/bin/
-# #         mkdir -pv format-cache/usr/lib/llvm-11/lib/
-# #         mkdir -pv format-cache/usr/lib/x86_64-linux-gnu/
-# #
-# #         cp /usr/bin/cmake-format format-cache/usr/bin/
-# #         cp /usr/bin/clang-format format-cache/usr/bin/
-# #         cp /usr/bin/clang-format-11 format-cache/usr/bin/
-# #         cp /usr/lib/llvm-11/bin/clang-format format-cache/usr/lib/llvm-11/bin/
-# #         cp -a /usr/lib/x86_64-linux-gnu/libclang* format-cache/usr/lib/x86_64-linux-gnu/
-# #         cp -ra /usr/lib/llvm-11/lib/* format-cache/usr/lib/llvm-11/lib/
-# #         cp -a /usr/bin/python* format-cache/usr/bin/
-# #         cp -ar /usr/lib/python* format-cache/usr/lib/
-# #       fi
-# #   only:
-# #   - $MASTER_BRANCH
-#
-# format:
-#   stage: format
+#     # - apt update
+#     # - apt install -y cmake clang
+#     - COMPILER_C=clang
+#     - COMPILER_CXX=clang++
+#     - ARCHITECTURE=arm64
+#     - BUILD_TYPE=Debug
+#     - CMAKE_CONFIGURE_ARGS="-DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
+#     - !reference [.build_any, script]
+
+# build-macos-llvm_gcc-arm64-debug:
+#   stage: buildAndTest
+#   tags:
+#     - $MACOS_TAG
 #   script:
-#     - |-
-#       # cp -rT cache/format-cache/ /;
-#
-#       # scripts/cleanup-project.sh
-#       cmake --build $CACHE_PATH/build-gcc-debug --target format
-#       git diff --exit-code
-#   only:
-#   - $MASTER_BRANCH
-#
+#     - COMPILER_C=llvm-gcc
+#     - COMPILER_CXX=llvm-g++
+#     - ARCHITECTURE=arm64
+#     - BUILD_TYPE=Debug
+#     - CMAKE_CONFIGURE_ARGS=""
+#     - !reference [.build_any, script]
 #
 
-# before_script:
-#   - |-
-#     if [ ! -e cache ]; then
-#       mkdir cache
-#     fi
-#     cd cache
-  # - mkdir -pv cache
-  # - cd cache
-  # - rm -r apt-cache
-  # - mkdir -pv apt-cache
-  # - |-
-  #   if [ -e apt-cache ]; then
-  #     cp -rT apt-cache/ /;
-  #   fi
-  #   if [ -e sphinx-cache ]; then
-  #     cp -rT sphinx-cache/ /;
-  #   fi
-  # - find apt-cache
-
-# artifacts:
-#     # key: ${CI_COMMIT_REF_SLUG}
-#     expire_in: 30 days
-#     paths:
-# #      - build/_deps/
-#       - build/
-
-# dep:
-#   stage: dep
+# buildAndTest-linux-gcc-x64-release:
+#   stage: buildAndTest
+#   tags:
+#     - $LINUX_TAG
 #   script:
-#     - |-
-#       # rm -rf cache
-#       # rm -rf cache/build*
-#       if [ ! -e $CACHE_PATH ]; then
-#         mkdir $CACHE_PATH
-#       fi
-#       git fetch
-#       git status
-#   #     cd $CACHE_PATH
-  #     # rm -rf dep-cache
-  #     # apt update
-  #     # apt install -y npm
-  #     if [ ! -e dep-cache ]; then
-  #       apt update
-  #       apt install -y doxygen clang libclang-dev lcov npm
-  #       npm install lcov-badge-generator
-  #
-  #       mkdir -pv dep-cache/usr/bin/
-  #       mkdir -pv dep-cache/usr/share/$(basename /usr/share/cmake-*)/Modules
-  #       mkdir -pv dep-cache/usr/lib/x86_64-linux-gnu/
-  #       mkdir -pv dep-cache/usr/lib/llvm-11/lib/
-  #       mkdir -pv dep-cache/usr/lib/llvm-11/bin/
-  #       mkdir -pv dep-cache/etc/
-  #
-  #       cp /usr/bin/doxygen dep-cache/usr/bin/
-  #       cp /usr/share/cmake-*/Modules/FindDoxygen.cmake dep-cache/usr/share/$(basename /usr/share/cmake-*)/Modules/
-  #       cp -ar /usr/lib/clang* dep-cache/usr/lib/
-  #       cp -a /usr/lib/x86_64-linux-gnu/libclang* dep-cache/usr/lib/x86_64-linux-gnu/
-  #       cp -ra /usr/lib/llvm-11/lib/* dep-cache/usr/lib/llvm-11/lib/
-  #       cp -ar /usr/bin/clang* dep-cache/usr/bin/
-  #       cp -ar /usr/lib/llvm-11/bin/clang* dep-cache/usr/lib/llvm-11/bin/
-  #       cp /usr/bin/lcov dep-cache/usr/bin/
-  #       cp /usr/bin/genhtml dep-cache/usr/bin/
-  #       cp /usr/bin/geninfo dep-cache/usr/bin/
-  #       cp -a /usr/lib/x86_64-linux-gnu/perl* dep-cache/usr/lib/x86_64-linux-gnu/
-  #       cp -a /etc/perl dep-cache/etc/
-  #       cp -a /usr/share/perl* dep-cache/usr/share/
-  #     # fi
-  #       # apt update
-  #       # apt install -y npm
-  #       cp /usr/bin/node dep-cache/usr/bin/
-  #       cp /usr/lib/x86_64-linux-gnu/libnode* dep-cache/usr/lib/x86_64-linux-gnu/
-  #       cp /usr/lib/x86_64-linux-gnu/libcares* dep-cache/usr/lib/x86_64-linux-gnu/
-  #     fi
-  #
-  #     # fi
-  #     # find dep-cache/usr/lib/x86_64-linux-gnu/perl/
-  #     # find / -name "gzip.pm"
-  #     # ls dep-cache/usr/share/
-  #     # ls dep-cache/usr/share/*
-  # # only:
-  # # - $MASTER_BRANCH
+#     - apt update
+#     - apt install -y cmake gcc
+#     - COMPILER_C=gcc
+#     - COMPILER_CXX=g++
+#     - ARCHITECTURE=x64
+#     - BUILD_TYPE=Release
+#     - CMAKE_CONFIGURE_ARGS=""
+#     - !reference [.build_any, script]
+#     - !reference [.test_any, script]
+#
