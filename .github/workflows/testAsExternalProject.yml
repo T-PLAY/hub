@@ -1,5 +1,5 @@
 
-name: Test as submodule
+name: Test as external project
 
 defaults:
   run:
