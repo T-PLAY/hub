@@ -4,8 +4,7 @@ project(testHubAsSubmodule)
 
 add_subdirectory(hub)
 
-#find_package(hub REQUIRED)
-if (hub_FOUND)
+if (TARGET hub)
 
     file(GLOB sources main.cpp)
 
