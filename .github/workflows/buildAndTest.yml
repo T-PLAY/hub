@@ -1,46 +1,46 @@
-
-name: Build and test
-
-defaults:
-  run:
-    shell: bash
-
-on:
-  pull_request:
-    branches: [ main ]
-  push:
-    branches: [ main ]
-
-env:
-  BUILD_TYPE: Debug
-
-jobs:
-  build:
-    runs-on: ${{ matrix.config.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        config:
-          # - { name: "Windows MSVC", os: windows-latest, cc: "cl.exe", cxx: "cl.exe", icon: "Windows"}
-          - { name: "Ubuntu gcc", os: ubuntu-latest, cc: "gcc", cxx: "g++", icon: "Linux" }
-          # - { name: "MacOS clang", os: macos-latest, cc: "clang", cxx: "clang++", icon: "Apple" }
-    permissions:
-      contents: write
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Create di
-      run: mkdir -p "${{github.workspace}}/build/" && echo "bonjour" >> "${{github.workspace}}/build/test.txt" 
-
-    - name: Deploy doc 🚀
-      uses: JamesIves/github-pages-deploy-action@v4
-      with:
-        folder: ${{github.workspace}}/build # The folder the action should deploy.
-        clean: true
-        single-commit: true
-        branch: gh-testAsSubmodule
-
+#
+# name: Build and test
+#
+# defaults:
+#   run:
+#     shell: bash
+#
+# on:
+#   pull_request:
+#     branches: [ main ]
+#   push:
+#     branches: [ main ]
+#
+# env:
+#   BUILD_TYPE: Debug
+#
+# jobs:
+#   build:
+#     runs-on: ${{ matrix.config.os }}
+#     strategy:
+#       fail-fast: false
+#       matrix:
+#         config:
+#           # - { name: "Windows MSVC", os: windows-latest, cc: "cl.exe", cxx: "cl.exe", icon: "Windows"}
+#           - { name: "Ubuntu gcc", os: ubuntu-latest, cc: "gcc", cxx: "g++", icon: "Linux" }
+#           # - { name: "MacOS clang", os: macos-latest, cc: "clang", cxx: "clang++", icon: "Apple" }
+#     permissions:
+#       contents: write
+#
+#     steps:
+#     - uses: actions/checkout@v3
+#
+    # - name: Create di
+    #   run: mkdir -p "${{github.workspace}}/build/" && echo "bonjour" >> "${{github.workspace}}/build/test.txt"
+    #
+    # - name: Deploy doc 🚀
+    #   uses: JamesIves/github-pages-deploy-action@v4
+    #   with:
+    #     folder: ${{github.workspace}}/build # The folder the action should deploy.
+    #     clean: true
+    #     single-commit: true
+    #     branch: gh-testAsSubmodule
+    #
     # - name: Configure CMake
     #   run: cmake -B "${{github.workspace}}/build" -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
     #             -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=install -DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_EXAMPLES=ON
