@@ -1,0 +1,55 @@
+#
+# name: Test as submodule
+#
+# defaults:
+#   run:
+#     shell: bash
+#
+# on:
+#   pull_request:
+#     branches: [ main ]
+#   push:
+#     branches: [ main ]
+#
+# env:
+#   BUILD_TYPE: Release
+#
+# jobs:
+#   build:
+#     runs-on: ${{ matrix.config.os }}
+#     strategy:
+#       fail-fast: false
+#       matrix:
+#         config:
+#             - { name: "Ubuntu gcc", os: ubuntu-latest, cc: "gcc", cxx: "g++", hub_static: "ON", hub_shared: "ON" }
+#             # - { name: "Ubuntu gcc", os: ubuntu-latest, cc: "gcc", cxx: "g++", hub_static: "ON", hub_shared: "OFF" }
+#             # - { name: "Ubuntu gcc", os: ubuntu-latest, cc: "gcc", cxx: "g++", hub_static: "OFF", hub_shared: "ON" }
+#
+#             - { name: "MacOS clang", os: macos-latest, cc: "clang", cxx: "clang++", hub_static: "ON", hub_shared: "ON" }
+#             # - { name: "MacOS clang", os: macos-latest, cc: "clang", cxx: "clang++", hub_static: "ON", hub_shared: "OFF" }
+#             # - { name: "MacOS clang", os: macos-latest, cc: "clang", cxx: "clang++", hub_static: "OFF", hub_shared: "ON" }
+#
+#             - { name: "Windows MSVC", os: windows-latest, cc: "cl.exe", cxx: "cl.exe", hub_static: "ON", hub_shared: "ON"}
+#             # - { name: "Windows MSVC", os: windows-latest, cc: "cl.exe", cxx: "cl.exe", hub_static: "ON", hub_shared: "OFF"}
+#             # - { name: "Windows MSVC", os: windows-latest, cc: "cl.exe", cxx: "cl.exe", hub_static: "OFF", hub_shared: "ON"}
+#
+#             # - { name: "Windows MSVC Win32", os: windows-latest, cc: "cl.exe", cxx: "cl.exe", hub_static: "ON", hub_shared: "ON", cmake_args: "-A Win32"}
+#             # - { name: "Windows MSVC ARM", os: windows-latest, cc: "cl.exe", cxx: "cl.exe", hub_static: "ON", hub_shared: "ON", cmake_args: "-A ARM"}
+#             # - { name: "Windows MSVC UWP x64", os: windows-latest, cc: "cl.exe", cxx: "cl.exe", hub_static: "ON", hub_shared: "ON", cmake_args: "-A x64 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0"}
+#             # - { name: "Windows MSVC UWP ARM64", os: windows-latest, cc: "cl.exe", cxx: "cl.exe", hub_static: "ON", hub_shared: "ON", cmake_args: "-A ARM64 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0"}
+#
+#     steps:
+#
+#     - name: Checkout gh-testAsSubmodule
+#       run: git clone --branch gh-testAsSubmodule https://github.com/T-PLAY/hub.git "${{github.workspace}}/hub"
+#
+#     - name: Checkout hub (current branch)
+#       run: git clone --branch "${{github.head_ref}}" https://github.com/T-PLAY/hub.git "${{github.workspace}}/hub/hub"
+#
+#     - name: Configure CMake
+#       run: cmake "${{github.workspace}}/hub" -B "${{github.workspace}}/hub/build" -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }} -DHUB_BUILD_STATIC=${{ matrix.config.hub_static }} -DHUB_BUILD_SHARED=${{ matrix.config.hub_shared }}
+#                 -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{ matrix.config.cmake_args }}
+#
+#     - name: Compilation (hub as submodule)
+#       run: cmake --build "${{github.workspace}}/hub/build" --config ${{env.BUILD_TYPE}} --parallel
+#
