@@ -30,9 +30,6 @@ void _checkValue( double value,
     CHECK( nRatio == std::pow( 2, nMaxMean - 1 ) );
 
     const std::string declineFolder = HUB_STATS_DIR;
-    // if (! std::filesystem::exists(declineFolder)) {
-    // std::filesystem::create_directories(declineFolder);
-    // }
 
     const std::string logFilename = filename2 + "_" + name2 + extension;
 
@@ -55,10 +52,12 @@ void _checkValue( double value,
             const int nValue = lastValues.size();
 
             if ( nValue >= nRatio ) {
+                const auto bInf = std::prev(lastValues.end(), nRatio);
+                assert(std::distance(bInf, lastValues.end()) == nRatio);
                 const auto standardDeviation = algo::StandardDeviation(
-                    std::prev( lastValues.end(), nValue ), lastValues.end() );
+                    bInf, lastValues.end() );
                 const auto mean =
-                    algo::Mean( std::prev( lastValues.end(), nValue ), lastValues.end() );
+                    algo::Mean( bInf, lastValues.end() );
                 const auto minRatio = mean - standardDeviation * 2.0;
 #ifndef DEBUG
                 CHECK( minRatio <= value );
@@ -84,7 +83,7 @@ void _checkValue( double value,
         if ( inFile.is_open() ) {
             CHECK( inFile.is_open() );
 
-            // get nRatio latests values in input file
+            // get latests nRatio values in input file
             for ( int i = 0; i < nRatio; ++i ) {
                 values[i] = 0.0;
             }
@@ -102,11 +101,6 @@ void _checkValue( double value,
             }
             inFile.close();
         }
-        // else {
-        //     report += "\n\t\tvalue:" + std::to_string( value );
-        //     _REPORT( "[" << name << "] " << report, filename, line );
-        // return;
-        // }
 
         if ( !decline ) {
             values[iRatio % nRatio] = value;
@@ -117,14 +111,10 @@ void _checkValue( double value,
         double sumRatios[nMaxMean];
         double minRatios[nMaxMean];
         double maxRatios[nMaxMean];
-        // double meanRatios[nMaxMean];
-        // double stdRatios[nMaxMean];
         for ( int i = 0; i < nMaxMean; ++i ) {
             sumRatios[i] = 0.0;
             minRatios[i] = values[( iRatio - 1 ) % nRatio];
             maxRatios[i] = values[( iRatio - 1 ) % nRatio];
-            // meanRatios[i] = 0.0;
-            // stdRatios[i] = 0.0;
         }
 
         const int nEl = std::min( nRatio, iRatio );
@@ -190,27 +180,6 @@ void _checkValue( double value,
             algo::StandardDeviation( values.begin(), values.begin() + nEl );
         const auto mean = algo::Mean( values.begin(), values.begin() + nEl );
 
-        // const auto minRatio =
-        // mean - standardDeviation *
-        // 2.0; // correspond of 2.3% of the population, should retry if happened
-
-        // if (decline) {
-        // report += "\033[31m" + std::to_string(value) + " > " + std::to_string( minRatio ) +
-        // " (std:" + std::to_string( standardDeviation ) + ")\033[0m";
-        // } else {
-        // if (! decline) {
-        //     report += " > " + std::to_string( minRatio ) +
-        //           " (std:" + std::to_string( standardDeviation ) + ")\033[0m";
-        // }
-
-        // if ( iRatio >= nRatio ) {
-
-        // decline = value < minRatio;
-        // CHECK(decline == value < minRatio);
-        // #ifndef DEBUG
-        //             CHECK( value >= minRatio );
-        // #endif
-
         if ( decline ) {
             report +=
                 "\n\t\t\033[31mvalue:" + std::to_string( value ) +
@@ -219,7 +188,6 @@ void _checkValue( double value,
                 ", mean-2σ(2.3%):" + std::to_string( mean - 2 * standardDeviation ) +
                 ", mean-3σ(0.1%):" + std::to_string( mean - 3 * standardDeviation ) + "\033[0m";
         }
-        // }
 
         _REPORT( "[" << name << "] " << report, filename, line );
     }
