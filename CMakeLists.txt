@@ -36,8 +36,8 @@ if(NOT ${EXTERNAL_NAME}_FOUND)
     ExternalProject_Add(
         ${EXTERNAL_NAME}
         GIT_REPOSITORY https://github.com/T-PLAY/hub.git
-        # GIT_TAG ${EXTERNAL_BRANCH_NAME}
-        GIT_TAG installMinorFix
+        GIT_TAG ${EXTERNAL_BRANCH_NAME}
+        # GIT_TAG installMinorFix
         GIT_SHALLOW ON
         GIT_PROGRESS FALSE
         PREFIX "external"
