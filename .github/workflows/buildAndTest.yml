@@ -50,7 +50,7 @@ jobs:
       run: cmake --build "${{github.workspace}}/build" --target hub-tests-bin
 
     - name: Save stats
-      if: ${{ github.ref_name }} == 'pull_request'
+      if: ${{ github.ref_name }} == 'push'
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
