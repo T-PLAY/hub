@@ -291,6 +291,7 @@ if(HUB_BUILD_SHARED)
             ${PROJECT_NAME}_shared
             PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
                    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
+                   $<BUILD_INTERFACE:${HUB_EXTERNAL_DIR}> # Version.hpp
                    $<INSTALL_INTERFACE:include>
             # PRIVATE ${HUB_EXTERNAL_DIR}
         )
