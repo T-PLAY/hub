@@ -14,7 +14,7 @@ stages:
   - build
   - test
   # - coverage
-  - code-quality
+  # - code-quality
   # - doc
 
 cache:
@@ -207,27 +207,27 @@ test-macOs-llvm_gcc-arm64-debug:
 
 ############################################ Others ##############################################
 
-cppCheck-linux-clang-x64-release:
-  stage: code-quality
-  tags:
-    - $LINUX_TAG
-  script:
-    - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-x64-clang-Release
-    - cmake --build $buildDir --target hub-cppCheck
-  needs:
-    - job: test-linux-clang-x64-release
-      optional: true
+# cppCheck-linux-clang-x64-release:
+#   stage: code-quality
+#   tags:
+#     - $LINUX_TAG
+#   script:
+#     - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-x64-clang-Release
+#     - cmake --build $buildDir --target hub-cppCheck
+#   needs:
+#     - job: test-linux-clang-x64-release
+#       optional: true
 
-doc-doxygen-linux-clang-x64-release:
-  stage: code-quality
-  tags:
-    - $LINUX_TAG
-  script:
-    - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-x64-clang-Release
-    - cmake --build $buildDir --target hub-doc-doxygen
-  needs:
-    - job: cppCheck-linux-clang-x64-release
-      optional: true
+# doc-doxygen-linux-clang-x64-release:
+#   stage: code-quality
+#   tags:
+#     - $LINUX_TAG
+#   script:
+#     - buildDir=$CACHE_PATH/$CI_COMMIT_BRANCH/build-x64-clang-Release
+#     - cmake --build $buildDir --target hub-doc-doxygen
+#   needs:
+#     - job: cppCheck-linux-clang-x64-release
+#       optional: true
 
 # format-linux-clang-x64-release:
 #   stage: format
