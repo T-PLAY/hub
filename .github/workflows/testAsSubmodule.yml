@@ -44,8 +44,11 @@ jobs:
     - name: Checkout gh-testAsSubmodule
       run: git clone --branch gh-testAsSubmodule https://github.com/T-PLAY/hub.git
 
+    - name: Get branch name
+      run: echo "${{github.ref_name}}"
+
     - name: Checkout hub
-      run: git clone --branch testHubAsSubmodule https://github.com/T-PLAY/hub.git "${{github.workspace}}/hub/hub"
+      run: git clone --branch testHubAsSubModule https://github.com/T-PLAY/hub.git "${{github.workspace}}/hub/"
 
     - name: Configure CMake
       run: cmake -B "${{github.workspace}}/build" -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }} -DHUB_BUILD_STATIC=${{ matrix.config.hub_static }} -DHUB_BUILD_SHARED=${{ matrix.config.hub_shared }}
