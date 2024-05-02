@@ -25,11 +25,11 @@ jobs:
             # - { name: "Ubuntu gcc", os: ubuntu-latest, cc: "gcc", cxx: "g++", hub_static: "ON", hub_shared: "OFF" }
             # - { name: "Ubuntu gcc", os: ubuntu-latest, cc: "gcc", cxx: "g++", hub_static: "OFF", hub_shared: "ON" }
             #
-            # - { name: "MacOS clang", os: macos-latest, cc: "clang", cxx: "clang++", hub_static: "ON", hub_shared: "ON" }
+            - { name: "MacOS clang", os: macos-latest, cc: "clang", cxx: "clang++", hub_static: "ON", hub_shared: "ON" }
             # - { name: "MacOS clang", os: macos-latest, cc: "clang", cxx: "clang++", hub_static: "ON", hub_shared: "OFF" }
             # - { name: "MacOS clang", os: macos-latest, cc: "clang", cxx: "clang++", hub_static: "OFF", hub_shared: "ON" }
             #
-            # - { name: "Windows MSVC", os: windows-latest, cc: "cl.exe", cxx: "cl.exe", hub_static: "ON", hub_shared: "ON"}
+            - { name: "Windows MSVC", os: windows-latest, cc: "cl.exe", cxx: "cl.exe", hub_static: "ON", hub_shared: "ON"}
             # - { name: "Windows MSVC", os: windows-latest, cc: "cl.exe", cxx: "cl.exe", hub_static: "ON", hub_shared: "OFF"}
             # - { name: "Windows MSVC", os: windows-latest, cc: "cl.exe", cxx: "cl.exe", hub_static: "OFF", hub_shared: "ON"}
             #
