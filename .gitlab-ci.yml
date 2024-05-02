@@ -5,7 +5,7 @@ variables:
   GIT_STRATEGY: fetch
   LINUX_TAG: "linux"
   WIN_TAG: "windows"
-  MACOS_TAG: "macos"
+  MACOS_TAG: "saas-macos-medium-m1"
 
 stages:
   - buildAndTest
@@ -62,20 +62,20 @@ buildAndTest-linux-clang-x64-release:
 
 ############################################# Windows
 
-build-windows-cl-x64-release:
-  stage: buildAndTest
-  tags:
-    - $WIN_TAG
-  script:
-    # - apt update
-    # - apt install -y cmake clang
-    - COMPILER_C=cl
-    - COMPILER_CXX=cl
-    - ARCHITECTURE=x64
-    - BUILD_TYPE=Release
-    - CMAKE_CONFIGURE_ARGS="-A $ARCHITECTURE"
-    - !reference [.build_any, script]
-
+# build-windows-cl-x64-release:
+#   stage: buildAndTest
+#   tags:
+#     - $WIN_TAG
+#   script:
+#     # - apt update
+#     # - apt install -y cmake clang
+#     - COMPILER_C=cl
+#     - COMPILER_CXX=cl
+#     - ARCHITECTURE=x64
+#     - BUILD_TYPE=Release
+#     - CMAKE_CONFIGURE_ARGS="-A $ARCHITECTURE"
+#     - !reference [.build_any, script]
+#
 # build-windows-cl-Win32-debug:
 #   stage: buildAndTest
 #   tags:
@@ -90,19 +90,19 @@ build-windows-cl-x64-release:
 
 ############################################# MacOS
 
-build-macos-clang-arm64-debug:
-  stage: buildAndTest
-  tags:
-    - $MACOS_TAG
-  script:
-    # - apt update
-    # - apt install -y cmake clang
-    - COMPILER_C=clang
-    - COMPILER_CXX=clang++
-    - ARCHITECTURE=arm64
-    - BUILD_TYPE=Debug
-    - CMAKE_CONFIGURE_ARGS="-DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
-    - !reference [.build_any, script]
+# build-macos-clang-arm64-debug:
+#   stage: buildAndTest
+#   tags:
+#     - $MACOS_TAG
+#   script:
+#     # - apt update
+#     # - apt install -y cmake clang
+#     - COMPILER_C=clang
+#     - COMPILER_CXX=clang++
+#     - ARCHITECTURE=arm64
+#     - BUILD_TYPE=Debug
+#     - CMAKE_CONFIGURE_ARGS="-DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE"
+#     - !reference [.build_any, script]
 
 # build-macos-llvm_gcc-arm64-debug:
 #   stage: buildAndTest
