@@ -40,16 +40,20 @@ jobs:
 
     steps:
 
-    - name: Checkout gh-testAsSubmodule
-      run: git clone --branch gh-testAsSubmodule https://github.com/T-PLAY/hub.git "${{github.workspace}}/hub"
+    - name: Checkout gh-testAsExternalProject
+      run: git clone --branch gh-testAsExternalProject https://github.com/T-PLAY/hub.git "${{github.workspace}}/hub"
 
-    - name: Checkout hub (current branch)
-      run: git clone --branch "${{github.head_ref}}" https://github.com/T-PLAY/hub.git "${{github.workspace}}/hub/hub"
-
-    - name: Configure CMake
+    - name: Configure CMake (install hub)
       run: cmake "${{github.workspace}}/hub" -B "${{github.workspace}}/hub/build" -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }} -DHUB_BUILD_STATIC=${{ matrix.config.hub_static }} -DHUB_BUILD_SHARED=${{ matrix.config.hub_shared }}
-                -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{ matrix.config.cmake_args }}
+                -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{ matrix.config.cmake_args }} -DEXTERNAL_BRANCH_NAME=${{github.head_ref}}
 
-    - name: Compilation (hub as submodule)
+    - name: Compilation (hub as external project)
+      run: cmake --build "${{github.workspace}}/hub/build" --config ${{env.BUILD_TYPE}} --parallel
+
+    - name: Configure CMake (hub installed)
+      run: cmake "${{github.workspace}}/hub" -B "${{github.workspace}}/hub/build" -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }} -DHUB_BUILD_STATIC=${{ matrix.config.hub_static }} -DHUB_BUILD_SHARED=${{ matrix.config.hub_shared }}
+                -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{ matrix.config.cmake_args }} -DEXTERNAL_BRANCH_NAME=${{github.head_ref}}
+
+    - name: Compilation
       run: cmake --build "${{github.workspace}}/hub/build" --config ${{env.BUILD_TYPE}} --parallel
 
