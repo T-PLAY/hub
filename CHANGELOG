@@ -18,6 +18,7 @@ Current head v.2.1.0 rc
   * Add issue templates for bug report and feature request (#29)
   * Add PULL_REQUEST_TEMPLATE file (#30)
   * Check project use as submodule (#52)
+  * Check project use as external project (#53)
 - Tests
   * Fix timeout error on macos (#33)
 - Documentation
