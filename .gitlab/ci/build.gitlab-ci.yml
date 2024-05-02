@@ -1,0 +1,27 @@
+
+binaries:
+  # extends:
+  # - .rules:merge_request_pipelines:no_docs
+  # - .go-cache
+  stage: build
+  # needs:
+  # - 'prepare done'
+  script:
+  - uname -a
+  # artifacts:
+  #   paths:
+  #   - out/binaries/gitlab-runner-*
+  #   exclude:
+  #   - out/binaries/gitlab-runner-helper/
+  #   expire_in: 7d
+  parallel:
+    matrix:
+    - PLATFORMS:
+      - linux/amd64 linux/arm64 #64bit
+      - linux/386 linux/arm #32bit
+      - linux/s390x linux/ppc64le #ibm
+      - linux/riscv64 #riscv
+      - darwin/amd64 darwin/arm64
+      - freebsd/386 freebsd/amd64 freebsd/arm
+      - windows/386 windows/amd64
+
