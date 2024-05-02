@@ -31,7 +31,7 @@ if(NOT ${EXTERNAL_NAME}_FOUND)
 
 endif()
 
-if (hub_FOUND)
+# if (hub_FOUND)
 
     file(GLOB sources main.cpp)
 
@@ -45,4 +45,4 @@ if (hub_FOUND)
             COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:hub> $<TARGET_FILE_DIR:${PROJECT_NAME}>)
     endif()
 
-endif()
+# endif()
