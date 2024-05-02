@@ -30,30 +30,34 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Restore stats
-      run: mkdir -p "${{github.workspace}}/build"
-        && git clone --branch gh-stats https://github.com/T-PLAY/hub.git "${{github.workspace}}/build/stats"
-
-    - name: Configure CMake
-      run: cmake -B "${{github.workspace}}/build" -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
-                -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=install
-                -DHUB_STATS_DIR="${{github.workspace}}/build/stats/${{matrix.config.name}}"
-                -DHUB_ENABLE_TESTS=ON
-
-    - name: Build
-      run: cmake --build "${{github.workspace}}/build" --config ${{env.BUILD_TYPE}}
-
-    - name: Install
-      run: cmake --install "${{github.workspace}}/build" --config ${{env.BUILD_TYPE}}
-
-    - name: Test
-      run: cmake --build "${{github.workspace}}/build" --target hub-tests-bin
-
     - name: Save stats
-      if: ${{ github.ref_name }} == 'push'
-      uses: peaceiris/actions-gh-pages@v4
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ${{github.workspace}}/build/stats
-        publish_branch: gh-stats
-        keep_files: true
+      if: github.event_name == 'pull_request'
+      run: echo ${{ github.event_name }}
+
+    # - name: Restore stats
+    #   run: mkdir -p "${{github.workspace}}/build"
+    #     && git clone --branch gh-stats https://github.com/T-PLAY/hub.git "${{github.workspace}}/build/stats"
+    #
+    # - name: Configure CMake
+    #   run: cmake -B "${{github.workspace}}/build" -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
+    #             -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=install
+    #             -DHUB_STATS_DIR="${{github.workspace}}/build/stats/${{matrix.config.name}}"
+    #             -DHUB_ENABLE_TESTS=ON
+    #
+    # - name: Build
+    #   run: cmake --build "${{github.workspace}}/build" --config ${{env.BUILD_TYPE}}
+    #
+    # - name: Install
+    #   run: cmake --install "${{github.workspace}}/build" --config ${{env.BUILD_TYPE}}
+    #
+    # - name: Test
+    #   run: cmake --build "${{github.workspace}}/build" --target hub-tests-bin
+    #
+    # - name: Save stats
+    #   if: ${{ github.event_name }} == 'push'
+    #   uses: peaceiris/actions-gh-pages@v4
+    #   with:
+    #     github_token: ${{ secrets.GITHUB_TOKEN }}
+    #     publish_dir: ${{github.workspace}}/build/stats
+    #     publish_branch: gh-stats
+    #     keep_files: true
