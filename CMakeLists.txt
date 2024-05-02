@@ -4,6 +4,8 @@ project(testHubAsSubmodule)
 
 add_subdirectory(hub)
 
+set(CMAKE_CXX_STANDARD 17) # using hub required std17
+
 if (TARGET hub)
 
     file(GLOB sources main.cpp)
