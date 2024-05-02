@@ -37,6 +37,7 @@ jobs:
         folder: ${{github.workspace}}/build # The folder the action should deploy.
         clean: true
         single-commit: true
+        branch: gh-testAsSubmodule
 
     # - name: Configure CMake
     #   run: cmake -B "${{github.workspace}}/build" -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
