@@ -41,7 +41,7 @@ static inline Clock getClock() {
 
 ///
 /// \brief The Acquisition class
-/// todo move to protected
+/// todo move to protected (avoid the use of Matrix::clone() from Acquisition user class)
 class SRC_API Acquisition : public Matrix
 // class SRC_API Acquisition : protected Matrix
 {
@@ -70,7 +70,7 @@ class SRC_API Acquisition : public Matrix
     Acquisition& operator=( const Acquisition& ) = delete;
 
     ///
-    /// \brief clone
+    /// \brief copy
     /// \return
     ///
     Acquisition copy() const {
