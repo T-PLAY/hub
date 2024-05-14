@@ -6,6 +6,10 @@
 
 int main( int argc, char* argv[] ) {
 
+    /** Description
+Run cat.
+    End description */
+
 
     std::vector<std::string> args( argv + 1, argv + argc );
 
