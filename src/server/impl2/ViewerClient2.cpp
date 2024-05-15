@@ -105,10 +105,10 @@ void ViewerClient2::notifyNewStreamer( const StreamerClient2* streamer ) {
     // This is why we don't wait for the deadly client at the end of this method.
     // The reason for waiting for the client to connect is that after the end of this function, if the client is not available and functions are called immediately after notification, some tests will not pass.
     // Fix : use a better way of doing things
-    while ( iTry < 20 && !m_clientStreamAdded ) // timeout: 200 ms
+    while ( iTry < 10 && !m_clientStreamAdded ) // timeout: 200 ms
     {
         std::cout << "[ViewerClient] waiting for streamer added ..." << std::endl;
-        std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
+        std::this_thread::sleep_for( std::chrono::milliseconds( 20 ) );
         ++iTry;
     }
 }
