@@ -1,0 +1,31 @@
+
+name: Main Workflow
+
+defaults:
+  run:
+    shell: bash
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  all:
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { name: "Windows MSVC", os: windows-latest, cc: "cl.exe", cxx: "cl.exe", icon: "Windows"}
+          - { name: "Ubuntu gcc", os: ubuntu-latest, cc: "gcc", cxx: "g++", icon: "Linux" }
+          - { name: "MacOS clang", os: macos-latest, cc: "clang", cxx: "clang++", icon: "Apple" }
+
+    steps:
+    # - name: Build and Install
+    - uses: ./.github/workflows/buildAndTest.yml
+      # with:
+        # matrix: ${{ matrix }}
+        # version: ${{ matrix.config }}
+      # run: echo "Build and Install"
