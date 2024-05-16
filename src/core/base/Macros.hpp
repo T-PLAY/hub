@@ -23,6 +23,10 @@ namespace hub {
 #    define COMPILER_CLANG
 #    define CLANG_VERSION __clang_major__
 
+#ifndef HUB_COMPILER_CLANG
+#error "not clang compiler"
+#endif
+
 #elif defined( __GNUC__ )
 #    define COMPILER_GCC
 #    include <features.h>
@@ -46,10 +50,26 @@ namespace hub {
 #        error "gcc version not supported"
 #    endif
 
+#ifndef HUB_COMPILER_GNU
+#error "not gnu compiler"
+#endif
+
 #elif defined( _MSC_VER )
+
 //#if _MSC_VER >= 1900
 #    define COMPILER_MSVC
 #    define _USE_MATH_DEFINES
+
+#ifndef HUB_COMPILER_MSVC
+#error "not gnu compiler"
+#endif
+
+#elif defined( __llvm__ )
+
+#ifndef HUB_COMPILER_LLVM
+#error "not llvm compiler"
+#endif
+
 #else
 #ifndef CPP_CHECK
 #    error unsupported compiler
