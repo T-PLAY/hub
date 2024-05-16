@@ -22,11 +22,16 @@ jobs:
           - { name: "Ubuntu gcc", os: ubuntu-latest, cc: "gcc", cxx: "g++", icon: "Linux" }
           - { name: "MacOS clang", os: macos-latest, cc: "clang", cxx: "clang++", icon: "Apple" }
 
-    steps:
-    - uses: actions/checkout@v3
-    - uses: ./.github/workflows/buildAndTest.yml
-    # - name: Build and Install
+    - uses: actions/checkout@v4
+    # steps:
+
+    - name: Build and install
+        # uses: ./.github/actions/buildAndInstall
+      uses: ./.github/workflows/buildAndTest.yml
+        # with:
+          # matrix: ${{ matrix }}
+    - name: Build and Install
+      run: echo "Build and Install"
       # with:
         # matrix: ${{ matrix }}
         # version: ${{ matrix.config }}
-      # run: echo "Build and Install"
