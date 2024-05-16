@@ -1,5 +1,5 @@
 
-name: Main Workflow
+name: CI
 
 defaults:
   run:
@@ -12,26 +12,33 @@ on:
     branches: [ main ]
 
 jobs:
-  all:
-    runs-on: ${{ matrix.config.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        config:
-          - { name: "Windows MSVC", os: windows-latest, cc: "cl.exe", cxx: "cl.exe", icon: "Windows"}
-          - { name: "Ubuntu gcc", os: ubuntu-latest, cc: "gcc", cxx: "g++", icon: "Linux" }
-          - { name: "MacOS clang", os: macos-latest, cc: "clang", cxx: "clang++", icon: "Apple" }
+  Ubuntu_gcc:
+    uses: ./.github/workflows/all.yml
+    with:
+      name: Ubuntu gcc
+      os: ubuntu-latest
+      build-type: Debug
+      cc: gcc
+      cxx: g++
+      icon: Linux
 
-    - uses: actions/checkout@v4
-    # steps:
+  Windows_MSVC:
+    uses: ./.github/workflows/all.yml
+    with:
+      name: Windows MSVC
+      os: windows-latest
+      build-type: Debug
+      cc: cl
+      cxx: cl
+      icon: Windows
 
-    - name: Build and install
-        # uses: ./.github/actions/buildAndInstall
-      uses: ./.github/workflows/buildAndTest.yml
-        # with:
-          # matrix: ${{ matrix }}
-    - name: Build and Install
-      run: echo "Build and Install"
-      # with:
-        # matrix: ${{ matrix }}
-        # version: ${{ matrix.config }}
+  MacOS_clang:
+    uses: ./.github/workflows/all.yml
+    with:
+      name: MacOS clang
+      os: macos-latest
+      build-type: Debug
+      cc: clang
+      cxx: clang++
+      icon: Apple
+
