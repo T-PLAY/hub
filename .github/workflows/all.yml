@@ -27,7 +27,7 @@ jobs:
     steps:
     - uses: actions/cache@v3
       with:
-        path: "${{github.workspace}}/build"
+        path: "${{github.workspace}}/"
         key: abc
 
     - name: Checkout repository
@@ -37,11 +37,11 @@ jobs:
       run: cmake -B "${{github.workspace}}/build" -DCMAKE_C_COMPILER=${{ inputs.cc }} -DCMAKE_CXX_COMPILER=${{ inputs.cxx }}
                 -DCMAKE_BUILD_TYPE=${{inputs.build-type}} -DCMAKE_INSTALL_PREFIX=install -DHUB_ENABLE_TESTS=ON -DHUB_ENABLE_EXAMPLES=ON
 
-    # - name: Build
-    #   run: cmake --build "${{github.workspace}}/build" --config ${{env.BUILD_TYPE}} --parallel
-    #
-    # - name: Install
-    #   run: cmake --install "${{github.workspace}}/build" --config ${{env.BUILD_TYPE}}
+    - name: Build
+      run: cmake --build "${{github.workspace}}/build" --config ${{inputs.build-type}} --parallel -j $(expr $(nproc --all) - 1)
+
+    - name: Install
+      run: cmake --install "${{github.workspace}}/build" --config ${{inputs.build-type}}
 
   test:
     needs: build
@@ -49,11 +49,10 @@ jobs:
     steps:
     - uses: actions/cache@v3
       with:
-        path: "${{github.workspace}}/build"
+        path: "${{github.workspace}}/"
         key: abc
 
     - name: Test
-      run: ls "${{github.workspace}}/build"
+      run: cmake --build "${{github.workspace}}/build" --target hub-tests-bin
       timeout-minutes: 5
-#       # run: cmake --build "${{github.workspace}}/build" --target hub-tests-bin
   
