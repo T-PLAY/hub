@@ -23,7 +23,7 @@ namespace hub {
 #    define COMPILER_CLANG
 #    define CLANG_VERSION __clang_major__
 
-#ifndef HUB_COMPILER_CLANG
+#if (! defined(HUB_COMPILER_Clang)) && (! defined(HUB_COMPILER_AppleClang))
 #error "not clang compiler"
 #endif
 
