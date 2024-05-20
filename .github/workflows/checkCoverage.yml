@@ -30,7 +30,7 @@ jobs:
 
     - name: Restore stats
       run: mkdir -p "${{github.workspace}}/build"
-        && git clone --branch gh-decline https://github.com/T-PLAY/hub.git ${{github.workspace}}/build/decline
+        && git clone --branch gh-stats https://github.com/T-PLAY/hub.git ${{github.workspace}}/build/decline
 
     - name: Install lcov
       run: sudo apt install lcov
@@ -45,9 +45,11 @@ jobs:
     - name: Build coverage
       run: cmake --build "${{github.workspace}}/build" --target hub-coverage
 
+      # Check coverage decline with save stats on gh-stats branch (main coverages)
     - name: Check coverage decline
       run: cmake --build "${{github.workspace}}/build" --target hub-coverage-checkDecline
 
+      # Save coverage stats only when pushing on main
     - name: Save coverage stats
       if: github.event_name == 'push'
       run: cmake --build "${{github.workspace}}/build" --target hub-coverage-saveStats
@@ -59,5 +61,5 @@ jobs:
         folder: ${{github.workspace}}/build/decline # The folder the action should deploy.
         clean: true
         single-commit: true
-        branch: gh-decline
+        branch: gh-stats
 
