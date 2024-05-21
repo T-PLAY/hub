@@ -1,0 +1,45 @@
+
+name: CI
+
+defaults:
+  run:
+    shell: bash
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+
+  Ubuntu_gcc:
+    uses: ./.github/workflows/all.yml
+    with:
+      name: Ubuntu gcc
+      os: ubuntu-latest
+      build-type: Release
+      cc: gcc
+      cxx: g++
+      icon: Linux
+
+  Windows_MSVC:
+    uses: ./.github/workflows/all.yml
+    with:
+      name: Windows MSVC
+      os: windows-latest
+      build-type: Release
+      cc: cl
+      cxx: cl
+      icon: Windows
+
+  MacOS_clang:
+    uses: ./.github/workflows/all.yml
+    with:
+      name: MacOS clang
+      os: macos-latest
+      build-type: Release
+      cc: clang
+      cxx: clang++
+      icon: Apple
+
