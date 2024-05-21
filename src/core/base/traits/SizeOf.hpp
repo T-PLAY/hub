@@ -143,7 +143,7 @@ sizeOf( const T& t, const Ts&... ts ) {
 /// \param bytes
 /// \return
 ///
-std::string pretty_bytes( hub::Size_t bytes );
+std::string SRC_API pretty_bytes( hub::Size_t bytes );
 #define PRETTY_BYTES( t ) hub::pretty_bytes( t )
 
 }

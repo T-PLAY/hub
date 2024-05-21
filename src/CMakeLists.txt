@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.8)
 find_package(Git)
 include(GetVersionFromGitTag)
 
+set(HUB_LIBRARIES)
 set(REQUIRED_LIBS ${HUB_TBB_TARGET})
 
 message(STATUS "${HEADER_MSG} Version: ${${PROJECT_NAME}_VERSION}")
@@ -20,7 +21,8 @@ endif()
 option(HUB_BUILD_STATIC "Build static library" ON)
 option(HUB_BUILD_SHARED "Build shared library" ON)
 
-# ######################## OS specifics
+########################## OS/Compiler Specifics ###########################
+
 if(MINGW)
     if(CLANG)
         set(THREADS_PREFER_PTHREAD_FLAG ON)
@@ -64,7 +66,8 @@ elseif(UNIX)
     if(Clang)
 
     elseif(GCC)
-        message(FATAL_ERROR "not supported")
+        message(WARNING "not tested")
+
     elseif(GNU)
 
     else()
@@ -79,33 +82,33 @@ if (REQUIRED_LIBS)
         message(STATUS "${HEADER_MSG} Dependencies: ${REQUIRED_LIBS}")
 endif()
 
-file(# GLOB
-     GLOB_RECURSE external_sources ${HUB_EXTERNAL_DIR}/*.cpp ${HUB_EXTERNAL_DIR}/*.c)
-file(# GLOB
-     GLOB_RECURSE external_headers ${HUB_EXTERNAL_DIR}/*.hpp ${HUB_EXTERNAL_DIR}/*.h)
+############################# Compile Externals #################################
+
+file(GLOB_RECURSE external_sources ${HUB_EXTERNAL_DIR}/*.cpp ${HUB_EXTERNAL_DIR}/*.c)
+file(GLOB_RECURSE external_headers ${HUB_EXTERNAL_DIR}/*.hpp ${HUB_EXTERNAL_DIR}/*.h)
 
 if(NOT HUB_USE_ZPP_BITS)
     list(REMOVE_ITEM external_headers ${HUB_EXTERNAL_DIR}/zpp_bits.h)
 endif()
 add_library(external OBJECT ${external_headers} ${external_sources})
-target_include_directories(
-    external
-    # PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
-    PRIVATE # PUBLIC
-            ${HUB_EXTERNAL_DIR})
+target_include_directories(external PRIVATE ${HUB_EXTERNAL_DIR})
 if(UNIX)
     set_property(TARGET external PROPERTY POSITION_INDEPENDENT_CODE ON) # gltfpack
 endif()
 
 install(
-    DIRECTORY ${HUB_EXTERNAL_DIR}/
-    DESTINATION include/
+    DIRECTORY ${HUB_EXTERNAL_DIR}/serializer/
+    DESTINATION include/external/serializer/
     FILES_MATCHING
     PATTERN "*.hpp"
     PATTERN "*.h"
-    PATTERN "*.inl")
+    PATTERN "*.inl"
+)
 
 set(SRC_TARGETS)
+list(APPEND SRC_TARGETS "$<TARGET_OBJECTS:external>")
+
+############################# Compile Modules #################################
 
 if(NOT XCODE) # unable to have object files as native build with Xcode
 
@@ -115,12 +118,11 @@ if(NOT XCODE) # unable to have object files as native build with Xcode
         string(REPLACE "/" "-" TARGET_NAME "${TARGET_NAME}")
 
         set(object_sources)
-        file(# GLOB
-             GLOB_RECURSE object_sources ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_MODULE}/*.cpp)
+        file(GLOB_RECURSE object_sources ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_MODULE}/*.cpp)
         set(object_headers)
-        file(# GLOB
-             GLOB_RECURSE object_headers ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_MODULE}/*.hpp
+        file(GLOB_RECURSE object_headers ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_MODULE}/*.hpp
              ${CMAKE_CURRENT_SOURCE_DIR}/${HUB_MODULE}/*.h)
+
         if(object_headers MATCHES "Types.hpp")
             message(FATAL_ERROR "Types.hpp shallow Radium Core/Types.hpp definitions")
         endif()
@@ -212,63 +214,54 @@ if(HUB_BUILD_STATIC)
             ${PROJECT_NAME}_static
             PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
                    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
+                   $<BUILD_INTERFACE:${HUB_EXTERNAL_DIR}>
                    $<INSTALL_INTERFACE:include>
-                   # PRIVATE
-                   ${HUB_EXTERNAL_DIR})
+                   $<INSTALL_INTERFACE:include/external>
+        )
     endif() # (XCODE)
 
+    target_compile_features(${PROJECT_NAME}_static PUBLIC cxx_std_17)
     target_compile_definitions(${PROJECT_NAME}_static PUBLIC -DSRC_STATIC)
-    target_link_libraries(${PROJECT_NAME}_static PRIVATE external ${REQUIRED_LIBS})
+    target_link_libraries(${PROJECT_NAME}_static PRIVATE ${REQUIRED_LIBS})
 
-	# Todo export static lib
-	#    set_target_properties(${PROJECT_NAME}_static PROPERTIES VERSION ${${PROJECT_NAME}_VERSION}
-	#                                                            SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR})
+    set_target_properties(${PROJECT_NAME}_static PROPERTIES
+        OUTPUT_NAME ${PROJECT_NAME}
+        ARCHIVE_OUTPUT_DIRECTORY static # conflict rules name with static and shared compilation on windows
+    )
+
+    if(MSVC)
+        if(${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+            target_compile_options(${PROJECT_NAME}_static PRIVATE /Zi)
+
+            # Tell linker to include symbol data
+            set_target_properties(${PROJECT_NAME}_static PROPERTIES
+                LINK_FLAGS "/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF")
+
+            # Set file name & location
+            set_target_properties(${PROJECT_NAME}_static PROPERTIES
+                COMPILE_PDB_NAME ${PROJECT_NAME}_static
+                COMPILE_PDB_OUTPUT_DIR ${CMAKE_BINARY_DIR}
+            )
+        endif()
+    endif()
+
+    ################################ INSTALL ###################################
+
+    ################################ EXPORT ####################################
 
     install(
         TARGETS ${PROJECT_NAME}_static
         EXPORT ${PROJECT_NAME}_static
-        # DESTINATION lib/${ARCHITECTURE}
-        DESTINATION ${ARCHITECTURE}/lib)
-    if(MSVC)
-        if(${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
-            target_compile_options(${PROJECT_NAME}_static PRIVATE /Zi)
-            # Tell linker to include symbol data
-            set_target_properties(${PROJECT_NAME}_static PROPERTIES LINK_FLAGS
-                                                                    "/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF")
+        DESTINATION ${ARCHITECTURE}/lib
+    )
 
-            # Set file name & location
-            set_target_properties(
-                ${PROJECT_NAME}_static
-                PROPERTIES # COMPILE_PDB_NAME ${PROJECT_NAME}${CMAKE_POSTFIX}
-                           COMPILE_PDB_NAME ${PROJECT_NAME} COMPILE_PDB_OUTPUT_DIR ${CMAKE_BINARY_DIR}
-                           # DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
-            )
-        endif()
+    install(
+        EXPORT ${PROJECT_NAME}_static
+        FILE ${PROJECT_NAME}StaticTargets.cmake
+        DESTINATION share/${PROJECT_NAME}/cmake
+    )
 
-        if(NOT ${CMAKE_BUILD_TYPE} STREQUAL "Release")
-            install(
-                FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}${CMAKE_POSTFIX}.pdb
-                DESTINATION ${ARCHITECTURE}/lib
-                OPTIONAL)
-            install(
-                FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME}${CMAKE_POSTFIX}.pdb
-                DESTINATION ${ARCHITECTURE}/lib
-                OPTIONAL)
-        endif()
-    endif() # MSVC
-
-    # Todo export static lib
-	#    install(
-	#        EXPORT ${PROJECT_NAME}_static
-	#        FILE ${PROJECT_NAME}Targets.cmake
-	#        # DESTINATION lib/cmake/${PROJECT_NAME})
-	#        DESTINATION share/${PROJECT_NAME}/cmake)
-	#    export(EXPORT ${PROJECT_NAME}_static FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
-
-
-    if(UNIX)
-        set_target_properties(${PROJECT_NAME}_static PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
-    endif()
+    list(APPEND HUB_LIBRARIES static)
 
 endif() # static library
 
@@ -283,33 +276,30 @@ if(HUB_BUILD_SHARED)
             PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
                    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
                    $<INSTALL_INTERFACE:include>
-            PRIVATE ${HUB_EXTERNAL_DIR})
-
+            PRIVATE ${HUB_EXTERNAL_DIR}
+        )
     else()
         add_library(${PROJECT_NAME}_shared SHARED ${SRC_TARGETS})
         target_include_directories(
             ${PROJECT_NAME}_shared
             PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
                    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
+                   $<BUILD_INTERFACE:${HUB_EXTERNAL_DIR}>
                    $<INSTALL_INTERFACE:include>
-            # PRIVATE ${HUB_EXTERNAL_DIR}
+                   $<INSTALL_INTERFACE:include/external>
         )
     endif() # (XCODE)
 
+    target_compile_features(${PROJECT_NAME}_shared PUBLIC cxx_std_17)
     target_compile_definitions(${PROJECT_NAME}_shared PUBLIC -DSRC_EXPORTS)
-    target_link_libraries(${PROJECT_NAME}_shared PRIVATE external ${REQUIRED_LIBS})
+    target_link_libraries(${PROJECT_NAME}_shared PRIVATE ${REQUIRED_LIBS})
 
-    # PUBLIC $<BUILD_INTERFACE:${HUB_INCLUDE_DIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Version.hpp
     set_target_properties(${PROJECT_NAME}_shared PROPERTIES VERSION ${${PROJECT_NAME}_VERSION}
-                                                            SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR})
-
-    install(
-        TARGETS ${PROJECT_NAME}_shared
-        EXPORT ${PROJECT_NAME}_shared
-        DESTINATION ${ARCHITECTURE}/bin # Linux
-        # DESTINATION ${ARCHITECTURE}/lib)
-        RUNTIME DESTINATION ${ARCHITECTURE}/bin # Windows
+                                                            SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR}
+                                                            OUTPUT_NAME ${PROJECT_NAME}
     )
+
+    ################################ INSTALL ###################################
 
     if(MSVC)
         if(NOT ${CMAKE_BUILD_TYPE} STREQUAL "Release")
@@ -317,20 +307,32 @@ if(HUB_BUILD_SHARED)
         endif()
     endif()
 
+    ################################ EXPORT ####################################
+
+    install(
+        TARGETS ${PROJECT_NAME}_shared
+        EXPORT ${PROJECT_NAME}_shared
+        DESTINATION ${ARCHITECTURE}/lib # Linux
+        RUNTIME DESTINATION ${ARCHITECTURE}/bin # Windows
+    )
+
     install(
         EXPORT ${PROJECT_NAME}_shared
-        FILE ${PROJECT_NAME}Targets.cmake
-        # DESTINATION lib/cmake/${PROJECT_NAME})
+        FILE ${PROJECT_NAME}SharedTargets.cmake
         DESTINATION share/${PROJECT_NAME}/cmake)
-    export(EXPORT ${PROJECT_NAME}_shared FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 
-    set_target_properties(${PROJECT_NAME}_shared PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
+    list(APPEND HUB_LIBRARIES shared)
 
 endif() # (HUB_BUILD_SHARED)
+
+message(STATUS "${HEADER_MSG} Libraries: (${HUB_LIBRARIES})")
+
+# ########################### ALIAS ################################
 
 if(HUB_BUILD_SHARED OR HUB_BUILD_STATIC)
     if(HUB_BUILD_SHARED AND HUB_BUILD_STATIC)
         add_library(hub ALIAS hub_static)
+        # add_library(hub ALIAS hub_shared) # hub.lib not found on windows (conflict with shared compilation, dll generate .lib file)
     elseif(HUB_BUILD_SHARED)
         add_library(hub ALIAS hub_shared)
     else()
@@ -349,13 +351,11 @@ include(CMakePackageConfigHelpers)
 
 configure_package_config_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-    # INSTALL_DESTINATION "lib/cmake/${PROJECT_NAME}"
     INSTALL_DESTINATION "share/${PROJECT_NAME}/cmake/"
     NO_SET_AND_CHECK_MACRO NO_CHECK_REQUIRED_COMPONENTS_MACRO)
 
 write_basic_package_version_file(
     "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-    # VERSION 1.0.0
     VERSION ${${PROJECT_NAME}_VERSION}
     COMPATIBILITY AnyNewerVersion)
 

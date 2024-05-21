@@ -152,6 +152,9 @@ namespace hub {
 #    if defined SRC_STATIC
 #        define SRC_API
 
+#    elif defined SRC_IMPORTS
+#        define SRC_API __declspec( dllimport )
+
 #    elif defined SRC_EXPORTS
 #        define SRC_API __declspec( dllexport )
 
