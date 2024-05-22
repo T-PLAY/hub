@@ -3,6 +3,8 @@
 #include "core/Format.hpp"
 #include "core/MetaData.hpp"
 
+#include "data/Mesh.hpp"
+
 #define HUB_CPP_SOURCE
 #include "native_MetaData.hpp"
 
@@ -43,6 +45,13 @@ int metaData_getInt( const MetaData* metaData, const char* metaName ) {
 double metaData_getDouble( const MetaData* metaData, const char* metaName ) {
     assert( metaData->find( metaName ) != metaData->end() );
     return metaData->at( metaName ).get<double>();
+}
+
+const data::Mesh *metaData_getMesh(const MetaData *metaData, const char *meshName)
+{
+    assert( metaData->find( meshName ) != metaData->end() );
+    const auto & mesh =  metaData->at(meshName).get<data::Mesh>();
+    return &mesh;
 }
 
 } // namespace native

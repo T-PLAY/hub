@@ -349,6 +349,10 @@ class SRC_API Mesh
     }
 #endif
 
+    const std::string & getName() const {
+        return m_name;
+    }
+
   private:
     // void unpack( bool headerOnly = true ) const;
 
