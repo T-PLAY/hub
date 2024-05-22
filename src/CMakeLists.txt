@@ -19,7 +19,7 @@ if (HUB_ENABLE_TESTS)
 endif()
 
 option(HUB_BUILD_STATIC "Build static library" ON)
-option(HUB_BUILD_SHARED "Build shared library" ON)
+option(HUB_BUILD_SHARED "Build shared library" ON) # build shared only (with static off) when you want to export functions into dll (UnityViewer)
 
 ########################## OS/Compiler Specifics ###########################
 
