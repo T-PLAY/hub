@@ -79,7 +79,7 @@ int main( int argc, char* argv[] ) {
                     const int channels = 1;
 
                     char filename[80];
-                    sprintf( filename, "image%d.png", iAcq );
+                    sprintf( filename, "image%d.png", iAcq ); // Todo fix C4996 sprintf unsafe
 
                     const std::string filePath = exportDir + filename;
                     std::cout << filePath << std::endl;
