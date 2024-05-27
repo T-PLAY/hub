@@ -333,6 +333,7 @@ void output::OutputStreamServer2::write( const Data_t* data, Size_t size ) {
 
 void OutputStreamServer2::setRetain( bool retain ) {
     if ( retain ) {
+        m_data->m_retainedData.reserve(16592 * 200);
         m_data->m_writingFun = [this]( const Data_t* data, Size_t size ) {
             assert( size > 0 );
             m_data->m_retainedData.insert( m_data->m_retainedData.end(), data, data + size );

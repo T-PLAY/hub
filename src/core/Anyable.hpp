@@ -144,7 +144,8 @@ class SRC_API Anyable
                                                                                  const char*,
                                                                                  format::Mat4,
                                                                                  format::Vec4,
-                                                                                 format::Vec3
+                                                                                 format::Vec3,
+                                                                                 std::vector<format::Vec3>
 #ifndef HUB_NON_BUILD_DATA
                                                                                  , data::Mesh
 #endif

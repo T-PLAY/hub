@@ -151,6 +151,9 @@ class SRC_API Any
     void read( Serializer& serializer ) {
         decltype( typeName() ) type_name;
         serializer.read( type_name );
+        if( Anyable::s_anyables.find( type_name ) == Anyable::s_anyables.end() ) {
+            std::cerr << "type '" << type_name << "' is not supported" << std::endl;
+        }
         assert( Anyable::s_anyables.find( type_name ) != Anyable::s_anyables.end() );
         m_anyHelper = std::make_unique<Anyable::AnyHelper>( Anyable::s_anyables.at( type_name ) );
 
