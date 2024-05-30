@@ -140,6 +140,7 @@ class SRC_API Any
         assert( m_anyHelper != nullptr );
         const auto& type_name = typeName();
         serializer.write( type_name );
+        assert(type_name != "");
 
         m_anyHelper->write( serializer, m_any );
     }

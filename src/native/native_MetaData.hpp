@@ -80,6 +80,11 @@ extern "C"
     ///
     SRC_API double metaData_getDouble( const MetaData* metaData, const char* metaName );
 
+    SRC_API size_t metaData_getDataSize( const MetaData* metaData, const char * metaName, const char * type);
+
+    SRC_API void metaData_getData( const MetaData* metaData, const char * metaName, const char * type,
+                                  unsigned char* data);
+
 #ifdef __cplusplus
 } // end extern "C"
 #endif

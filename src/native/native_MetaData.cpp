@@ -54,5 +54,35 @@ const data::Mesh *metaData_getMesh(const MetaData *metaData, const char *meshNam
     return &mesh;
 }
 
+size_t metaData_getDataSize(const MetaData *metaData, const char *metaName, const char *type)
+{
+    assert( metaData->find( metaName ) != metaData->end() );
+
+    std::string typeStr(type);
+    if (typeStr == "vector<Vec3>") {
+        const auto & vector = metaData->at(metaName).get<std::vector<format::Vec3>>();
+        return vector.size() * sizeof(format::Vec3);
+    }
+    else {
+        assert(false);
+    }
+    return 0;
+}
+
+void metaData_getData(const MetaData *metaData, const char *metaName, const char *type, unsigned char *data)
+{
+    assert( metaData->find( metaName ) != metaData->end() );
+
+    std::string typeStr(type);
+    if (typeStr == "vector<Vec3>") {
+        const auto & vector = metaData->at(metaName).get<std::vector<format::Vec3>>();
+        memcpy(data, vector.data(), vector.size() * sizeof(format::Vec3));
+    }
+    else {
+        assert(false);
+    }
+}
+
+
 } // namespace native
 } // namespace hub
