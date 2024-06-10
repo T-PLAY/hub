@@ -312,7 +312,8 @@ if(HUB_BUILD_SHARED)
     install(
         TARGETS ${PROJECT_NAME}_shared
         EXPORT ${PROJECT_NAME}_shared
-        DESTINATION ${ARCHITECTURE}/lib # Linux
+        # DESTINATION ${ARCHITECTURE}/lib # Linux, todo check
+        DESTINATION ${ARCHITECTURE}/bin # Linux
         RUNTIME DESTINATION ${ARCHITECTURE}/bin # Windows
     )
 
