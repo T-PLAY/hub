@@ -328,6 +328,21 @@ endif() # (HUB_BUILD_SHARED)
 
 message(STATUS "${HEADER_MSG} Libraries: (${HUB_LIBRARIES})")
 
+# ########################### DEPS #################################
+
+if(PahoMqttCpp_FOUND)
+    set(TARGET_NAME PahoMqttCpp::paho-mqttpp3)
+    install(FILES $<TARGET_FILE:${TARGET_NAME}> $<TARGET_SONAME_FILE:${TARGET_NAME}> DESTINATION ${ARCHITECTURE}/bin)
+    # install(FILES $<TARGET_SONAME_FILE:PahoMqttCpp::paho-mqttpp3> DESTINATION ${ARCHITECTURE}/bin)
+endif()
+
+if(TBB_FOUND)
+    set(TARGET_NAME ${HUB_TBB_TARGET})
+    install(FILES $<TARGET_FILE:${TARGET_NAME}> $<TARGET_SONAME_FILE:${TARGET_NAME}> DESTINATION ${ARCHITECTURE}/bin
+        PERMISSIONS OWNER_READ OWNER_EXECUTE OWNER_WRITE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+    )
+endif()
+
 # ########################### ALIAS ################################
 
 if(HUB_BUILD_SHARED OR HUB_BUILD_STATIC)
