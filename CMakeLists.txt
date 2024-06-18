@@ -88,6 +88,7 @@ foreach(SUPPORTED_COMPILER ${SUPPORTED_COMPILERS})
         endif()
         set(COMPILER_FOUND ${SUPPORTED_COMPILER})
         set("${SUPPORTED_COMPILER}" 1)
+        add_definitions(-DHUB_COMPILER_${SUPPORTED_COMPILER})
     else()
         set("${SUPPORTED_COMPILER}" 0)
     endif()
@@ -131,7 +132,7 @@ add_definitions(-DHUB_PROJECT_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\")
 find_package(Boost QUIET) # tcp socket communication
 if(Boost_FOUND)
     add_definitions(-DHUB_USE_BOOST)
-    message(STATUS "${HEADER_MSG} Boost found : ${Boost_DIR}")
+    message(STATUS "${HEADER_MSG} Boost ${Boost_VERSION} found")
 endif()
 
 find_package(TBB QUIET)
@@ -144,7 +145,10 @@ if(TBB_FOUND)
     else()
         message(FATAL_ERROR "tbb target not found")
     endif()
-    add_definitions(-DHUB_USE_TBB)
+
+    if (NOT GNU) # warning with gcc : [Parallel STL message]: "Vectorized algorithm unimplemented, redirected to serial"
+        add_definitions(-DHUB_USE_TBB)
+    endif()
 endif()
 
 find_package(PahoMqttCpp QUIET)

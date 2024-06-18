@@ -23,6 +23,10 @@ namespace hub {
 #    define COMPILER_CLANG
 #    define CLANG_VERSION __clang_major__
 
+#if (! defined(HUB_COMPILER_Clang)) && (! defined(HUB_COMPILER_AppleClang))
+#error "not clang compiler"
+#endif
+
 #elif defined( __GNUC__ )
 #    define COMPILER_GCC
 #    include <features.h>
@@ -46,10 +50,26 @@ namespace hub {
 #        error "gcc version not supported"
 #    endif
 
+#ifndef HUB_COMPILER_GNU
+#error "not gnu compiler"
+#endif
+
 #elif defined( _MSC_VER )
+
 //#if _MSC_VER >= 1900
 #    define COMPILER_MSVC
 #    define _USE_MATH_DEFINES
+
+#ifndef HUB_COMPILER_MSVC
+#error "not gnu compiler"
+#endif
+
+#elif defined( __llvm__ )
+
+#ifndef HUB_COMPILER_LLVM
+#error "not llvm compiler"
+#endif
+
 #else
 #ifndef CPP_CHECK
 #    error unsupported compiler
@@ -241,13 +261,5 @@ namespace hub {
 #endif
 
 
-/////////////////////////////////////////////// STATIC WARNING /////////////////////////////////////////////////
-
-//// Note: using STATIC_WARNING_TEMPLATE changes the meaning of a program in a small way.
-//// It introduces a member/variable declaration.  This means at least one byte of space
-//// in each structure/class instantiation.  STATIC_WARNING should be preferred in any
-//// non-template situation.
-////  'token' must be a program-wide unique identifier.
-// STATIC_WARNING(cond, msg) PP_CAT(PP_CAT(_localvar_, token),__LINE__)
 
 } // namespace hub

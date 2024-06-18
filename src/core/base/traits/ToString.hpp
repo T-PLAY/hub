@@ -44,14 +44,16 @@ concept StringAddable = requires( std::string str, const T& t ) {
 #else
 
 ///
-/// \brief is_string_t
+/// \brief Object that can be appened to string (explicity converted to std::string)
 ///
 template <typename T>
 using is_string_t = decltype( std::declval<std::string>() += std::declval<T>() );
 
+/// \copydoc is_string_t
 template <typename T, typename = std::void_t<>>
 struct is_string : std::false_type {};
 
+/// \copydoc is_string_t
 template <typename T>
 struct is_string<T, std::void_t<is_string_t<T>>> : std::true_type {};
 
@@ -84,14 +86,16 @@ concept hasToString = requires( std::ostream& os, const T& t ) {
 #else
 
 ///
-/// \brief has_toString_t
+/// \brief Object with toString() feature
 ///
 template <typename T>
 using has_toString_t = decltype( std::declval<T>().toString() );
 
+/// \copydoc has_toString_t
 template <typename T, typename = std::void_t<>>
 struct has_toString : std::false_type {};
 
+/// \copydoc has_toString_t
 template <typename T>
 struct has_toString<T, std::void_t<has_toString_t<T>>> : std::true_type {};
 
@@ -119,14 +123,16 @@ concept toStringable_v = requires( std::ostream& os, const T& t ) {
 #else
 
 ///
-/// \brief stdToStringable_t
+/// \brief Object able to be called by std::to_string
 ///
 template <typename T>
 using stdToStringable_t = decltype( std::to_string( std::declval<T>() ) );
 
+/// \copydoc stdToStringable_t
 template <typename T, typename = std::void_t<>>
 struct stdToStringable : std::false_type {};
 
+/// \copydoc stdToStringable_t
 template <typename T>
 struct stdToStringable<T, std::void_t<stdToStringable_t<T>>> : std::true_type {};
 
@@ -139,14 +145,16 @@ static constexpr auto StdToStringable = stdToStringable_v<T>;
 ////////////////////////////////
 
 ///
-/// \brief toStringable_t
+/// \brief Object able to be called by hub::toString trait
 ///
 template <typename T>
 using toStringable_t = decltype( toString( std::declval<T>() ) );
 
+/// \copydoc toStringable_t
 template <typename T, typename = std::void_t<>>
 struct toStringable : std::false_type {};
 
+/// \copydoc toStringable_t
 template <typename T>
 struct toStringable<T, std::void_t<toStringable_t<T>>> : std::true_type {};
 
@@ -335,14 +343,16 @@ static std::string to_string( const Ts&... ts ) {
 }
 
 ///
-/// \brief hubToStringable_t
+/// \brief Object which can be called by hub::to_string trait
 ///
 template <typename T>
 using hubToStringable_t = decltype( hub::to_string( std::declval<T>() ) );
 
+/// \copydoc hubToStringable_t
 template <typename T, typename = std::void_t<>>
 struct hubToStringable : std::false_type {};
 
+/// \copydoc hubToStringable_t
 template <typename T>
 struct hubToStringable<T, std::void_t<hubToStringable_t<T>>> : std::true_type {};
 
@@ -350,15 +360,29 @@ template <typename T>
 static constexpr bool hubToStringable_v = hubToStringable<T>::value;
 
 #if CPP_VERSION < 17
+///
+/// \brief If one of set of elements
+///
 template <class...>
 struct is_one_of : std::false_type {};
+
+///
+/// \brief If one of set of elements
+///
 template <class T1, class T2>
 struct is_one_of<T1, T2> : std::is_same<T1, T2> {};
+
+///
+/// \brief If one of set of elements
+///
 template <class T1, class T2, class... Ts>
 struct is_one_of<T1, T2, Ts...> : std::conditional<std::is_same<T1, T2>::value,
                                                    std::is_same<T1, T2>,
                                                    is_one_of<T1, Ts...>>::type {};
 #else
+///
+/// \brief If one of set of elements
+///
 template <class T1, class... Ts>
 constexpr bool is_one_of() noexcept {
     return ( std::is_same<T1, Ts> {} || ... );

@@ -32,7 +32,10 @@ using Dims = std::vector<int>;
 
 ///
 /// \brief The Node class
+/// represents matrix for unique type.
+/// Allows to vectorize matrices into single matrix.
 ///
+// Todo hide this class from the user
 class Node
 {
   public:

@@ -27,6 +27,7 @@ Current head v.2.1.0 rc
   * Fix doxygen (#20)
   * Fix sphinx (#26)
   * Deploy documentation to github page (#20,#26)
+  * Cleanup doxygen documentation (#42)
 
 ---
 v.2.0.0

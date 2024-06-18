@@ -16,15 +16,11 @@
 
 #pragma once
 
-#include <cstring>
 #include <functional>
-#include <iostream>
 #include <map>
 #include <memory>
 #include <string>
-#include <vector>
 
-#include "Base.hpp"
 #include "Serializer.hpp"
 #include "Anyable.hpp"
 
@@ -37,11 +33,11 @@ namespace hub {
 class SRC_API Any
 {
   public:
+
     ///
     /// \brief The AnyType enum
     /// allows to unify the data according to the different architecture (32, 64 bits).
     ///
-
     Any() {
 #ifdef HUB_DEBUG_ANY
         std::cout << "[Any] Any()" << std::endl;

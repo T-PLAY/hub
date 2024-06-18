@@ -1,4 +1,4 @@
-#include "ServerImpl2.hpp"
+#include "ServerImpl.hpp"
 
 #include <cstring>
 #include <iostream>
@@ -19,24 +19,24 @@
 namespace hub {
 namespace server {
 
-ServerImpl2::ServerImpl2( int port ) : m_serverSock( port ), m_givingPort( port + 1 ) {}
+ServerImpl::ServerImpl( int port ) : m_serverSock( port ), m_givingPort( port + 1 ) {}
 
-ServerImpl2::~ServerImpl2() {
-    // SERVER_MSG( "~ServerImpl2() started" );
+ServerImpl::~ServerImpl() {
+    // SERVER_MSG( "~ServerImpl() started" );
 
     stop();
     SERVER_MSG( "closing port " << m_serverSock );
     SERVER_MSG( "stoping server" );
-    // SERVER_MSG( "~ServerImpl2() ended" );
+    // SERVER_MSG( "~ServerImpl() ended" );
 }
 
-std::string ServerImpl2::headerMsg() const {
+std::string ServerImpl::headerMsg() const {
     const std::string str = "\t\033[1m[Server:" + std::to_string( m_iClient ) + "/" +
                             std::to_string( m_nActiveClient ) + "]\033[0m ";
     return str;
 }
 
-void ServerImpl2::run() {
+void ServerImpl::run() {
     SERVER_MSG( "starting server" );
     m_killed = false;
     assert( !m_killed );
@@ -51,7 +51,7 @@ void ServerImpl2::run() {
         SERVER_MSG( "new client" );
 
         m_mtxClients.lock();
-        Client2* newClient = initClient( io::InputOutputSocket{std::move( sock )}, ++m_iClient );
+        Client* newClient = initClient( io::InputOutputSocket{std::move( sock )}, ++m_iClient );
         if ( newClient == nullptr ) { --m_nActiveClient; }
         else {
             m_clients.push_back( newClient );
@@ -63,14 +63,14 @@ void ServerImpl2::run() {
     m_running = false;
 }
 
-void ServerImpl2::asyncRun() {
+void ServerImpl::asyncRun() {
     assert( !m_running );
     assert( m_thread == nullptr );
     m_running = true;
     m_thread  = new std::thread( [this]() { run(); } );
 }
 
-void ServerImpl2::stop() {
+void ServerImpl::stop() {
     SERVER_MSG( "stopping server" );
     if ( m_thread != nullptr ) {
         assert( m_thread->joinable() );
@@ -108,12 +108,12 @@ void ServerImpl2::stop() {
     assert( m_clients.empty() );
 }
 
-void ServerImpl2::exitMainThread() {
+void ServerImpl::exitMainThread() {
     m_killed = true;
     io::Stream::stopServer( "127.0.0.1", m_serverSock.getPort() );
 }
 
-Client2* ServerImpl2::initClient( hub::io::InputOutputSocket&& sock, int iClient ) {
+Client* ServerImpl::initClient( hub::io::InputOutputSocket&& sock, int iClient ) {
 
     hub::io::StreamBase::ClientType clientType;
     sock.read( clientType );
@@ -141,7 +141,7 @@ Client2* ServerImpl2::initClient( hub::io::InputOutputSocket&& sock, int iClient
         sock.read( streamPort );
         streamPort = ( streamPort == 0 ) ? m_givingPort++ : streamPort;
         sock.write( streamPort );
-        return new StreamerClient2( this,
+        return new StreamerClient( this,
                                     iClient,
                                     std::move( sock ),
                                     std::move( streamName ),
@@ -151,7 +151,7 @@ Client2* ServerImpl2::initClient( hub::io::InputOutputSocket&& sock, int iClient
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     case hub::io::StreamBase::ClientType::VIEWER: {
-        return new ViewerClient2( this, iClient, std::move( sock ) );
+        return new ViewerClient( this, iClient, std::move( sock ) );
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -198,23 +198,23 @@ Client2* ServerImpl2::initClient( hub::io::InputOutputSocket&& sock, int iClient
     }
 }
 
-void ServerImpl2::printStatus() const {
+void ServerImpl::printStatus() const {
     std::cout << headerMsg() << getStatus() << std::endl;
 }
 
-bool ServerImpl2::running() const {
+bool ServerImpl::running() const {
     return m_running;
 }
 
-int ServerImpl2::nStreamer() const {
+int ServerImpl::nStreamer() const {
     return m_streamName2streamer.size();
 }
 
-int ServerImpl2::nClient() const {
+int ServerImpl::nClient() const {
     return m_clients.size();
 }
 
-std::string ServerImpl2::getStatus() const {
+std::string ServerImpl::getStatus() const {
 
     std::string str = "viewer:" + std::to_string( m_viewers.size() ) + ", streamer:[";
 
@@ -237,7 +237,7 @@ std::string ServerImpl2::getStatus() const {
     return str;
 }
 
-void ServerImpl2::addStreamer( StreamerClient2* streamer ) {
+void ServerImpl::addStreamer( StreamerClient* streamer ) {
 
     const auto& streamName = streamer->m_streamName;
 
@@ -259,7 +259,7 @@ void ServerImpl2::addStreamer( StreamerClient2* streamer ) {
     }
 }
 
-void ServerImpl2::addStreamViewer( StreamerClient2* streamer ) {
+void ServerImpl::addStreamViewer( StreamerClient* streamer ) {
     const auto& streamName = streamer->m_streamName;
 
     m_mtxPrint.lock();
@@ -269,7 +269,7 @@ void ServerImpl2::addStreamViewer( StreamerClient2* streamer ) {
     m_mtxPrint.unlock();
 }
 
-void ServerImpl2::delStreamViewer( StreamerClient2* streamer ) {
+void ServerImpl::delStreamViewer( StreamerClient* streamer ) {
     const auto& streamName = streamer->m_streamName;
 
     m_mtxPrint.lock();
@@ -279,7 +279,7 @@ void ServerImpl2::delStreamViewer( StreamerClient2* streamer ) {
     m_mtxPrint.unlock();
 }
 
-void ServerImpl2::addViewer( ViewerClient2* viewer ) {
+void ServerImpl::addViewer( ViewerClient* viewer ) {
 
 #if ( __cplusplus >= 201703L )
     for ( const auto& [streamName, streamer] : m_streamName2streamer ) {
@@ -297,7 +297,7 @@ void ServerImpl2::addViewer( ViewerClient2* viewer ) {
     m_mtxViewers.unlock();
 }
 
-void ServerImpl2::delStreamer( const StreamerClient2* streamer ) {
+void ServerImpl::delStreamer( const StreamerClient* streamer ) {
 
     const std::string streamName = streamer->m_streamName;
     m_mtxStreamName2streamer.lock();
@@ -317,7 +317,7 @@ void ServerImpl2::delStreamer( const StreamerClient2* streamer ) {
     streamer->printStatusMessage( "del streamer" );
 }
 
-void ServerImpl2::delViewer( ViewerClient2* viewer ) {
+void ServerImpl::delViewer( ViewerClient* viewer ) {
 
     m_mtxViewers.lock();
     assert( std::find( m_viewers.begin(), m_viewers.end(), viewer ) != m_viewers.end() );
@@ -329,7 +329,7 @@ void ServerImpl2::delViewer( ViewerClient2* viewer ) {
     m_mtxPrint.unlock();
 }
 
-void ServerImpl2::removeClient( Client2* client ) {
+void ServerImpl::removeClient( Client* client ) {
     m_mtxClients.lock();
     assert( std::find( m_clients.begin(), m_clients.end(), client ) != m_clients.end() );
     m_clients.remove( client );

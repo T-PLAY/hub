@@ -20,20 +20,13 @@
 #include "core/Input.hpp"
 #include "Acquisition.hpp"
 #include "Sensor.hpp"
+#include "SensorSpec.hpp"
 
 // User friendly headers (classes can be used as input parameter of constructor)
-//// #include "core/Tuple.hpp"
 #include "io/input/InputFile.hpp"
 #include "io/input/InputStream.hpp"
-//// #include "io/File.hpp"
-//// #include "io/input/InputFile.hpp"
-//// #include "io/input/InputStream.hpp"
-//// #include "io/input/InputSyncStream.hpp"
-//// #include "io/input/InputMemory.hpp"
-//// #include "io/Memory.hpp"
-
-//// #include "net/ClientSocket.hpp"
-///
+#include "io/input/InputStreamMqtt.hpp"
+#include "io/input/InputStreamServer2.hpp"
 
 namespace hub {
 namespace sensor {

@@ -38,7 +38,8 @@ class SRC_API InputT : public InputBase
   public:
     ///
     /// \brief read
-    /// \tparam T	A packable object
+    /// \tparam T is a packable object
+    /// \param t
     /// \return
     ///
     template <class T>
@@ -57,6 +58,7 @@ class SRC_API InputT : public InputBase
     ///
     /// \brief read
     /// \tparam T
+    /// \param t
     /// \return
     ///
     template <class T>
@@ -73,6 +75,7 @@ class SRC_API InputT : public InputBase
     ///
     /// \brief read
     /// \tparam T
+    /// \param t
     /// \return
     ///
     template <class T>
@@ -89,7 +92,9 @@ class SRC_API InputT : public InputBase
     ///
     /// \brief readAll
     /// \tparam T
+    /// \param t
     /// \tparam Ts
+    /// \param ts
     ///
     template <class T, class... Ts>
     void readAll( T& t, Ts&... ts ) {

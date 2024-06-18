@@ -23,7 +23,6 @@ std::string pretty_bytes(hub::Size_t bytes) {
         count /= kilo;
     }
 
-    /// \brief count
     if ( count - floor( count ) == 0.0 ) {
 #ifdef WIN32
         snprintf( buff, buffSize, "%d %s", (int)count, suffixes[s].data() );
@@ -35,7 +34,6 @@ std::string pretty_bytes(hub::Size_t bytes) {
 #    endif
 #endif
     }
-    /// \brief else
     else
     {
 #ifdef WIN32
@@ -49,8 +47,6 @@ std::string pretty_bytes(hub::Size_t bytes) {
 #endif
     }
 
-    // return std::string( buff );
-    /// \brief return
     return buff;
 }
 

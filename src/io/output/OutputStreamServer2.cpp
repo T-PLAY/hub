@@ -6,7 +6,6 @@
 #endif
 
 #include <iostream>
-#include <typeinfo>
 #include <iomanip>
 
 namespace hub {
@@ -19,7 +18,7 @@ OutputStreamServer2::OutputStreamServer2( const io::Header& header, int streamPo
 
     m_data->m_header     = header;
     m_data->m_streamPort = streamPort;
-    m_data->m_writingFun = [this]( const Data_t* data, Size_t size ) {};
+    m_data->m_writingFun = []( const Data_t*, Size_t  ) {};
 
     startStreaming();
 }
@@ -33,7 +32,7 @@ OutputStreamServer2::OutputStreamServer2( const io::Header& header,
         std::make_unique<hub::io::InputOutputSocket>( net::ClientSocket( ipv4, port ) ) ) ) {
 
     m_data->m_header     = header;
-    m_data->m_writingFun = [this]( const Data_t* data, Size_t size ) {};
+    m_data->m_writingFun = []( const Data_t* , Size_t  ) {};
 
     tryConnectToServer();
     assert( m_data->m_serverConnected );
@@ -343,7 +342,8 @@ void OutputStreamServer2::setRetain( bool retain ) {
         };
     }
     else {
-        m_data->m_writingFun = [this]( const Data_t* data, Size_t size ) {};
+        // todo = nullptr
+        m_data->m_writingFun = []( const Data_t*, Size_t ) {};
     }
 }
 

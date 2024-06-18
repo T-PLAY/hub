@@ -41,8 +41,9 @@ static inline Clock getClock() {
 
 ///
 /// \brief The Acquisition class
-/// todo move to protected
+/// represent sensor data acquired between start end end timestamps.
 class SRC_API Acquisition : public Matrix
+// Todo move to protected
 // class SRC_API Acquisition : protected Matrix
 {
   public:
@@ -185,7 +186,7 @@ SRC_API Acquisition make_acquisition( const Matrix& resolution );
 ///////////////////////////////////// TEMPLATE ////////////////////////////////
 
 ///
-/// \brief The AcquisitionT class
+/// \copydoc Acquisition
 ///
 template <class Resolution>
 class AcquisitionT : public MatrixTs<Clock, Clock, Resolution>

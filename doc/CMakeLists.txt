@@ -17,6 +17,9 @@ if(HUB_BUILD_DOC)
     if(DOXYGEN_FOUND)
         set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/doxygen/Doxyfile.in)
         set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/doxygen/Doxyfile.out)
+
+        message(STATUS "${HEADER_MSG} Doxygen ${DOXYGEN_VERSION} found")
+
         configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
 
         add_custom_target(

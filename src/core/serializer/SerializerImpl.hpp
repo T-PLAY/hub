@@ -34,14 +34,16 @@ namespace hub {
 namespace serializer {
 
 ///
-/// \brief serializable_t
+/// \brief Object with serialize(input/output) feature
 ///
 template <typename T>
 using serializable_t = decltype( std::declval<T>().serialize( std::declval<ios&>() ) );
 
+/// \copydoc serializable_t
 template <typename T, typename = std::void_t<>>
 struct serializable : std::false_type {};
 
+/// \copydoc serializable_t
 template <typename T>
 struct serializable<T, std::void_t<serializable_t<T>>> : std::true_type {};
 
@@ -50,8 +52,9 @@ static constexpr bool serializable_v = serializable<T>::value;
 
 ///
 /// \brief The SerializerImpl class
+/// Todo remove this class because not efficient compare to default current serializer
 ///
-class SerializerImpl : public SerializerI
+class [[deprecated]] SerializerImpl : public SerializerI
 {
     static constexpr Size_t BuffSize = 1'000'000; // 1 Mo
     bool m_writing                   = false;
@@ -186,9 +189,6 @@ class SerializerImpl : public SerializerI
     Size_t m_position     = 0;
 };
 
-////////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////////////////////////////
 
 } // namespace serializer
 } // namespace hub

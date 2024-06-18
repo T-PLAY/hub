@@ -1,14 +1,14 @@
-#include "ViewerClient2.hpp"
+#include "ViewerClient.hpp"
 
-#include "ServerImpl2.hpp"
-#include "StreamerClient2.hpp"
+#include "ServerImpl.hpp"
+#include "StreamerClient.hpp"
 #include "core/Any.hpp"
 
 namespace hub {
 namespace server {
 
-ViewerClient2::ViewerClient2( ServerImpl2* server, int iClient, net::ClientSocket&& sock ) :
-    Client2( server, iClient ), m_socket( std::move( sock ) ) {
+ViewerClient::ViewerClient( ServerImpl* server, int iClient, net::ClientSocket&& sock ) :
+    Client( server, iClient ), m_socket( std::move( sock ) ) {
 
     assert( m_server != nullptr );
     m_server->addViewer( this );
@@ -60,7 +60,7 @@ ViewerClient2::ViewerClient2( ServerImpl2* server, int iClient, net::ClientSocke
     printStatusMessage( "new viewer" );
 }
 
-ViewerClient2::~ViewerClient2() {
+ViewerClient::~ViewerClient() {
 
     assert( m_thread.joinable() );
     m_thread.join();
@@ -74,7 +74,7 @@ ViewerClient2::~ViewerClient2() {
         }
         int iTry = 0;
         while ( !m_viewerClosed && iTry < 10 ) {
-            std::cout << "[ViewerClient2] close() waiting for server/viewer closing" << std::endl;
+            std::cout << "[ViewerClient] close() waiting for server/viewer closing" << std::endl;
             std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
         }
         assert( iTry < 10 );
@@ -83,12 +83,12 @@ ViewerClient2::~ViewerClient2() {
     }
 }
 
-std::string ViewerClient2::headerMsg() const {
-    // return Client2::headerMsg() + "[Viewer] ";
-    return Client2::clientMsg() + "[Viewer] ";
+std::string ViewerClient::headerMsg() const {
+    // return Client::headerMsg() + "[Viewer] ";
+    return Client::clientMsg() + "[Viewer] ";
 }
 
-void ViewerClient2::notifyNewStreamer( const StreamerClient2* streamer ) {
+void ViewerClient::notifyNewStreamer( const StreamerClient* streamer ) {
 
     m_socket.write( hub::io::StreamBase::ServerMessage::VIEWER_NEW_STREAMER );
     m_socket.write( streamer->m_streamName );
@@ -113,7 +113,7 @@ void ViewerClient2::notifyNewStreamer( const StreamerClient2* streamer ) {
     }
 }
 
-void ViewerClient2::notifyDelStreamer( const std::string& streamName ) {
+void ViewerClient::notifyDelStreamer( const std::string& streamName ) {
     if ( m_viewerClosed ) return;
 
     try {
@@ -129,7 +129,7 @@ void ViewerClient2::notifyDelStreamer( const std::string& streamName ) {
     }
 }
 
-void ViewerClient2::end( hub::io::StreamBase::ServerMessage message ) {
+void ViewerClient::end( hub::io::StreamBase::ServerMessage message ) {
     if ( m_socket.isOpen() ) {
         try {
             assert( m_socket.isOpen() );
@@ -141,7 +141,7 @@ void ViewerClient2::end( hub::io::StreamBase::ServerMessage message ) {
     }
 }
 
-void ViewerClient2::notifyInited() {
+void ViewerClient::notifyInited() {
     assert( m_socket.isOpen() );
 }
 

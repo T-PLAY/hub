@@ -128,15 +128,8 @@ class SRC_API ClientSocketSystem : public ClientSocketI, public SocketSystem
     std::string toString() const { return m_ipv4 + "-" + std::to_string( m_port ); }
 
   public:
-    ///
-    /// \brief isEnd
-    /// \return
-    ///
 
   private:
-    ///
-    /// \brief initServerAddress
-    ///
     void initServerAddress();
 
   private:

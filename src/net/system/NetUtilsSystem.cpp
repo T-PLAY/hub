@@ -59,6 +59,7 @@ class NetManager
         std::cout << std::endl;
     }
 #endif
+
     void registerSocket( const socket_fd& sock ) {
         int iTry = 0;
         m_mtxSockets.lock();
@@ -90,6 +91,7 @@ class NetManager
 #endif
         m_mtxSockets.unlock();
     }
+
     void unregisterSocket( const socket_fd& sock ) {
 
         m_mtxSockets.lock();
@@ -188,6 +190,7 @@ bool isConnected( socket_fd sock ) {
 class ServerAddrImpl
 {
   public:
+
     void init( int port ) {
         memset( &m_sockAddr, 0, sizeof( m_sockAddr ) );
         m_sockAddr.sin_family      = AF_INET;
@@ -248,6 +251,7 @@ class ClientAddrImpl
     void setPort( int port ) {
         m_sockAddr.sin_port = htons( port ); // Server port
     }
+
     void setIpv4( const std::string& ipv4 ) {
         inet_pton( AF_INET, ipv4.c_str(), &m_sockAddr.sin_addr.s_addr ); // winsock 2.0
     }

@@ -18,9 +18,6 @@
 #include <atomic>
 #include <cassert>
 #include <functional>
-#include <mutex>
-#include <regex>
-#include <sstream>
 #include <string>
 #include <thread>
 
@@ -52,20 +49,21 @@ namespace client {
 
 ///
 /// \brief The ViewerStream class
-/// defined a stream in (viewer) client side
+/// is the helper class to define what is a stream for viewer client implement
+/// (only used by ViewerInterface)
 ///
 template <class InputStream>
 class ViewerStream
 {
   public:
     ///
-    /// \brief ViewerStream
-    /// \param iStreamer
-    /// \param streamIpv4
-    /// \param streamPort
-    /// \param streamName
-    /// \param header
-    /// \param viewerHandler
+    /// \brief Stream is generalized by these parameters
+    /// \param iStreamer [in] is the id of stream for log messages
+    /// \param streamIpv4 [in] is the ip of stream
+    /// \param streamPort [in] is the port of stream
+    /// \param streamName [in] is the name of stream
+    /// \param header [in] is the header of stream
+    /// \param viewerHandler [ref] is the common handler of viewer class user
     ///
     ViewerStream( int iStreamer,
                   const std::string& streamIpv4,
@@ -83,18 +81,19 @@ class ViewerStream
     ~ViewerStream();
 
     ///
-    /// \brief startStream
+    /// \brief Start collecting data from stream and shared events to viewer class user
     ///
     void startStream();
 
     ///
-    /// \brief stopStream
+    /// \brief Stop collecting data from stream
     ///
     void stopStream();
 
     ///
-    /// \brief isStreaming
-    /// \return
+    /// \brief Status function
+    /// \return true if the stream is started\n
+    /// false otherwise
     ///
     bool isStreaming() const;
 
@@ -115,9 +114,9 @@ class ViewerStream
     std::unique_ptr<InputStream> m_inputStream;
     const int m_iStreamer;
 
-}; // end class ViewerStream
+};
 
-/////////////////////////////////////// INLINE ////////////////////////////////////////////////////
+//////////////////////////////////// INLINE ////////////////////////////////////
 
 template <class InputStream>
 ViewerStream<InputStream>::ViewerStream( int iStreamer,

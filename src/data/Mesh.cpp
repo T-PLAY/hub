@@ -1,11 +1,8 @@
 #include "Mesh.hpp"
 
-#include <chrono>
 #include <fstream>
 #include <iostream>
 #include <set>
-#include <sstream>
-#include <thread>
 
 //#include <cgltf.h>
 #include <cgltf/cgltf.h>

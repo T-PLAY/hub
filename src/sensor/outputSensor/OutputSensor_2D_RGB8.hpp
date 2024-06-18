@@ -24,17 +24,14 @@ namespace outputSensor {
 
 ///
 /// \brief The OutputSensor_2D_RGB8 class
+/// mimic camera sensor
 ///
 class OutputSensor_2D_RGB8 : public OutputSensor_Instance
 {
   public:
-    /// \brief asyncRun
     using OutputSensor_Instance::asyncRun;
-    /// \brief OutputSensor_Instance
     using OutputSensor_Instance::OutputSensor_Instance;
-    /// \brief run
     using OutputSensor_Instance::run;
-    /// \brief stop
     using OutputSensor_Instance::stop;
 
     ///

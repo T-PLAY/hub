@@ -22,7 +22,8 @@ namespace hub {
 namespace input {
 
 ///
-/// \brief InputStream
+/// \brief Represent is an input using stream communication.
+/// A stream is a server feature able to share data comming from streamer client to differents viewer applications.
 ///
 using InputStream = InputStreamServer2;
 

@@ -16,13 +16,13 @@
 
 #pragma once
 
-#include "impl2/ServerImpl2.hpp"
+#include "impl/ServerImpl.hpp"
 
 namespace hub {
 
 ///
 /// \brief Server
 ///
-using Server = server::ServerImpl2;
+using Server = server::ServerImpl;
 
 } // namespace hub
