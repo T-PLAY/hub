@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Examples &mdash; hub  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="API Reference" href="hub.html" />
+    <link rel="prev" title="Building" href="build.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            hub
+          </a>
+              <div class="version">
+                v2.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whyUseIt.html">Why use it ?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatDoYouWantToDo.html">What do you want to do ?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build.html">Building</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#client-asker">00-client-asker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#client-nativeviewer">01-client-nativeViewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#client-viewer">02-client-viewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#core-matrix">03-core-matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#core-matrixts">04-core-matrixTs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#core-matrixxd">05-core-matrixXD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#core-metadata">06-core-metaData</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-mesh">07-data-mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#io-file">08-io-file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#io-inputstream">09-io-inputStream</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#io-outputstream">10-io-outputStream</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sensor-inputsensor">11-sensor-inputSensor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sensor-outputsensor">12-sensor-outputSensor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sensor-sensorspec">13-sensor-sensorSpec</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hub.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://t-play.github.io/hub/annotated.html">Class List</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whoIsUsingIt.html">Who is using it ?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently questions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hub</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Examples</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/examples.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h1>
+<p>Most of the examples in the examples <a class="reference external" href="https://github.com/T-PLAY/hub/-/tree/main/examples">directory</a>.</p>
+<section id="client-asker">
+<h2><a class="reference external" href="https://github.com/T-PLAY/hub/blob/main/examples/client/example-client-asker.cpp">00-client-asker</a><a class="headerlink" href="#client-asker" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;thread&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;client/Asker.hpp&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="c1">/// startConstruction</span>
+<span class="w">    </span><span class="c1">/// asker</span>
+<span class="w">    </span><span class="c1">/// endConstruction</span>
+<span class="w">    </span><span class="n">hub</span><span class="o">::</span><span class="n">client</span><span class="o">::</span><span class="n">Asker</span><span class="w"> </span><span class="n">asker</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">listStreams</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">asker</span><span class="p">.</span><span class="n">listStreams</span><span class="p">();</span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;nb stream : &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">listStreams</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="cp">#if ( __cplusplus &gt;= 201703L )</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="p">[</span><span class="n">streamName</span><span class="p">,</span><span class="w"> </span><span class="n">sensorSpec</span><span class="p">]</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">listStreams</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="cp">#else</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pair</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">listStreams</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">streamName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pair</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sensorSpec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pair</span><span class="p">.</span><span class="n">second</span><span class="p">;</span>
+<span class="cp">#endif</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">streamName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">sensorSpec</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">acq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">asker</span><span class="p">.</span><span class="n">getAcquisition</span><span class="p">(</span><span class="w"> </span><span class="n">streamName</span><span class="w"> </span><span class="p">);</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">acq</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;--------------------------------&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="client-nativeviewer">
+<h2><a class="reference external" href="https://github.com/T-PLAY/hub/blob/main/examples/client/example-client-nativeViewer.cpp">01-client-nativeViewer</a><a class="headerlink" href="#client-nativeviewer" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// #include &lt;client/Viewer.hpp&gt;</span>
+<span class="c1">// #include &lt;sensor/InputSensor.hpp&gt;</span>
+<span class="c1">// #include &lt;sensor/OutputSensor.hpp&gt;</span>
+
+<span class="c1">// #include &lt;filesystem&gt;</span>
+<span class="c1">// #include &lt;iostream&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;native/Native.hpp&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="c1">/// startConstruction</span>
+<span class="w">    </span><span class="c1">/// nativeViewer</span>
+<span class="w">    </span><span class="c1">/// endConstruction</span>
+<span class="w">    </span><span class="c1">// auto onNewStreamer = []( const char* streamName, const hub::sensor::SensorSpec* sensorSpec ) {</span>
+<span class="w">    </span><span class="c1">//     std::cout &lt;&lt; &quot;[Example][Viewer] onNewStreamer : &quot; &lt;&lt; streamName &lt;&lt; std::endl;</span>
+<span class="w">    </span><span class="c1">//     char sensorName[80] = { 0 };</span>
+<span class="w">    </span><span class="c1">//     int strLen          = 0;</span>
+<span class="w">    </span><span class="c1">//     hub::native::sensorSpec_getSensorName( sensorSpec, sensorName, &amp;strLen );</span>
+<span class="w">    </span><span class="c1">//     std::cout &lt;&lt; &quot;[Example][Viewer] sensorName : &#39;&quot; &lt;&lt; sensorName &lt;&lt; &quot;&#39; size = &quot; &lt;&lt; strLen</span>
+<span class="w">    </span><span class="c1">//               &lt;&lt; std::endl;</span>
+<span class="w">    </span><span class="c1">//     const int resolutionsSize = hub::native::sensorSpec_getResolutionsSize( sensorSpec );</span>
+<span class="w">    </span><span class="c1">//     std::cout &lt;&lt; &quot;[Example][Viewer] resolutions size : &quot; &lt;&lt; resolutionsSize &lt;&lt; std::endl;</span>
+<span class="w">    </span><span class="c1">//     for ( int iResolution = 0; iResolution &lt; resolutionsSize; ++iResolution ) {</span>
+<span class="w">    </span><span class="c1">//         std::cout &lt;&lt; &quot;[Example][Viewer] resolutions[&quot; &lt;&lt; iResolution &lt;&lt; &quot;] format : &quot;</span>
+<span class="w">    </span><span class="c1">//                   &lt;&lt; hub::native::sensorSpec_getFormat( sensorSpec, iResolution ) &lt;&lt; std::endl;</span>
+<span class="w">    </span><span class="c1">//         const int dimensionsSize =</span>
+<span class="w">    </span><span class="c1">//             hub::native::sensorSpec_getDimensionsSize( sensorSpec, iResolution );</span>
+<span class="w">    </span><span class="c1">//         std::cout &lt;&lt; &quot;[Example][Viewer] resolutions[&quot; &lt;&lt; iResolution</span>
+<span class="w">    </span><span class="c1">//                   &lt;&lt; &quot;] dimensions size : &quot; &lt;&lt; dimensionsSize &lt;&lt; std::endl;</span>
+
+<span class="w">    </span><span class="c1">//         for ( int iDimension = 0; iDimension &lt; dimensionsSize; ++iDimension ) {</span>
+<span class="w">    </span><span class="c1">//             std::cout &lt;&lt; &quot;[Example][Viewer] resolutions[&quot; &lt;&lt; iResolution &lt;&lt; &quot;] dimensions[&quot;</span>
+<span class="w">    </span><span class="c1">//                       &lt;&lt; iDimension &lt;&lt; &quot;] size : &quot;</span>
+<span class="w">    </span><span class="c1">//                       &lt;&lt; hub::native::sensorSpec_getDimension(</span>
+<span class="w">    </span><span class="c1">//                              sensorSpec, iResolution, iDimension )</span>
+<span class="w">    </span><span class="c1">//                       &lt;&lt; std::endl;</span>
+<span class="w">    </span><span class="c1">//         }</span>
+<span class="w">    </span><span class="c1">//     }</span>
+<span class="w">    </span><span class="c1">//     std::cout &lt;&lt; &quot;[Example][Viewer] acquisitionsSize : &quot;</span>
+<span class="w">    </span><span class="c1">//               &lt;&lt; hub::native::sensorSpec_getAcquisitionSize( sensorSpec ) &lt;&lt; std::endl;</span>
+
+<span class="w">    </span><span class="c1">//     char resolutionsStr[80] = { 0 };</span>
+<span class="w">    </span><span class="c1">//     hub::native::sensorSpec_getResolutionsStr( sensorSpec, resolutionsStr );</span>
+<span class="w">    </span><span class="c1">//     std::cout &lt;&lt; &quot;[Example][Viewer] resolutionsStr : &#39;&quot; &lt;&lt; resolutionsStr &lt;&lt; &quot;&#39;&quot; &lt;&lt; std::endl;</span>
+
+<span class="w">    </span><span class="c1">//     char metaDataStr[80] = { 0 };</span>
+<span class="w">    </span><span class="c1">//     hub::native::sensorSpec_getMetaDataStr( sensorSpec, metaDataStr );</span>
+<span class="w">    </span><span class="c1">//     std::cout &lt;&lt; &quot;[Example][Viewer] metaDataStr : &#39;&quot; &lt;&lt; metaDataStr &lt;&lt; &quot;&#39;&quot; &lt;&lt; std::endl;</span>
+<span class="w">    </span><span class="c1">//     return true;</span>
+<span class="w">    </span><span class="c1">// };</span>
+<span class="w">    </span><span class="c1">// auto onDelStreamer = []( const char* streamName, const hub::sensor::SensorSpec* sensorSpec ) {</span>
+<span class="w">    </span><span class="c1">//     std::cout &lt;&lt; &quot;[Example][Viewer] onDelStreamer &quot; &lt;&lt; streamName &lt;&lt; std::endl;</span>
+<span class="w">    </span><span class="c1">// };</span>
+<span class="w">    </span><span class="c1">// auto onServerNotFound = []( const char* ipv4, int port ) {</span>
+<span class="w">    </span><span class="c1">//     std::cout &lt;&lt; &quot;[Example][Viewer] onServerNotFound &quot; &lt;&lt; ipv4 &lt;&lt; &quot; &quot; &lt;&lt; port &lt;&lt; std::endl;</span>
+<span class="w">    </span><span class="c1">// };</span>
+<span class="w">    </span><span class="c1">// auto onServerConnected = []( const char* ipv4, int port ) {</span>
+<span class="w">    </span><span class="c1">//     std::cout &lt;&lt; &quot;[Example][Viewer] onServerConnected &quot; &lt;&lt; ipv4 &lt;&lt; &quot; &quot; &lt;&lt; port &lt;&lt; std::endl;</span>
+<span class="w">    </span><span class="c1">// };</span>
+<span class="w">    </span><span class="c1">// auto onServerDisconnected = []( const char* ipv4, int port ) {</span>
+<span class="w">    </span><span class="c1">//     std::cout &lt;&lt; &quot;[Example][Viewer] onServerDisconnected &quot; &lt;&lt; ipv4 &lt;&lt; &quot; &quot; &lt;&lt; port &lt;&lt; std::endl;</span>
+<span class="w">    </span><span class="c1">// };</span>
+<span class="w">    </span><span class="c1">// auto onNewAcquisition = []( const char* streamName, const hub::sensor::Acquisition* acq ) {</span>
+<span class="w">    </span><span class="c1">//     std::cout &lt;&lt; &quot;[Example][Viewer] onNewAcquisition &quot; &lt;&lt; streamName &lt;&lt; &quot; &quot; &lt;&lt; *acq</span>
+<span class="w">    </span><span class="c1">//               &lt;&lt; std::endl;</span>
+<span class="w">    </span><span class="c1">// };</span>
+<span class="w">    </span><span class="c1">// auto onSetProperty =</span>
+<span class="w">    </span><span class="c1">//     []( const char* streamName, const char* objectName, int property, const hub::Any* value ) {</span>
+<span class="w">    </span><span class="c1">//     };</span>
+<span class="w">    </span><span class="c1">// auto onLogMessage = []( const char* logMessage ) {</span>
+<span class="w">    </span><span class="c1">//     std::cout &lt;&lt; &quot;[Example][Viewer] onLogMessage &#39;&quot; &lt;&lt; logMessage &lt;&lt; &quot;&#39; &quot; &lt;&lt; std::endl;</span>
+<span class="w">    </span><span class="c1">// };</span>
+
+<span class="w">    </span><span class="c1">// std::string ipServer = &quot;192.168.2.17&quot;;</span>
+
+<span class="w">    </span><span class="c1">// auto viewer = hub::native::createViewer( onNewStreamer,</span>
+<span class="w">    </span><span class="c1">//                                          onDelStreamer,</span>
+<span class="w">    </span><span class="c1">//                                          onServerNotFound,</span>
+<span class="w">    </span><span class="c1">//                                          onServerConnected,</span>
+<span class="w">    </span><span class="c1">//                                          onServerDisconnected,</span>
+<span class="w">    </span><span class="c1">//                                          onNewAcquisition,</span>
+<span class="w">    </span><span class="c1">//                                          onSetProperty,</span>
+<span class="w">    </span><span class="c1">//                                          ipServer.c_str(),</span>
+<span class="w">    </span><span class="c1">//                                          HUB_SERVICE_PORT,</span>
+<span class="w">    </span><span class="c1">//                                          onLogMessage );</span>
+
+<span class="w">    </span><span class="c1">// while ( true ) {</span>
+<span class="w">    </span><span class="c1">//     std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );</span>
+<span class="w">    </span><span class="c1">// }</span>
+<span class="w">    </span><span class="c1">// std::cout &lt;&lt; &quot;Starting viewer listening&quot; &lt;&lt; std::endl</span>
+<span class="w">    </span><span class="c1">//           &lt;&lt; &quot;Press any key to terminate&quot; &lt;&lt; std::endl;</span>
+<span class="w">    </span><span class="c1">// getchar();</span>
+</pre></div>
+</div>
+</section>
+<section id="client-viewer">
+<h2><a class="reference external" href="https://github.com/T-PLAY/hub/blob/main/examples/client/example-client-viewer.cpp">02-client-viewer</a><a class="headerlink" href="#client-viewer" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;client/Viewer.hpp&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="c1">/// startConstruction</span>
+<span class="w">    </span><span class="c1">/// viewer</span>
+<span class="w">    </span><span class="c1">/// endConstruction</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">onNewStreamer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="o">=</span><span class="p">](</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">streamName</span><span class="p">,</span>
+<span class="w">                              </span><span class="k">const</span><span class="w"> </span><span class="n">hub</span><span class="o">::</span><span class="n">sensor</span><span class="o">::</span><span class="n">SensorSpec</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sensorSpec</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;[example-viewer] onNewStreamer : &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">streamName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">onDelStreamer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[](</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">streamName</span><span class="p">,</span>
+<span class="w">                             </span><span class="k">const</span><span class="w"> </span><span class="n">hub</span><span class="o">::</span><span class="n">sensor</span><span class="o">::</span><span class="n">SensorSpec</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sensorSpec</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;[example-viewer] onDelStreamer : &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">streamName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">onServerNotFound</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[](</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ipv4</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">port</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;[example-viewer] onServerNotFound : &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ipv4</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">port</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">onServerConnected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[](</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ipv4</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">port</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;[example-viewer] onServerConnected : &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ipv4</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">port</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">onServerDisconnected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[](</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ipv4</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">port</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;[example-viewer] onServerDisconnected : &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ipv4</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">port</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">onNewAcquisition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[](</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">streamName</span><span class="p">,</span>
+<span class="w">                                </span><span class="k">const</span><span class="w"> </span><span class="n">hub</span><span class="o">::</span><span class="n">sensor</span><span class="o">::</span><span class="n">Acquisition</span><span class="o">&amp;</span><span class="w"> </span><span class="n">acq</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;[example-viewer] onNewAcquisition : &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">acq</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">onSetProperty</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[](</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">streamName</span><span class="p">,</span>
+<span class="w">                             </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">objectName</span><span class="p">,</span>
+<span class="w">                             </span><span class="kt">int</span><span class="w"> </span><span class="n">property</span><span class="p">,</span>
+<span class="w">                             </span><span class="k">const</span><span class="w"> </span><span class="n">hub</span><span class="o">::</span><span class="n">Any</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;[example-viewer] onSetProperty &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">streamName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">onLogMessage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[](</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">logMessage</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;[example-viewer] onLogMessage &#39;&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">logMessage</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;&#39;&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">ipServer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;192.168.2.1&quot;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// hub::client::Viewer viewer { onNewStreamer,</span>
+<span class="w">    </span><span class="c1">//                              onDelStreamer,</span>
+<span class="w">    </span><span class="c1">//                              onServerNotFound,</span>
+<span class="w">    </span><span class="c1">//                              onServerConnected,</span>
+<span class="w">    </span><span class="c1">//                              onServerDisconnected,</span>
+<span class="w">    </span><span class="c1">//                              onNewAcquisition,</span>
+<span class="w">    </span><span class="c1">//                              onSetProperty,</span>
+<span class="w">    </span><span class="c1">//                              ipServer.c_str(),</span>
+<span class="w">    </span><span class="c1">//                              HUB_SERVICE_PORT,</span>
+<span class="w">    </span><span class="c1">//                              false,</span>
+<span class="w">    </span><span class="c1">//                              onLogMessage };</span>
+
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nb">true</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">milliseconds</span><span class="p">(</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Starting viewer listening&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span>
+<span class="w">              </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Press any key to terminate&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="n">getchar</span><span class="p">();</span>
+</pre></div>
+</div>
+</section>
+<section id="core-matrix">
+<h2><a class="reference external" href="https://github.com/T-PLAY/hub/blob/main/examples/core/example-core-matrix.cpp">03-core-matrix</a><a class="headerlink" href="#core-matrix" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cassert&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;core/Format.hpp&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;core/Matrix.hpp&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="c1">/// startConstruction</span>
+<span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">resolutionVolume</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hub</span><span class="o">::</span><span class="n">make_matrix</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="w"> </span><span class="mi">512</span><span class="p">,</span><span class="w"> </span><span class="mi">512</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="p">);</span>
+<span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">resolutionCam</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">hub</span><span class="o">::</span><span class="n">make_matrix</span><span class="o">&lt;</span><span class="n">hub</span><span class="o">::</span><span class="n">format</span><span class="o">::</span><span class="n">RGB8</span><span class="o">&gt;</span><span class="p">(</span><span class="w"> </span><span class="mi">640</span><span class="p">,</span><span class="w"> </span><span class="mi">480</span><span class="w"> </span><span class="p">);</span>
+<span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">resolutionAll</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">hub</span><span class="o">::</span><span class="n">make_matrix</span><span class="p">(</span><span class="w"> </span><span class="n">resolutionVolume</span><span class="p">,</span><span class="w"> </span><span class="n">resolutionCam</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="c1">/// endConstruction</span>
+</pre></div>
+</div>
+</section>
+<section id="core-matrixts">
+<h2><a class="reference external" href="https://github.com/T-PLAY/hub/blob/main/examples/core/example-core-matrixTs.cpp">04-core-matrixTs</a><a class="headerlink" href="#core-matrixts" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cassert&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;core/Format.hpp&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;core/matrix/MatrixTs.hpp&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="c1">/// startConstruction</span>
+<span class="k">using</span><span class="w"> </span><span class="n">Resolution</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hub</span><span class="o">::</span><span class="n">MatrixTs</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">/// endConstruction</span>
+</pre></div>
+</div>
+</section>
+<section id="core-matrixxd">
+<h2><a class="reference external" href="https://github.com/T-PLAY/hub/blob/main/examples/core/example-core-matrixXD.cpp">05-core-matrixXD</a><a class="headerlink" href="#core-matrixxd" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cassert&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;core/Format.hpp&gt;</span>
+<span class="c1">// #include &lt;core/Matrix.hpp&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;core/matrix/MatrixXD.hpp&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="c1">/// startConstruction</span>
+<span class="k">using</span><span class="w"> </span><span class="n">ResolutionVolume</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hub</span><span class="o">::</span><span class="n">MatrixXD</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="mi">512</span><span class="p">,</span><span class="w"> </span><span class="mi">512</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="n">ResolutionCam</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hub</span><span class="o">::</span><span class="n">MatrixXD</span><span class="o">&lt;</span><span class="n">hub</span><span class="o">::</span><span class="n">format</span><span class="o">::</span><span class="n">RGB8</span><span class="p">,</span><span class="w"> </span><span class="mi">640</span><span class="p">,</span><span class="w"> </span><span class="mi">480</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">/// endConstruction</span>
+</pre></div>
+</div>
+</section>
+<section id="core-metadata">
+<h2><a class="reference external" href="https://github.com/T-PLAY/hub/blob/main/examples/core/example-core-metaData.cpp">06-core-metaData</a><a class="headerlink" href="#core-metadata" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;core/MetaData.hpp&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="c1">/// startConstruction</span>
+<span class="w">    </span><span class="c1">/// metaData</span>
+<span class="w">    </span><span class="c1">/// endConstruction</span>
+<span class="w">    </span><span class="n">hub</span><span class="o">::</span><span class="n">MetaData</span><span class="w"> </span><span class="n">metaData</span><span class="p">;</span>
+<span class="w">    </span><span class="n">metaData</span><span class="p">[</span><span class="s">&quot;hello&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">hub</span><span class="o">::</span><span class="n">Any</span><span class="w"> </span><span class="n">any</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;hello&quot;</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">any</span><span class="p">.</span><span class="n">get</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*&gt;</span><span class="p">();</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="data-mesh">
+<h2><a class="reference external" href="https://github.com/T-PLAY/hub/blob/main/examples/data/example-data-mesh.cpp">07-data-mesh</a><a class="headerlink" href="#data-mesh" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="c1">/// startConstruction</span>
+<span class="w">    </span><span class="c1">/// mesh</span>
+<span class="w">    </span><span class="c1">/// endConstruction</span>
+</pre></div>
+</div>
+</section>
+<section id="io-file">
+<h2><a class="reference external" href="https://github.com/T-PLAY/hub/blob/main/examples/io/example-io-file.cpp">08-io-file</a><a class="headerlink" href="#io-file" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensor/InputSensor.hpp&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensor/OutputSensor.hpp&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;filesystem&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;thread&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="c1">/// Comments I would like to be documented in as well</span>
+
+<span class="w">    </span><span class="c1">/// startConstruction</span>
+<span class="w">    </span><span class="c1">/// file</span>
+<span class="w">    </span><span class="c1">/// endConstruction</span>
+
+<span class="w">    </span><span class="c1">// {</span>
+<span class="w">    </span><span class="c1">//     hub::input::InputFile outputFile(</span>
+<span class="w">    </span><span class="c1">//         std::fstream( &quot;file.txt&quot;, std::ios::binary | std::ios::out | std::ios::trunc ) );</span>
+<span class="w">    </span><span class="c1">//     hub::input::InputFile inputFile(</span>
+<span class="w">    </span><span class="c1">//         std::fstream( &quot;file.txt&quot;, std::ios::binary | std::ios::in ) );</span>
+<span class="w">    </span><span class="c1">// }</span>
+
+<span class="w">    </span><span class="c1">// {</span>
+
+<span class="w">    </span><span class="c1">//     hub::MetaData metaData;</span>
+<span class="w">    </span><span class="c1">//     hub::format format = hub::format::BGR8;</span>
+<span class="w">    </span><span class="c1">//     hub::NDim nDim     = { 1 };</span>
+<span class="w">    </span><span class="c1">//     hub::Resolutions resolutions { { nDim, format } };</span>
+<span class="w">    </span><span class="c1">//     hub::sensor::SensorSpec sensorSpec {</span>
+<span class="w">    </span><span class="c1">//         &quot;sensorName&quot;, { { nDim, hub::format::BGR8 } }, metaData };</span>
+<span class="w">    </span><span class="c1">//     hub::sensor::SensorSpec sensorSpec2 {</span>
+<span class="w">    </span><span class="c1">//         &quot;sensorName&quot;, { { { 1 }, hub::format::BGR8 }, { { 1, 2, 3 }, format } }, metaData };</span>
+<span class="w">    </span><span class="c1">//     hub::sensor::SensorSpec sensorSpec3 { &quot;sensorName&quot;, {}, metaData };</span>
+<span class="w">    </span><span class="c1">//     {</span>
+<span class="w">    </span><span class="c1">//         hub::sensor::OutputSensor outputSensor2(</span>
+<span class="w">    </span><span class="c1">//             hub::sensor::SensorSpec {</span>
+<span class="w">    </span><span class="c1">//                 &quot;sensorName&quot;, { { { 1 }, hub::format::BGR8 } }, hub::MetaData() },</span>
+<span class="w">    </span><span class="c1">//             hub::input::InputFile( std::fstream( &quot;file.txt&quot;, std::ios::out ) ) );</span>
+<span class="w">    </span><span class="c1">//         hub::sensor::OutputSensor outputSensor3(</span>
+<span class="w">    </span><span class="c1">//             hub::sensor::SensorSpec { &quot;sensorName&quot;, { { { 1 }, hub::format::BGR8 } } },</span>
+<span class="w">    </span><span class="c1">//             hub::input::InputFile( std::fstream( &quot;file.txt&quot;, std::ios::out ) ) );</span>
+<span class="w">    </span><span class="c1">//         hub::sensor::SensorSpec sensorSpec(</span>
+<span class="w">    </span><span class="c1">//             &quot;sensorName&quot;, { { { 1 }, hub::format::BGR8 } }, metaData );</span>
+<span class="w">    </span><span class="c1">//         hub::sensor::OutputSensor outputSensor(</span>
+<span class="w">    </span><span class="c1">//             sensorSpec, hub::input::InputFile( std::fstream( &quot;file.txt&quot;, std::ios::out ) ) );</span>
+
+<span class="w">    </span><span class="c1">//         const unsigned char bgrArray[3] = { 0, 1, 2 };</span>
+<span class="w">    </span><span class="c1">//         const unsigned char dof6Array[28] { 0 };</span>
+<span class="w">    </span><span class="c1">//         hub::data::Dof6 dof6;</span>
+<span class="w">    </span><span class="c1">//         outputSensor2 &lt;&lt; ( hub::sensor::Acquisition { 0, 0 }</span>
+<span class="w">    </span><span class="c1">//                            &lt;&lt; hub::Measure { bgrArray, 3, { { 1 }, hub::format::BGR8 } }</span>
+<span class="w">    </span><span class="c1">//                            &lt;&lt; hub::Measure { dof6Array, 28, { { 1 }, hub::format::Dof6 } }</span>
+<span class="w">    </span><span class="c1">//                            &lt;&lt; std::move( hub::data::Dof6() ) &lt;&lt; std::move( dof6 ) );</span>
+
+<span class="w">    </span><span class="c1">//         std::fstream file( &quot;file.txt&quot;, std::ios::in );</span>
+<span class="w">    </span><span class="c1">//         hub::sensor::InputSensor inputSensor( hub::input::InputFile( std::move( file ) ) );</span>
+<span class="w">    </span><span class="c1">//         const hub::Resolutions&amp; resolutions = inputSensor.getSpec().getResolutions();</span>
+
+<span class="w">    </span><span class="c1">//         hub::sensor::Acquisition acq;</span>
+<span class="w">    </span><span class="c1">//         inputSensor &gt;&gt; acq;</span>
+
+<span class="w">    </span><span class="c1">//         const hub::Measure&amp; measure = acq.getMeasures().at( 0 );</span>
+<span class="w">    </span><span class="c1">//         const hub::data::Dof6 dof62( measure );</span>
+<span class="w">    </span><span class="c1">//     }</span>
+
+<span class="w">    </span><span class="c1">//     {</span>
+<span class="w">    </span><span class="c1">//         const hub::sensor::SensorSpec sensorSpec(</span>
+<span class="w">    </span><span class="c1">//             &quot;sensorName&quot;, { { { 1 }, hub::format::BGR8 } }, metaData );</span>
+<span class="w">    </span><span class="c1">//     }</span>
+
+<span class="w">    </span><span class="c1">//     {</span>
+<span class="w">    </span><span class="c1">//         hub::sensor::SensorSpec sensorSpec(</span>
+<span class="w">    </span><span class="c1">//             &quot;sensorName&quot;, { { { 1 }, hub::format::BGR8 } }, metaData );</span>
+<span class="w">    </span><span class="c1">//         hub::sensor::OutputSensor outputSensor(</span>
+<span class="w">    </span><span class="c1">//             sensorSpec, &quot;streamName&quot;, hub::net::ClientSocket() );</span>
+<span class="w">    </span><span class="c1">//         hub::sensor::InputSensor inputSensor(</span>
+<span class="w">    </span><span class="c1">//             hub::input::InputStream( &quot;streamName&quot;, hub::net::ClientSocket() ) );</span>
+<span class="w">    </span><span class="c1">//     }</span>
+<span class="w">    </span><span class="c1">// }</span>
+
+<span class="w">    </span><span class="c1">// {</span>
+<span class="w">    </span><span class="c1">//     hub::sensor::InputSensor inputSensor(</span>
+<span class="w">    </span><span class="c1">//         hub::input::InputFile( std::fstream( &quot;file.txt&quot;, std::ios::in ) ) );</span>
+<span class="w">    </span><span class="c1">//     hub::sensor::Acquisition acq;</span>
+<span class="w">    </span><span class="c1">//     inputSensor &gt;&gt; acq;</span>
+
+<span class="w">    </span><span class="c1">//     std::cout &lt;&lt; &quot;acq = &quot; &lt;&lt; acq &lt;&lt; std::endl;</span>
+
+<span class="w">    </span><span class="c1">//     hub::sensor::OutputSensor outputSensor(</span>
+<span class="w">    </span><span class="c1">//         hub::sensor::SensorSpec { &quot;sensorName&quot;, { { { 1 }, hub::format::BGR8 } } },</span>
+<span class="w">    </span><span class="c1">//         hub::input::InputFile( std::fstream( &quot;file.txt&quot;, std::ios::out ) ) );</span>
+<span class="w">    </span><span class="c1">//     outputSensor &lt;&lt; acq;</span>
+<span class="w">    </span><span class="c1">// }</span>
+</pre></div>
+</div>
+</section>
+<section id="io-inputstream">
+<h2><a class="reference external" href="https://github.com/T-PLAY/hub/blob/main/examples/io/example-io-inputStream.cpp">09-io-inputStream</a><a class="headerlink" href="#io-inputstream" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;io/input/InputStream.hpp&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="c1">/// startConstruction</span>
+<span class="w">    </span><span class="c1">/// inputStream</span>
+<span class="w">    </span><span class="c1">/// endConstruction</span>
+</pre></div>
+</div>
+</section>
+<section id="io-outputstream">
+<h2><a class="reference external" href="https://github.com/T-PLAY/hub/blob/main/examples/io/example-io-outputStream.cpp">10-io-outputStream</a><a class="headerlink" href="#io-outputstream" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;io/output/OutputStream.hpp&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="c1">/// startConstruction</span>
+<span class="w">    </span><span class="c1">/// outputStream</span>
+<span class="w">    </span><span class="c1">/// endConstruction</span>
+</pre></div>
+</div>
+</section>
+<section id="sensor-inputsensor">
+<h2><a class="reference external" href="https://github.com/T-PLAY/hub/blob/main/examples/sensor/example-sensor-inputSensor.cpp">11-sensor-inputSensor</a><a class="headerlink" href="#sensor-inputsensor" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensor/InputSensor.hpp&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;filesystem&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;thread&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensor/InputSensor.hpp&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;server/Server.hpp&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="c1">/// Comments I would like to be documented in as well</span>
+
+<span class="w">    </span><span class="c1">/// startConstruction</span>
+<span class="w">    </span><span class="c1">/// outputSensor</span>
+<span class="w">    </span><span class="c1">/// endConstruction</span>
+
+<span class="w">    </span><span class="c1">/// startConstruction2</span>
+<span class="w">    </span><span class="c1">/// outputSensor2</span>
+<span class="w">    </span><span class="c1">/// endConstruction2</span>
+
+<span class="w">    </span><span class="c1">/// startConstruction3</span>
+<span class="w">    </span><span class="c1">/// outputSensor3</span>
+<span class="w">    </span><span class="c1">/// endConstruction3</span>
+
+<span class="w">    </span><span class="c1">/// startFunctional</span>
+<span class="w">    </span><span class="c1">/// inputSensor</span>
+<span class="w">    </span><span class="c1">/// endFunctional</span>
+
+<span class="w">    </span><span class="c1">// const int ref_offset    = 5;</span>
+<span class="w">    </span><span class="c1">// constexpr int ref_nAcqs = 10;</span>
+
+<span class="w">    </span><span class="c1">// const int ref2_offset    = 0;</span>
+<span class="w">    </span><span class="c1">// constexpr int ref_nAcqs2 = 10;</span>
+
+<span class="w">    </span><span class="c1">// std::cout &lt;&lt; &quot;ref_acqs&quot; &lt;&lt; std::endl;</span>
+<span class="w">    </span><span class="c1">// const hub::Resolution ref_resolution( { { 1 }, hub::format::Y8 } );</span>
+<span class="w">    </span><span class="c1">// const hub::sensor::SensorSpec ref_sensorSpec( &quot;sensorName&quot;, { ref_resolution } );</span>
+<span class="w">    </span><span class="c1">// std::vector&lt;hub::sensor::Acquisition&gt; ref_acqs;</span>
+<span class="w">    </span><span class="c1">// const int ref_dataSize = hub::sensor::resolution::computeAcquisitionSize( ref_resolution );</span>
+<span class="w">    </span><span class="c1">// unsigned char* data    = new unsigned char[ref_dataSize];</span>
+<span class="w">    </span><span class="c1">// for ( int iAcq = 0; iAcq &lt; ref_nAcqs; ++iAcq ) {</span>
+<span class="w">    </span><span class="c1">//     for ( int i = 0; i &lt; ref_dataSize; ++i ) {</span>
+<span class="w">    </span><span class="c1">//         data[i] = ref_offset + iAcq + 1;</span>
+<span class="w">    </span><span class="c1">//     }</span>
+<span class="w">    </span><span class="c1">//     ref_acqs.emplace_back( ref_offset + iAcq + 1, ref_offset + iAcq + 2 );</span>
+<span class="w">    </span><span class="c1">//     ref_acqs.back() &lt;&lt; hub::Measure(</span>
+<span class="w">    </span><span class="c1">//         reinterpret_cast&lt;const unsigned char*&gt;( data ), ref_dataSize, ref_resolution );</span>
+<span class="w">    </span><span class="c1">//     std::cout &lt;&lt; ref_acqs.back() &lt;&lt; std::endl;</span>
+<span class="w">    </span><span class="c1">// }</span>
+<span class="w">    </span><span class="c1">// delete[] data;</span>
+
+<span class="w">    </span><span class="c1">// std::cout &lt;&lt; std::endl;</span>
+
+<span class="w">    </span><span class="c1">// //////////////////////</span>
+
+<span class="w">    </span><span class="c1">// std::cout &lt;&lt; &quot;ref2_acqs&quot; &lt;&lt; std::endl;</span>
+<span class="w">    </span><span class="c1">// const hub::Resolution ref_resolution2( { { 1 }, hub::format::Dof6 } );</span>
+<span class="w">    </span><span class="c1">// const hub::sensor::SensorSpec ref_sensorSpec2( &quot;sensorName2&quot;, { ref_resolution2 } );</span>
+<span class="w">    </span><span class="c1">// std::vector&lt;hub::sensor::Acquisition&gt; ref_acqs2;</span>
+<span class="w">    </span><span class="c1">// const int ref_dataSize2 = hub::sensor::resolution::computeAcquisitionSize( ref_resolution2 );</span>
+<span class="w">    </span><span class="c1">// unsigned char* data2    = new unsigned char[ref_dataSize2];</span>
+<span class="w">    </span><span class="c1">// for ( int iAcq = 0; iAcq &lt; ref_nAcqs2; ++iAcq ) {</span>
+<span class="w">    </span><span class="c1">//     for ( int i = 0; i &lt; ref_dataSize2; ++i ) {</span>
+<span class="w">    </span><span class="c1">//         data2[i] = ref2_offset + iAcq + 1;</span>
+<span class="w">    </span><span class="c1">//     }</span>
+<span class="w">    </span><span class="c1">//     ref_acqs2.emplace_back( ref2_offset + iAcq + 1, ref2_offset + iAcq + 2 );</span>
+<span class="w">    </span><span class="c1">//     ref_acqs2.back() &lt;&lt; hub::Measure(</span>
+<span class="w">    </span><span class="c1">//         reinterpret_cast&lt;const unsigned char*&gt;( data2 ), ref_dataSize2, ref_resolution2 );</span>
+<span class="w">    </span><span class="c1">//     std::cout &lt;&lt; ref_acqs2.back() &lt;&lt; std::endl;</span>
+<span class="w">    </span><span class="c1">// }</span>
+<span class="w">    </span><span class="c1">// delete[] data2;</span>
+<span class="w">    </span><span class="c1">// std::cout &lt;&lt; std::endl;</span>
+
+<span class="w">    </span><span class="c1">// //////////////////////</span>
+
+<span class="w">    </span><span class="c1">// std::cout &lt;&lt; &quot;ref_sync_acqs&quot; &lt;&lt; std::endl;</span>
+<span class="w">    </span><span class="c1">// std::vector&lt;hub::sensor::Acquisition&gt; ref_sync_acqs;</span>
+<span class="w">    </span><span class="c1">// std::vector&lt;int&gt; min_dists( ref_acqs2.size(), 999999 );</span>
+<span class="w">    </span><span class="c1">// std::vector&lt;int&gt; iMin_dists( ref_acqs2.size(), -1 );</span>
+
+<span class="w">    </span><span class="c1">// int iAcq = 0;</span>
+<span class="w">    </span><span class="c1">// for ( const auto&amp; acq : ref_acqs ) {</span>
+<span class="w">    </span><span class="c1">//     int iMinDist = 0;</span>
+<span class="w">    </span><span class="c1">//     int minDist  = computeDist( acq, ref_acqs2.front() );</span>
+<span class="w">    </span><span class="c1">//     for ( int iAcq2 = 1; iAcq2 &lt; ref_acqs2.size(); ++iAcq2 ) {</span>
+<span class="w">    </span><span class="c1">//         const auto&amp; acq2 = ref_acqs2.at( iAcq2 );</span>
+<span class="w">    </span><span class="c1">//         const auto dist  = computeDist( acq, acq2 );</span>
+<span class="w">    </span><span class="c1">//         if ( dist &lt;= minDist ) {</span>
+<span class="w">    </span><span class="c1">//             minDist  = dist;</span>
+<span class="w">    </span><span class="c1">//             iMinDist = iAcq2;</span>
+<span class="w">    </span><span class="c1">//         }</span>
+<span class="w">    </span><span class="c1">//     }</span>
+
+<span class="w">    </span><span class="c1">//     if ( minDist &lt; min_dists.at( iMinDist ) ) {</span>
+<span class="w">    </span><span class="c1">//         min_dists[iMinDist]  = minDist;</span>
+<span class="w">    </span><span class="c1">//         iMin_dists[iMinDist] = iAcq;</span>
+<span class="w">    </span><span class="c1">//     }</span>
+<span class="w">    </span><span class="c1">//     ++iAcq;</span>
+<span class="w">    </span><span class="c1">// }</span>
+
+<span class="w">    </span><span class="c1">// for ( int i = 0; i &lt; ref_acqs2.size(); ++i ) {</span>
+<span class="w">    </span><span class="c1">//     if ( iMin_dists[i] != -1 ) {</span>
+<span class="w">    </span><span class="c1">//         const auto&amp; acq  = ref_acqs.at( iMin_dists.at( i ) );</span>
+<span class="w">    </span><span class="c1">//         const auto&amp; acq2 = ref_acqs2.at( i );</span>
+<span class="w">    </span><span class="c1">//         ref_sync_acqs.push_back( acq.clone() );</span>
+
+<span class="w">    </span><span class="c1">//         auto&amp; syncAcq = ref_sync_acqs.back();</span>
+<span class="w">    </span><span class="c1">//         syncAcq &lt;&lt; acq2.getMeasures();</span>
+
+<span class="w">    </span><span class="c1">//         std::cout &lt;&lt; ref_sync_acqs.back() &lt;&lt; std::endl;</span>
+
+<span class="w">    </span><span class="c1">//         assert( syncAcq.getStart() == acq.getStart() );</span>
+<span class="w">    </span><span class="c1">//         assert( syncAcq.getEnd() == acq.getEnd() );</span>
+<span class="w">    </span><span class="c1">//         assert( syncAcq.getMeasures().size() == 2 );</span>
+
+<span class="w">    </span><span class="c1">//         assert( acq.getMeasures().size() == 1 );</span>
+<span class="w">    </span><span class="c1">//         const auto&amp; measure = acq.getMeasures().front();</span>
+<span class="w">    </span><span class="c1">//         assert( syncAcq.getMeasures().at( 0 ) == measure );</span>
+
+<span class="w">    </span><span class="c1">//         assert( acq2.getMeasures().size() == 1 );</span>
+<span class="w">    </span><span class="c1">//         const auto&amp; measure2 = acq2.getMeasures().front();</span>
+<span class="w">    </span><span class="c1">//         assert( syncAcq.getMeasures().at( 1 ) == measure2 );</span>
+<span class="w">    </span><span class="c1">//     }</span>
+<span class="w">    </span><span class="c1">// }</span>
+<span class="w">    </span><span class="c1">// std::cout &lt;&lt; std::endl;</span>
+
+<span class="w">    </span><span class="c1">// //////////////////////////////////////////////////////////////////////////////////////////////////////////////</span>
+
+<span class="w">    </span><span class="c1">// const std::string ipv4 = &quot;127.0.0.1&quot;;</span>
+<span class="w">    </span><span class="c1">// const int port         = GET_RANDOM_PORT;</span>
+
+<span class="w">    </span><span class="c1">// hub::server::Server server( port );</span>
+<span class="w">    </span><span class="c1">// server.setMaxClients( 2 );</span>
+<span class="w">    </span><span class="c1">// server.asyncRun();</span>
+
+<span class="w">    </span><span class="c1">// hub::sensor::OutputSensor outputSensor(</span>
+<span class="w">    </span><span class="c1">//     ref_sensorSpec, &quot;streamName&quot;, hub::net::ClientSocket( ipv4, port ) );</span>
+<span class="w">    </span><span class="c1">// std::cout &lt;&lt; &quot;outputSensor created&quot; &lt;&lt; std::endl;</span>
+
+<span class="w">    </span><span class="c1">// std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );</span>
+
+<span class="w">    </span><span class="c1">// hub::input::InputStream inputStream( &quot;streamName&quot;, hub::net::ClientSocket( ipv4, port ) );</span>
+<span class="w">    </span><span class="c1">// hub::sensor::InputSensor inputSensor( std::move( inputStream ) );</span>
+<span class="w">    </span><span class="c1">// std::cout &lt;&lt; &quot;inputSensor created&quot; &lt;&lt; std::endl;</span>
+
+<span class="w">    </span><span class="c1">// for ( const auto&amp; acq : ref_acqs ) {</span>
+<span class="w">    </span><span class="c1">//     outputSensor &lt;&lt; acq;</span>
+<span class="w">    </span><span class="c1">// }</span>
+
+<span class="w">    </span><span class="c1">// hub::sensor::Acquisition acq;</span>
+<span class="w">    </span><span class="c1">// std::vector&lt;hub::sensor::Acquisition&gt; acqs;</span>
+<span class="w">    </span><span class="c1">// for ( int i = 0; i &lt; ref_acqs.size(); ++i ) {</span>
+
+<span class="w">    </span><span class="c1">//     inputSensor &gt;&gt; acq;</span>
+<span class="w">    </span><span class="c1">//     acqs.push_back( std::move( acq ) );</span>
+<span class="w">    </span><span class="c1">// }</span>
+
+<span class="w">    </span><span class="c1">// assert( acqs.size() == ref_acqs.size() );</span>
+<span class="w">    </span><span class="c1">// for ( int i = 0; i &lt; acqs.size(); ++i ) {</span>
+<span class="w">    </span><span class="c1">//     const auto&amp; acq2 = acqs.at( i );</span>
+<span class="w">    </span><span class="c1">//     assert( acq2 == ref_acqs.at( i ) );</span>
+<span class="w">    </span><span class="c1">// }</span>
+
+<span class="w">    </span><span class="c1">// std::cout &lt;&lt; &quot;end test&quot; &lt;&lt; std::endl;</span>
+
+<span class="w">    </span><span class="c1">//// bin/server is running locally on port 4042</span>
+<span class="w">    </span><span class="c1">//// the stream id name &#39;myStream&#39; is streaming to the server</span>
+
+<span class="w">    </span><span class="c1">//// read saved acquisitions from file</span>
+
+<span class="w">    </span><span class="c1">//// get acqusitions from different threads</span>
+</pre></div>
+</div>
+</section>
+<section id="sensor-outputsensor">
+<h2><a class="reference external" href="https://github.com/T-PLAY/hub/blob/main/examples/sensor/example-sensor-outputSensor.cpp">12-sensor-outputSensor</a><a class="headerlink" href="#sensor-outputsensor" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensor/OutputSensor.hpp&gt;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">sensorAPI</span><span class="w"> </span><span class="p">{</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">getTimestamp</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">s_ret</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">start</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">end</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">s_ret</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">};</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">updateTimestamp</span><span class="p">(</span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="o">&amp;</span><span class="n">start</span><span class="p">,</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">end</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">fetchData</span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="p">}</span>
+
+<span class="k">auto</span><span class="w"> </span><span class="n">getData</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">s_ret</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">size</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">s_ret</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">};</span>
+<span class="p">}</span>
+<span class="p">}</span><span class="w"> </span><span class="c1">// namespace sensorAPI</span>
+</pre></div>
+</div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="c1">/// Comments I would like to be documented in as well</span>
+
+<span class="w">    </span><span class="p">{</span>
+<span class="c1">/// startConstruction</span>
+<span class="k">using</span><span class="w"> </span><span class="n">ResolutionCam</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">hub</span><span class="o">::</span><span class="n">MatrixXD</span><span class="o">&lt;</span><span class="n">hub</span><span class="o">::</span><span class="n">format</span><span class="o">::</span><span class="n">RGB8</span><span class="p">,</span><span class="w"> </span><span class="mi">640</span><span class="p">,</span><span class="w"> </span><span class="mi">480</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="n">hub</span><span class="o">::</span><span class="n">sensor</span><span class="o">::</span><span class="n">SensorSpec</span><span class="w"> </span><span class="n">sensorSpec2</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;rgbCam&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ResolutionCam</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+
+<span class="n">hub</span><span class="o">::</span><span class="n">sensor</span><span class="o">::</span><span class="n">OutputSensor</span><span class="w"> </span><span class="n">outputSensor</span><span class="p">(</span><span class="w"> </span><span class="n">sensorSpec2</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;streamName&quot;</span><span class="w"> </span><span class="p">);</span>
+
+<span class="k">auto</span><span class="w"> </span><span class="n">acq</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="n">outputSensor</span><span class="p">.</span><span class="n">acqMsg</span><span class="p">();</span>
+<span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">start</span><span class="p">,</span><span class="w"> </span><span class="n">end</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">acq</span><span class="p">.</span><span class="n">clocks</span><span class="p">();</span>
+<span class="k">auto</span><span class="o">*</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">imgData</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">acq</span><span class="p">.</span><span class="n">get</span><span class="o">&lt;</span><span class="n">hub</span><span class="o">::</span><span class="n">format</span><span class="o">::</span><span class="n">RGB8</span><span class="o">*&gt;</span><span class="p">();</span>
+
+<span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">sensorAPI</span><span class="o">::</span><span class="n">updateTimestamp</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="w"> </span><span class="n">end</span><span class="p">);</span><span class="w"> </span><span class="c1">// get latest clocks from sensor api</span>
+<span class="w">    </span><span class="n">sensorAPI</span><span class="o">::</span><span class="n">fetchData</span><span class="p">((</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">imgData</span><span class="p">);</span><span class="w"> </span><span class="c1">// get latest image data from sensor api</span>
+
+<span class="w">    </span><span class="n">outputSensor</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">acq</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">/// endConstruction</span>
+<span class="w">    </span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="sensor-sensorspec">
+<h2><a class="reference external" href="https://github.com/T-PLAY/hub/blob/main/examples/sensor/example-sensor-sensorSpec.cpp">13-sensor-sensorSpec</a><a class="headerlink" href="#sensor-sensorspec" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensor/SensorSpec.hpp&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="p">{</span>
+<span class="c1">/// startConstruction</span>
+<span class="c1">// example of rgb camera sensor</span>
+<span class="n">hub</span><span class="o">::</span><span class="n">MetaData</span><span class="w"> </span><span class="n">metaData</span><span class="p">;</span>
+<span class="n">metaData</span><span class="p">[</span><span class="s">&quot;iso&quot;</span><span class="p">]</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span>
+<span class="n">metaData</span><span class="p">[</span><span class="s">&quot;fov&quot;</span><span class="p">]</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mf">60.0</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="n">ResolutionCam</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hub</span><span class="o">::</span><span class="n">MatrixXD</span><span class="o">&lt;</span><span class="n">hub</span><span class="o">::</span><span class="n">format</span><span class="o">::</span><span class="n">RGB8</span><span class="p">,</span><span class="w"> </span><span class="mi">1920</span><span class="p">,</span><span class="w"> </span><span class="mi">1080</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="n">hub</span><span class="o">::</span><span class="n">sensor</span><span class="o">::</span><span class="n">SensorSpec</span><span class="w"> </span><span class="n">rgbCamSpec</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">&quot;rgbCam&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ResolutionCam</span><span class="p">(),</span><span class="w"> </span><span class="n">metaData</span><span class="w"> </span><span class="p">};</span>
+<span class="c1">/// endConstruction</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="p">{</span>
+<span class="c1">/// startConstruction2</span>
+<span class="c1">// example of two-sensor 6 Degree-Of-Freedom (6DOF) motion tracking system</span>
+<span class="c1">// with 2 sensors acquiring data at the same time (hardware synchronized timestamp)</span>
+<span class="k">using</span><span class="w"> </span><span class="n">ResolutionTrack</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hub</span><span class="o">::</span><span class="n">MatrixXD</span><span class="o">&lt;</span><span class="n">hub</span><span class="o">::</span><span class="n">format</span><span class="o">::</span><span class="n">Dof6</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="n">hub</span><span class="o">::</span><span class="n">sensor</span><span class="o">::</span><span class="n">SensorSpec</span><span class="w"> </span><span class="n">trackingSystemSpec</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">&quot;6DOF_Tracker&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ResolutionTrack</span><span class="p">()</span><span class="w"> </span><span class="p">};</span>
+<span class="c1">// or</span>
+<span class="k">using</span><span class="w"> </span><span class="n">ResolutionTrack2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hub</span><span class="o">::</span><span class="n">MatrixTs</span><span class="o">&lt;</span><span class="n">hub</span><span class="o">::</span><span class="n">format</span><span class="o">::</span><span class="n">Dof6</span><span class="p">,</span><span class="w"> </span><span class="n">hub</span><span class="o">::</span><span class="n">format</span><span class="o">::</span><span class="n">Dof6</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="n">hub</span><span class="o">::</span><span class="n">sensor</span><span class="o">::</span><span class="n">SensorSpec</span><span class="w"> </span><span class="n">trackingSystemSpec2</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">&quot;6DOF_Tracker&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ResolutionTrack2</span><span class="p">()</span><span class="w"> </span><span class="p">};</span>
+<span class="c1">/// endConstruction2</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="p">{</span>
+<span class="c1">/// startConstruction3</span>
+<span class="c1">// example of sensor with many cameras (RGB and Infrared lenses in the same medium)</span>
+<span class="c1">// cameras acquiring data at the same time (hardware synchronized timestamp)</span>
+<span class="n">hub</span><span class="o">::</span><span class="n">MetaData</span><span class="w"> </span><span class="n">metaData</span><span class="p">;</span>
+<span class="n">hub</span><span class="o">::</span><span class="n">format</span><span class="o">::</span><span class="n">Mat4</span><span class="w"> </span><span class="n">offsetRGBLens</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="mf">1.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="mf">1.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="mf">1.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">20.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="w"> </span><span class="p">};</span><span class="w"> </span><span class="c1">// offset specification between the 2 lenses (RGB and Infrared)</span>
+<span class="n">metaData</span><span class="p">[</span><span class="s">&quot;offsetRGBLens&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">offsetRGBLens</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="n">ResolutionDepth</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">hub</span><span class="o">::</span><span class="n">MatrixXD</span><span class="o">&lt;</span><span class="n">hub</span><span class="o">::</span><span class="n">format</span><span class="o">::</span><span class="n">Z16</span><span class="p">,</span><span class="w"> </span><span class="mi">640</span><span class="p">,</span><span class="w"> </span><span class="mi">480</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="n">ResolutionRGB</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">hub</span><span class="o">::</span><span class="n">MatrixXD</span><span class="o">&lt;</span><span class="n">hub</span><span class="o">::</span><span class="n">format</span><span class="o">::</span><span class="n">RGB8</span><span class="p">,</span><span class="w"> </span><span class="mi">1280</span><span class="p">,</span><span class="w"> </span><span class="mi">960</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="n">ResolutionInfrared</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">hub</span><span class="o">::</span><span class="n">MatrixXD</span><span class="o">&lt;</span><span class="n">hub</span><span class="o">::</span><span class="n">format</span><span class="o">::</span><span class="n">Y8</span><span class="p">,</span><span class="w"> </span><span class="mi">640</span><span class="p">,</span><span class="w"> </span><span class="mi">480</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="n">ResolutionMultiCam</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hub</span><span class="o">::</span><span class="n">MatrixTs</span><span class="o">&lt;</span><span class="n">ResolutionDepth</span><span class="p">,</span><span class="w"> </span><span class="n">ResolutionRGB</span><span class="p">,</span><span class="w"> </span><span class="n">ResolutionInfrared</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="n">hub</span><span class="o">::</span><span class="n">sensor</span><span class="o">::</span><span class="n">SensorSpec</span><span class="w"> </span><span class="n">multiCamSpec</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="s">&quot;MultiCam (Depth, RGB, Infrared)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ResolutionMultiCam</span><span class="p">(),</span><span class="w"> </span><span class="n">metaData</span><span class="w"> </span><span class="p">};</span>
+<span class="c1">/// endConstruction3</span>
+<span class="w">    </span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="build.html" class="btn btn-neutral float-left" title="Building" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hub.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, IRIT (Institut de Recherche en Informatique de Toulouse).</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
