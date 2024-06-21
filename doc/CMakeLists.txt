@@ -12,8 +12,7 @@ if(HUB_BUILD_DOC)
 
     ############################ DOXYGEN #############################
 
-    find_package(Doxygen REQUIRED)
-
+    find_package(Doxygen QUIET)
     if(DOXYGEN_FOUND)
         set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/doxygen/Doxyfile.in)
         set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/doxygen/Doxyfile.out)
@@ -32,24 +31,26 @@ if(HUB_BUILD_DOC)
         custom_target_added(doc-doxygen)
 
     else(DOXYGEN_FOUND)
-        message("Doxygen need to be installed to generate the doxygen documentation")
+        message(WARNING "Doxygen have to be installed to generate the doxygen documentation")
     endif(DOXYGEN_FOUND)
 
     ############################# SPHINX #############################
 
-    find_package(Sphinx REQUIRED)
-    set(SPHINX_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/sphinx)
-    set(SPHINX_BUILD ${CMAKE_CURRENT_BINARY_DIR}/sphinx/html)
+    find_package(Sphinx QUIET)
+    if (Sphinx_FOUND)
+        set(SPHINX_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/sphinx)
+        set(SPHINX_BUILD ${CMAKE_CURRENT_BINARY_DIR}/sphinx/html)
 
-    add_custom_target(hub-doc-sphinx
-          COMMAND ${SPHINX_EXECUTABLE} -b html ${SPHINX_SOURCE} ${SPHINX_BUILD}
-          COMMAND ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/sphinx/html/api/index.html
-          COMMAND cp -r ${CMAKE_CURRENT_SOURCE_DIR}/sphinx/_build/html ${CMAKE_CURRENT_BINARY_DIR}/sphinx/html/classes
-          COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/sphinx/index.html ${CMAKE_CURRENT_BINARY_DIR}/sphinx/html/
-          WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-          COMMENT "Generating documentation with Sphinx"
-          VERBATIM
-    )
-    custom_target_added(doc-sphinx)
+        add_custom_target(hub-doc-sphinx
+              COMMAND ${SPHINX_EXECUTABLE} -b html ${SPHINX_SOURCE} ${SPHINX_BUILD}
+              COMMAND ${HUB_BROWSER} ${CMAKE_CURRENT_BINARY_DIR}/sphinx/html/api/index.html
+              COMMAND cp -r ${CMAKE_CURRENT_SOURCE_DIR}/sphinx/_build/html ${CMAKE_CURRENT_BINARY_DIR}/sphinx/html/classes
+              COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/sphinx/index.html ${CMAKE_CURRENT_BINARY_DIR}/sphinx/html/
+              WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+              COMMENT "Generating documentation with Sphinx"
+              VERBATIM
+        )
+        custom_target_added(doc-sphinx)
+    endif()
 
 endif()

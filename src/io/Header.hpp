@@ -81,6 +81,7 @@ class SRC_API Header
         std::string str;
         // cppcheck-suppress useStlAlgorithm
         for ( const auto& number : m_magicNumber ) {
+            // cppcheck-suppress useStlAlgorithm
             str += number;
         }
         return str + "header size: " + std::to_string( m_headerSize ) + "\ndata size: " + std::to_string( m_dataSize ) + "\nuser defined: " +

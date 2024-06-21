@@ -220,46 +220,45 @@ if(HUB_ENABLE_BINS)
     add_subdirectory(bin)
 endif()
 
-if(NOT WIN32)
-    # Todo check if cppCheck exe exists on current system
+find_package(cppcheck QUIET)
+if(cppcheck_FOUND)
     execute_process(
-        COMMAND cppcheck --version
+        COMMAND ${CPPCHECK_EXECUTABLE} --version
         RESULT_VARIABLE CPP_CHECK_FOUND
         OUTPUT_VARIABLE CPP_CHECK_OUTPUT
-        ERROR_VARIABLE CPP_CHECK_ERROR)
+        ERROR_VARIABLE CPP_CHECK_ERROR
+    )
 
-    if (NOT CPP_CHECK_FOUND)
-        string(REGEX MATCHALL "-.*$|[0-9]+" CPP_CHECK_VERSION_LIST ${CPP_CHECK_OUTPUT})
-        list(GET CPP_CHECK_VERSION_LIST 0 CPP_CHECK_VERSION_MAJOR)
-        list(GET CPP_CHECK_VERSION_LIST 1 CPP_CHECK_VERSION_MINOR)
-        # list(GET CPP_CHECK_VERSION_LIST 2 CPP_CHECK_VERSION_PATCH)
+    string(REGEX MATCHALL "-.*$|[0-9]+" CPP_CHECK_VERSION_LIST ${CPP_CHECK_OUTPUT})
+    list(GET CPP_CHECK_VERSION_LIST 0 CPP_CHECK_VERSION_MAJOR)
+    list(GET CPP_CHECK_VERSION_LIST 1 CPP_CHECK_VERSION_MINOR)
+    # list(GET CPP_CHECK_VERSION_LIST 2 CPP_CHECK_VERSION_PATCH)
 
-        # message(STATUS "${HEADER_MSG} Cppcheck ${CPP_CHECK_VERSION_MAJOR}.${CPP_CHECK_VERSION_MINOR}.${CPP_CHECK_VERSION_PATCH} found")
-        message(STATUS "${HEADER_MSG} Cppcheck ${CPP_CHECK_VERSION_MAJOR}.${CPP_CHECK_VERSION_MINOR} found")
+    message(STATUS "${HEADER_MSG} Cppcheck ${CPP_CHECK_VERSION_MAJOR}.${CPP_CHECK_VERSION_MINOR} found")
 
-        if(NOT ${CPP_CHECK_VERSION_MAJOR} EQUAL 2)
-            message(FATAL_ERROR "${CPP_CHECK_OUTPUT} unsupported")
-        endif()
-
-        if (${CPP_CHECK_VERSION_MINOR} GREATER 10)
-            add_custom_target(
-                hub-cppCheck
-                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-                COMMAND
-                    cppcheck -DCPP_CHECK src -I src --error-exitcode=1 --enable=all --suppress=missingIncludeSystem
-                    --suppress=missingInclude --suppress=unusedFunction --suppress=virtualCallInConstructor --inline-suppr
-                COMMENT "Running cppCheck")
-        else()
-            add_custom_target(
-                hub-cppCheck
-                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-                COMMAND
-                    cppcheck -DCPP_CHECK src -I src --error-exitcode=1 --enable=all
-                    --suppress=missingInclude --suppress=unusedFunction --suppress=virtualCallInConstructor --inline-suppr
-                COMMENT "Running cppCheck")
-        endif()
-        custom_target_added(cppCheck)
+    if(NOT ${CPP_CHECK_VERSION_MAJOR} EQUAL 2)
+        message(FATAL_ERROR "${CPP_CHECK_OUTPUT} unsupported")
     endif()
+
+    if (${CPP_CHECK_VERSION_MINOR} GREATER 10)
+        add_custom_target(
+            hub-cppCheck
+            WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+            COMMAND
+                cppcheck -DCPP_CHECK src -I src --error-exitcode=1 --enable=all --suppress=missingIncludeSystem
+                --suppress=missingInclude --suppress=unusedFunction --suppress=virtualCallInConstructor --inline-suppr
+            COMMENT "Running cppCheck")
+    else()
+        add_custom_target(
+            hub-cppCheck
+            WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+            COMMAND
+                cppcheck -DCPP_CHECK src -I src --error-exitcode=1 --enable=all
+                --suppress=missingInclude --suppress=unusedFunction --suppress=virtualCallInConstructor --inline-suppr
+            COMMENT "Running cppCheck")
+    endif()
+    custom_target_added(cppCheck)
+
 endif()
 
 add_custom_target(

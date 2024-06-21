@@ -21,6 +21,7 @@ Current head v.2.1.0 rc
   * Add issue templates for bug report and feature request (#29)
   * Add PULL_REQUEST_TEMPLATE file (#30)
   * Add timeout for ci tests (#39)
+  * Add clean code (format, cppcheck, doxygen) asynchronous checks (#55)
 - Tests
   * Fix timeout error on macos (#33)
 - Documentation
