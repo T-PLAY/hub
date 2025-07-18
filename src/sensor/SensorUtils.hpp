@@ -28,6 +28,7 @@ namespace utils {
 
 ///
 /// \brief The SpecAcqs class
+/// represents set of acquisitions with sensor spec definition
 ///
 class SpecAcqs
 {

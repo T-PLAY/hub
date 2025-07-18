@@ -58,18 +58,14 @@ class SRC_API File
     explicit File( const std::string& filePath );
 
     ///
-    /// \brief File
-    /// \param filePath
+    /// \copydoc File
     ///
     explicit File( const char* filePath );
-
-    ///
-    /// \param fileIO
-    ///
 
   protected:
     ///
     /// \brief The exception class
+    /// is used when file exception happened
     ///
     class exception : public std::runtime_error
     {

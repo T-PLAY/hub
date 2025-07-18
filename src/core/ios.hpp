@@ -69,21 +69,27 @@ concept isPacket = requires( T t ) {
 #else
 
 ///
-/// \brief has_data_t
+/// \brief Object with data() feature
 ///
 template <typename T>
 using has_data_t = decltype( std::declval<T>().data() );
+
+/// \copydoc has_data_t
 template <typename T, typename = std::void_t<>>
 struct has_data : std::false_type {};
+
+/// \copydoc has_data_t
 template <typename T>
 struct has_data<T, std::void_t<has_data_t<T>>> : std::true_type {};
+
 template <typename T>
 static constexpr bool has_data_v = has_data<T>::value;
 
 ///////////
 
 ///
-/// \brief isPacket
+/// \copydoc has_size_t
+/// \copydoc has_data_t
 ///
 template <class T>
 constexpr bool isPacket = has_data_v<T>&& has_size_v<T>;
@@ -91,14 +97,19 @@ constexpr bool isPacket = has_data_v<T>&& has_size_v<T>;
 #endif
 
 ///
-/// \brief packable_t
+/// \brief Object with packable propertie
 ///
 template <typename T>
 using packable_t = decltype( T::packable );
+
+/// \copydoc packable_t
 template <typename T, typename = std::void_t<>>
 struct packable : std::false_type {};
+
+/// \copydoc packable_t
 template <typename T>
 struct packable<T, std::void_t<packable_t<T>>> : std::true_type {};
+
 template <typename T>
 static constexpr bool packable_v =
     packable<T>::value || std::is_arithmetic_v<T> || std::is_array_v<T> || std::is_enum_v<T>;

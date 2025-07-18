@@ -2,7 +2,7 @@
 
 #include "test_common.hpp"
 
-#include <random>
+#include <algorithm>
 
 #include <core/Utils.hpp>
 #include <net/ServerSocket.hpp>

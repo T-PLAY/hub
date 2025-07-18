@@ -29,6 +29,9 @@ namespace io {
 
 ///
 /// \brief The ArchiveT class
+/// implements input/output features with a any serializer to save data locally in the unique archive.
+/// You can write or read in the archive.
+/// \warning When you read in the archive, the information is lost. The data is not retained.
 ///
 template <class SerializerT = Serializer, class InputOutputT = InputOutput<SerializerT>>
 class ArchiveT : public InputOutputT
@@ -47,11 +50,6 @@ class ArchiveT : public InputOutputT
     explicit ArchiveT( const io::Header& header ) : m_header { header } {};
 #endif
 
-    ///
-    /// \brief read
-    /// \param data
-    /// \param size
-    ///
     void read( hub::Data_t* data, hub::Size_t size ) override {
         assert( size > 0 );
         assert( !m_datas.empty() );
@@ -71,11 +69,6 @@ class ArchiveT : public InputOutputT
 #endif
     }
 
-    ///
-    /// \brief write
-    /// \param data
-    /// \param size
-    ///
     void write( const hub::Data_t* data, hub::Size_t size ) override {
         assert( size > 0 );
         std::vector<hub::Data_t> vector( data, data + size );
@@ -90,35 +83,17 @@ class ArchiveT : public InputOutputT
 #endif
     }
 
-    ///
-    /// \brief close
-    ///
     void close() override {};
 
-    ///
-    /// \brief isOpen
-    /// \return
-    ///
     bool isOpen() const override { return true; }
 
-    ///
-    /// \brief isEnd
-    /// \return
-    ///
     bool isEnd() const override { return m_datas.empty(); }
 
-    ///
-    /// \brief clear
-    ///
     void clear() override {
         while ( !m_datas.empty() )
             m_datas.pop();
     }
 
-    ///
-    /// \brief setRetain
-    /// \param retained
-    ///
     void setRetain( bool retained ) override {}
 
     ///
@@ -131,14 +106,15 @@ class ArchiveT : public InputOutputT
 
 #ifdef DEBUG
     ///
-    /// \brief getNCall
-    /// \return
+    /// \brief The number of call is used to check how many IO operations are done during the test.
+    /// Able to compare stats between other IO implements.
+    /// \return The number of io calls.
     ///
     size_t getNCall() const { return m_nCall; }
 
     ///
-    /// \brief getLastCallSize
-    /// \return
+    /// \brief Get the latest io call size.
+    /// \return The latest io call size.
     ///
     size_t getLastCallSize() const { return m_lastCallSize; }
 #endif
@@ -155,7 +131,7 @@ class ArchiveT : public InputOutputT
 };
 
 ///
-/// \brief Archive
+/// \brief Archive is a readable/writeable object saving data locally (RAM)
 ///
 using Archive = ArchiveT<>;
 

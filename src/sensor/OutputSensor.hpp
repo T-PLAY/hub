@@ -16,12 +16,6 @@
 
 #pragma once
 
-//// #include <type_traits>
-
-//// #include "io/output/Output.hpp"
-//// #include "Acquisition.hpp"
-//// #include "core/Traits.hpp"
-
 #include "core/Base.hpp"
 #include "core/Output.hpp"
 #include "Acquisition.hpp"
@@ -31,15 +25,8 @@
 // User friendly headers (classes can be used as output parameter of constructor)
 #include "io/output/OutputFile.hpp"
 #include "io/output/OutputStream.hpp"
-//// #include "io/output/OutputFile.hpp"
-//// #include "io/output/OutputStream.hpp"
-//// #include "io/output/OutputMemory.hpp"
-//// #include "io/Memory.hpp"
-
-
-
-//// #include "net/ClientSocket.hpp"
-////#include "Format.hpp"
+#include "io/output/OutputStreamMqtt.hpp"
+#include "io/output/OutputStreamServer2.hpp"
 
 namespace hub {
 namespace sensor {
@@ -186,7 +173,7 @@ class OutputSensor : public Sensor
 /////////////////////////////////////// TEMPLATE //////////////////////////////////////////////////
 
 ///
-/// \brief The OutputSensorT class
+/// \copydoc OutputSensor
 ///
 template <class Resolution, class Output = output::OutputStream>
 // class OutputSensorT : public Sensor

@@ -18,7 +18,6 @@
 #include <list>
 #include <string>
 
-#include "core/Base.hpp"
 #include "sensor/Acquisition.hpp"
 #include "sensor/SensorSpec.hpp"
 
@@ -27,23 +26,22 @@ namespace client {
 
 ///
 /// \brief The AskerInterface interface
-/// allow user to get some information from connected sensor to the server.
+/// allow user to get some information from connected sensor to the server
 ///
 class SRC_API AskerInterface
 {
   public:
     ///
-    /// \brief listStreams
-    /// \return
-    /// list of connected sensors to the server
+    /// \brief Get the active streams from the server
+    /// \return List of connected streams from the server
     ///
     virtual std::list<std::pair<std::string, sensor::SensorSpec>> listStreams() = 0;
 
     ///
-    /// \brief getAcquisition
-    /// allow to get last acquired data from connected sensor to the server
-    /// \param streamName
-    /// \return
+    /// \brief Get last acquired data from connected stream from the server
+    /// \param streamName [in] is the stream you want to get the acquisition
+    /// \warning streamName you want to retrieve data has to be connected to the server
+    /// \return Latest acquisition shared to the server by the sensor stream
     ///
     virtual sensor::Acquisition getAcquisition( const std::string& streamName ) = 0;
 

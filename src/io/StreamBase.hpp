@@ -28,12 +28,14 @@ namespace io {
 
 ///
 /// \brief The StreamBase class
+/// is a helper class generalizing what a stream looks like with the current server implement.
 ///
 class SRC_API StreamBase
 {
   public:
     ///
     /// \brief The ClientType enum
+    /// defines all type of clients able to connect to the server
     ///
     enum class ClientType { NONE = 0, STREAMER, STREAM_VIEWER, VIEWER, ASKER, KILLER, COUNT };
 
@@ -44,6 +46,7 @@ class SRC_API StreamBase
     /// \return
     ///
     SRC_API friend std::ostream& operator<<( std::ostream& os, const ClientType& clientType );
+
 
     ///
     /// \brief The ClientMessage enum
@@ -133,6 +136,7 @@ class SRC_API StreamBase
 
     ///
     /// \brief The exception class
+    /// is thrown when some server specific processes failed
     ///
     class exception : public std::runtime_error
     {
@@ -154,29 +158,30 @@ class SRC_API StreamBase
         const char* what() const throw() { return std::runtime_error::what(); }
     };
 
+
   protected:
     ///
-    /// \brief StreamBase
-    /// \param name
-    /// \param ipv4
-    /// \param port
+    /// \brief
+    /// \param name [in] unique id of stream for log message
+    /// \param ipv4 [in] ip of stream
+    /// \param port [in] port of stream
     ///
     StreamBase( const std::string& name, const std::string& ipv4, int port );
     // StreamBase( const char* name, const char* ipv4, int port, const Header& header );
 
     // Header m_header;
     ///
-    /// \brief m_name
+    /// \brief Unique name of stream for log message
     ///
     const std::string m_name;
 
     ///
-    /// \brief m_ipv4
+    /// \brief Stream ip
     ///
     const std::string m_ipv4;
 
     ///
-    /// \brief m_port
+    /// \brief Stream port
     ///
     const int m_port;
 };

@@ -22,61 +22,64 @@ namespace net {
 
 ///
 /// \brief The ClientSocketI class
+/// is an interface describing client socket basic features.
+/// Please use this interface if you want to propose more efficient socket implement than the current.
+/// We can compare during test and integrate your code if it more efficient.
 ///
 class SRC_API ClientSocketI
 {
   public:
     ///
-    /// \brief setIpv4
-    /// \param newIpv4
+    /// \brief Setter function
+    /// \param newIpv4 [in] to set
     ///
     virtual void setIpv4( const std::string& newIpv4 ) = 0;
 
     ///
-    /// \brief getIpv4
-    /// \return
+    /// \brief Getter function
+    /// \return ip of server
     ///
     virtual const std::string& getIpv4() const         = 0;
 
     ///
-    /// \brief setPort
-    /// \param newPort
+    /// \brief Setter function
+    /// \param newPort [in] to set
     ///
     virtual void setPort( int newPort ) = 0;
 
     ///
-    /// \brief getPort
-    /// \return
+    /// \brief Getter function
+    /// \return port of server
     ///
     virtual int getPort() const         = 0;
 
     ///
-    /// \brief connect
+    /// \brief Try connecting to the server
     ///
     virtual void connect()           = 0;
 
     ///
-    /// \brief isConnected
-    /// \return
+    /// \brief Check if connected
+    /// \return if connected to the server
     ///
     virtual bool isConnected() const = 0;
 
     ///
-    /// \brief disconnect
+    /// \brief Disconnect to the server
     ///
     virtual void disconnect()        = 0;
 
     ///
-    /// \brief write
-    /// \param data
-    /// \param len
+    /// \brief write packet to the server
+    /// \param data [in] pointer of data array
+    /// \param len [in] size of data array
     ///
     virtual void write( const unsigned char* data, size_t len ) = 0;
 
     ///
-    /// \brief read
-    /// \param data
-    /// \param len
+    /// \brief read packet from the server
+    /// \param data [out] pointer of data array
+    /// \param len [in] size of data array
     ///
     virtual void read( unsigned char* data, size_t len )        = 0;
 };

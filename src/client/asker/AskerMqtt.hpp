@@ -15,20 +15,31 @@
 
 #pragma once
 
+
 #ifdef HUB_USE_MQTT
 
-#    include "AskerInterface.hpp"
-#    include "io/StreamMqtt.hpp"
-#    include <mqtt/client.h>
+#include <mqtt/client.h>
+
+#include "AskerInterface.hpp"
+#include "io/StreamMqtt.hpp"
 
 namespace hub {
 namespace client {
 
+///
+/// \brief The AskerMqtt class
+///
 class AskerMqtt : public AskerInterface
 {
   public:
+    ///
+    /// \brief AskerMqtt
+    /// \param ipv4
+    /// \param port
+    ///
     explicit AskerMqtt( const std::string& ipv4 = io::StreamMqtt::s_defaultIpv4,
                int port                = io::StreamMqtt::s_defaultPort );
+
     ~AskerMqtt();
 
     std::list<std::pair<std::string, sensor::SensorSpec>> listStreams() override;

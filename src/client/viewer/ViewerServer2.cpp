@@ -1,11 +1,5 @@
 #include "ViewerServer2.hpp"
 
-#include <regex>
-#include <sstream>
-
-#include "core/Base.hpp"
-#include "core/Serializer.hpp"
-#include "core/io/Memory.hpp"
 
 
 namespace hub {
@@ -92,7 +86,6 @@ void ViewerServer2::threadRoutine() {
         try {
 
             DEBUG_MSG( "[Viewer] trying to connect to server : " << m_sock );
-            // DEBUG_MSG( "[Viewer] trying to connect to server at serverIpv4 "
 
             assert( !m_sock.isOpen() );
             m_sock.connect();
@@ -135,7 +128,6 @@ void ViewerServer2::threadRoutine() {
                     DEBUG_MSG( "[Viewer] new streamer '" << streamName << "', header size : " << PRETTY_BYTES(header.getSize())  );
 
                     addStream( streamName, streamIpv4, streamPort, std::move( header ) );
-
                     m_sock.write( io::StreamBase::ClientMessage::VIEWER_CLIENT_STREAM_ADDED );
 
                 } break;
@@ -143,6 +135,7 @@ void ViewerServer2::threadRoutine() {
                 case hub::io::StreamBase::ServerMessage::VIEWER_DEL_STREAMER: {
                     std::string streamName;
                     m_sock.read( streamName );
+
                     DEBUG_MSG( "[Viewer] del streamer '" << streamName << "'" );
 
                     delStream( streamName );

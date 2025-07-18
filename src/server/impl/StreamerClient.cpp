@@ -2,8 +2,8 @@
 #include <cstring>
 #include <iomanip>
 
-#include "ServerImpl2.hpp"
-#include "StreamerClient2.hpp"
+#include "ServerImpl.hpp"
+#include "StreamerClient.hpp"
 
 #ifndef HUB_NON_BUILD_SENSOR
 #    include "sensor/SensorSpec.hpp"
@@ -12,13 +12,13 @@
 namespace hub {
 namespace server {
 
-StreamerClient2::StreamerClient2( ServerImpl2* server,
+StreamerClient::StreamerClient( ServerImpl* server,
                                   int iClient,
                                   hub::io::InputOutputSocket&& sock,
                                   std::string streamName,
                                   std::string streamIpv4,
                                   int streamPort ) :
-    Client2( server, iClient ),
+    Client( server, iClient ),
     m_streamName( std::move( streamName ) ),
     m_streamIpv4( std::move( streamIpv4 ) ),
     m_streamPort( streamPort ),
@@ -94,11 +94,11 @@ StreamerClient2::StreamerClient2( ServerImpl2* server,
     m_server->addStreamer( this );
 }
 
-int StreamerClient2::getNStreamViewer() const {
+int StreamerClient::getNStreamViewer() const {
     return m_nStreamViewer;
 }
 
-StreamerClient2::~StreamerClient2() {
+StreamerClient::~StreamerClient() {
     m_mtxPrint.lock();
     std::cout << headerMsg() << "delete start" << std::endl;
 
@@ -118,17 +118,17 @@ StreamerClient2::~StreamerClient2() {
     }
 }
 
-std::string StreamerClient2::headerMsg() const {
-    return Client2::clientMsg() + "[Streamer] ";
-    // return Client2::headerMsg() + "[Streamer] ";
+std::string StreamerClient::headerMsg() const {
+    return Client::clientMsg() + "[Streamer] ";
+    // return Client::headerMsg() + "[Streamer] ";
 }
 
-void StreamerClient2::end( hub::io::StreamBase::ServerMessage message ) {
+void StreamerClient::end( hub::io::StreamBase::ServerMessage message ) {
     assert( m_sock->isOpen() );
     m_sock->write( message );
 }
 
-void StreamerClient2::notifyInited() {
+void StreamerClient::notifyInited() {
     assert( m_sock->isOpen() );
     m_sock->write( hub::io::StreamBase::ServerMessage::STREAMER_INITED );
 }

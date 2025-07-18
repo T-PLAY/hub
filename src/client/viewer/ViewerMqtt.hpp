@@ -17,23 +17,32 @@
 
 #ifdef HUB_USE_MQTT
 
-#    include "ViewerInterface.hpp"
-#    include "io/input/InputStreamMqtt.hpp"
+#include "ViewerInterface.hpp"
+#include "io/input/InputStreamMqtt.hpp"
 
 namespace hub {
 namespace client {
 
+///
+/// \brief The ViewerMqtt class
+///
 class SRC_API ViewerMqtt : public ViewerInterface<input::InputStreamMqtt>
 {
   public:
+
+    ///
+    /// \brief ViewerMqtt
+    /// \param name
+    /// \param viewerHandler
+    /// \param ipv4
+    /// \param port
+    ///
     ViewerMqtt( const std::string& name,
                 ViewerHandler&& viewerHandler,
                 const std::string& ipv4 = input::InputStreamMqtt::s_defaultIpv4,
                 int port                = input::InputStreamMqtt::s_defaultPort );
 
     ~ViewerMqtt();
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
 
   private:
     std::thread m_thread;

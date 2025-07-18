@@ -42,7 +42,8 @@ class SRC_API OutputT : public OutputBase
 
     ///
     /// \brief write
-    /// \tparam t
+    /// \tparam T
+    /// \param t
     /// \return
     ///
     template <class T>
@@ -59,7 +60,8 @@ class SRC_API OutputT : public OutputBase
 
     ///
     /// \brief write
-    /// \tparam t
+    /// \tparam T
+    /// \param t
     /// \return
     ///
     template <class T>
@@ -73,7 +75,8 @@ class SRC_API OutputT : public OutputBase
 
     ///
     /// \brief write
-    /// \tparam t
+    /// \tparam T
+    /// \param t
     /// \return
     ///
     template <class T>
@@ -87,8 +90,10 @@ class SRC_API OutputT : public OutputBase
 
     ///
     /// \brief writeAll
-    /// \tparam t
-    /// \tparam ts
+    /// \tparam T
+    /// \param t
+    /// \tparam Ts
+    /// \param ts
     ///
     template <class T, class... Ts>
     void writeAll( const T& t, const Ts&... ts ) {

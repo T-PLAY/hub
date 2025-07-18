@@ -42,6 +42,7 @@ class ServerAddrImpl;
 
 ///
 /// \brief The ServerAddr class
+/// represents socket address from server side
 ///
 class SRC_API ServerAddr
 {
@@ -50,27 +51,24 @@ class SRC_API ServerAddr
     ~ServerAddr();
 
     ///
-    /// \brief init
-    /// \param port
+    /// \brief Initialize server address with specific port
+    /// \param port [in] Service port you want to oppened
     ///
     void init( int port );
 
     ///
-    /// \brief m_pimpl
+    /// \brief Use hide implement because socket depends of system
+    /// avoid to have socket includes in the header file
     ///
     std::unique_ptr<ServerAddrImpl> m_pimpl;
 };
 
-///
-/// \brief serverSocket
-/// \return
-///
 socket_fd SRC_API serverSocket();
 
 ///
-/// \brief bind
-/// \param sock
-/// \param addr
+/// \brief bind server address to socket
+/// \param sock [in] to bind
+/// \param addr [in] to bind
 /// \return
 ///
 int SRC_API bind( socket_fd sock, ServerAddr& addr );
@@ -89,6 +87,7 @@ class ClientAddrImpl;
 
 ///
 /// \brief The ClientAddr class
+/// represents socket address from client side
 ///
 class SRC_API ClientAddr
 {

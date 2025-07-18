@@ -23,26 +23,27 @@ namespace data {
 
 ///
 /// \brief The UserData class
-/// is a custom data, using for event sensor.
+/// is a custom data, using for sensor events.
 ///
 class SRC_API UserData
 {
   public:
     ///
-    /// \brief UserData
-    /// \param name
-    /// \param any
+    /// \brief Corresponds to a name with any value
+    /// \param name [in] represents the name of data
+    /// \param any [in] is the value of data
     ///
     UserData( const std::string& name, const Any& any );
 
     ///
-    /// \brief getName
-    /// \return
+    /// \brief Getter function
+    /// \return the name of user data
     ///
     const std::string& getName() const;
+
     ///
-    /// \brief getValue
-    /// \return
+    /// \brief Getter function
+    /// \return The value of user data
     ///
     const Any& getValue() const;
 

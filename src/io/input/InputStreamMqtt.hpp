@@ -35,6 +35,12 @@ namespace input {
 class SRC_API InputStreamMqtt : public Input, public io::StreamMqtt
 {
   public:
+    ///
+    /// \brief InputStreamMqtt
+    /// \param streamName
+    /// \param port
+    /// \param ipv4
+    ///
     explicit InputStreamMqtt( const std::string& streamName,
                               int port                = s_defaultPort,
                               const std::string& ipv4 = s_defaultIpv4 );
@@ -43,6 +49,11 @@ class SRC_API InputStreamMqtt : public Input, public io::StreamMqtt
   public:
     bool isOpen() const override;
 
+    ///
+    /// \brief read
+    /// \param data
+    /// \param len
+    ///
     void read( unsigned char* data, size_t len ) override;
 
     void close() override;
@@ -50,7 +61,16 @@ class SRC_API InputStreamMqtt : public Input, public io::StreamMqtt
     bool isEnd() const override;
     void clear() override;
 
+    ///
+    /// \brief read
+    /// \param acq
+    ///
     void read( sensor::Acquisition& acq );
+
+    ///
+    /// \brief read
+    /// \param sensorSpec
+    ///
     void read( sensor::SensorSpec& sensorSpec );
 
   private:

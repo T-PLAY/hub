@@ -4,9 +4,9 @@
 namespace hub {
 namespace input {
 
-InputStreamServer2::InputStreamServer2( int streamPort, const std::string& ipv4 ) :
+InputStreamServer2::InputStreamServer2( int streamPort, const std::string& streamIpv4 ) :
     io::StreamServer2( "", "", 0 ),
-    m_streamIpv4{ipv4},
+    m_streamIpv4{streamIpv4},
     m_streamPort{streamPort}
 {
 

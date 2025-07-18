@@ -26,14 +26,15 @@ namespace io {
 
 ///
 /// \brief The StreamServer2 class
+/// defines stream features for the current server implement
 ///
 class SRC_API StreamServer2 : public hub::io::StreamBase
 {
   public:
     ///
-    /// \brief stopServer
-    /// \param ipv4
-    /// \param port
+    /// \brief Stop server from external, used by test to stop server during automated processes
+    /// \param ipv4 [in] Server ip is trying to stop
+    /// \param port [in] Server port is trying to stop
     ///
     static void stopServer( std::string ipv4 = HUB_SERVICE_IPV4, int port = HUB_SERVICE_PORT ) {
         auto clientSock = hub::io::InputOutputSocket( hub::net::ClientSocket( ipv4, port ) );
@@ -42,10 +43,7 @@ class SRC_API StreamServer2 : public hub::io::StreamBase
 
   protected:
     ///
-    /// \brief StreamServer2
-    /// \param name
-    /// \param ipv4
-    /// \param port
+    /// \copydoc hub::io::StreamBase::StreamBase
     ///
     StreamServer2( const std::string& name, const std::string& ipv4, int port );
 };

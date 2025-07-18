@@ -31,14 +31,16 @@
 namespace hub {
 
 ///
-/// \brief has_name_t
+/// \brief Object with name() feature
 ///
 template <typename T>
 using has_name_t = decltype( T::name() );
 
+/// \copydoc has_name_t
 template <typename T, typename = std::void_t<>>
 struct has_name : std::false_type {};
 
+/// \copydoc has_name_t
 template <typename T>
 struct has_name<T, std::void_t<has_name_t<T>>> : std::true_type {};
 
@@ -48,14 +50,16 @@ static constexpr bool has_name_v = has_name<T>::value;
 //////////////
 
 ///
-/// \brief nameable_t
+/// \brief Object which can be called by name function
 ///
 template <typename T>
 using nameable_t = decltype( name( std::declval<T>() ) );
 
+/// \copydoc nameable_t
 template <typename T, typename = std::void_t<>>
 struct nameable : std::false_type {};
 
+/// \copydoc nameable_t
 template <typename T>
 struct nameable<T, std::void_t<nameable_t<T>>> : std::true_type {};
 

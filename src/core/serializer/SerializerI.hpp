@@ -22,6 +22,10 @@ namespace serializer {
 
 ///
 /// \brief The SerializerI class
+/// is an interface describing serializer minimal features to implement.
+/// This interface allow to compare serializer performance during test.
+/// Please use this interface if you want to propose your own serializer.
+/// We can compare during test and integrate your code if it more efficient.
 ///
 class SRC_API SerializerI
 {

@@ -21,24 +21,25 @@
 #include <set>
 #include <thread>
 
-#include "Client2.hpp"
+#include "Client.hpp"
 #include "io/InputOutputSocket.hpp"
 
 namespace hub {
 namespace server {
 
-class ServerImpl2;
+class ServerImpl;
 
-class StreamViewerClient2;
+class StreamViewerClient;
 
 ///
-/// \brief The StreamerClient2 class
+/// \brief The StreamerClient class
+/// represents OutputSensor peer from server side
 ///
-class SRC_API StreamerClient2 : public Client2
+class SRC_API StreamerClient : public Client
 {
   public:
     ///
-    /// \brief StreamerClient2
+    /// \brief StreamerClient
     /// \param server
     /// \param iClient
     /// \param sock
@@ -46,14 +47,14 @@ class SRC_API StreamerClient2 : public Client2
     /// \param streamIpv4
     /// \param port
     ///
-    StreamerClient2( ServerImpl2* server,
+    StreamerClient( ServerImpl* server,
                      int iClient,
                      hub::io::InputOutputSocket&& sock,
                      std::string streamName,
                      std::string streamIpv4,
                      int port );
 
-    ~StreamerClient2();
+    ~StreamerClient();
 
     ///
     /// \brief headerMsg
@@ -73,8 +74,8 @@ class SRC_API StreamerClient2 : public Client2
     ///
     void notifyInited() override;
 
-    StreamerClient2( const StreamerClient2& ) = delete;
-    StreamerClient2( StreamerClient2&& )      = delete;
+    StreamerClient( const StreamerClient& ) = delete;
+    StreamerClient( StreamerClient&& )      = delete;
 
 
     ///

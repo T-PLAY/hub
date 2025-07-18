@@ -37,14 +37,19 @@ concept areMatrices = requires {
 #else
 
 ///
-/// \brief is_matrix_t
+/// \brief Object with matrix property
 ///
 template <typename T>
 using is_matrix_t = decltype( T::matrix );
+
+/// \copydoc is_matrix_t
 template <typename T, typename = std::void_t<>>
 struct is_matrix : std::false_type {};
+
+/// \copydoc is_matrix_t
 template <typename T>
 struct is_matrix<T, std::void_t<is_matrix_t<T>>> : std::true_type {};
+
 template <typename T>
 static constexpr bool is_matrix_v = is_matrix<T>::value;
 

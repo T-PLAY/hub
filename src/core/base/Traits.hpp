@@ -100,14 +100,16 @@ concept isContainer = !std::is_same<T, std::string>() && requires( T t ) {
 #else
 
 ///
-/// \brief has_begin_t
+/// \brief Object/Collection able to get begin iterator
 ///
 template <typename T>
 using has_begin_t = decltype( std::begin( std::declval<T>() ) );
 
+/// \copydoc has_begin_t
 template <typename T, typename = std::void_t<>>
 struct has_begin : std::false_type {};
 
+/// \copydoc has_begin_t
 template <typename T>
 struct has_begin<T, std::void_t<has_begin_t<T>>> : std::true_type {};
 
@@ -117,14 +119,16 @@ static constexpr bool has_begin_v = has_begin<T>::value;
 ////////////
 
 ///
-/// \brief has_end_t
+/// \brief Object/Collection able to get end iterator
 ///
 template <typename T>
 using has_end_t = decltype( std::end( std::declval<T>() ) );
 
+/// \copydoc has_end_t
 template <typename T, typename = std::void_t<>>
 struct has_end : std::false_type {};
 
+/// \copydoc has_end_t
 template <typename T>
 struct has_end<T, std::void_t<has_end_t<T>>> : std::true_type {};
 

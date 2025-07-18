@@ -49,14 +49,16 @@ class SRC_API InputBase : public ios
 };
 
 ///
-/// \brief not_endable_t
+/// \brief Object with not_endable property
 ///
 template <typename T>
 using not_endable_t = decltype( T::not_endable );
 
+/// \copydoc not_endable_t
 template <typename T, typename = std::void_t<>>
 struct not_endable : std::false_type {};
 
+/// \copydoc not_endable_t
 template <typename T>
 struct not_endable<T, std::void_t<not_endable_t<T>>> : std::true_type {};
 
@@ -79,14 +81,16 @@ constexpr bool Endable = !not_endable_v<T>;
 ///////////////////////////////////////
 
 ///
-/// \brief readable_t
+/// \brief Object that can be ridden from an input
 ///
 template <typename T>
 using readable_t = decltype( std::declval<T>().read( std::declval<InputBase&>() ) );
 
+/// \copydoc readable_t
 template <typename T, typename = std::void_t<>>
 struct readable : std::false_type {};
 
+/// \copydoc readable_t
 template <typename T>
 struct readable<T, std::void_t<readable_t<T>>> : std::true_type {};
 
@@ -96,14 +100,16 @@ static constexpr bool readable_v = readable<T>::value;
 ///////////////////////////////////////
 
 ///
-/// \brief notReadable_t
+/// \brief Object with notReadable property
 ///
 template <typename T>
 using notReadable_t = decltype( T::notReadable );
 
+/// \copydoc notReadable_t
 template <typename T, typename = std::void_t<>>
 struct notReadable : std::false_type {};
 
+/// \copydoc notReadable_t
 template <typename T>
 struct notReadable<T, std::void_t<notReadable_t<T>>> : std::true_type {};
 

@@ -16,7 +16,6 @@
 #pragma once
 
 #include <array>
-#include <numeric>
 
 #include "core/Base.hpp"
 #include "core/io/Memory.hpp"
@@ -27,19 +26,20 @@ namespace io {
 // Todo move to core input/output ios class, all stream data need versioning to be aware of compatibility
 ///
 /// \brief The Header class
+/// allow versionning and initializing of any communication
 ///
 class SRC_API Header
 {
   public:
     // using MagicNumber = std::array<char, 128>;
     ///
-    /// \brief MagicNumber
+    /// \brief Allow to check compatibility with different communications
     ///
     using MagicNumber = std::array<char, 16>;
 
     ///
-    /// \brief getSize
-    /// \return
+    /// \brief Getter function
+    /// \return the size of header in bytes
     ///
     auto getSize() const {
         return sizeof( m_headerSize ) + sizeof( m_dataSize ) + 4 + m_userDefined.size();
@@ -111,14 +111,14 @@ class SRC_API Header
     }
 
     ///
-    /// \brief getDataSize
-    /// \return
+    /// \brief Getter function
+    /// \return size of data
     ///
     Size_t getDataSize() const { return m_dataSize; }
 
     ///
-    /// \brief getUserDefined
-    /// \return
+    /// \brief Getter function
+    /// \return user defined data
     ///
     const Datas_t& getUserDefined() const { return m_userDefined; }
 

@@ -24,6 +24,7 @@ namespace io {
 
 ///
 /// \brief The StreamMqtt class
+/// represents stream using mqtt protocol
 ///
 class StreamMqtt : public StreamBase
 {
@@ -61,18 +62,12 @@ class StreamMqtt : public StreamBase
 
   protected:
     ///
-    /// \brief StreamMqtt
-    /// \param name
-    /// \param ipv4
-    /// \param port
+    /// \copydoc StreamBase::StreamBase
     ///
     StreamMqtt( const std::string& name, const std::string& ipv4, int port );
 
     ///
-    /// \brief StreamMqtt
-    /// \param name
-    /// \param ipv4
-    /// \param port
+    /// \copydoc StreamBase::StreamBase
     ///
     StreamMqtt( const char* name, const char* ipv4, int port );
 

@@ -30,16 +30,16 @@ extern "C"
 #endif
 
     ///
-    /// \brief any_getDouble
-    /// \param any
-    /// \return
+    /// \brief Get double from any ptr
+    /// \param any [in] to get double
+    /// \return double of any
     ///
     SRC_API double any_getDouble( const Any* any );
 
     ///
-    /// \brief any_getInt
-    /// \param any
-    /// \return
+    /// \brief Get int from any ptr
+    /// \param any [in] to get int
+    /// \return int of any
     ///
     SRC_API int any_getInt( const Any* any );
 

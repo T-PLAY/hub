@@ -32,7 +32,6 @@
 
 #include "io/Archive.hpp"
 #include "io/InputOutput.hpp"
-#include "io/InputOutputBase.hpp"
 #include "io/Memory.hpp"
 
 #include "serializer/SerializerBoost.hpp"

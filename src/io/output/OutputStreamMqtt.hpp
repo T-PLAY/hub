@@ -36,15 +36,38 @@ namespace output {
 class SRC_API OutputStreamMqtt : public Output, public io::StreamMqtt
 {
   public:
+
+    ///
+    /// \brief OutputStreamMqtt
+    /// \param streamName
+    /// \param ipv4
+    /// \param port
+    ///
     explicit OutputStreamMqtt( const std::string& streamName,
                                const std::string& ipv4 = s_defaultIpv4,
                                int port                = s_defaultPort );
 
+    ///
+    /// \brief write
+    /// \param acq
+    ///
     void write( const sensor::Acquisition& acq );
+
+    ///
+    /// \brief write
+    /// \param sensorSpec
+    ///
     void write( const sensor::SensorSpec& sensorSpec );
 
   protected:
+
+    ///
+    /// \brief write
+    /// \param data
+    /// \param len
+    ///
     void write( const unsigned char* data, size_t len ) override;
+
     void close() override;
     bool isOpen() const override;
 

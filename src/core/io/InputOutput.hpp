@@ -25,6 +25,7 @@ namespace io {
 
 ///
 /// \brief The InputOutput class
+/// represents bidirectional communication
 ///
 template <class SerializerT = Serializer,
           class InputT      = InputT<SerializerT>,
