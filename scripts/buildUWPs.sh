@@ -18,7 +18,7 @@ for mode in "Debug" "Release"; do
 		#buildDir="build-$arch"
 		buildDir="$rootDir/$arch-$mode"
 		mkdir -p $buildDir
-		cmake -B $buildDir . -A $arch -DCMAKE_INSTALL_PREFIX=$installDir -DHUB_BUILD_STATIC=OFF
+		cmake -B $buildDir . -A $arch -DCMAKE_BUILD_TYPE=$mode -DCMAKE_INSTALL_PREFIX=$installDir -DHUB_BUILD_STATIC=OFF
 		cmake --build $buildDir --config $mode --parallel
 		cmake --install $buildDir --config $mode
 	done

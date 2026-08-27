@@ -90,6 +90,7 @@ std::string ViewerClient::headerMsg() const {
 
 void ViewerClient::notifyNewStreamer( const StreamerClient* streamer ) {
 
+    // todo catch exception if streamer socket is dead
     m_socket.write( hub::io::StreamBase::ServerMessage::VIEWER_NEW_STREAMER );
     m_socket.write( streamer->m_streamName );
 
@@ -105,16 +106,19 @@ void ViewerClient::notifyNewStreamer( const StreamerClient* streamer ) {
     // This is why we don't wait for the deadly client at the end of this method.
     // The reason for waiting for the client to connect is that after the end of this function, if the client is not available and functions are called immediately after notification, some tests will not pass.
     // Fix : use a better way of doing things
-    while ( iTry < 20 && !m_clientStreamAdded ) // timeout: 200 ms
+    while ( iTry < 10 && !m_clientStreamAdded ) // timeout: 200 ms
     {
         std::cout << "[ViewerClient] waiting for streamer added ..." << std::endl;
-        std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
+        std::this_thread::sleep_for( std::chrono::milliseconds( 20 ) );
         ++iTry;
     }
 }
 
 void ViewerClient::notifyDelStreamer( const std::string& streamName ) {
     if ( m_viewerClosed ) return;
+
+    if (! m_socket.isOpen())
+        return;
 
     try {
         m_socket.write( hub::io::StreamBase::ServerMessage::VIEWER_DEL_STREAMER );

@@ -26,12 +26,14 @@
 #include "core/Configuration.hpp"
 
 #include "native_Any.hpp"
+#include "native_Header.hpp"
 #include "native_MetaData.hpp"
 #include "native_OutputStream.hpp"
 #include "native_Viewer.hpp"
 #include "native_ViewerHandler.hpp"
 
 #ifndef HUB_NON_BUILD_SENSOR
+#include "sensor/native_Acquisition.hpp"
 #    include "sensor/native_InputSensor.hpp"
 #    include "sensor/native_OutputSensor.hpp"
 #    include "sensor/native_SensorSpec.hpp"

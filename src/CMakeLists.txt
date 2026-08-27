@@ -19,7 +19,7 @@ if (HUB_ENABLE_TESTS)
 endif()
 
 option(HUB_BUILD_STATIC "Build static library" ON)
-option(HUB_BUILD_SHARED "Build shared library" ON)
+option(HUB_BUILD_SHARED "Build shared library" ON) # build shared only (with static off) when you want to export functions into dll (UnityViewer)
 
 ########################## OS/Compiler Specifics ###########################
 
@@ -307,7 +307,8 @@ if(HUB_BUILD_SHARED)
     install(
         TARGETS ${PROJECT_NAME}_shared
         EXPORT ${PROJECT_NAME}_shared
-        DESTINATION ${ARCHITECTURE}/lib # Linux
+        #DESTINATION ${ARCHITECTURE}/lib # Linux, todo check
+        DESTINATION ${ARCHITECTURE}/bin # Linux
         RUNTIME DESTINATION ${ARCHITECTURE}/bin # Windows
     )
 
@@ -321,6 +322,25 @@ if(HUB_BUILD_SHARED)
 endif() # (HUB_BUILD_SHARED)
 
 message(STATUS "${HEADER_MSG} Libraries: (${HUB_LIBRARIES})")
+
+# ########################### DEPS #################################
+
+if(PahoMqttCpp_FOUND)
+    set(TARGET_NAME PahoMqttCpp::paho-mqttpp3)
+    if (UNIX)
+        install(FILES $<TARGET_FILE:${TARGET_NAME}> $<TARGET_SONAME_FILE:${TARGET_NAME}> DESTINATION ${ARCHITECTURE}/bin)
+    endif()
+    # install(FILES $<TARGET_SONAME_FILE:PahoMqttCpp::paho-mqttpp3> DESTINATION ${ARCHITECTURE}/bin)
+endif()
+
+if(TBB_FOUND)
+    set(TARGET_NAME ${HUB_TBB_TARGET})
+    if (UNIX)
+        install(FILES $<TARGET_FILE:${TARGET_NAME}> $<TARGET_SONAME_FILE:${TARGET_NAME}> DESTINATION ${ARCHITECTURE}/bin
+            PERMISSIONS OWNER_READ OWNER_EXECUTE OWNER_WRITE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+        )
+    endif()
+endif()
 
 # ########################### ALIAS ################################
 

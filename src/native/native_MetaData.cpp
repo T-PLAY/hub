@@ -3,6 +3,8 @@
 #include "core/Format.hpp"
 #include "core/MetaData.hpp"
 
+#include "data/Mesh.hpp"
+
 #define HUB_CPP_SOURCE
 #include "native_MetaData.hpp"
 
@@ -44,6 +46,43 @@ double metaData_getDouble( const MetaData* metaData, const char* metaName ) {
     assert( metaData->find( metaName ) != metaData->end() );
     return metaData->at( metaName ).get<double>();
 }
+
+const data::Mesh *metaData_getMesh(const MetaData *metaData, const char *meshName)
+{
+    assert( metaData->find( meshName ) != metaData->end() );
+    const auto & mesh =  metaData->at(meshName).get<data::Mesh>();
+    return &mesh;
+}
+
+size_t metaData_getDataSize(const MetaData *metaData, const char *metaName, const char *type)
+{
+    assert( metaData->find( metaName ) != metaData->end() );
+
+    std::string typeStr(type);
+    if (typeStr == "vector<Vec3>") {
+        const auto & vector = metaData->at(metaName).get<std::vector<format::Vec3>>();
+        return vector.size() * sizeof(format::Vec3);
+    }
+    else {
+        assert(false);
+    }
+    return 0;
+}
+
+void metaData_getData(const MetaData *metaData, const char *metaName, const char *type, unsigned char *data)
+{
+    assert( metaData->find( metaName ) != metaData->end() );
+
+    std::string typeStr(type);
+    if (typeStr == "vector<Vec3>") {
+        const auto & vector = metaData->at(metaName).get<std::vector<format::Vec3>>();
+        memcpy(data, vector.data(), vector.size() * sizeof(format::Vec3));
+    }
+    else {
+        assert(false);
+    }
+}
+
 
 } // namespace native
 } // namespace hub

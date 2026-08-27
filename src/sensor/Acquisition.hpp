@@ -71,7 +71,7 @@ class SRC_API Acquisition : public Matrix
     Acquisition& operator=( const Acquisition& ) = delete;
 
     ///
-    /// \brief clone
+    /// \brief copy
     /// \return
     ///
     Acquisition copy() const {

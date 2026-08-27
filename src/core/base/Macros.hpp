@@ -60,9 +60,9 @@ namespace hub {
 #    define COMPILER_MSVC
 #    define _USE_MATH_DEFINES
 
-#ifndef HUB_COMPILER_MSVC
-#error "not gnu compiler"
-#endif
+// #ifndef HUB_COMPILER_MSVC
+// #error "not gnu compiler"
+// #endif
 
 #elif defined( __llvm__ )
 

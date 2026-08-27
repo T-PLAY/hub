@@ -105,9 +105,14 @@ std::vector<SpecAcqs> synchonizeInputs( std::vector<Input>& inputs ) {
                     hub::sensor::InputSensor inputSyncSensor( input2, input );
                     specAcqs.push_back( inputSyncSensor.getSpec() );
 
-                    auto& specAcq = specAcqs.back();
-                    inputSyncSensor.fillAllAcquisitions( specAcq.m_acqs );
-                    specAcq.m_sensorSpec.getMetaData()["nAcq"] = (int)specAcq.m_acqs.size();
+                    auto& specAcq  = specAcqs.back();
+                    auto& metaData = specAcq.m_sensorSpec.getMetaData();
+
+                    auto it = metaData.find( "scanWidth" );
+                    if ( it != metaData.end() ) {
+                        inputSyncSensor.fillAllAcquisitions( specAcq.m_acqs );
+                        metaData["nAcq"] = (int)specAcq.m_acqs.size();
+                    }
                 }
             }
         }

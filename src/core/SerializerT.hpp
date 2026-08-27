@@ -170,7 +170,7 @@ class SRC_API SerializerT
     /// However singleton imply concurrency with all user of user wanted to serialize data.
     /// We need to check if there is decrease of application performance.
     /// The size of serializer buffer depends of user application (need to be configured by user ?)
-    static constexpr Size_t BuffSize = 1'000'000; // 1 Mo
+    static constexpr Size_t BuffSize = 10'000'000; // 10 Mo
 
     ///
     /// \brief SerializerT
